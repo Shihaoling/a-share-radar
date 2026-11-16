@@ -205,5 +205,75 @@
         ]
       }
     ]
+  },
+  "live_news": {
+    "checked_at": "2026-11-16T17:08:59.389058+08:00",
+    "group": "live_news",
+    "requests": 4,
+    "results": [
+      {
+        "api": "rt_idx_k",
+        "params": {
+          "ts_code": "000001.SH,399001.SZ"
+        },
+        "status": "unavailable",
+        "error_code": "api_denied"
+      },
+      {
+        "api": "rt_sw_k",
+        "params": {
+          "ts_code": "801780.SI"
+        },
+        "status": "unavailable",
+        "error_code": "api_denied"
+      },
+      {
+        "api": "news",
+        "params": {
+          "src": "cls",
+          "start_date": "2026-11-16 16:08:59",
+          "end_date": "2026-11-16 17:08:59"
+        },
+        "status": "unavailable",
+        "error_code": "api_denied"
+      },
+      {
+        "api": "index_daily",
+        "params": {
+          "ts_code": "000001.SH",
+          "trade_date": "20261116"
+        },
+        "status": "success",
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "close",
+          "open",
+          "high",
+          "low",
+          "pre_close",
+          "change",
+          "pct_chg",
+          "vol",
+          "amount"
+        ],
+        "sample": [
+          {
+            "ts_code": "000001.SH",
+            "trade_date": "20261116",
+            "close": 3602.5698,
+            "open": 3611.5366,
+            "high": 3623.1183,
+            "low": 3586.5677,
+            "pre_close": 3634.353,
+            "change": -31.7832,
+            "pct_chg": -0.8745,
+            "vol": 461643487.0,
+            "amount": 706214352.2734
+          }
+        ]
+      }
+    ]
   }
 }
