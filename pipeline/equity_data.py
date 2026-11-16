@@ -370,6 +370,7 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
         return summary
     if _future(state.get("cooldown_until"), now):
         summary.update(status="cooldown", cooldown_until=state["cooldown_until"], error_code=state.get("error_code"))
+        summary.update({key: state[key] for key in ('provider_code', 'provider_reason') if state.get(key) is not None})
         return summary
     token = os.environ.get("STOCK_API_TOKEN")
     if not token:
@@ -403,6 +404,10 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
                      "cooldown_until": None, "error_code": None}
         except _Failure as failure:
             summary["error_code"] = failure.code
+            for key in ('provider_code', 'provider_reason'):
+                value = getattr(failure, key, None)
+                if value is not None:
+                    summary[key] = state[key] = value
             summary["status"] = "budget_exhausted" if failure.code == "budget_exhausted" else "unavailable"
             if failure.retry_seconds:
                 state.update(cooldown_until=(_now() + timedelta(seconds=failure.retry_seconds)).isoformat(),
@@ -426,13 +431,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--days", type=int, default=180)
     parser.add_argument("--max-requests", type=int, default=2)
+    parser.add_argument("--min-interval", type=float, default=6, help="Seconds between historical batches; minimum 3")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "data/equity")
     parser.add_argument("--dashboard", type=Path, default=ROOT / "web/data/dashboard.json")
     parser.add_argument("--offline", action="store_true")
     args = parser.parse_args()
     dashboard = _read_json(args.dashboard, {})
     config = {"network_enabled": not args.offline,
-              "equity": {"history_days": args.days, "max_requests": args.max_requests, "progress": True}}
+              "equity": {"history_days": args.days, "max_requests": args.max_requests, "min_interval_seconds": args.min_interval, "progress": True}}
     result = collect_equity_history(dashboard, config, output_dir=args.output_dir)
     print(json.dumps(result, ensure_ascii=False, allow_nan=False), flush=True)
     return 0 if result["status"] in {"ready", "partial", "offline_cache"} else 1

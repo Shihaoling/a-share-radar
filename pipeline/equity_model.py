@@ -311,6 +311,12 @@ def _universe(dashboard, history):
         if code:
             stocks.setdefault(code, {"code": code, "name": row.get("name", code), "sector_id": None})
             stocks[code]["daily_basic"] = {"trade_date": basic.get("trade_date"), **row}
+    if basic.get('full_market_request') and basic.get('quality', {}).get('complete') and records:
+        # A cached industry membership may still contain former members or old
+        # exchange codes. Today's validated A-share list owns the live universe.
+        eligible = {_code(row.get('ts_code') or identity) for identity, row in records.items() if isinstance(row, dict)}
+        stocks = {code: row for code, row in stocks.items() if code in eligible}
+        sector_members = {key: [code for code in codes if code in eligible] for key, codes in sector_members.items()}
     # Do not resurrect delisted historical names in today's publishing universe.
     if not stocks:
         for code in history:

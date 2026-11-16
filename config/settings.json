@@ -40,7 +40,7 @@
     "enabled": true,
     "history_days": 180,
     "max_requests": 2,
-    "min_interval_seconds": 3,
+    "min_interval_seconds": 6,
     "minimum_weight_coverage": 0.9,
     "retrain_days": 7
   }

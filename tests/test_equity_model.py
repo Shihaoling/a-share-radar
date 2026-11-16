@@ -11,7 +11,7 @@ from unittest.mock import patch
 import numpy as np
 
 from pipeline.calendar import is_trading_day
-from pipeline.equity_model import (aggregate_predictions, build_samples, chronological_split,
+from pipeline.equity_model import (_universe, aggregate_predictions, build_samples, chronological_split,
     load_history, predict_portable, sequence_features, train_shared_baseline, update_equity_predictions)
 
 
@@ -51,6 +51,14 @@ def dashboard(history):
 
 
 class EquityModelTests(unittest.TestCase):
+    def test_validated_current_universe_excludes_stale_sector_members(self):
+        source = {'sectors': [{'id': 'x', 'constituents': [{'ts_code': '000001.SZ'}, {'ts_code': '000002.SZ'}]}],
+            'stock_api_state': {'daily_basic': {'full_market_request': True, 'quality': {'complete': True},
+                'trade_date': '2026-11-16', 'records': [{'ts_code': '000001.SZ', 'circ_mv': 3.}]}}}
+        stocks, members = _universe(source, {})
+        self.assertEqual(list(stocks), ['000001.SZ'])
+        self.assertEqual(members['x'], ['000001.SZ'])
+
     def test_partial_batches_are_excluded_and_parent_directory_accepted(self):
         with tempfile.TemporaryDirectory() as root:
             directory = Path(root) / "daily"

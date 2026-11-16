@@ -23,7 +23,7 @@ _MODULE_STATE_FIELDS = {"version", "last_run_at", "status", "requests_this_run",
 _FUND_SUMMARY_FIELDS = {"status", "covered_sectors", "total_sectors", "candidate_count", "requests_this_run", "note"}
 _EQUITY_COLLECTION_FIELDS = {"status", "source", "endpoint", "requested_days", "available_calendar_days",
     "cached_days", "collected_days", "requests_this_run", "partial_data_days", "excluded_rows",
-    "latest_date", "missing_days", "cooldown_until", "error_code", "reference_note", "universe_basis"}
+    "latest_date", "missing_days", "cooldown_until", "error_code", "provider_code", "provider_reason", "reference_note", "universe_basis"}
 _EQUITY_COVERAGE_FIELDS = {"universe_count", "predicted_count", "known_weight_count", "weight_coverage",
     "count_coverage", "weights_complete"}
 

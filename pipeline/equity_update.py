@@ -42,7 +42,8 @@ def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
     # A pilot exercises both neural candidates on real observations. Its report
     # remains distinct from the full-universe portable baseline used by the site.
     collection = dashboard['equity_collection']
-    if train_pilot and collection.get('missing_days') == 0:
+    filled = collection.get('missing_days') == 0 and collection.get('available_calendar_days', 0) >= days
+    if train_pilot and filled:
         command = [sys.executable, '-m', 'pipeline.train_equity',
                    '--history-dir', str(root / 'daily'), '--model-dir', str(root / 'models'),
                    '--models', 'ridge,gru,tcn', '--device', 'cpu', '--max-stocks', '256',
@@ -53,7 +54,7 @@ def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
             'note': '云端初步试训；并未使用用户本机GPU，结果不代表完成充分调优。'}
         now = datetime.now(ZoneInfo('Asia/Shanghai'))
         dashboard = update_equity_predictions(dashboard, root, root / 'models', now, settings)
-    if collection.get('missing_days') == 0 and collection.get('requested_days') == days:
+    if filled:
         atomic_json(marker, {'completed_at': now.isoformat(), 'requested_days': days,
             'available_days': collection.get('cached_days', 0) + collection.get('collected_days', 0),
             'note': '完成首次批量采集；历史成员身份及退市样本未完整核实。'})

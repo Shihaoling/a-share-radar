@@ -8,7 +8,7 @@ import unittest
 import urllib.error
 from unittest.mock import Mock, patch
 
-from pipeline.funds import ENDPOINT, FIELDS, _Client, _Failure, enrich_funds
+from pipeline.funds import ENDPOINT, FIELDS, _Client, _Failure, _match, enrich_funds
 
 NOW = datetime.fromisoformat("2026-11-16T19:00:00+08:00")
 SECRET = "synthetic-fund-secret-never-persist"
@@ -85,6 +85,11 @@ def provider(overrides=None):
 
 
 class FundTests(unittest.TestCase):
+    def test_abbreviated_domestic_food_and_transport_indices(self):
+        self.assertEqual(_match(catalog(index='中证细分食品'))[0], '801120.SI')
+        self.assertEqual(_match(catalog(index='中证运输指数'))[0], '801170.SI')
+        self.assertIsNone(_match(catalog(index='全球食品指数')))
+
     def assert_safe(self, result):
         self.assertNotIn(SECRET, json.dumps(result, ensure_ascii=False, allow_nan=False))
 

@@ -38,12 +38,12 @@ THEMES = {
     "801050.SI": r"有色金属|稀土|黄金股",
     "801080.SI": r"电子|半导体|芯片",
     "801110.SI": r"家用电器|家电",
-    "801120.SI": r"食品饮料|白酒|饮料",
+    "801120.SI": r"食品|白酒|饮料",
     "801130.SI": r"纺织服饰|纺织服装",
     "801140.SI": r"轻工制造",
     "801150.SI": r"医药|医疗|生物科技",
     "801160.SI": r"公用事业|电力(?!设备)",
-    "801170.SI": r"交通运输|物流|航运",
+    "801170.SI": r"交通运输|运输指数|物流|航运",
     "801180.SI": r"房地产",
     "801200.SI": r"商贸零售|零售",
     "801210.SI": r"社会服务|旅游",
@@ -312,9 +312,13 @@ def enrich_funds(dashboard, config=None, now=None):
     token = os.environ.get("STOCK_API_TOKEN", "").strip()
     stamp = now.isoformat(timespec="seconds")
     old = result.get("fund_state", {})
-    state = {"version": 1, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
+    state = {"version": 2, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
     for api in FIELDS:
         cached = old.get("cache", {}).get(api, {})
+        if old.get('version', 2) < 2:
+            # v1 retained only name-matched funds; shortened vendor index names
+            # require one catalog/value refresh to include newly valid matches.
+            cached = {}
         fetched = _instant(cached.get("fetched_at"))
         if fetched and fetched <= now:
             state["cache"][api] = {"fetched_at": fetched.isoformat(timespec="seconds"),
