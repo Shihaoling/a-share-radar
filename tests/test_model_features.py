@@ -36,7 +36,7 @@ class PointInTimeFeatureTests(unittest.TestCase):
     def test_neutral_and_unknown_sentiment_are_different_and_future_is_excluded(self):
         rows = history()
         base = {"date": "2026-11-13", "available_at": "2026-11-13T18:00:00+08:00",
-                "score": 0, "article_count": 4, "confidence": .7}
+                "score": 0, "article_count": 4, "confidence": .7, "window_policy_version": "published-and-observed-v1"}
         neutral = model._features(rows, len(rows) - 1, {"sentiment_history": [base]})
         unknown = model._features(rows, len(rows) - 1, {"sentiment_history": [{**base, "score": None}]})
         future = model._features(rows, len(rows) - 1, {"sentiment_history": [{**base, "available_at": "2026-11-16T10:00:00+08:00"}]})
@@ -46,7 +46,8 @@ class PointInTimeFeatureTests(unittest.TestCase):
 
     def test_corrected_coal_beauty_taxonomy_excludes_legacy_snapshots_only(self):
         rows = history()
-        old = {"date": "2026-11-13", "available_at": "2026-11-13T20:00:00+08:00", "score": .9, "article_count": 5}
+        old = {"date": "2026-11-13", "available_at": "2026-11-13T20:00:00+08:00", "score": .9, "article_count": 5,
+               "window_policy_version": "published-and-observed-v1"}
         current = {**old, "available_at": "2026-11-13T18:00:00+08:00", "score": -.3,
                    "pipeline_version": "sw2021-news-tone-v2", "taxonomy_version": "SW2021-L1-official-contract-v2"}
         for identity in ("801950.SI", "801980.SI", "801950.SI:proxy:sh510300"):
@@ -60,10 +61,25 @@ class PointInTimeFeatureTests(unittest.TestCase):
         unaffected = {"id": "801010.SI", "sentiment_history": [old]}
         self.assertEqual(feature(model._features(rows, len(rows) - 1, unaffected), "sentiment_score"), (.9, 0))
 
+    def test_unverified_news_window_is_missing_for_every_industry(self):
+        rows = history()
+        old = {"date": "2026-11-13", "available_at": "2026-11-13T20:00:00+08:00",
+               "score": .9, "article_count": 5, "pipeline_version": "sw2021-news-tone-v3"}
+        safe = {**old, "available_at": "2026-11-13T18:00:00+08:00", "score": -.2,
+                "window_policy_version": "published-and-observed-v1"}
+        for identity in ("sh000001", "801010.SI", "801950.SI", "801980.SI"):
+            entity = {"id": identity, "sentiment_history": [old, {**old, "window_policy_version": "legacy"}]}
+            self.assertEqual(feature(model._features(rows, len(rows) - 1, entity), "sentiment_score"), (0, 1))
+            entity["sentiment_history"].append(safe)
+            original = deepcopy(entity)
+            self.assertEqual(feature(model._features(rows, len(rows) - 1, entity), "sentiment_score"), (-.2, 0))
+            self.assertEqual(entity, original)
+
     def test_newly_collected_sentiment_is_visible_but_not_activated_without_history(self):
         data = dashboard()
         data["sectors"][0]["sentiment_history"] = [{"date": "2026-11-16", "available_at": "2026-11-16T07:00:00+08:00",
-                                                    "score": .9, "article_count": 5, "confidence": .8}]
+                                                    "score": .9, "article_count": 5, "confidence": .8,
+                                                    "window_policy_version": "published-and-observed-v1"}]
         result = model.update_predictions(data, now=NOW)
         row = result["predictions"][0]
         coverage = next(r for r in row["feature_metadata"]["coverage"] if r["name"] == "sentiment_score")

@@ -1219,6 +1219,90 @@ class PrimaryStockApiTests(unittest.TestCase):
                 self.assertIsNone(stock['rank_date'])
         self.assert_safe(result)
 
+    def test_official_302132_exception_is_accepted_without_opening_the_302_range(self):
+        basic = [basic_row(ts_code=code) for code in ('302132.SZ', '302999.SZ')]
+        def members(payload):
+            row = member_rows(payload['params']['l1_code'])[0]
+            return pack(payload['fields'].split(','), [dict(row, ts_code=code)
+                        for code in ('302132.SZ', '302999.SZ')])
+        with fake_provider({'daily_basic': lambda payload: pack(payload['fields'].split(','), basic),
+                            'index_member_all': members}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        cache = result['stock_api_state']['daily_basic']
+        self.assertEqual([row['ts_code'] for row in cache['records']], ['302132.SZ'])
+        self.assertEqual(cache['quality']['rejected_count'], 1)
+        for sector in result['sectors']:
+            self.assertEqual([row['ts_code'] for row in sector['constituents']], ['302132.SZ'])
+            self.assertEqual(result['stock_api_state']['members'][sector['id']]['quality']['rejected_count'], 1)
+        self.assert_safe(result)
+
+    def _old_partial_defense_cache(self):
+        classification = {'index_code': '801740.SI', 'industry_name': '国防军工',
+                          'parent_code': '0', 'level': 'L1', 'industry_code': '650000',
+                          'is_pub': '1', 'src': 'SW2021'}
+        def payloads(codes):
+            def members(payload):
+                row = member_rows(payload['params']['l1_code'])[0]
+                return pack(payload['fields'].split(','), [dict(row, ts_code=code) for code in codes])
+            return {'index_classify': lambda payload: pack(payload['fields'].split(','), [classification]),
+                    'daily_basic': lambda payload: pack(payload['fields'].split(','),
+                                                        [basic_row(ts_code=code) for code in codes]),
+                    'index_member_all': members}
+        options = {'stock_api': {'max_index_calls': 0, 'max_sw_history_calls': 0, 'news_enabled': False}}
+        with fake_provider(payloads(('300114.SZ', '302999.SZ')), primary=True):
+            old = collect_stock_api(canonical_seed(), options, NOW)
+        old['stock_api_state']['daily_basic']['parser_version'] = 1
+        old['stock_api_state']['members']['801740.SI']['parser_version'] = 1
+        return old, payloads(('300114.SZ', '302132.SZ', '302999.SZ')), options
+
+    def test_parser_upgrade_refreshes_old_partial_cache_once_before_normal_partial_ttl(self):
+        old, overrides, options = self._old_partial_defense_cache()
+        with fake_provider(overrides, primary=True) as (provider, _, _):
+            updated = collect_stock_api(old, options, NOW + timedelta(minutes=5))
+        requested = [request['api_name'] for request in provider.requests]
+        self.assertIn('daily_basic', requested)
+        self.assertIn('index_member_all', requested)
+        basic = updated['stock_api_state']['daily_basic']
+        members = updated['stock_api_state']['members']['801740.SI']
+        self.assertEqual(basic['parser_version'], 2)
+        self.assertEqual(members['parser_version'], 2)
+        self.assertIn('302132.SZ', [row['ts_code'] for row in basic['records']])
+        self.assertIn('302132.SZ', [row['ts_code'] for row in members['records']])
+        self.assertEqual(basic['quality']['rejected_count'], 1)
+        self.assertFalse(members['complete'])
+        with fake_provider(overrides, primary=True) as (provider, _, _):
+            cached = collect_stock_api(updated, options, NOW + timedelta(minutes=10))
+        requested = [request['api_name'] for request in provider.requests]
+        self.assertNotIn('daily_basic', requested)
+        self.assertNotIn('index_member_all', requested)
+        self.assert_safe(cached)
+
+    def test_parser_upgrade_never_bypasses_permission_global_or_member_cooldown(self):
+        seed_data, overrides, options = self._old_partial_defense_cache()
+        retry = (NOW + timedelta(hours=1)).isoformat(timespec='seconds')
+        for scope in ('api_permission', 'global_429', 'member_target'):
+            data = deepcopy(seed_data)
+            state = data['stock_api_state']
+            if scope == 'api_permission':
+                for api in ('daily_basic', 'index_member_all'):
+                    state['endpoints'][api].update(cooldown_until=retry, error_code='api_denied')
+            elif scope == 'global_429':
+                state['cooldown_until'] = retry
+            else:
+                state.setdefault('member_attempts', {})['801740.SI'] = {'cooldown_until': retry}
+            with self.subTest(scope=scope):
+                with fake_provider(overrides, primary=True) as (provider, opener, _):
+                    result = collect_stock_api(data, options, NOW + timedelta(minutes=5))
+                requested = [request['api_name'] for request in provider.requests]
+                self.assertNotIn('index_member_all', requested)
+                if scope == 'member_target':
+                    self.assertIn('daily_basic', requested)
+                else:
+                    self.assertNotIn('daily_basic', requested)
+                if scope == 'global_429':
+                    self.assertEqual(opener.open.call_count, 0)
+                self.assert_safe(result)
+
 
 if __name__ == '__main__':
     unittest.main()

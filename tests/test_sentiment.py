@@ -114,6 +114,45 @@ class SentimentTests(unittest.TestCase):
         self.assertEqual(result["sectors"][0]["sentiment_history"][0]["available_at"], NOW.isoformat())
         self.assertEqual(result["sectors"][0]["sentiment_history"][0]["date"], "2026-11-17")
 
+    def test_old_publications_first_collected_today_never_enter_current_window(self):
+        data = dashboard(*[
+            news("半导体财经早餐盈利增长 " + day, id=day, published_at=day + "T08:00:00+08:00",
+                 first_seen_at=NOW.isoformat())
+            for day in ("2026-10-19", "2026-11-10", "2026-11-12")
+        ])
+        result = self.process(data)
+        self.assertEqual(len(result["news"]), 3)
+        self.assertEqual(result["sentiment_summary"]["old_publications_excluded"], 3)
+        for item in result["news"]:
+            self.assertFalse(item["sentiment_eligible"])
+            self.assertEqual(item["sentiment_exclusion_reason"], "published_outside_window")
+            self.assertIn("首次采集时间不代表发表时间", item["sentiment_time_note"])
+        sentiment = result["sectors"][0]["sentiment"]
+        self.assertEqual(sentiment["article_count"], 0)
+        self.assertIsNone(sentiment["score"])
+        self.assertEqual(result["sectors"][0]["sentiment_history"][-1]["news_ids"], [])
+
+    def test_publication_window_boundary_is_exact(self):
+        data = dashboard(news("半导体订单增长", id="boundary", published_at="2026-11-14T10:00:00+08:00"),
+                         news("芯片订单下降", id="too-old", published_at="2026-11-14T09:59:59+08:00"))
+        result = self.process(data)
+        self.assertTrue(result["news"][0]["sentiment_eligible"])
+        self.assertEqual(result["news"][1]["sentiment_exclusion_reason"], "published_outside_window")
+        self.assertEqual([e["news_id"] for e in result["sectors"][0]["sentiment"]["evidence"]], ["boundary"])
+
+    def test_unknown_or_invalid_publication_time_remains_browsable_but_not_fresh(self):
+        data = dashboard(news("半导体订单增长", id="unknown", published_at=None),
+                         news("芯片盈利增长", id="invalid", published_at="not-a-date"))
+        result = self.process(data)
+        self.assertEqual(len(result["news"]), 2)
+        self.assertEqual(result["sentiment_summary"]["unknown_publication_time_excluded"], 2)
+        self.assertEqual([n["sentiment_publication_time_status"] for n in result["news"]], ["unknown", "invalid"])
+        for item in result["news"]:
+            self.assertEqual(item["sentiment_exclusion_reason"], "unknown_publication_time")
+            self.assertFalse(item["sentiment_eligible"])
+            self.assertIn("发布时间不确定", item["sentiment_time_note"])
+        self.assertIsNone(result["sectors"][0]["sentiment"]["score"])
+
     def test_rumor_excluded_by_default(self):
         result = self.process(dashboard(news("网传芯片需求暴跌")))
         self.assertEqual(result["sentiment_summary"]["rumors_excluded"], 1)

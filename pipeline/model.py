@@ -103,6 +103,11 @@ def _pit_record(entity, day, cutoff, keys, max_age_days=0):
         for row in entity.get(key, []) or []:
             if not isinstance(row, dict):
                 continue
+            if key == "sentiment_history" and row.get("window_policy_version") != "published-and-observed-v1":
+                # Earlier snapshots could admit old articles first discovered
+                # today. Only the verified publication/observation window is a
+                # valid training feature; legacy evidence stays in the audit log.
+                continue
             if key == "sentiment_history" and identity in ("801950", "801980"):
                 # v1 reversed the coal/beauty identifiers. Keep those snapshots
                 # for audit, but never use them as historical model evidence.

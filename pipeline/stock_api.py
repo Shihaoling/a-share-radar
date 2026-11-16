@@ -25,6 +25,7 @@ from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous
 ENDPOINT = "https://t.xiaodefa.top/"
 MAX_BYTES = 4 * 1024 * 1024
 MIN_HISTORY_BARS = 181
+ROW_PARSER_VERSION = 2
 FIELDS = {
     "trade_cal": "exchange,cal_date,is_open,pretrade_date",
     "index_daily": "ts_code,trade_date,close,open,high,low,pre_close,change,pct_chg,vol,amount",
@@ -234,6 +235,10 @@ def _index_code(item):
 def _stock_code(raw):
     if not isinstance(raw, str):
         return None
+    # SZSE: AVIC Chengfei moved from 300114 to 302132 on 2025-02-17.
+    # This verified exception does not open an unverified 302xxx namespace.
+    if raw in ("302132", "302132.SZ"):
+        return "302132.SZ"
     if re.fullmatch(r"(?:600|601|603|605|688|689)\d{3}(?:\.SH)?", raw):
         return raw[:6] + ".SH"
     if re.fullmatch(r"(?:000|001|002|003|300|301)\d{3}(?:\.SZ)?", raw):
@@ -1242,13 +1247,18 @@ def enrich_with_stock_api(data, config=None, now=None):
         if sector["daily_stale"] and not sector.get("live_quote"):
             sector["stale"] = True
     basic = state.get("daily_basic", {})
-    if sectors and basic.get("trade_date") != cutoff.isoformat():
+    basic_partial = basic.get("completeness") == "partial" or basic.get("quality", {}).get("complete") is False
+    basic_parsed_at = _instant(basic.get("last_parse_at") or basic.get("fetched_at"))
+    basic_refresh_partial = basic_partial and (basic.get("parser_version") != ROW_PARSER_VERSION
+                                               or not basic_parsed_at or (now - basic_parsed_at).total_seconds() >= 900)
+    if sectors and (basic.get("trade_date") != cutoff.isoformat() or basic_refresh_partial):
         def save_basic(rows):
             quality = {}
             try:
                 records = _basic_records(rows, cutoff, stamp, quality)
             finally:
                 basic["quality"] = quality
+                basic.update(parser_version=ROW_PARSER_VERSION, last_parse_at=stamp)
                 state["daily_basic"] = basic
             basic.update(trade_date=cutoff.isoformat(), fetched_at=stamp, records=records, row_count=len(rows),
                          possibly_truncated=len(rows) >= 6000, full_market_request=True,
@@ -1307,7 +1317,8 @@ def enrich_with_stock_api(data, config=None, now=None):
             continue
         fetched = _instant(cached.get("fetched_at"))
         ttl = 86400 * 7 if cached.get("complete") else 900
-        if fetched and (now - fetched).total_seconds() < ttl:
+        parser_upgrade = bool(cached and not cached.get("complete") and cached.get("parser_version") != ROW_PARSER_VERSION)
+        if fetched and (now - fetched).total_seconds() < ttl and not parser_upgrade:
             continue
         def save_members(rows, sector=sector):
             quality = {}
@@ -1317,7 +1328,8 @@ def enrich_with_stock_api(data, config=None, now=None):
                 member_attempts.setdefault(sector["id"], {}).update(last_attempt=stamp, quality=quality)
             complete = len(rows) < 2000 and quality["complete"]
             members[sector["id"]] = {"records": records, "fetched_at": stamp, "complete": complete,
-                                     "possibly_truncated": len(rows) >= 2000, "received_count": len(rows), "quality": quality}
+                                     "possibly_truncated": len(rows) >= 2000, "received_count": len(rows), "quality": quality,
+                                     "parser_version": ROW_PARSER_VERSION}
             member_attempts[sector["id"]].update(status="success" if complete else "partial", error_code=None,
                                                  last_success=stamp, cooldown_until=None)
         attempt("index_member_all", {"l1_code": sector["id"], "is_new": "Y"}, save_members)

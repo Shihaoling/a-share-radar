@@ -17,8 +17,9 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from .calendar import shanghai_now
 
 RULE_VERSION = "financial-tone-rules-v2"
-PIPELINE_VERSION = "sw2021-news-tone-v2"
+PIPELINE_VERSION = "sw2021-news-tone-v3"
 TAXONOMY_VERSION = "SW2021-L1-official-contract-v2"
+WINDOW_POLICY_VERSION = "published-and-observed-v1"
 MODEL_ID = "yiyanghkust/finbert-tone-chinese"
 MODEL_REVISION = "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d"
 MODEL_LICENSE = "Apache-2.0"
@@ -380,7 +381,9 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         title, summary, body = _body(news)
         news.setdefault("id", "news-" + _hash([news.get("source"), news.get("url"), title, summary]))
         first_seen = _timestamp(news.get("first_seen_at"))
-        published = _timestamp(news.get("published_at") or news.get("datetime"))
+        published_raw = news.get("published_at") or news.get("datetime")
+        published = _timestamp(published_raw)
+        news["sentiment_publication_time_status"] = "known" if published else "invalid" if published_raw else "unknown"
         reason = None
         if first_seen is None and not news.get("first_seen_at"):
             # First observed here now: never infer historical availability from publication time.
@@ -391,6 +394,10 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
             reason = "invalid_first_seen_at"
         elif first_seen > now or (published and published > now):
             reason = "future_information"
+        elif published is None:
+            reason = "unknown_publication_time"
+        elif published < window_start:
+            reason = "published_outside_window"
         elif first_seen < window_start:
             reason = "outside_news_window"
         elif not body.strip():
@@ -400,6 +407,16 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
             reason = "rumor_or_explicitly_excluded"
         news["sentiment_eligible"] = reason is None
         news["sentiment_exclusion_reason"] = reason
+        if reason == "published_outside_window":
+            news["sentiment_time_note"] = f"发布时间已超出当前{window_hours:g}小时窗口；首次采集时间不代表发表时间，保留浏览但不计入当前情绪"
+        elif published is None:
+            news["sentiment_time_note"] = f"发布时间不确定，保留浏览但不计入当前{window_hours:g}小时情绪；不将采集日当作发表日"
+        elif reason == "future_information":
+            news["sentiment_time_note"] = "发布时间或首次观察时间在未来，当前时点不可使用"
+        elif reason == "outside_news_window":
+            news["sentiment_time_note"] = "首次观察时间超出当前窗口，不计入当前情绪"
+        else:
+            news["sentiment_time_note"] = "发布时间与首次观察时间均已核实在当前统计窗口内"
         news["sentiment_is_rumor"] = rumor
         # Do not overwrite the source's explicit inclusion policy with a transient
         # future/window exclusion, or a future article could never become eligible.
@@ -462,6 +479,7 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
             evidence.append({"news_id": news["id"], "title": news.get("title") or _body(news)[1][:90],
                              "url": news.get("url") or None, "source": news.get("source") or news.get("source_id") or "未知来源",
                              "published_at": news.get("published_at") or news.get("datetime"), "first_seen_at": news["first_seen_at"],
+                             "publication_time_status": news["sentiment_publication_time_status"],
                              "label": news["sentiment"], "score": news["sentiment_score"], "confidence": news.get("sentiment_confidence"),
                              "method": news["sentiment_method"], "model_version": news["sentiment_model"]["version"],
                              "input_hash": news.get("sentiment_input_hash"),
@@ -487,6 +505,7 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         sentiment = {"label": label, "score": score, "confidence": confidence, "confidence_kind": "heuristic_evidence",
                      "method": "+".join(methods) if methods else "no_coverage", "model_version": "+".join(versions) or PIPELINE_VERSION,
                      "version": PIPELINE_VERSION, "taxonomy_version": TAXONOMY_VERSION,
+                     "window_policy_version": WINDOW_POLICY_VERSION,
                      "as_of": now.isoformat(), "available_at": now.isoformat(), "date": now.date().isoformat(),
                      "window_start": window_start.isoformat(), "window_hours": window_hours,
                      "article_count": len(evidence), "scored_article_count": len(scored),
@@ -499,6 +518,7 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         snapshot["news_ids"] = [e["news_id"] for e in evidence]
         snapshot["pipeline_version"] = PIPELINE_VERSION
         snapshot["taxonomy_version"] = TAXONOMY_VERSION
+        snapshot["window_policy_version"] = WINDOW_POLICY_VERSION
         snapshot["id"] = "sentiment-" + sentiment["feature_hash"]
         history = entity.setdefault("sentiment_history", [])
         if not any(row.get("id") == snapshot["id"] for row in history):
@@ -506,10 +526,13 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         entity["sentiment"] = sentiment
     result["sentiment_summary"] = {"as_of": now.isoformat(), "version": PIPELINE_VERSION, "taxonomy": "SW2021_L1_31",
                                    "taxonomy_version": TAXONOMY_VERSION,
+                                   "window_policy_version": WINDOW_POLICY_VERSION,
                                    "stock_api_news_merged_count": stock_api_added, "stock_api_news_duplicate_count": stock_api_duplicates,
                                    "news_count": len(news_items), "eligible_count": len(eligible), "unique_news_count": len(representatives),
                                    "duplicate_count": len(eligible) - len(representatives), "excluded_count": len(excluded),
                                    "rumors_excluded": sum(n.get("sentiment_exclusion_reason") == "rumor_or_explicitly_excluded" for n in excluded),
+                                   "old_publications_excluded": sum(n.get("sentiment_exclusion_reason") == "published_outside_window" for n in excluded),
+                                   "unknown_publication_time_excluded": sum(n.get("sentiment_exclusion_reason") == "unknown_publication_time" for n in excluded),
                                    "model_requested": enabled, "model_loaded": model_loaded, "model_id": MODEL_ID,
                                    "reuse_only": reuse_only, "model_inference_count": len(model_items) if model_error is None else 0,
                                    "model_cache_used_count": model_cache_used, "model_used": model_loaded or model_cache_used > 0,
