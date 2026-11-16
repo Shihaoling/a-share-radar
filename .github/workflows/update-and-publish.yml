@@ -2,7 +2,7 @@ name: Update research and publish
 on:
   push:
     branches: [main]
-    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json']
+    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json']
   workflow_dispatch:
     inputs:
       enable_mlp:
@@ -17,6 +17,11 @@ on:
         description: 'Only validate/update the configured stock API; reuse other sources'
         type: boolean
         default: false
+      probe_group:
+        description: 'Inspect four Tushare endpoints without updating market data'
+        type: choice
+        options: ['none', 'core', 'live_news']
+        default: 'none'
   schedule:
     # UTC: 09:07/09:37–15:37 Shanghai; off the busy top of the hour.
     # GitHub scheduling is best effort, never a real-time market feed.
@@ -55,11 +60,14 @@ jobs:
         env:
           STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
           STOCK_API_ONLY: ${{ inputs.stock_api_only }}
+          PROBE_GROUP: ${{ inputs.probe_group }}
           ENABLE_MLP: ${{ inputs.enable_mlp }}
           QUOTES_ONLY: ${{ inputs.quotes_only }}
           SCHEDULE: ${{ github.event.schedule }}
         run: |
-          if [ "$STOCK_API_ONLY" = "true" ]; then
+          if [ "$PROBE_GROUP" = "core" ] || [ "$PROBE_GROUP" = "live_news" ]; then
+            python -m pipeline.probe_stock_api --group "$PROBE_GROUP"
+          elif [ "$STOCK_API_ONLY" = "true" ]; then
             python -m pipeline.run --stock-api-only
           elif [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5' ]; then
             python -m pipeline.run --quotes-only
@@ -74,6 +82,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add web/data/dashboard.json web/data/reviews.json
+          if [ -f web/data/tushare-capabilities.json ]; then git add web/data/tushare-capabilities.json; fi
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh observations and daily review [skip ci]'
             git pull --rebase origin main
