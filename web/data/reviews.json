@@ -1,9 +1,9 @@
 {
   "2026-11-16": {
     "date": "2026-11-16",
-    "evaluated_at": "2026-11-16T18:05:09.534727+08:00",
+    "evaluated_at": "2026-11-16T18:13:41.944498+08:00",
     "timezone": "Asia/Shanghai",
-    "issued_count": 18,
+    "issued_count": 24,
     "settled_count": 0,
     "pending_count": 0,
     "abstained_count": 31,
@@ -15,21 +15,19 @@
     "by_sector": [],
     "by_task": [],
     "sentiment": {
-      "positive": 11,
-      "negative": 3,
-      "neutral": 8,
-      "uncertain": 46,
+      "positive": 0,
+      "negative": 1,
+      "neutral": 0,
+      "uncertain": 9,
       "labels": {
-        "negative": 3,
-        "unknown": 46,
-        "positive": 11,
-        "neutral": 8
+        "negative": 1,
+        "unknown": 9
       },
-      "excluded_count": 1,
+      "excluded_count": 59,
       "rumor_count": 1,
       "alignment_count": 0,
       "alignment_rate": null,
-      "method": "financial-tone-rules-v2+finbert_chinese_cpu",
+      "method": "financial-tone-rules-v2",
       "label_accuracy": null,
       "note": "仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。"
     }
