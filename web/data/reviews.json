@@ -1,9 +1,9 @@
 {
   "2026-11-16": {
     "date": "2026-11-16",
-    "evaluated_at": "2026-11-16T18:13:41.944498+08:00",
+    "evaluated_at": "2026-11-16T18:28:11.956085+08:00",
     "timezone": "Asia/Shanghai",
-    "issued_count": 24,
+    "issued_count": 30,
     "settled_count": 0,
     "pending_count": 0,
     "abstained_count": 31,
@@ -23,7 +23,7 @@
         "negative": 1,
         "unknown": 9
       },
-      "excluded_count": 59,
+      "excluded_count": 60,
       "rumor_count": 1,
       "alignment_count": 0,
       "alignment_rate": null,

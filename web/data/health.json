@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T18:13:41.944498+08:00",
+  "generated_at": "2026-11-16T18:28:11.956085+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -8,7 +8,7 @@
     "target_kind": "next_open",
     "is_trading_day": true
   },
-  "requests_this_run": 3,
+  "requests_this_run": 1,
   "target_trade_date": "2026-11-16",
   "cooldown_until": null,
   "endpoints": {
@@ -44,8 +44,8 @@
       "status": "pending",
       "error_code": "daily_not_published",
       "last_success": "2026-11-16T17:31:08.735734+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
-      "next_retry": "2026-11-16T18:16:34+08:00"
+      "last_attempt": "2026-11-16T18:27:34+08:00",
+      "next_retry": "2026-11-16T18:42:34+08:00"
     },
     "daily_basic": {
       "status": "success",
@@ -81,19 +81,19 @@
     },
     {
       "id": "fed",
-      "status": "stale",
+      "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T17:28:20.452432+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
-      "next_retry": "2026-11-16T18:16:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
+      "next_retry": null,
       "requests_this_run": null
     },
     {
       "id": "ecb",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -101,8 +101,8 @@
       "id": "eia",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -110,8 +110,8 @@
       "id": "bbc_business",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -119,8 +119,8 @@
       "id": "federal_register",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -137,8 +137,8 @@
       "id": "eastmoney_breakfast",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-16T18:28:11.956085+08:00",
+      "last_attempt": "2026-11-16T18:27:34+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -227,7 +227,7 @@
       "id": "tencent_intraday",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:02:54+08:00",
+      "last_success": "2026-11-16T18:28:05+08:00",
       "last_attempt": null,
       "next_retry": null,
       "requests_this_run": null
@@ -237,18 +237,18 @@
       "status": "error",
       "error_code": null,
       "last_success": null,
-      "last_attempt": "2026-11-16T18:03:01+08:00",
-      "next_retry": "2026-11-16T18:18:01+08:00",
+      "last_attempt": "2026-11-16T18:28:11+08:00",
+      "next_retry": "2026-11-16T18:43:11+08:00",
       "requests_this_run": null
     },
     {
       "id": "stock_api",
-      "status": "success",
-      "error_code": null,
+      "status": "error",
+      "error_code": "daily_not_published",
       "last_success": "2026-11-16T18:13:41.944498+08:00",
       "last_attempt": null,
       "next_retry": null,
-      "requests_this_run": 3
+      "requests_this_run": 1
     },
     {
       "id": "baostock_fallback",
@@ -1557,20 +1557,20 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-16T18:13:41.944498+08:00",
+    "as_of": "2026-11-16T18:28:11.956085+08:00",
     "version": "sw2021-news-tone-v3",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
     "window_policy_version": "published-and-observed-v1",
     "stock_api_news_merged_count": 0,
     "stock_api_news_duplicate_count": 0,
-    "news_count": 69,
+    "news_count": 70,
     "eligible_count": 10,
     "unique_news_count": 10,
     "duplicate_count": 0,
-    "excluded_count": 59,
+    "excluded_count": 60,
     "rumors_excluded": 0,
-    "old_publications_excluded": 58,
+    "old_publications_excluded": 59,
     "unknown_publication_time_excluded": 1,
     "model_requested": true,
     "model_loaded": false,
@@ -1593,6 +1593,6 @@
       "unknown": 36
     }
   },
-  "news_count": 69,
-  "ledger_count": 24
+  "news_count": 70,
+  "ledger_count": 30
 }
