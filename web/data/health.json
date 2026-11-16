@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T21:46:59.096219+08:00",
+  "generated_at": "2026-11-16T21:54:48.557540+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -252,8 +252,8 @@
     },
     {
       "id": "funds",
-      "status": "success",
-      "error_code": null,
+      "status": "pending",
+      "error_code": "offline",
       "last_success": null,
       "last_attempt": null,
       "next_retry": null,
@@ -1602,7 +1602,7 @@
     }
   },
   "fund_summary": {
-    "status": "success",
+    "status": "pending",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
@@ -1610,9 +1610,9 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-16T21:46:45+08:00",
+      "last_run_at": "2026-11-16T21:54:47+08:00",
       "requests_this_run": 0,
-      "status": "success",
+      "status": "pending",
       "endpoints": {},
       "cache_summary": {
         "etf_basic": {
@@ -1634,7 +1634,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-16T21:46:59.096219+08:00",
+    "as_of": "2026-11-16T21:54:48.557540+08:00",
     "target_date": "2026-11-17",
     "target_kind": "next_open",
     "reference_date": "2026-11-16",
