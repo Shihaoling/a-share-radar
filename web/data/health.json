@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T21:54:48.557540+08:00",
+  "generated_at": "2026-11-17T01:14:33.313328+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -1610,7 +1610,7 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-16T21:54:47+08:00",
+      "last_run_at": "2026-11-17T01:14:32+08:00",
       "requests_this_run": 0,
       "status": "pending",
       "endpoints": {},
@@ -1633,8 +1633,42 @@
       }
     }
   },
+  "daily_forecast_summary": {
+    "schema_version": "daily-index-sector-close-v3",
+    "status": "ready",
+    "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
+    "model_id": "daily-v4-20261116T170316Z",
+    "issued_at": "2026-11-17T01:14:33.313328+08:00",
+    "trained_at": "2026-11-16T17:03:16.818488+00:00",
+    "target_date": "2026-11-17",
+    "target": "next_close_return_pct",
+    "unit": "percentage_points",
+    "mae_target": 0.1,
+    "market_count": 6,
+    "sector_count": 31,
+    "forward_evaluation": {
+      "settled_rows": 0,
+      "mae_pct": null,
+      "note": "仅对实际留存后成熟的标签结算，不混入历史回溯分数"
+    },
+    "evaluation": {
+      "historical_research": true,
+      "note": "两轮开发调优后固定选择；末20日已在V3看过，仅作重复历史参考，不是新的独立确认；未据此选模。",
+      "protocol": "V4 exactly two extra optimization rounds; same 45 development dates; old final20 reused only as repeated historical reference",
+      "market": {
+        "baseline_mae_pct": 1.8964532225209882,
+        "mae_pct": 1.8964532225209882,
+        "target_met": false
+      },
+      "sector": {
+        "baseline_mae_pct": 1.5324585650936107,
+        "mae_pct": 1.5270429795428249,
+        "target_met": false
+      }
+    }
+  },
   "equity_summary": {
-    "as_of": "2026-11-16T21:54:48.557540+08:00",
+    "as_of": "2026-11-17T01:14:33.313328+08:00",
     "target_date": "2026-11-17",
     "target_kind": "next_open",
     "reference_date": "2026-11-16",
