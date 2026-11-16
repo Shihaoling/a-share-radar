@@ -169,6 +169,8 @@ def health_summary(dashboard):
     classification = state.get("classification") or {}
     funds = dashboard.get("fund_state") or {}
     forecast = dashboard.get("equity_forecast") or {}
+    daily = dashboard.get("daily_forecast") or {}
+    daily_evaluation = daily.get("evaluation") or {}
     equity_collection = dashboard.get("equity_collection") or {}
     evaluation = forecast.get("evaluation") or {}
     training = forecast.get("training") or {}
@@ -192,6 +194,17 @@ def health_summary(dashboard):
         "sentiment_summary": deepcopy(dashboard.get("sentiment_summary", {})),
         "fund_summary": {**_select(dashboard.get("fund_summary"), _FUND_SUMMARY_FIELDS),
                          "state": _public_module_state(funds)},
+        "daily_forecast_summary": {
+            **_select(daily, {"schema_version", "status", "model_id", "issued_at", "trained_at", "target_date", "target", "unit", "mae_target", "reason"}),
+            "market_count": len(daily.get("market") or []),
+            "sector_count": len(daily.get("sectors") or []),
+            "forward_evaluation": _select(daily.get("forward_evaluation"), {"settled_rows", "mae_pct", "note"}),
+            "evaluation": {
+                **_select(daily_evaluation, {"historical_research", "protocol", "note"}),
+                **{key: _select(daily_evaluation.get(key), {"mae_pct", "baseline_mae_pct", "target_met"})
+                   for key in ("market", "sector")},
+            },
+        },
         "equity_summary": {
             **_select(forecast, {"status", "as_of", "target_date", "target_kind", "reference_date", "model", "model_version", "note"}),
             "coverage": _select(forecast.get("coverage"), _EQUITY_COVERAGE_FIELDS),

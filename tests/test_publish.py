@@ -56,6 +56,33 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(view["stock_api_state"]["classification"]["cached_count"], 31)
         self.assertEqual(view["stock_api_state"]["endpoints"], source["stock_api_state"]["endpoints"])
 
+    def test_daily_close_keeps_its_own_evaluation_and_ledger(self):
+        source = fixture()
+        daily = {"schema_version": 1, "status": "ready", "model_id": "daily-local",
+                 "target": "next_close_return_pct", "target_date": "2026-11-17",
+                 "unit": "percentage_points", "mae_target": .1,
+                 "market": [{"id": "sh000300", "predicted_return_pct": .2}],
+                 "sectors": [{"id": "801010.SI", "relative_return_pct": -.1}],
+                 "evaluation": {"historical_research": True,
+                                "market": {"mae_pct": .5, "baseline_mae_pct": .6, "target_met": False,
+                                           "by_id": {"sh000300": {"mae_pct": .5}}}},
+                 "ledger": [{"id": "new-close", "predicted_return_pct": .2}]}
+        source["daily_forecast"] = deepcopy(daily)
+        before = deepcopy(source)
+        with tempfile.TemporaryDirectory() as tmp:
+            view = publish_view(source, Path(tmp) / "view.json")
+        self.assertEqual(view["daily_forecast"], daily)
+        self.assertEqual(view["ledger"], source["ledger"])
+        self.assertEqual(view["predictions"], source["predictions"])
+        self.assertEqual(source, before)
+        health = health_summary(source)["daily_forecast_summary"]
+        self.assertEqual(health["target"], "next_close_return_pct")
+        self.assertEqual(health["market_count"], 1)
+        self.assertEqual(health["evaluation"]["market"]["mae_pct"], .5)
+        self.assertFalse(health["evaluation"]["market"]["target_met"])
+        self.assertNotIn("ledger", health)
+        self.assertNotIn("by_id", health["evaluation"]["market"])
+
     def test_all_intraday_points_are_preserved(self):
         source = fixture()
         with tempfile.TemporaryDirectory() as tmp:

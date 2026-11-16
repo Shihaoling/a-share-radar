@@ -1,0 +1,6 @@
+# Local development experiments only; the production workflow does not install this.
+numpy==2.2.6
+scipy==1.15.3
+scikit-learn==1.7.2
+lightgbm==4.6.0
+tzdata==2025.2

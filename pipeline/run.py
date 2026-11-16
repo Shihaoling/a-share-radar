@@ -20,6 +20,7 @@ from pipeline.publish import publish_view
 from pipeline.funds import enrich_funds
 from pipeline.equity_data import collect_equity_history
 from pipeline.equity_model import update_equity_predictions
+from pipeline.daily_forecast import update_daily_forecasts
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -118,6 +119,8 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
     dashboard = update_equity_predictions(dashboard, equity_root, equity_root / 'models', now,
         {**config, 'equity': {**config.get('equity', {}), 'reuse_only': quotes_only}})
+    # Locally trained index/sector bundles are portable JSON; this call only infers.
+    dashboard = update_daily_forecasts(dashboard, ROOT / 'data/daily_forecast/models', now, previous=previous)
     dashboard['daily_review'] = daily_review(dashboard, now)
     dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
     # Entity histories are canonical; avoid publishing the same bars twice.

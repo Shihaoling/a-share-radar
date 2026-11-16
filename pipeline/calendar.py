@@ -1,14 +1,24 @@
 """Conservative Shanghai exchange calendar; unknown years are never guessed.
 
-Source: https://www.sse.com.cn/disclosure/dealinstruc/closed/ (2026).
+Sources:
+https://www.sse.com.cn/disclosure/announcement/general/c/c_20231226_5733939.shtml
+https://www.sse.com.cn/disclosure/announcement/general/c/c_20241223_10767108.shtml
+https://www.sse.com.cn/disclosure/dealinstruc/closed/ (2026).
 Naive datetimes are interpreted as Asia/Shanghai, never in the host timezone.
 """
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 SHANGHAI = ZoneInfo("Asia/Shanghai")
-KNOWN_YEARS = {2026}
+KNOWN_YEARS = {2024, 2025, 2026}
 _HOLIDAY_RANGES = (
+    ("2024-01-01", "2024-01-01"), ("2024-02-09", "2024-02-17"),
+    ("2024-04-04", "2024-04-06"), ("2024-05-01", "2024-05-05"),
+    ("2024-06-10", "2024-06-10"), ("2024-09-15", "2024-09-17"),
+    ("2024-10-01", "2024-10-07"),
+    ("2025-01-01", "2025-01-01"), ("2025-01-28", "2025-02-04"),
+    ("2025-04-04", "2025-04-06"), ("2025-05-01", "2025-05-05"),
+    ("2025-05-31", "2025-06-02"), ("2025-10-01", "2025-10-08"),
     ("2026-01-01", "2026-01-03"), ("2026-02-15", "2026-02-23"),
     ("2026-04-04", "2026-04-06"), ("2026-05-01", "2026-05-05"),
     ("2026-06-19", "2026-06-21"), ("2026-09-25", "2026-09-27"),

@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo
 
 from pipeline.equity_data import collect_equity_history
 from pipeline.equity_model import update_equity_predictions
+from pipeline.daily_forecast import update_daily_forecasts
 from pipeline.funds import enrich_funds
 from pipeline.publish import publish_view, health_summary
 from pipeline.run import atomic_json, load
@@ -65,6 +66,10 @@ def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
         atomic_json(marker, {'completed_at': now.isoformat(), 'requested_days': days,
             'available_days': collection.get('cached_days', 0) + collection.get('collected_days', 0),
             'note': '完成首次批量采集；历史成员身份及退市样本未完整核实。'})
+    # Code pushes already run this offline entry point in Actions. Recompute
+    # the uploaded daily index/sector bundle here without fitting or fetching.
+    dashboard = update_daily_forecasts(
+        dashboard, ROOT / 'data/daily_forecast/models', now=now, previous=dashboard)
     dashboard['generated_at'] = now.isoformat()
     atomic_json(dashboard_path, dashboard)
     publish_view(dashboard, ROOT / 'web/data/view.json')

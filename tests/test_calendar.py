@@ -1,7 +1,9 @@
 import unittest
 from datetime import date, datetime, timezone
 
-from pipeline.calendar import market_session, is_trading_day, previous_trading_day
+from pipeline.calendar import (
+    market_session, is_trading_day, next_trading_day, previous_trading_day,
+)
 
 
 class CalendarTests(unittest.TestCase):
@@ -34,10 +36,58 @@ class CalendarTests(unittest.TestCase):
         self.assertEqual(self.session("2026-02-16T12:00:00")["target_date"], "2026-02-24")
 
     def test_unknown_year_and_next_year_fail_closed(self):
+        self.assertIsNone(is_trading_day("2023-12-29"))
         result = self.session("2027-01-04T10:00:00")
         self.assertEqual(result["phase"], "unknown")
         self.assertIsNone(result["target_date"])
         self.assertIsNone(self.session("2026-12-31T16:00:00")["target_date"])
+
+    def test_2024_published_holidays_and_reopening(self):
+        cases = (
+            ("2024-01-01", "2024-01-02"),
+            ("2024-02-09", "2024-02-19"),
+            ("2024-04-04", "2024-04-08"),
+            ("2024-05-01", "2024-05-06"),
+            ("2024-06-10", "2024-06-11"),
+            ("2024-09-16", "2024-09-18"),
+            ("2024-10-07", "2024-10-08"),
+        )
+        for closed, reopened in cases:
+            with self.subTest(closed=closed):
+                self.assertFalse(is_trading_day(closed))
+                self.assertTrue(is_trading_day(reopened))
+                self.assertEqual(next_trading_day(closed), date.fromisoformat(reopened))
+        self.assertEqual(previous_trading_day("2024-02-19"), date(2024, 2, 8))
+
+    def test_2025_published_holidays_and_reopening(self):
+        cases = (
+            ("2025-01-01", "2025-01-02"),
+            ("2025-01-28", "2025-02-05"),
+            ("2025-04-04", "2025-04-07"),
+            ("2025-05-01", "2025-05-06"),
+            ("2025-06-02", "2025-06-03"),
+            ("2025-10-08", "2025-10-09"),
+        )
+        for closed, reopened in cases:
+            with self.subTest(closed=closed):
+                self.assertFalse(is_trading_day(closed))
+                self.assertTrue(is_trading_day(reopened))
+                self.assertEqual(next_trading_day(closed), date.fromisoformat(reopened))
+        self.assertEqual(previous_trading_day("2025-02-05"), date(2025, 1, 27))
+
+    def test_historical_makeup_weekends_are_not_trading_days(self):
+        for day in ("2024-02-18", "2024-04-07", "2024-05-11", "2024-09-14",
+                    "2025-01-26", "2025-02-08", "2025-04-27", "2025-10-11"):
+            with self.subTest(day=day):
+                self.assertFalse(is_trading_day(day))
+
+    def test_adjacent_trading_days_cross_known_year_boundaries(self):
+        self.assertEqual(next_trading_day("2024-12-31"), date(2025, 1, 2))
+        self.assertEqual(previous_trading_day("2025-01-02"), date(2024, 12, 31))
+        self.assertEqual(next_trading_day("2025-12-31"), date(2026, 1, 5))
+        self.assertEqual(previous_trading_day("2026-01-05"), date(2025, 12, 31))
+        self.assertIsNone(previous_trading_day("2024-01-02"))
+        self.assertIsNone(next_trading_day("2026-12-31"))
 
     def test_timezone_is_shanghai(self):
         result = market_session(datetime(2026, 11, 16, 4, 0, tzinfo=timezone.utc))
