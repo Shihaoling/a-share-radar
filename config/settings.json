@@ -1,0 +1,11 @@
+{
+  "network_enabled": true,
+  "enable_mlp": false,
+  "prediction_interval_minutes": 30,
+  "include_rumors_in_model": false,
+  "timezone": "Asia/Shanghai",
+  "repository_url": "https://github.com/Shihaoling/a-share-radar",
+  "notes": "浏览器偏好不改变本文件。模型使用已完成交易日；神经网络默认关闭，启用后仍须通过样本外基线比较。",
+  "min_train": 120,
+  "holdout_size": 20
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "generated_at": null,
+  "data_mode": "live",
+  "status": "pending",
+  "market_session": {"phase":"unknown","label":"待获取交易日历","target_date":null,"target_kind":"next_open"},
+  "market": [{"id":"sh000001","name":"上证指数","price":null,"change_pct":null,"as_of":null,"history":[{"date":"2026-11-13","open":1,"close":1,"high":1,"low":1,"volume":1}],"market_cap_history":[]}],
+  "sectors": [{"id":"semiconductor","name":"半导体","group":"科技成长","kind":"industry","provider":"eastmoney","code":null,"keywords":["半导体","semiconductor"],"change_pct":null,"price":null,"market_cap":null,"as_of":null,"history":[],"market_cap_history":[],"stocks":[{"code":"600000","name":"示例字段非真实数据","price":null,"change_pct":null,"market_cap":null}],"drivers":["需求","产能"],"upstream":["设备"],"downstream":["电子"],"prediction":null}],
+  "news": [{"id":"example","title":"示例字段非新闻","source":"Fed","url":"https://www.federalreserve.gov","published_at":null,"first_seen_at":null,"fetched_at":null,"credibility":"official","category":"政策","sector_ids":["semiconductor"],"summary":"","impact":"uncertain","transmission":["政策","资本开支","设备需求"],"analysis_method":"keyword_rules","verification":"unverified"}],
+  "predictions": [{"id":"unique","sector_id":"semiconductor","sector_name":"半导体","issued_at":null,"target_date":null,"target_kind":"next_open","target_label":"下次开盘点位","status":"pending","reason":"样本不足","model_version":null,"reference_price":null,"predicted_price":null,"predicted_return_pct":null,"lower_price":null,"upper_price":null,"up_probability":null,"sample_count":0,"validation":{},"basis":"index","features_as_of":null}],
+  "ledger": [],
+  "metrics": {"settled_count":0,"mae_pct":null,"direction_accuracy":null,"baseline_mae_pct":null},
+  "models": {"champion":"ridge-baseline","challenger":"mlp-32-16","status":"waiting","news_features":"collecting","last_trained_at":null},
+  "sources": [{"id":"eastmoney","name":"东方财富 / AKShare","type":"market","status":"pending","last_success":null,"message":"待首次采集","url":"https://akshare.akfamily.xyz"}],
+  "notices": ["GitHub Actions 定时任务可能延迟；以数据时间为准。"]
+}

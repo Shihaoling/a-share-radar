@@ -1,0 +1,219 @@
+{
+  "description": "公开数据研究配置。默认只使用免费且不需凭证的入口。实际权限、时效和可用性以来源为准；不绕过登录、付费墙或反爬。",
+  "network_enabled": true,
+  "user_agent": "AshareRadar/0.1 (personal research; low-frequency feed reader)",
+  "timeout_seconds": 12,
+  "max_http_requests": 80,
+  "max_akshare_calls": 20,
+  "max_history_calls": 8,
+  "max_constituent_calls": 2,
+  "history_days": 1000,
+  "max_history_rows": 900,
+  "max_news": 150,
+  "max_news_per_source": 25,
+  "max_response_bytes": 4000000,
+  "min_request_interval_seconds": 2,
+  "request_budget_seconds": 180,
+  "max_retries": 1,
+  "retry_backoff_seconds": 3,
+  "circuit_breaker_failures": 2,
+  "circuit_cooldown_seconds": 900,
+  "respect_robots": true,
+  "robots_failure_policy": "deny",
+  "robots_cache_seconds": 86400,
+  "cache_seconds": {
+    "quotes": 120,
+    "history": 21600,
+    "constituents": 86400,
+    "news": 900
+  },
+  "akshare": {
+    "enabled": true,
+    "description": "使用官方 AKShare 适配器，按当前安装版本优先调用新名称；可选依赖缺失时明确提示安装。请求受单进程全局预算与域名限流约束。",
+    "url": "https://akshare.akfamily.xyz",
+    "market_indices": [
+      {
+        "id": "sh000001",
+        "name": "上证指数"
+      },
+      {
+        "id": "sz399001",
+        "name": "深证成指"
+      },
+      {
+        "id": "sz399006",
+        "name": "创业板指"
+      },
+      {
+        "id": "sh000300",
+        "name": "沪深300"
+      },
+      {
+        "id": "sh000688",
+        "name": "科创50"
+      },
+      {
+        "id": "sh000905",
+        "name": "中证500"
+      }
+    ]
+  },
+  "feeds": [
+    {
+      "id": "fed",
+      "name": "美联储",
+      "type": "rss",
+      "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "credibility": "official",
+      "category": "货币政策",
+      "enabled": true
+    },
+    {
+      "id": "ecb",
+      "name": "欧洲央行",
+      "type": "rss",
+      "url": "https://www.ecb.europa.eu/rss/press.html",
+      "credibility": "official",
+      "category": "货币政策",
+      "enabled": true
+    },
+    {
+      "id": "eia",
+      "name": "美国能源署",
+      "type": "rss",
+      "url": "https://www.eia.gov/rss/todayinenergy.xml",
+      "credibility": "official",
+      "category": "能源供需",
+      "enabled": true
+    },
+    {
+      "id": "bbc_business",
+      "name": "BBC 商业",
+      "type": "rss",
+      "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+      "credibility": "trusted",
+      "category": "全球财经",
+      "enabled": true
+    },
+    {
+      "id": "federal_register",
+      "name": "美国联邦公报",
+      "type": "federal_register",
+      "url": "https://www.federalregister.gov/api/v1/documents.json",
+      "credibility": "official",
+      "category": "贸易与监管",
+      "enabled": true,
+      "query": "China"
+    },
+    {
+      "id": "gdelt",
+      "name": "GDELT 全球新闻索引",
+      "type": "gdelt",
+      "url": "https://api.gdeltproject.org/api/v2/doc/doc",
+      "credibility": "unverified",
+      "category": "全球产业",
+      "enabled": true,
+      "query": "(China OR Chinese) (semiconductor OR energy OR tariff OR supply chain)",
+      "note": "新闻发现索引，并非原始消息来源；可信级别按文章域名重新判断。可能限流且单次结果不完整。"
+    },
+    {
+      "id": "eastmoney_breakfast",
+      "name": "东方财富财经早餐",
+      "type": "akshare_news",
+      "url": "https://stock.eastmoney.com/a/czpnc.html",
+      "credibility": "trusted",
+      "category": "国内财经",
+      "enabled": true
+    }
+  ],
+  "official_portals": [
+    {
+      "name": "国务院政策",
+      "url": "https://www.gov.cn/zhengce/"
+    },
+    {
+      "name": "国家发展改革委",
+      "url": "https://www.ndrc.gov.cn/"
+    },
+    {
+      "name": "商务部",
+      "url": "https://www.mofcom.gov.cn/"
+    },
+    {
+      "name": "中国人民银行",
+      "url": "https://www.pbc.gov.cn/"
+    },
+    {
+      "name": "国家统计局",
+      "url": "https://www.stats.gov.cn/"
+    },
+    {
+      "name": "中国证监会",
+      "url": "https://www.csrc.gov.cn/"
+    },
+    {
+      "name": "上交所公告",
+      "url": "https://www.sse.com.cn/disclosure/"
+    },
+    {
+      "name": "深交所公告",
+      "url": "https://www.szse.cn/disclosure/"
+    },
+    {
+      "name": "巨潮资讯",
+      "url": "https://www.cninfo.com.cn/"
+    }
+  ],
+  "official_portal_note": "国内官方入口保留供核验原文；未配置获准 feed/API 前不宣称自动覆盖，不对网页进行全站抓取。",
+  "trusted_domains": [
+    "reuters.com",
+    "apnews.com",
+    "bbc.com",
+    "bbc.co.uk",
+    "ft.com",
+    "wsj.com",
+    "bloomberg.com",
+    "caixin.com",
+    "cls.cn",
+    "eastmoney.com"
+  ],
+  "official_domains": [
+    "gov.cn",
+    "sse.com.cn",
+    "szse.cn",
+    "bse.cn",
+    "cninfo.com.cn",
+    "federalreserve.gov",
+    "ecb.europa.eu",
+    "eia.gov",
+    "federalregister.gov",
+    "bis.gov",
+    "ustr.gov",
+    "ec.europa.eu",
+    "wto.org",
+    "imf.org",
+    "worldbank.org"
+  ],
+  "optional_sources": [
+    {
+      "name": "Tushare Pro",
+      "enabled": false,
+      "note": "免费120积分主要为非复权日线；交易日历、估值、申万板块等另有积分要求，分钟/新闻通常独立授权。",
+      "url": "https://tushare.pro/document/2"
+    },
+    {
+      "name": "EIA API",
+      "enabled": false,
+      "env_key": "EIA_API_KEY",
+      "note": "能源价格时序需免费注册API key，首版只收能源RSS。",
+      "url": "https://www.eia.gov/opendata/"
+    },
+    {
+      "name": "社媒与传言",
+      "enabled": false,
+      "note": "首版未自动抓取社交平台。只接受保留出处、时间与验证状态的明确导入，默认不进入预测。"
+    }
+  ],
+  "budget_note": "行情与新闻独立预算：总时长180秒按120/60分配，80次HTTP按60/20分配；同域至少2秒，robots与429熔断在两段预算间共享。",
+  "research_scope": "研究主体为中国A股。海外新闻只保留与A股行业、能源、供应链或宏观利率/汇率相关线索，关键词关联不代表影响方向已证实。"
+}

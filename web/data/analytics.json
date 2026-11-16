@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "provider": "goatcounter",
+  "endpoint": "",
+  "dashboard_url": "",
+  "note": "账号开通后启用；访问统计后台默认私有。独立访问为约8小时会话估计，不是真实人数。"
+}

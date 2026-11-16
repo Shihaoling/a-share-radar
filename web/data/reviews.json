@@ -1,0 +1,30 @@
+{
+  "2026-11-16": {
+    "date": "2026-11-16",
+    "evaluated_at": "2026-11-16T15:03:23.559131+08:00",
+    "timezone": "Asia/Shanghai",
+    "issued_count": 0,
+    "settled_count": 0,
+    "pending_count": 0,
+    "abstained_count": 57,
+    "direction_accuracy": null,
+    "mae_pct": null,
+    "baseline_mae_pct": null,
+    "skill_pct": null,
+    "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
+    "by_sector": [],
+    "by_task": [],
+    "sentiment": {
+      "positive": 0,
+      "negative": 0,
+      "neutral": 0,
+      "uncertain": 0,
+      "rumor_count": 0,
+      "alignment_count": 0,
+      "alignment_rate": null,
+      "method": "lexicon_rules",
+      "label_accuracy": null,
+      "note": "仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。"
+    }
+  }
+}

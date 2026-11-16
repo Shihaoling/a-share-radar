@@ -1,0 +1,1297 @@
+{
+  "description": "31 个研究入口与 20 个热门主题种子；不是申万分类。首次联网会按东方财富代码加入全部行业和按热度选出的主题。配置名称必须精确匹配供应商名称，未匹配保持待接入；不猜代码。",
+  "taxonomy": "eastmoney_plus_personal_watchlist",
+  "dynamic_all_industries": true,
+  "dynamic_hot_concepts": 10,
+  "sectors": [
+    {
+      "id": "agriculture",
+      "name": "农牧饲渔",
+      "provider_name": "农牧饲渔",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "农牧饲渔",
+        "agriculture",
+        "粮食",
+        "soybean"
+      ],
+      "upstream": [
+        "种子",
+        "化肥"
+      ],
+      "downstream": [
+        "饲料",
+        "食品"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "coal",
+      "name": "煤炭行业",
+      "provider_name": "煤炭行业",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "煤炭行业",
+        "coal",
+        "煤炭"
+      ],
+      "upstream": [
+        "开采"
+      ],
+      "downstream": [
+        "电力",
+        "钢铁"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "oil_gas",
+      "name": "石油行业",
+      "provider_name": "石油行业",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "石油行业",
+        "oil",
+        "crude",
+        "OPEC",
+        "原油",
+        "石油"
+      ],
+      "upstream": [
+        "油气开采"
+      ],
+      "downstream": [
+        "炼化",
+        "航空",
+        "化工"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "chemicals",
+      "name": "化学制品",
+      "provider_name": "化学制品",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "化学制品",
+        "chemical",
+        "化工",
+        "化学制品"
+      ],
+      "upstream": [
+        "原油",
+        "天然气"
+      ],
+      "downstream": [
+        "农业",
+        "电子",
+        "汽车"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "steel",
+      "name": "钢铁行业",
+      "provider_name": "钢铁行业",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "钢铁行业",
+        "steel",
+        "钢铁",
+        "铁矿石"
+      ],
+      "upstream": [
+        "铁矿石",
+        "焦煤"
+      ],
+      "downstream": [
+        "建筑",
+        "机械",
+        "汽车"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "metals",
+      "name": "有色金属",
+      "provider_name": "有色金属",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "有色金属",
+        "copper",
+        "aluminium",
+        "有色",
+        "铜",
+        "铝"
+      ],
+      "upstream": [
+        "矿山"
+      ],
+      "downstream": [
+        "电网",
+        "新能源",
+        "制造业"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "semiconductor",
+      "name": "半导体",
+      "provider_name": "半导体",
+      "kind": "industry",
+      "group": "科技成长",
+      "keywords": [
+        "半导体",
+        "semiconductor",
+        "chip",
+        "半导体",
+        "芯片",
+        "export control"
+      ],
+      "upstream": [
+        "设备",
+        "材料"
+      ],
+      "downstream": [
+        "消费电子",
+        "汽车",
+        "人工智能"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "home_appliances",
+      "name": "家电行业",
+      "provider_name": "家电行业",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "家电行业",
+        "appliance",
+        "家电"
+      ],
+      "upstream": [
+        "铜",
+        "铝",
+        "芯片"
+      ],
+      "downstream": [
+        "居民消费",
+        "地产竣工"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "food_beverage",
+      "name": "食品饮料",
+      "provider_name": "食品饮料",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "食品饮料",
+        "food",
+        "beverage",
+        "食品",
+        "饮料"
+      ],
+      "upstream": [
+        "农产品",
+        "包装"
+      ],
+      "downstream": [
+        "居民消费"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "textiles",
+      "name": "纺织服装",
+      "provider_name": "纺织服装",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "纺织服装",
+        "textile",
+        "apparel",
+        "纺织",
+        "服装"
+      ],
+      "upstream": [
+        "棉花",
+        "化纤"
+      ],
+      "downstream": [
+        "出口",
+        "零售"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "paper",
+      "name": "造纸印刷",
+      "provider_name": "造纸印刷",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "造纸印刷",
+        "paper",
+        "pulp",
+        "造纸",
+        "纸浆"
+      ],
+      "upstream": [
+        "木浆",
+        "能源"
+      ],
+      "downstream": [
+        "包装",
+        "消费品"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "pharmaceutical",
+      "name": "化学制药",
+      "provider_name": "化学制药",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "化学制药",
+        "pharma",
+        "drug",
+        "制药",
+        "药品",
+        "FDA"
+      ],
+      "upstream": [
+        "原料药",
+        "研发"
+      ],
+      "downstream": [
+        "医院",
+        "医保"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "utilities",
+      "name": "电力行业",
+      "provider_name": "电力行业",
+      "kind": "industry",
+      "group": "能源与资源",
+      "keywords": [
+        "电力行业",
+        "power",
+        "electricity",
+        "电力",
+        "电价"
+      ],
+      "upstream": [
+        "煤炭",
+        "天然气",
+        "新能源"
+      ],
+      "downstream": [
+        "工业",
+        "居民"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "shipping",
+      "name": "航运港口",
+      "provider_name": "航运港口",
+      "kind": "industry",
+      "group": "制造与出海",
+      "keywords": [
+        "航运港口",
+        "shipping",
+        "freight",
+        "port",
+        "航运",
+        "运价",
+        "港口"
+      ],
+      "upstream": [
+        "燃油",
+        "船舶"
+      ],
+      "downstream": [
+        "外贸",
+        "供应链"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "real_estate",
+      "name": "房地产开发",
+      "provider_name": "房地产开发",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "房地产开发",
+        "property",
+        "housing",
+        "房地产",
+        "地产"
+      ],
+      "upstream": [
+        "土地",
+        "建材"
+      ],
+      "downstream": [
+        "家电",
+        "家居",
+        "银行"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "retail",
+      "name": "商业百货",
+      "provider_name": "商业百货",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "商业百货",
+        "retail",
+        "消费",
+        "零售",
+        "百货"
+      ],
+      "upstream": [
+        "品牌",
+        "供应链"
+      ],
+      "downstream": [
+        "居民消费"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "tourism",
+      "name": "旅游酒店",
+      "provider_name": "旅游酒店",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "旅游酒店",
+        "tourism",
+        "travel",
+        "hotel",
+        "旅游",
+        "酒店"
+      ],
+      "upstream": [
+        "交通",
+        "食品"
+      ],
+      "downstream": [
+        "居民消费"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "banks",
+      "name": "银行",
+      "provider_name": "银行",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "银行",
+        "bank",
+        "interest rate",
+        "银行",
+        "利率",
+        "降准"
+      ],
+      "upstream": [
+        "货币政策"
+      ],
+      "downstream": [
+        "信贷",
+        "地产",
+        "企业融资"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "securities",
+      "name": "证券",
+      "provider_name": "证券",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "证券",
+        "broker",
+        "capital market",
+        "证券",
+        "券商"
+      ],
+      "upstream": [
+        "资本市场政策"
+      ],
+      "downstream": [
+        "股票成交",
+        "融资"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "media",
+      "name": "文化传媒",
+      "provider_name": "文化传媒",
+      "kind": "industry",
+      "group": "科技成长",
+      "keywords": [
+        "文化传媒",
+        "media",
+        "gaming",
+        "传媒",
+        "游戏",
+        "影视"
+      ],
+      "upstream": [
+        "内容",
+        "人工智能"
+      ],
+      "downstream": [
+        "广告",
+        "居民消费"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "software",
+      "name": "软件开发",
+      "provider_name": "软件开发",
+      "kind": "industry",
+      "group": "科技成长",
+      "keywords": [
+        "软件开发",
+        "software",
+        "cloud",
+        "软件",
+        "云计算"
+      ],
+      "upstream": [
+        "算力",
+        "芯片"
+      ],
+      "downstream": [
+        "企业数字化",
+        "AI应用"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "telecom",
+      "name": "通信设备",
+      "provider_name": "通信设备",
+      "kind": "industry",
+      "group": "科技成长",
+      "keywords": [
+        "通信设备",
+        "telecom",
+        "optical",
+        "通信",
+        "光模块",
+        "光通信"
+      ],
+      "upstream": [
+        "光芯片",
+        "器件"
+      ],
+      "downstream": [
+        "算力",
+        "运营商"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "defense",
+      "name": "航天航空",
+      "provider_name": "航天航空",
+      "kind": "industry",
+      "group": "制造与出海",
+      "keywords": [
+        "航天航空",
+        "defense",
+        "aerospace",
+        "军工",
+        "航空航天"
+      ],
+      "upstream": [
+        "材料",
+        "电子"
+      ],
+      "downstream": [
+        "国防",
+        "商业航天"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "machinery",
+      "name": "通用设备",
+      "provider_name": "通用设备",
+      "kind": "industry",
+      "group": "制造与出海",
+      "keywords": [
+        "通用设备",
+        "machinery",
+        "machine tool",
+        "机械",
+        "机床"
+      ],
+      "upstream": [
+        "钢铁",
+        "工业软件"
+      ],
+      "downstream": [
+        "汽车",
+        "制造业"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "automobiles",
+      "name": "汽车整车",
+      "provider_name": "汽车整车",
+      "kind": "industry",
+      "group": "制造与出海",
+      "keywords": [
+        "汽车整车",
+        "automobile",
+        "vehicle",
+        "汽车",
+        "电动车"
+      ],
+      "upstream": [
+        "电池",
+        "零部件",
+        "芯片"
+      ],
+      "downstream": [
+        "居民消费",
+        "出口"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "battery",
+      "name": "电池",
+      "provider_name": "电池",
+      "kind": "industry",
+      "group": "科技成长",
+      "keywords": [
+        "电池",
+        "battery",
+        "lithium",
+        "电池",
+        "锂电"
+      ],
+      "upstream": [
+        "锂",
+        "镍",
+        "钴"
+      ],
+      "downstream": [
+        "新能源汽车",
+        "储能"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "environment",
+      "name": "环保行业",
+      "provider_name": "环保行业",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "环保行业",
+        "environment",
+        "recycling",
+        "环保",
+        "回收"
+      ],
+      "upstream": [
+        "设备",
+        "政策"
+      ],
+      "downstream": [
+        "城市运营",
+        "工业治理"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "beauty",
+      "name": "美容护理",
+      "provider_name": "美容护理",
+      "kind": "industry",
+      "group": "消费与医药",
+      "keywords": [
+        "美容护理",
+        "cosmetics",
+        "beauty",
+        "美容",
+        "化妆品"
+      ],
+      "upstream": [
+        "化工原料",
+        "包装"
+      ],
+      "downstream": [
+        "居民消费",
+        "零售"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "building_material",
+      "name": "水泥建材",
+      "provider_name": "水泥建材",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "水泥建材",
+        "cement",
+        "building material",
+        "水泥",
+        "建材"
+      ],
+      "upstream": [
+        "煤炭",
+        "原料"
+      ],
+      "downstream": [
+        "地产",
+        "基建"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "construction",
+      "name": "工程建设",
+      "provider_name": "工程建设",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "工程建设",
+        "infrastructure",
+        "construction",
+        "基建",
+        "工程建设"
+      ],
+      "upstream": [
+        "建材",
+        "设备"
+      ],
+      "downstream": [
+        "政府投资",
+        "地产"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "insurance",
+      "name": "保险",
+      "provider_name": "保险",
+      "kind": "industry",
+      "group": "金融与基建",
+      "keywords": [
+        "保险",
+        "insurance",
+        "保险"
+      ],
+      "upstream": [
+        "利率",
+        "资本市场"
+      ],
+      "downstream": [
+        "居民保障",
+        "投资"
+      ],
+      "drivers": [
+        "需求变化",
+        "政策变化",
+        "成本与供给"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "ai",
+      "name": "人工智能",
+      "provider_name": "人工智能",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "人工智能",
+        "AI",
+        "artificial intelligence",
+        "人工智能",
+        "大模型"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "compute",
+      "name": "算力概念",
+      "provider_name": "算力概念",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "算力概念",
+        "compute",
+        "data center",
+        "算力",
+        "数据中心"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "cpo",
+      "name": "CPO概念",
+      "provider_name": "CPO概念",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "CPO概念",
+        "CPO",
+        "co-packaged optics",
+        "光模块"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "robotics",
+      "name": "机器人概念",
+      "provider_name": "机器人概念",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "机器人概念",
+        "robot",
+        "robotics",
+        "机器人"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "humanoid",
+      "name": "人形机器人",
+      "provider_name": "人形机器人",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "人形机器人",
+        "humanoid",
+        "人形机器人"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "autonomous",
+      "name": "无人驾驶",
+      "provider_name": "无人驾驶",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "无人驾驶",
+        "autonomous driving",
+        "无人驾驶",
+        "智能驾驶"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "low_altitude",
+      "name": "低空经济",
+      "provider_name": "低空经济",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "低空经济",
+        "eVTOL",
+        "低空经济",
+        "无人机"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "space",
+      "name": "商业航天",
+      "provider_name": "商业航天",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "商业航天",
+        "commercial space",
+        "商业航天",
+        "卫星"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "quantum",
+      "name": "量子科技",
+      "provider_name": "量子科技",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "量子科技",
+        "quantum",
+        "量子"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "cybersecurity",
+      "name": "网络安全",
+      "provider_name": "网络安全",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "网络安全",
+        "cybersecurity",
+        "网络安全"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "innovation_drug",
+      "name": "创新药",
+      "provider_name": "创新药",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "创新药",
+        "innovative drug",
+        "创新药",
+        "license out"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "solid_state",
+      "name": "固态电池",
+      "provider_name": "固态电池",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "固态电池",
+        "solid-state battery",
+        "固态电池"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "storage",
+      "name": "储能",
+      "provider_name": "储能",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "储能",
+        "energy storage",
+        "储能"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "hydrogen",
+      "name": "氢能源",
+      "provider_name": "氢能源",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "氢能源",
+        "hydrogen",
+        "氢能",
+        "氢能源"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "pv",
+      "name": "光伏建筑一体化",
+      "provider_name": "光伏建筑一体化",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "光伏建筑一体化",
+        "solar",
+        "photovoltaic",
+        "光伏"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "rare_earth",
+      "name": "稀土永磁",
+      "provider_name": "稀土永磁",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "稀土永磁",
+        "rare earth",
+        "稀土",
+        "永磁"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "gold",
+      "name": "黄金概念",
+      "provider_name": "黄金概念",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "黄金概念",
+        "gold",
+        "黄金"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "nuclear",
+      "name": "核能核电",
+      "provider_name": "核能核电",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "核能核电",
+        "nuclear",
+        "核电",
+        "核能"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "digital_economy",
+      "name": "数字经济",
+      "provider_name": "数字经济",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "数字经济",
+        "digital economy",
+        "数字经济",
+        "数据要素"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "chip_local",
+      "name": "国产芯片",
+      "provider_name": "国产芯片",
+      "kind": "concept",
+      "group": "热门主题",
+      "keywords": [
+        "国产芯片",
+        "domestic chip",
+        "国产芯片",
+        "自主可控"
+      ],
+      "upstream": [],
+      "downstream": [],
+      "drivers": [
+        "政策变化",
+        "订单与资本开支",
+        "市场情绪"
+      ],
+      "enabled": true
+    }
+  ],
+  "history_rotation_note": "所有精确匹配供应商代码的行业与主题按最久未尝试时间轮转，不固定截断板块目录；每轮最多8次历史请求。"
+}
