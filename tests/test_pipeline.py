@@ -9,12 +9,35 @@ from pipeline.run import run
 from pipeline.review import daily_review
 TZ=ZoneInfo('Asia/Shanghai')
 class PipelineTests(unittest.TestCase):
+    def test_quote_only_never_refreshes_news_or_daily_history(self):
+        now=datetime(2026,11,16,10,2,tzinfo=TZ)
+        cached={'data_mode':'live','market':[],'sectors':[], 'news':[{'id':'old'}], 'sources':[], 'intraday':{'saved':{'points':[]}}}
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'dashboard.json'
+            path.write_text(json.dumps(cached))
+            with patch('pipeline.run.datetime') as clock, patch('pipeline.run.fetch_data') as fetch, patch('pipeline.run.enrich_with_fallback') as daily:
+                clock.now.side_effect=[now,now,now]
+                result=run(offline=True,output=path,quotes_only=True)
+            fetch.assert_not_called()
+            daily.assert_not_called()
+            self.assertEqual(result['news'],cached['news'])
+            self.assertIn('saved',result['intraday'])
+
+    def test_quote_only_holiday_skips_network_and_write(self):
+        now=datetime(2026,10,1,10,2,tzinfo=TZ)
+        with tempfile.TemporaryDirectory() as tmp, patch('pipeline.run.datetime') as clock, patch('pipeline.run.collect_intraday') as collect:
+            clock.now.return_value=now
+            path=Path(tmp)/'dashboard.json'
+            self.assertEqual(run(output=path,quotes_only=True),{})
+            self.assertFalse(path.exists())
+            collect.assert_not_called()
+
     def test_collection_boundary_never_backdates_prediction(self):
         start=datetime(2026,11,16,9,24,tzinfo=TZ)
         end=datetime(2026,11,16,9,26,tzinfo=TZ)
         payload={'market':[], 'sectors':[], 'news':[{'id':'n','first_seen_at':start.isoformat(timespec='seconds'),'fetched_at':start.isoformat(timespec='seconds')}], 'sources':[]}
         with tempfile.TemporaryDirectory() as tmp, patch('pipeline.run.datetime') as clock, patch('pipeline.run.fetch_data',return_value=payload):
-            clock.now.side_effect=[start,end]
+            clock.now.side_effect=[start,end,end]
             result=run(offline=True,output=Path(tmp)/'dashboard.json')
             self.assertEqual(result['market_session']['target_kind'],'today_close')
             self.assertEqual(result['news'][0]['first_seen_at'],end.isoformat())

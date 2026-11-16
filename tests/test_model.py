@@ -78,6 +78,17 @@ class ModelTests(unittest.TestCase):
         data["sectors"][0].pop("timestamp_quality")
         self.assertEqual(self.update(data, when="2026-11-16T11:00:00+08:00")["predictions"][0]["status"], "pending")
 
+    def test_live_snapshot_used_without_overwriting_daily_price(self):
+        data = dashboard()
+        entity = data['sectors'][0]
+        entity.update(price=999, as_of='2026-11-13T15:00:00+08:00')
+        entity['live_quote'] = {'price':1025, 'quote_timestamp':'2026-11-16T10:00:00+08:00', 'timestamp_quality':'source_reported'}
+        prediction = self.update(data, when='2026-11-16T10:01:00+08:00')['predictions'][0]
+        self.assertEqual(prediction['predicted_price'],1025)
+        self.assertEqual(entity['price'],999)
+        entity['live_quote']['quote_timestamp'] = '2026-11-16T10:02:00+08:00'
+        self.assertEqual(self.update(data, when='2026-11-16T10:01:00+08:00')['predictions'][0]['status'],'pending')
+
     def test_lunch_quote_is_valid_and_today_target_is_retained(self):
         data = dashboard()
         data["sectors"][0]["as_of"] = "2026-11-16T11:30:00+08:00"

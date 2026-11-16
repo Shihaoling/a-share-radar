@@ -316,7 +316,7 @@ def _host_matches(host, domains):
 
 
 POSITIVE = ["growth", "rises", "rise", "gains", "gain", "expand", "expansion", "approval", "approved", "recovery", "boost", "增长", "提升", "批准", "获批", "突破", "复苏", "增长", "上涨"]
-NEGATIVE = ["decline", "falls", "fall", "cuts", "shortage", "disruption", "sanction", "ban", "restrict", "tariff", "risk", "slump", "下降", "下跌", "制裁", "限制", "短缺", "中断", "风险", "关税"]
+NEGATIVE = ["plunge", "plunges", "drop", "drops", "loss", "losses", "layoff", "layoffs", "downturn", "embargo", "decline", "falls", "fall", "cuts", "shortage", "disruption", "sanction", "ban", "restrict", "tariff", "risk", "slump", "下降", "下跌", "暴跌", "亏损", "裁员", "下调", "制裁", "限制", "短缺", "中断", "风险", "关税"]
 RUMOR = ["rumor", "rumour", "unconfirmed", "未经证实", "网传", "传闻", "据传", "小道消息"]
 MACRO_TERMS = ["interest rate", "monetary policy", "inflation", "rate decision", "rate cut", "rate hike", "foreign exchange", "货币政策", "通胀", "利率", "降息", "降准", "加息", "人民币汇率", "流动性"]
 CHINA_MARKET_TERMS = ["A-share", "Chinese stocks", "China stocks", "Chinese economy", "China economy", "Chinese exports", "A股", "中国经济", "中国股市", "中国出口", "国内经济", "中国制造", "人民银行"]
@@ -324,6 +324,9 @@ CHINA_MARKET_TERMS = ["A-share", "Chinese stocks", "China stocks", "Chinese econ
 
 def _a_share_relevance(title, summary, sector_ids, sectors):
     body = title + " " + summary
+    # UK National Insurance is a payroll tax, not the insurance equity sector.
+    if "national insurance" in body.lower() and not any(term in body.lower() for term in ("china", "chinese", "中国")):
+        return None
     macro = [term for term in MACRO_TERMS if _contains(body, term)]
     china = [term for term in CHINA_MARKET_TERMS if _contains(body, term)]
     if not sector_ids and not macro and not china:

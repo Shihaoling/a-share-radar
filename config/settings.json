@@ -2,6 +2,8 @@
   "network_enabled": true,
   "enable_mlp": false,
   "prediction_interval_minutes": 30,
+  "risk_free_rate_annual": 0.02,
+  "intraday": {"enabled": true, "cache_seconds": 60, "max_points": 2000, "max_constituent_stocks": 20},
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",
   "repository_url": "https://github.com/Shihaoling/a-share-radar",

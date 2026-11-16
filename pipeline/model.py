@@ -301,8 +301,10 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
             continue
         row.update(reference_price=reference["close"], reference_date=reference_day.isoformat())
         if kind == "today_close":
-            quote_time, price = _timestamp(entity.get("as_of")), _number(entity.get("price"))
-            if entity.get("timestamp_quality") == "retrieved_only":
+            quote = entity.get('live_quote') or entity
+            quote_time = _timestamp(quote.get('quote_timestamp') or quote.get('as_of'))
+            price = _number(quote.get('price'))
+            if quote.get("timestamp_quality") == "retrieved_only":
                 row["reason"] = "只有抓取时间、无法核实行情交易时间；暂停盘中预测"
                 continue
             if quote_time is None or quote_time.date() != now.date() or quote_time > now or price is None or price <= 0:
