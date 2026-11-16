@@ -44,10 +44,15 @@ PB_DEFINITION = "供应商PB：总市值/（净资产减其他权益工具）；
 class _Failure(Exception):
     """Only fixed local codes may cross the transport boundary."""
 
-    def __init__(self, code, retry_seconds=0):
+    def __init__(self, code, retry_seconds=0, *, provider_code=None, provider_reason=None):
         super().__init__(code)
         self.code = code
         self.retry_seconds = retry_seconds
+        # Optional probe diagnostics never retain the untrusted provider message.
+        self.provider_code = provider_code if type(provider_code) is int and abs(provider_code) <= 1000000 else None
+        reasons = {'rate_limited', 'authorization_denied', 'points_insufficient',
+                   'permission_denied', 'invalid_parameters', 'unsupported_api', 'provider_error'}
+        self.provider_reason = provider_reason if provider_reason in reasons else None
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -125,12 +130,35 @@ def _reject_constant(_value):
     raise _Failure("invalid_number")
 
 
+def _provider_reason(payload):
+    """Translate business errors to a fixed vocabulary, never echo provider text."""
+    text = payload.get('msg')
+    text = text[:2048].lower() if isinstance(text, str) else ''
+    if payload.get('code') == 429 or any(word in text for word in
+            ('频率', '频次', '访问次数', '每分钟最多', '每小时最多', '每天最多', 'rate limit', 'too many requests')):
+        return 'rate_limited'
+    if any(word in text for word in ('token无效', 'token 无效', 'token不正确', 'token不对',
+                                    'invalid token', 'invalid api key', '认证失败')):
+        return 'authorization_denied'
+    if any(word in text for word in ('积分不足', '积分不够', '所需积分', '至少需要积分', 'insufficient points')):
+        return 'points_insufficient'
+    if any(word in text for word in ('没有访问该接口的权限', '没有权限', '无权限', '权限不足',
+                                    '单独开通', 'permission denied', 'not authorized')):
+        return 'permission_denied'
+    if any(word in text for word in ('参数', 'invalid parameter', 'invalid argument')):
+        return 'invalid_parameters'
+    if any(word in text for word in ('接口不存在', '未知接口', '不支持该接口', 'api not found', 'unknown api')):
+        return 'unsupported_api'
+    return 'provider_error'
+
+
 def _rows(payload, api):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload")
     code = payload["code"]
     if code != 0:
-        raise _Failure("api_denied", 86400 if code in (-2001, -2002, 2002, 2003, 401, 403) else 3600)
+        raise _Failure("api_denied", 86400 if code in (-2001, -2002, 2002, 2003, 401, 403) else 3600,
+                       provider_code=code, provider_reason=_provider_reason(payload))
     data = payload.get("data")
     if not isinstance(data, dict):
         raise _Failure("invalid_payload")
