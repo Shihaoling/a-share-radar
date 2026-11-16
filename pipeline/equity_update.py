@@ -6,6 +6,7 @@ from the environment and are never written to the published data or reports.
 import argparse
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -22,6 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
             bootstrap_if_needed=False):
+    if train_pilot and os.environ.get('RADAR_ALLOW_TRAINING', 'true').lower() in {'false', '0', 'no', 'off'}:
+        raise ValueError('This runtime is inference-only; run model training on the local workstation.')
     root = ROOT / 'data/equity'
     marker = root / 'bootstrap-complete.json'
     if bootstrap_if_needed and marker.exists():
@@ -33,7 +36,11 @@ def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
         raise ValueError('Demonstration data cannot enter equity training.')
     settings = load(ROOT / 'config/settings.json', {})
     settings['network_enabled'] = not offline
-    settings['equity'] = {**settings.get('equity', {}), 'history_days': days, 'progress': True}
+    # Leave room inside the 45-minute Actions job for training and persisting
+    # partial progress, even if individual historical requests become slow.
+    equity_settings = settings.get('equity', {})
+    settings['equity'] = {**equity_settings, 'history_days': days, 'progress': True,
+        'budget_seconds': min(float(equity_settings.get('budget_seconds', 1200)), 1200)}
     dashboard['equity_collection'] = collect_equity_history(
         dashboard, settings, max_requests=max_requests, output_dir=root)
     dashboard = enrich_funds(dashboard, settings, datetime.now(ZoneInfo('Asia/Shanghai')))

@@ -24,7 +24,7 @@
 | GRU | 60日×8特征，hidden32，2层，dropout0.1 | 小型循环序列候选 |
 | TCN | channels32，kernel3，dilation1/2/4/8，每块2次因果卷积 | 感受野61日的卷积候选 |
 
-训练默认 batch128、AdamW 学习率3e-4、weight decay1e-4、Huber loss、梯度裁剪1、最多10轮、验证集4轮不改善即停止。可测试 hidden64、batch256，但必须测量实际显存，不能保证所有8GB显卡的批量上限相同。
+训练默认 batch128、AdamW 学习率3e-4、weight decay1e-4、Huber loss、梯度裁剪1、最多10轮、验证集4轮不改善即停止。可测试 hidden64/128及更大batch，但必须测量实际显存，不能保证所有8GB显卡的批量上限相同。
 
 64GB内存/8GB显存是上述小模型的设计目标，不表示已经连接或使用用户本机GPU。本命令在调用它的运行环境执行；报告记录实际 `device` 与CUDA峰值分配显存，CPU运行时该显存项为空。`--device auto` 优先CUDA，否则CPU；不会自动把任务传送到另一个电脑。
 
@@ -83,7 +83,37 @@ predicted_returns_pct = predict_neural_samples(bundle, sequences)  # shape: N ×
 # 返回 N × 2，依次为下一开盘收益%、下一收盘收益%。
 ```
 
-只加载自己生成和信任的检查点。常规线上逐股推断不依赖PyTorch；首次Actions的CPU试训及手动训练步骤会安装PyTorch。训练命令只保存候选与报告，不改变正式预测记录。
+只加载自己生成和信任的检查点。常规线上逐股推断不依赖PyTorch。2026-11-16的首次云端CPU试训已结束；按后续要求，工作流不再自动训练GRU/TCN，也不再提供云端神经训练按钮。后续神经模型在本机训练、调优、验证后再考虑上传。训练命令只保存候选与报告，不改变正式预测记录。
+
+## Windows本地训练与进度页面
+
+目标目录为 `C:\Users\12291\Desktop\QuantModel`。启动脚本默认使用当前账户的 `%USERPROFILE%\Desktop\QuantModel`，也可显式传入路径。**云端会话看不到该目录时，本机训练不会自动开始**；必须在能访问该目录的Windows电脑上执行。脚本、网页和测试就绪不等于本机GPU已运行。
+
+将本仓库克隆或更新到该目录下的 `a-share-radar` 子目录，先确认 `data/equity/daily` 已有行情归档，再从仓库根目录启动：
+
+```powershell
+.\scripts\train-windows.ps1 -Workspace 'C:\Users\12291\Desktop\QuantModel' -Device auto
+```
+
+脚本创建独立虚拟环境；PyTorch未安装时会停止并给出安装方式。NVIDIA CUDA设备可用显式 `-InstallCudaTorch -Device cuda` 安装已核实的PyTorch 2.8.0/cu126构建并要求GPU运行；需要兼容的驱动。安装方式来自[PyTorch官方历史版本](https://pytorch.org/get-started/previous-versions/#v280)。不确认显卡类型时先使用自动检测；CUDA不可用会明确显示CPU，显式 `-Device cuda` 则直接报错。
+
+默认设置：全部归档股票（`MaxStocks=0`）、最多20轮、早停4轮、GRU/TCN共享模型；默认Hidden128时比较32/64/128三个容量配置，并加入GRU/TCN集成候选。自动检测逻辑核数、可用RAM和CUDA；CPU线程默认保留两个逻辑核、最多16线程，可显式指定。CUDA以随机张量短测128、256、512、1024、2048的批量，使用GRU和TCN的实际前后向与优化器开销，在显存预算内选择实测吞吐较好的批量。预算不超过当前空闲显存的70%或总显存的80%。随机张量仅测试硬件，不计入金融预测成绩。8GB显卡并不保证任意批量都能运行。
+
+训练自动打开 `http://127.0.0.1:8768/`，显示阶段、试验数、当前轮批次、真实训练损失/验证MAE曲线、候选排名、训练速度和显存。页面每2秒读取本机进度文件；没有数据就保留空值，60秒没有更新仅提示可能等待或暂停。服务只允许本机访问，不提供上传接口。
+
+每次训练使用独立目录，保留 `progress.json`、`resources.json`、`selection.json`、`local-summary.json`、各试验报告和候选检查点。各配置只计算验证指标；集成的GRU权重仅从0.25/0.5/0.75中按验证MAE选择。先把赢家写入 `selection.json`，再固定配置、集成权重与种子执行最终确认。一次时间切分仍不代表跨市场稳健性；不能根据最终测试成绩回头调参。
+
+训练完成后进度页保持可查看；按 `Ctrl+C` 关闭监听，结果文件保留。重新查看已完成记录而不训练，可在对应虚拟环境运行：
+
+```powershell
+python -m pipeline.local_training --output-dir '某次运行目录' --serve-only
+```
+
+达到双目标、验证及确认门槛后，脚本生成本次运行下的 `upload-ready` 目录，内含已固定的模型、验证报告、部署清单和SHA256；不达门槛时仅保留报告，不生成可部署包。也可手动运行 `python -m pipeline.deployed_equity --run-dir 某次运行目录 --output-dir 一个新的导出目录`。
+
+本机训练完成后，将 `upload-ready` 内全部文件作为同一提交上传至仓库 `data/equity/models/`；保留旧模型版本用于回退。部署清单的变更会触发Actions，安装CPU推断依赖、校验模型与报告、用已缓存行情推断并发布，**不再训练或重新选择集成权重**。不完整、校验失败或不达门槛的上传不会启用，继续使用既有可用基线。脚本本身不自动上传或推送仓库，也不会把本机路径写入导出报告。
+
+全局 `training_enabled=false`、股票模型 `enable_training=false` 以及业务步骤的 `RADAR_ALLOW_TRAINING=false` 共同关闭云端拟合。缺少可用模型时保留空值，不能临时训练；旧指数直接模型只有完全相同输入缓存时才复用。扩大历史可使用上文限频采集命令，训练入口自身不访问行情API。
 
 ## 研究限制
 

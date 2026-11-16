@@ -9,12 +9,13 @@ from datetime import date, datetime, time
 import hashlib
 import json
 import math
+import os
 import warnings
 
 from .calendar import SHANGHAI, is_trading_day, market_session, next_trading_day, previous_trading_day, shanghai_now
 
 FEATURE_VERSION = "daily-pit-multifactor-v2"
-DEFAULTS = {"enable_mlp": False, "min_train": 60, "holdout_size": 20,
+DEFAULTS = {"enable_mlp": False, "training_enabled": True, "min_train": 60, "holdout_size": 20,
             "max_train": 504, "improvement_margin": 0.02,
             "enable_hgb": True, "hgb_min_train": 200, "intraday_min_train": 80,
             "quote_max_age_minutes": 20, "close_confirm_minutes": 15}
@@ -27,6 +28,14 @@ FEATURE_NAMES = (
     "log_market_cap_cny", "sentiment_score", "sentiment_confidence", "sentiment_article_count_log",
 )
 SENTIMENT_FEATURES = {"sentiment_score", "sentiment_confidence", "sentiment_article_count_log"}
+
+
+def training_enabled(config=None):
+    """An explicit environment or configuration prohibition always wins."""
+    disabled = {"false", "0", "no", "off"}
+    configured = (config or {}).get("training_enabled", True)
+    return (str(configured).strip().lower() not in disabled
+            and os.environ.get("RADAR_ALLOW_TRAINING", "true").strip().lower() not in disabled)
 
 
 def _feature_cutoff(day):
@@ -280,14 +289,18 @@ def _train_samples(samples, latest_x, config, old_info, names=FEATURE_NAMES, tas
     samples = samples[-config["max_train"]:]
     count, holdout = len(samples), config["holdout_size"]
     required = (config["intraday_min_train"] if task == "today_close" else config["min_train"]) + 2 * holdout
-    if count < required:
-        return None, {"reason": f"{'同时间盘中' if task == 'today_close' else '隔夜'}模型需至少 {required} 个已完成交易样本，当前 {count} 个",
-                      "sample_count": count, "feature_metadata": _feature_metadata(samples, latest_x, [], names)}
     cache_key = _hash({"version": FEATURE_VERSION, "task": task, "samples": samples, "latest": latest_x,
                        "config": {k: config[k] for k in ("enable_mlp", "enable_hgb", "hgb_min_train", "min_train", "intraday_min_train", "holdout_size", "max_train", "improvement_margin")}})
     cached = old_info.get("cached_outcome")
     if old_info.get("input_hash") == cache_key and isinstance(cached, dict) and cached.get("model_version"):
         return {**deepcopy(cached), "trained": False, "cache_hit": True}, None
+    if not training_enabled(config):
+        return None, {"reason": "云端只推断，等待本机训练模型；当前输入没有完全匹配的已保存结果。",
+                      "inference_only": True, "sample_count": count,
+                      "feature_metadata": _feature_metadata(samples, latest_x, [], names)}
+    if count < required:
+        return None, {"reason": f"{'同时间盘中' if task == 'today_close' else '隔夜'}模型需至少 {required} 个已完成交易样本，当前 {count} 个",
+                      "sample_count": count, "feature_metadata": _feature_metadata(samples, latest_x, [], names)}
     x, y = np.asarray([r["x"] for r in samples]), np.asarray([r["y"] for r in samples])
     a, b = count - 2 * holdout, count - holdout
     width = len(names)
@@ -724,4 +737,7 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
               "feature_version": FEATURE_VERSION, "candidate_features": list(FEATURE_NAMES),
               "training_policy": "rolling completed bars; PIT auxiliary features; chronological selection then confirmation; unchanged-input cache; no random split",
               "interval_policy": "empirical residual quantiles; future coverage not guaranteed"}
+    if not training_enabled(settings):
+        models.update(inference_only=True, training_mode="inference_only",
+                      training_policy="云端只推断与结算；训练和调优在本机完成后上传。旧模型仅复用完全相同输入的已保存结果。")
     return {"predictions": predictions, "ledger": ledger, "metrics": _metrics(ledger), "models": models}

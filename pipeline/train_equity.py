@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from datetime import datetime, timezone
 import json
 import math
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import random
 import time
 
@@ -16,6 +16,7 @@ import numpy as np
 
 TARGET_NAMES = ["next_open_return_pct", "next_close_return_pct"]
 FORMAT_VERSION = "equity-sequence-v1"
+ENSEMBLE_FORMAT_VERSION = "equity-ensemble-v1"
 
 
 def _number(value):
@@ -179,6 +180,18 @@ def _torch_device(requested):
     return requested
 
 
+def _progress(args, point=None, **updates):
+    path = getattr(args, 'progress_file', None)
+    if not path:
+        return
+    from .training_progress import ProgressWriter
+    writer = ProgressWriter(path)
+    writer.write(status='running', trial=getattr(args, 'trial', 1),
+                 total_trials=getattr(args, 'total_trials', 1), **updates)
+    if point is not None:
+        writer.append_history({'trial': getattr(args, 'trial', 1), **point})
+
+
 def _train_network(kind, history, samples, train, validation, mean, scale, args, device):
     import torch
     from torch.utils.data import DataLoader, Dataset
@@ -208,10 +221,12 @@ def _train_network(kind, history, samples, train, validation, mean, scale, args,
     loss_fn = torch.nn.HuberLoss(delta=1.0)
     best_loss, best_state, waiting, curve = math.inf, None, 0, []
     started = time.monotonic()
+    last_progress = 0.
     for epoch in range(args.epochs):
         net.train()
         total_loss, total_samples = 0.0, 0
-        for x, y in loader:
+        epoch_started = time.monotonic()
+        for batch_index, (x, y) in enumerate(loader, 1):
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad(set_to_none=True)
             loss = loss_fn(net(x), y)
@@ -220,6 +235,15 @@ def _train_network(kind, history, samples, train, validation, mean, scale, args,
             optimizer.step()
             total_loss += float(loss.detach()) * len(x)
             total_samples += len(x)
+            if time.monotonic() - last_progress >= 1 or batch_index == len(loader):
+                memory = ({'gpu_allocated_mb': torch.cuda.memory_allocated() / 2**20,
+                           'gpu_reserved_mb': torch.cuda.memory_reserved() / 2**20,
+                           'gpu_total_mb': torch.cuda.get_device_properties(0).total_memory / 2**20}
+                          if device == 'cuda' else {})
+                _progress(args, stage='training', model=kind, device=device, epoch=epoch + 1,
+                          epochs=args.epochs, batch=batch_index, total_batches=len(loader), memory=memory,
+                          samples_per_second=total_samples / max(time.monotonic() - epoch_started, .001))
+                last_progress = time.monotonic()
         net.eval()
         actual, predicted = [], []
         with torch.no_grad():
@@ -231,6 +255,8 @@ def _train_network(kind, history, samples, train, validation, mean, scale, args,
         curve.append({"epoch": epoch + 1, "train_huber": total_loss / total_samples,
                       "validation_mae_pct": score})
         print(json.dumps({"model": kind, **curve[-1]}), flush=True)
+        _progress(args, point={'model': kind, **curve[-1]}, stage='validation', model=kind,
+                  epoch=epoch + 1, epochs=args.epochs, batch=len(loader), total_batches=len(loader))
         if score < best_loss - 1e-6:
             best_loss = score
             best_state = {name: tensor.detach().cpu().clone() for name, tensor in net.state_dict().items()}
@@ -260,7 +286,7 @@ def load_neural_bundle(path, device="cpu"):
     net = build_network(payload["kind"], **payload["architecture"])
     net.load_state_dict(payload["state_dict"])
     net.to(chosen).eval()
-    return {"network": net, "device": chosen, "mean": np.asarray(payload["mean"], dtype=np.float32),
+    return {"network": net, "kind": payload["kind"], "device": chosen, "mean": np.asarray(payload["mean"], dtype=np.float32),
             "scale": np.asarray(payload["scale"], dtype=np.float32), "window": payload["window"],
             "target_names": payload["target_names"], "metadata": payload["metadata"]}
 
@@ -285,20 +311,109 @@ def predict_neural_samples(bundle, sequences, batch_size=128):
     return np.concatenate(predictions)
 
 
+def _ensemble_weights(weights):
+    if not isinstance(weights, dict) or set(weights) != {"gru", "tcn"}:
+        raise ValueError("Ensemble requires exactly GRU and TCN weights")
+    checked = {}
+    for kind, weight in weights.items():
+        if isinstance(weight, bool) or not isinstance(weight, (int, float)) or not math.isfinite(weight) or not 0 <= weight <= 1:
+            raise ValueError("Ensemble weights must be finite numbers between zero and one")
+        checked[kind] = float(weight)
+    if not math.isclose(sum(checked.values()), 1., rel_tol=0, abs_tol=1e-9):
+        raise ValueError("Ensemble weights must sum to one")
+    return checked
+
+
+def load_ensemble_bundle(path, device="cpu"):
+    """Load a local manifest referencing only same-directory .pt candidates.
+
+    Reject absolute paths, Windows drive paths, nested paths, traversal and
+    symlinks escaping the manifest directory before any checkpoint is loaded.
+    Component loading uses torch.load(weights_only=True).
+    """
+    manifest = Path(path).resolve(strict=True)
+    if manifest.stat().st_size > 65536:
+        raise ValueError("Ensemble manifest is too large")
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict) or payload.get("format_version") != ENSEMBLE_FORMAT_VERSION or payload.get("target_unit") != "percent":
+        raise ValueError("Unsupported ensemble manifest format")
+    if payload.get("target_names") != TARGET_NAMES:
+        raise ValueError("Ensemble targets do not match this model version")
+    weights = _ensemble_weights(payload.get("weights"))
+    references = payload.get("components")
+    if not isinstance(references, dict) or set(references) != {"gru", "tcn"}:
+        raise ValueError("Ensemble requires exactly two component checkpoints")
+    window = payload.get("window")
+    if isinstance(window, bool) or not isinstance(window, int) or window < 2 or payload.get("feature_count") != 8:
+        raise ValueError("Unsupported ensemble input schema")
+    paths = {}
+    for kind, filename in references.items():
+        if not isinstance(filename, str) or not filename or any(character in filename for character in ("/", "\\", ":")):
+            raise ValueError("Checkpoint references must be same-directory basenames")
+        reference = Path(filename)
+        if reference.is_absolute() or PureWindowsPath(filename).drive or reference.name != filename or reference.suffix != ".pt":
+            raise ValueError("Checkpoint reference is not a local .pt basename")
+        resolved = (manifest.parent / reference).resolve(strict=True)
+        if resolved.parent != manifest.parent or not resolved.is_file():
+            raise ValueError("Checkpoint escapes the manifest directory")
+        paths[kind] = resolved
+    if paths["gru"] == paths["tcn"]:
+        raise ValueError("Ensemble components must be separate checkpoints")
+    components = {kind: load_neural_bundle(checkpoint, device) for kind, checkpoint in paths.items()}
+    for kind, component in components.items():
+        if component["kind"] != kind or component["window"] != window or component["target_names"] != TARGET_NAMES:
+            raise ValueError("Component does not match the ensemble schema")
+        mean, scale = component["mean"], component["scale"]
+        if mean.shape != (8,) or scale.shape != (8,) or not np.isfinite(mean).all() or not np.isfinite(scale).all() or np.any(scale <= 0):
+            raise ValueError("Component has invalid normalization parameters")
+    return {"kind": "ensemble", "components": components, "weights": weights,
+            "window": window, "target_names": TARGET_NAMES, "target_unit": "percent",
+            "metadata": payload.get("metadata", {})}
+
+
+def predict_ensemble_samples(bundle, sequences, batch_size=128):
+    """Apply fixed manifest weights; inference never chooses new weights."""
+    weights = _ensemble_weights(bundle.get("weights"))
+    components = bundle.get("components")
+    if not isinstance(components, dict) or set(components) != {"gru", "tcn"}:
+        raise ValueError("Ensemble components are incomplete")
+    return sum(weights[kind] * predict_neural_samples(components[kind], sequences, batch_size)
+               for kind in ("gru", "tcn"))
+
+
+def _predict_indices(bundle, history, samples, indices, window, batch_size):
+    predict = predict_ensemble_samples if bundle.get("kind") == "ensemble" else predict_neural_samples
+    predictions = []
+    for start in range(0, len(indices), batch_size):
+        batch = indices[start:start + batch_size]
+        sequences = np.asarray([_sequence(history, samples[i], window) for i in batch])
+        predictions.append(predict(bundle, sequences, batch_size))
+    return np.concatenate(predictions)
+
+
 def run_training(args):
     from sklearn.linear_model import Ridge
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
     from .equity_model import chronological_split, load_history
 
+    fixed_weight = getattr(args, "ensemble_weight", None)
+    if fixed_weight is not None:
+        _ensemble_weights({"gru": fixed_weight, "tcn": 1 - fixed_weight})
+    if getattr(args, "confirm_model", None) == "ensemble" and fixed_weight is None:
+        raise ValueError("Ensemble confirmation requires --ensemble-weight fixed by prior validation")
     random.seed(args.seed)
     np.random.seed(args.seed)
     started = time.monotonic()
+    _progress(args, stage='loading_history', model=None, epoch=None, batch=None,
+              message='Reading validated local daily archives; no market API requests.')
     history = load_history(args.history_dir)
     available_stocks = len(history)
     calendar_dates = sorted({_day(row) for bars in history.values() for row in bars})
     if args.max_stocks:
         history = {code: history[code] for code in sorted(history)[:args.max_stocks]}
+    _progress(args, stage='building_features', selected_stocks=len(history),
+              message='Building historical features and chronological sample boundaries.')
     history = _SequenceHistory(history)
     samples = _sample_index(history, args.window, calendar_dates)
     output = Path(args.model_dir)
@@ -342,6 +457,7 @@ def run_training(args):
                               "dates": len({samples[i][2] for i in items})} for name, items in indices.items()}
     report["split"]["gap_sessions"] = 1
     actual = {name: np.asarray([samples[i][3] for i in items], dtype=np.float32) for name, items in indices.items()}
+    _progress(args, stage='baseline', model='ridge', message='Fitting training-only scaler and Ridge baseline.')
     compact = {name: _summaries(history, samples, items, args.window) for name, items in indices.items()}
     ridge = make_pipeline(StandardScaler(), Ridge(alpha=10.0))
     ridge.fit(compact["train"], actual["train"])
@@ -349,10 +465,13 @@ def run_training(args):
     report["models"]["ridge"] = {"validation": _metrics(actual["validation"], ridge.predict(compact["validation"])),
                                     "alpha": 10.0, "features": "sequence_last_mean_std_24"}
     requested = [name.strip() for name in args.models.split(",") if name.strip()]
-    unknown = set(requested) - {"ridge", "gru", "tcn"}
+    unknown = set(requested) - {"ridge", "gru", "tcn", "ensemble"}
     if unknown:
         raise ValueError("Unknown models: " + ", ".join(sorted(unknown)))
-    neural_requested = [name for name in requested if name != "ridge"]
+    neural_requested = [name for name in requested if name in {"gru", "tcn"}]
+    if "ensemble" in requested or getattr(args, "confirm_model", None) == "ensemble":
+        neural_requested.extend(["gru", "tcn"])
+    neural_requested = list(dict.fromkeys(neural_requested))
     candidates = {}
     report["device"] = "cpu"
     mean, scale = _standardizer(history, samples, indices["train"], args.window)
@@ -380,21 +499,58 @@ def run_training(args):
                 result["checkpoint"] = str(checkpoint)
                 result["promoted"] = False
                 report["models"][kind] = result
-                candidates[kind] = {"network": net, "device": device, "mean": mean, "scale": scale,
-                                    "window": args.window, "metadata": payload["metadata"]}
+                candidates[kind] = {"network": net, "kind": kind, "device": device, "mean": mean, "scale": scale,
+                                    "window": args.window, "target_names": TARGET_NAMES, "metadata": payload["metadata"]}
+            if {"gru", "tcn"}.issubset(candidates):
+                _progress(args, stage="validation", model="ensemble", message="Comparing fixed-weight GRU/TCN blends on validation only.")
+                validation_predictions = {kind: _predict_indices(candidates[kind], history, samples,
+                    indices["validation"], args.window, args.batch_size) for kind in ("gru", "tcn")}
+                grid = [fixed_weight] if fixed_weight is not None else [.25, .5, .75]
+                blends = [(weight, _metrics(actual["validation"],
+                    weight * validation_predictions["gru"] + (1 - weight) * validation_predictions["tcn"])) for weight in grid]
+                chosen_weight, validation_metrics = min(blends, key=lambda row: row[1]["mean_mae_pct"])
+                weights = {"gru": chosen_weight, "tcn": 1 - chosen_weight}
+                manifest_path = output / ("ensemble_" + stamp + ".json")
+                references = {kind: Path(report["models"][kind]["checkpoint"]).name for kind in ("gru", "tcn")}
+                metadata = {"created_at": report["created_at"], "split": report["split"], "seed": args.seed,
+                            "promoted": False, "validation": validation_metrics,
+                            "weight_selection": "fixed_prior_validation" if fixed_weight is not None else "validation_grid"}
+                manifest_path.write_text(json.dumps({"format_version": ENSEMBLE_FORMAT_VERSION, "kind": "ensemble",
+                    "target_names": TARGET_NAMES, "target_unit": "percent", "feature_count": 8,
+                    "window": args.window, "components": references, "weights": weights, "metadata": metadata},
+                    ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
+                report["models"]["ensemble"] = {"validation": validation_metrics, "weights": weights,
+                    "components": ["gru", "tcn"], "checkpoints": {kind: report["models"][kind]["checkpoint"] for kind in ("gru", "tcn")},
+                    "checkpoint": str(manifest_path), "manifest": str(manifest_path), "promoted": False,
+                    "weight_selection": metadata["weight_selection"], "validation_weight_grid": grid,
+                    "component_epochs": {kind: report["models"][kind]["epochs_completed"] for kind in ("gru", "tcn")},
+                    "parameters": sum(report["models"][kind]["parameters"] for kind in ("gru", "tcn"))}
+                candidates["ensemble"] = {"kind": "ensemble", "components": {kind: candidates[kind] for kind in ("gru", "tcn")},
+                    "weights": weights, "window": args.window, "target_names": TARGET_NAMES, "metadata": metadata}
     winner = min(report["models"], key=lambda name: report["models"][name]["validation"]["mean_mae_pct"])
     report["selected_by_validation"] = winner
+    if getattr(args, 'validation_only', False):
+        report['status'] = 'validation_only'
+        report['confirmation'] = {}
+        report['test_metrics_accessed'] = False
+        report['warnings'].append('Hyperparameter selection uses validation only; confirmation metrics remain uncomputed.')
+        return save()
+    fixed = getattr(args, 'confirm_model', None)
+    if fixed:
+        if fixed not in report['models']:
+            raise ValueError('Preselected confirmation model is unavailable')
+        report['validation_winner_this_run'] = winner
+        report['selected_by_validation'] = winner = fixed
+        report['confirmation_selection_fixed'] = True
+    _progress(args, stage='confirmation', model=winner,
+              message='Evaluating the preselected candidate on the held-out confirmation period.')
     # Inspect the untouched confirmation period only after validation selection.
     report["confirmation"] = {
         "zero": _metrics(actual["test"], np.zeros_like(actual["test"])),
         "ridge": _metrics(actual["test"], ridge.predict(compact["test"]))}
     if winner in candidates:
-        predictions = []
-        for start in range(0, len(indices["test"]), args.batch_size):
-            batch = indices["test"][start:start + args.batch_size]
-            sequences = np.asarray([_sequence(history, samples[i], args.window) for i in batch])
-            predictions.append(predict_neural_samples(candidates[winner], sequences, args.batch_size))
-        report["confirmation"][winner] = _metrics(actual["test"], np.concatenate(predictions))
+        predicted = _predict_indices(candidates[winner], history, samples, indices["test"], args.window, args.batch_size)
+        report["confirmation"][winner] = _metrics(actual["test"], predicted)
         report["eligible_for_promotion"] = all(
             report["models"][winner]["validation"][target]["mae_pct"] <
             min(report["models"][base]["validation"][target]["mae_pct"] for base in ("zero", "ridge")) * .98
@@ -402,6 +558,7 @@ def run_training(args):
             min(report["confirmation"][base][target]["mae_pct"] for base in ("zero", "ridge")) * .98
             for target in TARGET_NAMES)
     report["status"] = "trained_candidates" if candidates else "trained_baselines"
+    report['test_metrics_accessed'] = True
     report["warnings"].append("A single chronological split is a pilot, not robust multi-regime evidence; no expected investment return is claimed.")
     return save()
 
@@ -414,7 +571,7 @@ def main(argv=None):
     parser.add_argument("--max-stocks", type=int, default=200, help="0 selects all archived stocks; default is a bounded pilot")
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=128)
-    parser.add_argument("--hidden", type=int, choices=[32, 64], default=32)
+    parser.add_argument("--hidden", type=int, choices=[32, 64, 128], default=32)
     parser.add_argument("--layers", type=int, choices=[1, 2], default=2)
     parser.add_argument("--dropout", type=float, default=.1)
     parser.add_argument("--window", type=int, default=60)
@@ -426,6 +583,12 @@ def main(argv=None):
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--device", choices=["auto", "cpu", "cuda", "mps"], default="auto")
     parser.add_argument("--cpu-threads", type=int, default=4)
+    parser.add_argument('--progress-file')
+    parser.add_argument('--trial', type=int, default=1)
+    parser.add_argument('--total-trials', type=int, default=1)
+    parser.add_argument('--validation-only', action='store_true')
+    parser.add_argument('--confirm-model', choices=['zero', 'ridge', 'gru', 'tcn', 'ensemble'])
+    parser.add_argument('--ensemble-weight', type=float, help='Fixed GRU blend weight from prior validation; TCN receives 1-weight')
     args = parser.parse_args(argv)
     if min(args.epochs, args.batch_size, args.patience, args.min_train_dates, args.validation_dates, args.test_dates, args.cpu_threads) < 1:
         parser.error("Counts must be positive")

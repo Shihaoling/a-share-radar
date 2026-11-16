@@ -11,6 +11,7 @@ _PRIVATE_KEYS = {
     "source_history", "archived_sectors", "sentiment_state", "intraday_state",
     "feature_history", "sentiment_history", "daily_basic_history", "valuation_history",
     "cached_outcome", "constituents", "stock_api_news",
+    "checkpoint", "checkpoints", "manifest", "progress_file",
 }
 _STATE_CACHES = {"daily_basic", "members", "calendar", "news", "realtime", "index_requests", "sw_history_requests"}
 _DAILY_FIELDS = {

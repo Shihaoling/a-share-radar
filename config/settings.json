@@ -28,7 +28,7 @@
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",
   "repository_url": "https://github.com/Shihaoling/a-share-radar",
-  "notes": "浏览器偏好不改变本文件。模型使用已完成交易日；神经网络默认关闭，启用后仍须通过样本外基线比较。",
+  "notes": "云端仅采集、推断和核验；模型在本机训练调优后上传。浏览器偏好不改变本文件。",
   "min_train": 120,
   "holdout_size": 20,
   "funds": {
@@ -42,6 +42,8 @@
     "max_requests": 2,
     "min_interval_seconds": 6,
     "minimum_weight_coverage": 0.9,
-    "retrain_days": 7
-  }
+    "retrain_days": 7,
+    "enable_training": false
+  },
+  "training_enabled": false
 }

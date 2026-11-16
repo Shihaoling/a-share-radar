@@ -16,6 +16,7 @@ from pathlib import Path
 import numpy as np
 
 from .calendar import market_session, next_trading_day, previous_trading_day, shanghai_now
+from .model import training_enabled
 
 VERSION = "shared-equity-ohlcv-v1"
 SEQUENCE_FEATURE_NAMES = ["return_pct", "open_return_pct", "range_pct", "close_open_pct",
@@ -417,11 +418,15 @@ def update_equity_predictions(dashboard, history_dir, model_dir, now=None, confi
     settings = {**DEFAULTS, **supplied}
     now = shanghai_now(now)
     session = market_session(now)
+    allow_training = training_enabled(config) and training_enabled({"training_enabled": settings["enable_training"]})
     target_date, target_kind = session.get("target_date"), session.get("target_kind")
     reference = previous_trading_day(target_date) if target_date else None
     reference_day = reference.isoformat() if reference else None
     if settings.get("reuse_only"):
         cached = result.get("equity_forecast", {})
+        if not allow_training:
+            cached.setdefault("training", {}).update(inference_only=True, training_mode="inference_only",
+                training_note="云端只推断与结算；共享股票模型在本机训练和调优后上传。")
         if (cached.get("target_date"), cached.get("target_kind"), cached.get("reference_date")) == (target_date, target_kind, reference_day) and target_kind != "today_close":
             cached["reuse_only"] = True
             return result
@@ -452,9 +457,14 @@ def update_equity_predictions(dashboard, history_dir, model_dir, now=None, confi
         artifact = None
     trained = _day(artifact.get("trained_at")) if artifact else None
     retrain = artifact is None or (trained and (now.date() - date.fromisoformat(trained)).days >= settings["retrain_days"])
-    if settings["enable_training"] and retrain and history and cutoff and reference_day and cutoff <= reference_day:
+    if allow_training and retrain and history and cutoff and reference_day and cutoff <= reference_day:
         artifact = train_shared_baseline(history, model_dir, settings, now)
     report = deepcopy(artifact.get("report", {})) if artifact else {"status": "not_trained", "promoted": False, "note": "等待完整历史日线后训练共享股票模型。"}
+    if not allow_training:
+        report.update(inference_only=True, training_mode="inference_only",
+            training_note="云端只推断与结算；共享股票模型在本机训练和调优后上传。")
+        if not artifact:
+            report["note"] = "云端只推断，等待本机训练模型；当前没有可用的已上传共享股票模型。"
     neural_report = _read(Path(model_dir) / "training-report.json") or _read(Path(model_dir) / "training_report.json")
     if isinstance(neural_report, dict):
         report["neural_candidates"] = {key: neural_report[key] for key in ("status", "device", "runtime_device_name", "models",
@@ -465,6 +475,41 @@ def update_equity_predictions(dashboard, history_dir, model_dir, now=None, confi
     selected = artifact.get("targets", {}).get("next_open", {}) if artifact else {}
     model_name = selected.get("model", "unavailable")
     training_ready = bool(artifact and artifact.get("targets"))
+    deployed, neural_values = None, {}
+    if (Path(model_dir) / 'deployed-model.json').exists() and target_kind != 'today_close':
+        try:
+            from .deployed_equity import load_deployed_model, predict_deployed
+            deployed = load_deployed_model(model_dir)
+            if deployed:
+                trained_at = datetime.fromisoformat(deployed['trained_at'].replace('Z', '+00:00'))
+                if shanghai_now(trained_at) > now or (reference_day and deployed.get('label_cutoff', '') > reference_day):
+                    raise ValueError('Uploaded model contains information after this forecast cutoff')
+                codes, sequences = [], []
+                for code in sorted(stocks):
+                    bars = history.get(code, [])
+                    if not bars or bars[-1]['date'] != reference_day:
+                        continue
+                    values = sequence_features(bars, len(bars) - 1, deployed['window'])
+                    if values is not None:
+                        codes.append(code)
+                        sequences.append(values)
+                if sequences:
+                    values = np.asarray(predict_deployed(deployed, np.asarray(sequences, dtype=np.float32)))
+                    if values.shape != (len(codes), 2) or not np.isfinite(values).all():
+                        raise ValueError('Uploaded model returned invalid predictions')
+                    column = 1 if target_kind == 'next_close' else 0
+                    neural_values = dict(zip(codes, values[:, column].astype(float)))
+                model_name, training_ready = deployed['model_id'], True
+                report['deployed_model'] = {'status': 'active', 'kind': deployed['kind'],
+                    'model_id': model_name, 'trained_at': deployed['trained_at'],
+                    'source': 'local', 'label_cutoff': deployed.get('label_cutoff')}
+                report['note'] = '使用本机训练、调优并通过门槛后上传的模型；云端仅推断与结算，不重新训练。'
+        except (ValueError, ImportError, OSError, RuntimeError, KeyError, TypeError) as exc:
+            deployed, neural_values = None, {}
+            model_name = selected.get('model', 'unavailable')
+            training_ready = bool(artifact and artifact.get('targets'))
+            report['deployed_model'] = {'status': 'unavailable', 'error_type': type(exc).__name__,
+                'note': '上传模型未通过校验或运行不可用；保留既有可用基线，未执行训练。'}
     context = {"as_of": now.isoformat(), "target_date": target_date, "target_kind": target_kind,
                "reference_date": reference_day, "model": model_name}
     predictions, weights = {}, {}
@@ -485,12 +530,15 @@ def update_equity_predictions(dashboard, history_dir, model_dir, now=None, confi
         elif not bars or bars[-1]["date"] != reference_day:
             prediction["note"] = "缺少目标前一交易日完整行情；停牌或缺失数据不沿用旧价。"
         elif not training_ready:
-            prediction["note"] = "本站可用历史训练样本不足，尚未完成按日期验证。"
-        elif features is None:
+            prediction["note"] = ("云端只推断，等待本机训练模型；当前没有可用的已上传共享股票模型。"
+                                  if not allow_training else "本站可用历史训练样本不足，尚未完成按日期验证。")
+        elif deployed and code not in neural_values:
+            prediction['note'] = f"本机上传模型需要 {deployed['window']} 日有效量价窗口；当前样本不足。"
+        elif not deployed and features is None:
             prediction["note"] = "量价历史窗口不足或字段无效。"
         else:
-            value = float(predict_portable(selected["parameters"], [features])[0]) if model_name == "ridge" else 0.
-            prediction.update(status="ready" if model_name == "ridge" else "baseline", predicted_return_pct=value)
+            value = neural_values[code] if deployed else float(predict_portable(selected["parameters"], [features])[0]) if model_name == "ridge" else 0.
+            prediction.update(status="ready" if deployed or model_name == "ridge" else "baseline", predicted_return_pct=float(value))
         predictions[code] = prediction
         basic = stock.get("daily_basic", {}) or {}
         weight_date = _day(basic.get("trade_date") or basic.get("date"))
