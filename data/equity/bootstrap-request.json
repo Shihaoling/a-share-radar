@@ -1,0 +1,7 @@
+{
+  "history_days": 180,
+  "max_requests": 180,
+  "reason": "Initial all-A-share daily training history for stock-first forecasts",
+  "neural_pilot": {"device": "cpu", "max_stocks": 256, "epochs": 4},
+  "min_interval_seconds": 3
+}

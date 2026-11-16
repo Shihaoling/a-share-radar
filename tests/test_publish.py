@@ -123,6 +123,61 @@ class PublishTests(unittest.TestCase):
         self.assertNotIn("private", json.dumps(summary))
         json.dumps(summary, allow_nan=False)
 
+    def test_fund_catalogs_and_model_private_paths_are_not_published(self):
+        source = fixture()
+        marker = "RAW_FUND_CATALOG_MUST_STAY_PRIVATE"
+        source["fund_state"] = {"version": 1, "status": "partial", "requests_this_run": 3,
+            "last_run_at": "2026-11-16T20:00:00+08:00", "future_private_state": [marker],
+            "cache": {"etf_basic": {"fetched_at": "2026-11-16T19:00:00+08:00", "target_date": None,
+                                    "rows": [{"name": marker}] * 6000}},
+            "endpoints": {"etf_share_size": {"status": "cooldown", "error_code": "api_denied",
+                                            "cooldown_until": "2026-11-17T20:00:00+08:00", "raw": marker}}}
+        source["fund_summary"] = {"status": "partial", "covered_sectors": 20, "candidate_count": 99}
+        fund = {"code": "510001.SH", "price": 1.2, "price_date": "2026-11-16", "nav": 1.1,
+                "nav_date": "2026-11-13", "aum_cny": 2e9, "match_status": "index_name_candidate"}
+        source["sectors"][0]["funds"] = [fund]
+        source["sectors"][0]["funds_note"] = "主题关联，持仓待核验。"
+        source["equity_collection"] = {"status": "partial", "cached_days": 5, "missing_days": 10,
+            "requests_this_run": 2, "data_dir": "/private/workspace/training", "raw": marker}
+        before = deepcopy(source)
+        with tempfile.TemporaryDirectory() as tmp:
+            view = publish_view(source, Path(tmp) / "view.json")
+        public_state = view["fund_state"]
+        self.assertNotIn("cache", public_state)
+        self.assertNotIn("future_private_state", public_state)
+        self.assertEqual(public_state["cache_summary"]["etf_basic"]["cached_count"], 6000)
+        self.assertEqual(public_state["endpoints"]["etf_share_size"]["next_retry"], "2026-11-17T20:00:00+08:00")
+        self.assertEqual(view["sectors"][0]["funds"], [fund])
+        self.assertEqual(view["fund_summary"], source["fund_summary"])
+        self.assertEqual(view["equity_collection"]["cached_days"], 5)
+        self.assertNotIn("data_dir", view["equity_collection"])
+        self.assertNotIn(marker, json.dumps(view))
+        self.assertEqual(source, before)
+
+    def test_health_keeps_fund_and_equity_coverage_without_full_rows(self):
+        source = fixture()
+        source["fund_state"] = {"status": "success", "requests_this_run": 3,
+            "cache": {"etf_basic": {"rows": [{"private_catalog": True}] * 200}}}
+        source["fund_summary"] = {"status": "success", "covered_sectors": 19, "candidate_count": 86}
+        source["equity_collection"] = {"status": "partial", "cached_days": 40, "missing_days": 140,
+                                       "requests_this_run": 2, "data_dir": "/private/training"}
+        source["equity_forecast"] = {"status": "partial", "target_date": "2026-11-17", "target_kind": "next_open",
+            "coverage": {"universe_count": 5000, "predicted_count": 1000, "weight_coverage": .2},
+            "stocks": [{"code": str(i), "status": "pending", "private_feature": 5} for i in range(5000)],
+            "evaluation": {"settled_count": 900, "mae_pct": 1.5, "direction_accuracy": .51, "daily": [{"private": True}]},
+            "training": {"status": "baseline", "promoted": False, "parameters": {"private": True}}}
+        summary = health_summary(source)
+        self.assertEqual(summary["fund_summary"]["covered_sectors"], 19)
+        self.assertEqual(summary["fund_summary"]["state"]["cache_summary"]["etf_basic"]["cached_count"], 200)
+        equity = summary["equity_summary"]
+        self.assertEqual(equity["coverage"]["weight_coverage"], .2)
+        self.assertEqual(equity["stock_status_counts"], {"pending": 5000})
+        self.assertEqual(equity["collection"]["missing_days"], 140)
+        self.assertEqual(equity["evaluation"]["settled_count"], 900)
+        self.assertNotIn("stocks", equity)
+        self.assertNotIn("private", json.dumps(summary))
+        json.dumps(summary, allow_nan=False)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,9 @@ from pipeline.metrics import compute_metrics
 from pipeline.stock_api import enrich_with_stock_api
 from pipeline.sentiment import aggregate_entity_sentiment
 from pipeline.publish import publish_view
+from pipeline.funds import enrich_funds
+from pipeline.equity_data import collect_equity_history
+from pipeline.equity_model import update_equity_predictions
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,6 +41,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         raise ValueError('两种单源更新模式不能同时启用。')
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     path = Path(output) if output else ROOT / 'web/data/dashboard.json'
+    equity_root = ROOT / 'data/equity' if path.resolve() == (ROOT / 'web/data/dashboard.json').resolve() else path.parent / 'equity'
     previous = load(path, {})
     if previous.get('data_mode') == 'demo':
         raise ValueError('演示数据不能进入生产采集与训练。')
@@ -79,6 +83,14 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     # Recompute cached quote freshness even when this mode forbids quote HTTP.
     quote_config = {**config, 'network_enabled': False} if stock_api_only else config
     data = collect_intraday(data, quote_config, quote_clock)
+    # Daily bulk jobs have their own small budgets and persistent caches. Never
+    # request daily equity/fund data from the five-minute quote-only workflow.
+    extension_config = {**config, 'network_enabled': config['network_enabled'] and not quotes_only}
+    data['fund_state'] = deepcopy(previous.get('fund_state', {}))
+    data = enrich_funds(data, extension_config, quote_clock)
+    if not quotes_only:
+        equity_config = {**extension_config, 'network_enabled': extension_config['network_enabled'] and config['market_session']['phase'] in {'post_close', 'closed'}}
+        data['equity_collection'] = collect_equity_history(data, equity_config, quote_clock, output_dir=equity_root)
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     # Use batch completion as a conservative upper bound for newly available data.
     starts = {started_at.isoformat(), started_at.isoformat(timespec='seconds')}
@@ -104,6 +116,8 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     sentiment_config = {**config, 'sentiment': {**config.get('sentiment', {}), 'model_enabled': False, 'reuse_only': True}} if quotes_only or offline else config
     dashboard = aggregate_entity_sentiment(dashboard, now=now, config=sentiment_config)
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
+    dashboard = update_equity_predictions(dashboard, equity_root, equity_root / 'models', now,
+        {**config, 'equity': {**config.get('equity', {}), 'reuse_only': quotes_only}})
     dashboard['daily_review'] = daily_review(dashboard, now)
     dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
     # Entity histories are canonical; avoid publishing the same bars twice.

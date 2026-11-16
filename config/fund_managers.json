@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "verified_at": "2026-11-16",
+  "description": "券商关联基金管理人。控股与参股分别披露；代销、托管不构成股权关系。持股信息需要定期复核。",
+  "managers": [
+    {
+      "name": "华夏基金",
+      "aliases": ["华夏基金", "华夏基金管理有限公司"],
+      "broker_relation": "中信证券控股（62.2%）",
+      "relationship": "controlled",
+      "source_date": "2026-05-29",
+      "source_url": "https://www.chinaamc.com/upload/resources/file/2026/05/29/9c662190b3d14c9fb0b1786f86230625.pdf"
+    },
+    {
+      "name": "广发基金",
+      "aliases": ["广发基金", "广发基金管理有限公司"],
+      "broker_relation": "广发证券控股（54.533%）",
+      "relationship": "controlled",
+      "source_date": "2026-06-05",
+      "source_url": "https://www.gffunds.com.cn/jjgg/flwj/202606/P020260605331940969611.pdf"
+    },
+    {
+      "name": "易方达基金",
+      "aliases": ["易方达基金", "易方达基金管理有限公司"],
+      "broker_relation": "广发证券参股（22.6514%）",
+      "relationship": "shareholder",
+      "source_date": "2026-06-01",
+      "source_url": "https://cdn.efunds.com.cn/owch/data/bulletin/20260601/易方达全球医药行业混合型发起式证券投资基金更新的招募说明书.pdf"
+    },
+    {
+      "name": "南方基金",
+      "aliases": ["南方基金", "南方基金管理股份有限公司", "南方基金管理有限公司"],
+      "broker_relation": "华泰证券参股（41.16%）；兴业证券参股（9.15%）",
+      "relationship": "shareholder",
+      "source_date": "2026-11-16",
+      "source_url": "https://www.nffund.com/new/about/index.html?tab=bread-crumb-box"
+    },
+    {
+      "name": "华泰柏瑞基金",
+      "aliases": ["华泰柏瑞基金", "华泰柏瑞基金管理有限公司"],
+      "broker_relation": "华泰证券参股（49%）",
+      "relationship": "shareholder",
+      "source_date": "2026-10-20",
+      "source_url": "https://www.sse.com.cn/disclosure/fund/announcement/c/new/2026-10-20/581090_20261020_J8Z9.pdf"
+    }
+  ]
+}

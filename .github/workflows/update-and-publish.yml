@@ -2,7 +2,7 @@ name: Update research and publish
 on:
   push:
     branches: [main]
-    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json', 'web/data/view.json', 'web/data/health.json']
+    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json', 'web/data/view.json', 'web/data/health.json', 'data/equity/daily/**', 'data/equity/models/**', 'data/equity/forecasts/**', 'data/equity/state.json', 'data/equity/bootstrap-complete.json']
   workflow_dispatch:
     inputs:
       enable_mlp:
@@ -27,6 +27,10 @@ on:
         type: choice
         options: ['0', '8']
         default: '0'
+      train_equity:
+        description: 'Run a bounded CPU GRU/TCN pilot on cached stock history'
+        type: boolean
+        default: false
   schedule:
     # UTC: 09:07/09:37–15:37 Shanghai; off the busy top of the hour.
     # GitHub scheduling is best effort, never a real-time market feed.
@@ -48,7 +52,7 @@ concurrency:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -71,8 +75,19 @@ jobs:
         run: |
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
           python -m pip install -r requirements-sentiment.txt
+      - name: Install bounded equity pilot dependencies
+        if: (hashFiles('data/equity/bootstrap-request.json') != '' && hashFiles('data/equity/bootstrap-complete.json') == '') || inputs.train_equity == true
+        run: python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
       - name: Verify time, leakage and review invariants
         run: python -m unittest discover -s tests -v
+      - name: Fill initial all-share history and run real-data neural pilot
+        if: hashFiles('data/equity/bootstrap-request.json') != '' && hashFiles('data/equity/bootstrap-complete.json') == ''
+        env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+        run: python -m pipeline.equity_update --bootstrap-if-needed --days 180 --max-requests 180 --train-pilot
+      - name: Run requested neural pilot on cached data
+        if: inputs.train_equity == true && hashFiles('data/equity/bootstrap-complete.json') != ''
+        run: python -m pipeline.equity_update --offline --max-requests 0 --train-pilot
       - name: Verify real Chinese finance model inference
         if: github.event_name == 'workflow_dispatch' && inputs.bootstrap_rounds == '8' && inputs.probe_group == 'none'
         run: |
@@ -128,12 +143,12 @@ jobs:
           print('VIEW_BYTES', Path('web/data/view.json').stat().st_size)
           PY
       - name: Persist observations and forecast ledger
-        if: github.event_name != 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add web/data/dashboard.json web/data/reviews.json web/data/view.json web/data/health.json
           if [ -f web/data/tushare-capabilities.json ]; then git add web/data/tushare-capabilities.json; fi
+          if [ -d data/equity ]; then git add data/equity; fi
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh observations and daily review [skip ci]'
             git pull --rebase origin main

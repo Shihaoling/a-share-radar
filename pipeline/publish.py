@@ -19,6 +19,31 @@ _DAILY_FIELDS = {
     "change_pct", "previous_close", "available_at", "price_available_at",
 }
 _CAP_FIELDS = {"date", "value"}
+_MODULE_STATE_FIELDS = {"version", "last_run_at", "status", "requests_this_run", "cooldown_until"}
+_FUND_SUMMARY_FIELDS = {"status", "covered_sectors", "total_sectors", "candidate_count", "requests_this_run", "note"}
+_EQUITY_COLLECTION_FIELDS = {"status", "source", "endpoint", "requested_days", "available_calendar_days",
+    "cached_days", "collected_days", "requests_this_run", "partial_data_days", "excluded_rows",
+    "latest_date", "missing_days", "cooldown_until", "error_code", "reference_note", "universe_basis"}
+_EQUITY_COVERAGE_FIELDS = {"universe_count", "predicted_count", "known_weight_count", "weight_coverage",
+    "count_coverage", "weights_complete"}
+
+
+def _select(value, fields):
+    return {key: deepcopy(item) for key, item in value.items() if key in fields} if isinstance(value, dict) else {}
+
+
+def _public_module_state(state):
+    """Whitelist small operational facts; never send fund catalogs to browsers."""
+    if not isinstance(state, dict):
+        return {}
+    result = _select(state, _MODULE_STATE_FIELDS)
+    result["endpoints"] = {key: _endpoint(value) for key, value in (state.get("endpoints") or {}).items()}
+    result["cache_summary"] = {
+        key: {"fetched_at": value.get("fetched_at"), "target_date": value.get("target_date"),
+              "cached_count": len(value.get("rows", [])) if isinstance(value.get("rows"), list) else 0}
+        for key, value in (state.get("cache") or {}).items() if isinstance(value, dict)
+    }
+    return result
 
 
 def _chart_rows(rows, fields):
@@ -52,6 +77,10 @@ def _clean(value):
             continue
         if key == "stock_api_state":
             result[key] = _public_state(item)
+        elif key == "fund_state":
+            result[key] = _public_module_state(item)
+        elif key == "equity_collection":
+            result[key] = _select(item, _EQUITY_COLLECTION_FIELDS)
         elif key in ("history", "market_cap_history", "cap_history") and isinstance(item, list):
             # Canonical entity histories are chronological; preserve exact bars.
             result[key] = _chart_rows(item, _DAILY_FIELDS if key == "history" else _CAP_FIELDS)
@@ -137,6 +166,11 @@ def health_summary(dashboard):
     state = dashboard.get("stock_api_state") or {}
     models = dashboard.get("models") or {}
     classification = state.get("classification") or {}
+    funds = dashboard.get("fund_state") or {}
+    forecast = dashboard.get("equity_forecast") or {}
+    equity_collection = dashboard.get("equity_collection") or {}
+    evaluation = forecast.get("evaluation") or {}
+    training = forecast.get("training") or {}
     return {
         "generated_at": dashboard.get("generated_at"), "status": dashboard.get("status"),
         "market_session": deepcopy(dashboard.get("market_session")),
@@ -155,5 +189,15 @@ def health_summary(dashboard):
         "prediction_status_counts": dict(Counter(row.get("status", "unknown") for row in dashboard.get("predictions", []))),
         "models": {key: models.get(key) for key in ("status", "champion", "challenger", "news_features", "last_trained_at", "feature_version")},
         "sentiment_summary": deepcopy(dashboard.get("sentiment_summary", {})),
+        "fund_summary": {**_select(dashboard.get("fund_summary"), _FUND_SUMMARY_FIELDS),
+                         "state": _public_module_state(funds)},
+        "equity_summary": {
+            **_select(forecast, {"status", "as_of", "target_date", "target_kind", "reference_date", "model", "model_version", "note"}),
+            "coverage": _select(forecast.get("coverage"), _EQUITY_COVERAGE_FIELDS),
+            "collection": _select(equity_collection, _EQUITY_COLLECTION_FIELDS),
+            "stock_status_counts": dict(Counter(row.get("status", "unknown") for row in forecast.get("stocks", []) if isinstance(row, dict))),
+            "evaluation": _select(evaluation, {"settled_count", "mae_pct", "direction_accuracy", "direction_evaluated", "note"}),
+            "training": _select(training, {"status", "promoted", "trained_at", "note"}),
+        },
         "news_count": len(dashboard.get("news", [])), "ledger_count": len(dashboard.get("ledger", [])),
     }
