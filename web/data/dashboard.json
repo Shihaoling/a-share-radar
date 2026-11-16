@@ -7396,6 +7396,20 @@
           },
           {
             "entity_id": "sh000001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-12",
+            "adjustment": "none",
+            "price": 3655.8295,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sh000001",
             "provider": "baostock",
             "upstream_provider": "baostock",
             "field": "close",
@@ -7424,6 +7438,20 @@
           },
           {
             "entity_id": "sh000001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-13",
+            "adjustment": "none",
+            "price": 3634.353,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sh000001",
             "provider": "tencent",
             "upstream_provider": "tencent",
             "field": "last",
@@ -7437,7 +7465,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:27+08:00"
       },
@@ -7462,7 +7490,7 @@
         "timestamp": "2026-11-16T15:55:27+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 34.667363,
+        "age_seconds": 3134.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -7470,7 +7498,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -7559,6 +7587,142 @@
             "caveats": "最近最多252个日收益样本，至少60个；默认年无风险利率2%是假设，可配置。未复权价格不含分红及公司行动调整；历史夏普不保证未来收益。"
           }
         }
+      },
+      "source_history": {
+        "stock_api": [
+          {
+            "date": "2026-11-06",
+            "open": 3612.147,
+            "high": 3660.4861,
+            "low": 3610.1978,
+            "close": 3649.1774,
+            "change_pct": -1.1039,
+            "volume": 477042561.0,
+            "amount": 772634566.2311,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-06T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-09",
+            "open": 3659.0169,
+            "high": 3679.0902,
+            "low": 3653.0456,
+            "close": 3660.7917,
+            "change_pct": 0.3183,
+            "volume": 427722257.0,
+            "amount": 682532599.9354,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-09T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-10",
+            "open": 3682.0369,
+            "high": 3683.7262,
+            "low": 3660.7167,
+            "close": 3663.7235,
+            "change_pct": 0.0801,
+            "volume": 404865177.0,
+            "amount": 673951893.2403,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-10T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-11",
+            "open": 3655.6556,
+            "high": 3689.6542,
+            "low": 3650.3145,
+            "close": 3680.6428,
+            "change_pct": 0.4618,
+            "volume": 433120083.0,
+            "amount": 736154792.0005,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-11T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-12",
+            "open": 3673.0554,
+            "high": 3699.5815,
+            "low": 3647.4413,
+            "close": 3655.8295,
+            "change_pct": -0.6742,
+            "volume": 496533033.0,
+            "amount": 879537113.5604,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-13",
+            "open": 3658.7191,
+            "high": 3669.4405,
+            "low": 3623.8414,
+            "close": 3634.353,
+            "change_pct": -0.5875,
+            "volume": 472293657.0,
+            "amount": 770614169.9836,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          }
+        ]
       }
     },
     {
@@ -14957,6 +15121,20 @@
           },
           {
             "entity_id": "sz399001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-12",
+            "adjustment": "none",
+            "price": 11197.9763,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sz399001",
             "provider": "baostock",
             "upstream_provider": "baostock",
             "field": "close",
@@ -14985,6 +15163,20 @@
           },
           {
             "entity_id": "sz399001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-13",
+            "adjustment": "none",
+            "price": 10968.7872,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sz399001",
             "provider": "tencent",
             "upstream_provider": "tencent",
             "field": "last",
@@ -14998,7 +15190,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:06+08:00"
       },
@@ -15023,7 +15215,7 @@
         "timestamp": "2026-11-16T15:55:06+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 55.667363,
+        "age_seconds": 3155.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -15031,7 +15223,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -15120,6 +15312,142 @@
             "caveats": "最近最多252个日收益样本，至少60个；默认年无风险利率2%是假设，可配置。未复权价格不含分红及公司行动调整；历史夏普不保证未来收益。"
           }
         }
+      },
+      "source_history": {
+        "stock_api": [
+          {
+            "date": "2026-11-06",
+            "open": 11044.5604,
+            "high": 11303.2215,
+            "low": 11044.5604,
+            "close": 11175.7805,
+            "change_pct": -2.5744,
+            "volume": 189388819.38,
+            "amount": 464975940.35909,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-06T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-09",
+            "open": 11273.2841,
+            "high": 11311.2014,
+            "low": 11145.4907,
+            "close": 11145.4907,
+            "change_pct": -0.271,
+            "volume": 161068651.85,
+            "amount": 396028588.33159,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-09T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-10",
+            "open": 11313.3196,
+            "high": 11315.5297,
+            "low": 11217.0079,
+            "close": 11241.5361,
+            "change_pct": 0.8617,
+            "volume": 157589537.77,
+            "amount": 397511182.27153,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-10T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-11",
+            "open": 11205.3513,
+            "high": 11415.9708,
+            "low": 11170.3459,
+            "close": 11389.7373,
+            "change_pct": 1.3183,
+            "volume": 169884788.53,
+            "amount": 466659638.86962,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-11T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-12",
+            "open": 11361.8231,
+            "high": 11515.6528,
+            "low": 11193.2626,
+            "close": 11197.9763,
+            "change_pct": -1.6836,
+            "volume": 202307456.1,
+            "amount": 541543841.15198,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          },
+          {
+            "date": "2026-11-13",
+            "open": 11236.1553,
+            "high": 11253.3145,
+            "low": 10941.1081,
+            "close": 10968.7872,
+            "change_pct": -2.0467,
+            "volume": 177250619.93,
+            "amount": 453925229.23018,
+            "volume_unit": "lot",
+            "volume_unit_label": "手",
+            "amount_unit": "CNY_thousand",
+            "amount_unit_label": "千元",
+            "source": "stock_api",
+            "provider": "stock_api",
+            "upstream_provider": "unknown",
+            "adjustment": "unadjusted",
+            "complete": true,
+            "fetched_at": "2026-11-16T16:47:41.617253+08:00",
+            "as_of": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close"
+          }
+        ]
       }
     },
     {
@@ -22558,7 +22886,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:21+08:00"
       },
@@ -22584,7 +22912,7 @@
         "timestamp": "2026-11-16T15:55:21+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 40.667363,
+        "age_seconds": 3140.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -22592,7 +22920,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -30119,7 +30447,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -30145,7 +30473,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -30153,7 +30481,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -37680,7 +38008,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -37707,7 +38035,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -37715,7 +38043,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -45242,7 +45570,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -45268,7 +45596,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -45276,7 +45604,7 @@
       },
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -55420,7 +55748,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:45+08:00"
         },
@@ -55445,7 +55773,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -55453,7 +55781,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -55562,13 +55890,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -55790,7 +56118,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:49+08:00"
         },
@@ -55815,7 +56143,7 @@
           "timestamp": "2026-11-16T15:55:49+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 12.667363,
+          "age_seconds": 3112.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -55823,7 +56151,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -55930,13 +56258,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -56082,13 +56410,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -56233,13 +56561,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -56463,7 +56791,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:47+08:00"
         },
@@ -56488,7 +56816,7 @@
           "timestamp": "2026-11-16T15:55:47+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 14.667363,
+          "age_seconds": 3114.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -56496,7 +56824,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -56603,13 +56931,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -66750,7 +67078,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:40+08:00"
         },
@@ -66777,7 +67105,7 @@
           "timestamp": "2026-11-16T15:55:40+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 21.667363,
+          "age_seconds": 3121.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -66785,7 +67113,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -66894,13 +67222,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -77042,7 +77370,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:34+08:00"
         },
@@ -77069,7 +77397,7 @@
           "timestamp": "2026-11-16T15:55:34+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 27.667363,
+          "age_seconds": 3127.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -77077,7 +77405,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -77186,13 +77514,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -87331,7 +87659,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:45+08:00"
         },
@@ -87358,7 +87686,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -87366,7 +87694,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -87475,13 +87803,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -97620,7 +97948,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:51+08:00"
         },
@@ -97647,7 +97975,7 @@
           "timestamp": "2026-11-16T15:55:51+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 10.667363,
+          "age_seconds": 3110.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -97655,7 +97983,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -97764,13 +98092,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -97915,13 +98243,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -98066,13 +98394,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -108213,7 +108541,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:15+08:00"
         },
@@ -108240,7 +108568,7 @@
           "timestamp": "2026-11-16T15:55:15+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 46.667363,
+          "age_seconds": 3146.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -108248,7 +108576,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -108357,13 +108685,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -108509,13 +108837,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -108662,13 +108990,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -118809,7 +119137,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:54+08:00"
         },
@@ -118836,7 +119164,7 @@
           "timestamp": "2026-11-16T15:55:54+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 7.667363,
+          "age_seconds": 3107.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -118844,7 +119172,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -118953,13 +119281,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -119103,13 +119431,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -119254,13 +119582,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -129401,7 +129729,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:51+08:00"
         },
@@ -129428,7 +129756,7 @@
           "timestamp": "2026-11-16T15:55:51+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 10.667363,
+          "age_seconds": 3110.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -129436,7 +129764,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -129545,13 +129873,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -139690,7 +140018,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:40+08:00"
         },
@@ -139717,7 +140045,7 @@
           "timestamp": "2026-11-16T15:55:40+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 21.667363,
+          "age_seconds": 3121.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -139725,7 +140053,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -139834,13 +140162,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -149981,7 +150309,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:45+08:00"
         },
@@ -150008,7 +150336,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -150016,7 +150344,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -150125,13 +150453,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -160271,7 +160599,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:43+08:00"
         },
@@ -160298,7 +160626,7 @@
           "timestamp": "2026-11-16T15:55:43+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 18.667363,
+          "age_seconds": 3118.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -160306,7 +160634,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -160415,13 +160743,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -170562,7 +170890,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:39+08:00"
         },
@@ -170589,7 +170917,7 @@
           "timestamp": "2026-11-16T15:55:39+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 22.667363,
+          "age_seconds": 3122.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -170597,7 +170925,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -170706,13 +171034,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -180852,7 +181180,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:44+08:00"
         },
@@ -180879,7 +181207,7 @@
           "timestamp": "2026-11-16T15:55:44+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 17.667363,
+          "age_seconds": 3117.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -180887,7 +181215,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -180996,13 +181324,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -181147,13 +181475,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -191294,7 +191622,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:52+08:00"
         },
@@ -191319,7 +191647,7 @@
           "timestamp": "2026-11-16T15:55:52+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 9.667363,
+          "age_seconds": 3109.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -191327,7 +191655,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -191438,13 +191766,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -201585,7 +201913,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:30+08:00"
         },
@@ -201610,7 +201938,7 @@
           "timestamp": "2026-11-16T15:55:30+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 31.667363,
+          "age_seconds": 3131.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -201618,7 +201946,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -201729,13 +202057,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -211875,7 +212203,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:56+08:00"
         },
@@ -211900,7 +212228,7 @@
           "timestamp": "2026-11-16T15:55:56+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 5.667363,
+          "age_seconds": 3105.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -211908,7 +212236,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -212019,13 +212347,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -212170,13 +212498,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -212321,13 +212649,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -222467,7 +222795,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:57+08:00"
         },
@@ -222492,7 +222820,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -222500,7 +222828,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -222611,13 +222939,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -222760,13 +223088,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -222984,7 +223312,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:57+08:00"
         },
@@ -223009,7 +223337,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -223017,7 +223345,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -223124,13 +223452,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -223348,7 +223676,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:57+08:00"
         },
@@ -223373,7 +223701,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -223381,7 +223709,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -223488,13 +223816,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -223632,13 +223960,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -223855,7 +224183,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:42+08:00"
         },
@@ -223880,7 +224208,7 @@
           "timestamp": "2026-11-16T15:55:42+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 19.667363,
+          "age_seconds": 3119.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -223888,7 +224216,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -223995,13 +224323,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -224217,7 +224545,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:42+08:00"
         },
@@ -224242,7 +224570,7 @@
           "timestamp": "2026-11-16T15:55:42+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 19.667363,
+          "age_seconds": 3119.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -224250,7 +224578,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -224357,13 +224685,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -224501,13 +224829,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -224645,13 +224973,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -224789,13 +225117,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -224932,13 +225260,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -225075,13 +225403,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -225298,7 +225626,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:50+08:00"
         },
@@ -225323,7 +225651,7 @@
           "timestamp": "2026-11-16T15:55:50+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 11.667363,
+          "age_seconds": 3111.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -225331,7 +225659,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -225438,13 +225766,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -225581,13 +225909,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -225724,13 +226052,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -225868,13 +226196,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -226091,7 +226419,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:43+08:00"
         },
@@ -226116,7 +226444,7 @@
           "timestamp": "2026-11-16T15:55:43+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 18.667363,
+          "age_seconds": 3118.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -226124,7 +226452,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -226231,13 +226559,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -226454,7 +226782,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:48+08:00"
         },
@@ -226479,7 +226807,7 @@
           "timestamp": "2026-11-16T15:55:48+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 13.667363,
+          "age_seconds": 3113.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -226487,7 +226815,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -226594,13 +226922,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -226737,13 +227065,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -226881,13 +227209,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -227025,13 +227353,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -227248,7 +227576,7 @@
               "exclusion_reason": null
             }
           ],
-          "checked_at": "2026-11-16T15:56:01.669851+08:00",
+          "checked_at": "2026-11-16T16:47:41.617253+08:00",
           "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
           "market_timestamp": "2026-11-16T15:55:45+08:00"
         },
@@ -227273,7 +227601,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -227281,7 +227609,7 @@
         },
         "quant_metrics": {
           "version": "quant-metrics-v1",
-          "as_of": "2026-11-16T15:56:01.669851+08:00",
+          "as_of": "2026-11-16T16:47:41.617253+08:00",
           "pe_ttm": {
             "value": null,
             "status": "unavailable",
@@ -227388,13 +227716,13 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       "data_quality": "not_comparable",
       "quant_metrics": {
         "version": "quant-metrics-v1",
-        "as_of": "2026-11-16T15:56:01.669851+08:00",
+        "as_of": "2026-11-16T16:47:41.617253+08:00",
         "pe_ttm": {
           "value": null,
           "status": "unavailable",
@@ -230234,6 +230562,18 @@
       "message": "robots.txt无法核验，未继续请求报价：HTTP 403：来源限制访问，停止请求，不绕过验证",
       "last_attempt": "2026-11-16T15:56:00+08:00",
       "retry_after": "2026-11-16T16:11:00+08:00"
+    },
+    {
+      "id": "stock_api",
+      "name": "股票日线与估值补充",
+      "type": "daily_supplement",
+      "url": "https://t.xiaodefa.top/",
+      "provider": "stock_api",
+      "upstream_provider": "unknown",
+      "status": "success",
+      "last_success": "2026-11-16T16:47:41.617253+08:00",
+      "message": "已补充股票日线数据；日期来自已完成交易日，兼容服务上游未知",
+      "retry_after": null
     }
   ],
   "official_portals": [
@@ -230276,7 +230616,7 @@
   ],
   "schema_version": 1,
   "data_mode": "live",
-  "generated_at": "2026-11-16T15:56:01.669851+08:00",
+  "generated_at": "2026-11-16T16:47:41.617253+08:00",
   "market_session": {
     "phase": "post_close",
     "label": "已收盘",
@@ -230294,9 +230634,9 @@
       "id": null,
       "sector_id": "sh000001",
       "sector_name": "上证指数",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230323,9 +230663,9 @@
       "id": null,
       "sector_id": "sz399001",
       "sector_name": "深证成指",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230352,9 +230692,9 @@
       "id": null,
       "sector_id": "sz399006",
       "sector_name": "创业板指",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230381,9 +230721,9 @@
       "id": null,
       "sector_id": "sh000300",
       "sector_name": "沪深300",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230410,9 +230750,9 @@
       "id": null,
       "sector_id": "sh000688",
       "sector_name": "科创50",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230439,9 +230779,9 @@
       "id": null,
       "sector_id": "sh000905",
       "sector_name": "中证500",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230468,9 +230808,9 @@
       "id": null,
       "sector_id": "agriculture:proxy:159825",
       "sector_name": "农牧饲渔（参考ETF：农业ETF富国）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230497,9 +230837,9 @@
       "id": null,
       "sector_id": "coal:proxy:515220",
       "sector_name": "煤炭行业（参考ETF：煤炭ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230526,9 +230866,9 @@
       "id": null,
       "sector_id": "oil_gas",
       "sector_name": "石油行业",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230555,9 +230895,9 @@
       "id": null,
       "sector_id": "chemicals",
       "sector_name": "化学制品",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230584,9 +230924,9 @@
       "id": null,
       "sector_id": "steel:proxy:515210",
       "sector_name": "钢铁行业（参考ETF：钢铁ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230613,9 +230953,9 @@
       "id": null,
       "sector_id": "metals:proxy:512400",
       "sector_name": "有色金属（参考ETF：有色ETF南方）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230642,9 +230982,9 @@
       "id": null,
       "sector_id": "semiconductor:proxy:512480",
       "sector_name": "半导体（参考ETF：半导体ETF国联安）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230671,9 +231011,9 @@
       "id": null,
       "sector_id": "home_appliances:proxy:159996",
       "sector_name": "家电行业（参考ETF：家电ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230700,9 +231040,9 @@
       "id": null,
       "sector_id": "food_beverage:proxy:515170",
       "sector_name": "食品饮料（参考ETF：食品饮料ETF华夏）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230729,9 +231069,9 @@
       "id": null,
       "sector_id": "textiles",
       "sector_name": "纺织服装",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230758,9 +231098,9 @@
       "id": null,
       "sector_id": "paper",
       "sector_name": "造纸印刷",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230787,9 +231127,9 @@
       "id": null,
       "sector_id": "pharmaceutical:proxy:159938",
       "sector_name": "化学制药（参考ETF：医药卫生ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230816,9 +231156,9 @@
       "id": null,
       "sector_id": "utilities",
       "sector_name": "电力行业",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230845,9 +231185,9 @@
       "id": null,
       "sector_id": "shipping",
       "sector_name": "航运港口",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230874,9 +231214,9 @@
       "id": null,
       "sector_id": "real_estate:proxy:512200",
       "sector_name": "房地产开发（参考ETF：房地产ETF南方）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230903,9 +231243,9 @@
       "id": null,
       "sector_id": "retail",
       "sector_name": "商业百货",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230932,9 +231272,9 @@
       "id": null,
       "sector_id": "tourism",
       "sector_name": "旅游酒店",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -230961,9 +231301,9 @@
       "id": null,
       "sector_id": "banks:proxy:512800",
       "sector_name": "银行（参考ETF：银行ETF华宝）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -230990,9 +231330,9 @@
       "id": null,
       "sector_id": "securities:proxy:512880",
       "sector_name": "证券（参考ETF：证券ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231019,9 +231359,9 @@
       "id": null,
       "sector_id": "media:proxy:512980",
       "sector_name": "文化传媒（参考ETF：传媒ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231048,9 +231388,9 @@
       "id": null,
       "sector_id": "software:proxy:512720",
       "sector_name": "软件开发（参考ETF：计算机ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231077,9 +231417,9 @@
       "id": null,
       "sector_id": "telecom:proxy:515880",
       "sector_name": "通信设备（参考ETF：通信ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231106,9 +231446,9 @@
       "id": null,
       "sector_id": "defense:proxy:512710",
       "sector_name": "航天航空（参考ETF：军工龙头ETF富国）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231135,9 +231475,9 @@
       "id": null,
       "sector_id": "machinery",
       "sector_name": "通用设备",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231164,9 +231504,9 @@
       "id": null,
       "sector_id": "automobiles:proxy:515030",
       "sector_name": "汽车整车（参考ETF：新能源车ETF华夏）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231193,9 +231533,9 @@
       "id": null,
       "sector_id": "battery:proxy:159755",
       "sector_name": "电池（参考ETF：电池ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231222,9 +231562,9 @@
       "id": null,
       "sector_id": "environment:proxy:512580",
       "sector_name": "环保行业（参考ETF：环保ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231251,9 +231591,9 @@
       "id": null,
       "sector_id": "beauty",
       "sector_name": "美容护理",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231280,9 +231620,9 @@
       "id": null,
       "sector_id": "building_material",
       "sector_name": "水泥建材",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231309,9 +231649,9 @@
       "id": null,
       "sector_id": "construction:proxy:516970",
       "sector_name": "工程建设（参考ETF：基建50ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231338,9 +231678,9 @@
       "id": null,
       "sector_id": "insurance",
       "sector_name": "保险",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231367,9 +231707,9 @@
       "id": null,
       "sector_id": "ai:proxy:159819",
       "sector_name": "人工智能（参考ETF：人工智能ETF易方达）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231396,9 +231736,9 @@
       "id": null,
       "sector_id": "compute:proxy:516510",
       "sector_name": "算力概念（参考ETF：云计算ETF易方达）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231425,9 +231765,9 @@
       "id": null,
       "sector_id": "cpo",
       "sector_name": "CPO概念",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231454,9 +231794,9 @@
       "id": null,
       "sector_id": "robotics:proxy:562500",
       "sector_name": "机器人概念（参考ETF：机器人ETF华夏）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231483,9 +231823,9 @@
       "id": null,
       "sector_id": "humanoid:proxy:562500",
       "sector_name": "人形机器人（参考ETF：机器人ETF华夏）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231512,9 +231852,9 @@
       "id": null,
       "sector_id": "autonomous",
       "sector_name": "无人驾驶",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231541,9 +231881,9 @@
       "id": null,
       "sector_id": "low_altitude",
       "sector_name": "低空经济",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231570,9 +231910,9 @@
       "id": null,
       "sector_id": "space",
       "sector_name": "商业航天",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231599,9 +231939,9 @@
       "id": null,
       "sector_id": "quantum",
       "sector_name": "量子科技",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231628,9 +231968,9 @@
       "id": null,
       "sector_id": "cybersecurity",
       "sector_name": "网络安全",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231657,9 +231997,9 @@
       "id": null,
       "sector_id": "innovation_drug:proxy:515120",
       "sector_name": "创新药（参考ETF：创新药ETF广发）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231686,9 +232026,9 @@
       "id": null,
       "sector_id": "solid_state",
       "sector_name": "固态电池",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231715,9 +232055,9 @@
       "id": null,
       "sector_id": "storage",
       "sector_name": "储能",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231744,9 +232084,9 @@
       "id": null,
       "sector_id": "hydrogen",
       "sector_name": "氢能源",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231773,9 +232113,9 @@
       "id": null,
       "sector_id": "pv:proxy:515790",
       "sector_name": "光伏建筑一体化（参考ETF：光伏ETF华泰柏瑞）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231802,9 +232142,9 @@
       "id": null,
       "sector_id": "rare_earth:proxy:516150",
       "sector_name": "稀土永磁（参考ETF：稀土ETF嘉实）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231831,9 +232171,9 @@
       "id": null,
       "sector_id": "gold",
       "sector_name": "黄金概念",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231860,9 +232200,9 @@
       "id": null,
       "sector_id": "nuclear",
       "sector_name": "核能核电",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231889,9 +232229,9 @@
       "id": null,
       "sector_id": "digital_economy",
       "sector_name": "数字经济",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘点位",
@@ -231918,9 +232258,9 @@
       "id": null,
       "sector_id": "chip_local:proxy:512760",
       "sector_name": "国产芯片（参考ETF：芯片ETF国泰）",
-      "issued_at": "2026-11-16T15:56:01.669851+08:00",
-      "issue_slot": "2026-11-16T15:30:00+08:00",
-      "cutoff_at": "2026-11-16T15:56:01.669851+08:00",
+      "issued_at": "2026-11-16T16:47:41.617253+08:00",
+      "issue_slot": "2026-11-16T16:30:00+08:00",
+      "cutoff_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-17",
       "target_kind": "next_open",
       "target_label": "下次开盘价格",
@@ -231975,7 +232315,7 @@
   },
   "daily_review": {
     "date": "2026-11-16",
-    "evaluated_at": "2026-11-16T15:56:01.669851+08:00",
+    "evaluated_at": "2026-11-16T16:47:41.617253+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 0,
     "settled_count": 0,
@@ -232361,6 +232701,30 @@
       "price": 1.0,
       "adjustment": "none",
       "observed_at": "2026-11-16T15:56:01.669851+08:00",
+      "market_timestamp": "2026-11-12T15:00:00+08:00",
+      "timestamp_quality": "daily_close"
+    },
+    {
+      "entity_id": "sh000001",
+      "provider": "stock_api",
+      "upstream_provider": "unknown",
+      "field": "close",
+      "trade_date": "2026-11-12",
+      "price": 3655.8295,
+      "adjustment": "none",
+      "observed_at": "2026-11-16T16:47:41.617253+08:00",
+      "market_timestamp": "2026-11-12T15:00:00+08:00",
+      "timestamp_quality": "daily_close"
+    },
+    {
+      "entity_id": "sz399001",
+      "provider": "stock_api",
+      "upstream_provider": "unknown",
+      "field": "close",
+      "trade_date": "2026-11-12",
+      "price": 11197.9763,
+      "adjustment": "none",
+      "observed_at": "2026-11-16T16:47:41.617253+08:00",
       "market_timestamp": "2026-11-12T15:00:00+08:00",
       "timestamp_quality": "daily_close"
     },
@@ -233038,6 +233402,30 @@
     },
     {
       "entity_id": "sh000001",
+      "provider": "stock_api",
+      "upstream_provider": "unknown",
+      "field": "close",
+      "trade_date": "2026-11-13",
+      "price": 3634.353,
+      "adjustment": "none",
+      "observed_at": "2026-11-16T16:47:41.617253+08:00",
+      "market_timestamp": "2026-11-13T15:00:00+08:00",
+      "timestamp_quality": "daily_close"
+    },
+    {
+      "entity_id": "sz399001",
+      "provider": "stock_api",
+      "upstream_provider": "unknown",
+      "field": "close",
+      "trade_date": "2026-11-13",
+      "price": 10968.7872,
+      "adjustment": "none",
+      "observed_at": "2026-11-16T16:47:41.617253+08:00",
+      "market_timestamp": "2026-11-13T15:00:00+08:00",
+      "timestamp_quality": "daily_close"
+    },
+    {
+      "entity_id": "sh000001",
       "provider": "tencent",
       "upstream_provider": "tencent",
       "field": "last",
@@ -233532,6 +233920,20 @@
         },
         {
           "entity_id": "sh000001",
+          "provider": "stock_api",
+          "upstream_provider": null,
+          "field": "close",
+          "trade_date": "2026-11-12",
+          "adjustment": "none",
+          "price": 3655.8295,
+          "observed_at": "2026-11-16T16:47:41.617253+08:00",
+          "market_timestamp": "2026-11-12T15:00:00+08:00",
+          "timestamp_quality": "daily_close",
+          "used": false,
+          "exclusion_reason": "unknown_upstream"
+        },
+        {
+          "entity_id": "sh000001",
           "provider": "baostock",
           "upstream_provider": "baostock",
           "field": "close",
@@ -233560,6 +233962,20 @@
         },
         {
           "entity_id": "sh000001",
+          "provider": "stock_api",
+          "upstream_provider": null,
+          "field": "close",
+          "trade_date": "2026-11-13",
+          "adjustment": "none",
+          "price": 3634.353,
+          "observed_at": "2026-11-16T16:47:41.617253+08:00",
+          "market_timestamp": "2026-11-13T15:00:00+08:00",
+          "timestamp_quality": "daily_close",
+          "used": false,
+          "exclusion_reason": "unknown_upstream"
+        },
+        {
+          "entity_id": "sh000001",
           "provider": "tencent",
           "upstream_provider": "tencent",
           "field": "last",
@@ -233573,7 +233989,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:27+08:00"
     },
@@ -233635,6 +234051,20 @@
         },
         {
           "entity_id": "sz399001",
+          "provider": "stock_api",
+          "upstream_provider": null,
+          "field": "close",
+          "trade_date": "2026-11-12",
+          "adjustment": "none",
+          "price": 11197.9763,
+          "observed_at": "2026-11-16T16:47:41.617253+08:00",
+          "market_timestamp": "2026-11-12T15:00:00+08:00",
+          "timestamp_quality": "daily_close",
+          "used": false,
+          "exclusion_reason": "unknown_upstream"
+        },
+        {
+          "entity_id": "sz399001",
           "provider": "baostock",
           "upstream_provider": "baostock",
           "field": "close",
@@ -233663,6 +234093,20 @@
         },
         {
           "entity_id": "sz399001",
+          "provider": "stock_api",
+          "upstream_provider": null,
+          "field": "close",
+          "trade_date": "2026-11-13",
+          "adjustment": "none",
+          "price": 10968.7872,
+          "observed_at": "2026-11-16T16:47:41.617253+08:00",
+          "market_timestamp": "2026-11-13T15:00:00+08:00",
+          "timestamp_quality": "daily_close",
+          "used": false,
+          "exclusion_reason": "unknown_upstream"
+        },
+        {
+          "entity_id": "sz399001",
           "provider": "tencent",
           "upstream_provider": "tencent",
           "field": "last",
@@ -233676,7 +234120,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:06+08:00"
     },
@@ -233779,7 +234223,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:21+08:00"
     },
@@ -233882,7 +234326,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:09+08:00"
     },
@@ -233985,7 +234429,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:09+08:00"
     },
@@ -234088,7 +234532,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:09+08:00"
     },
@@ -234110,7 +234554,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234198,7 +234642,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:45+08:00"
     },
@@ -234220,7 +234664,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234280,7 +234724,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:49+08:00"
     },
@@ -234302,7 +234746,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234323,7 +234767,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234344,7 +234788,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234404,7 +234848,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:47+08:00"
     },
@@ -234426,7 +234870,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234514,7 +234958,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:40+08:00"
     },
@@ -234536,7 +234980,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234624,7 +235068,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:34+08:00"
     },
@@ -234646,7 +235090,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234734,7 +235178,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:45+08:00"
     },
@@ -234756,7 +235200,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234844,7 +235288,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:51+08:00"
     },
@@ -234866,7 +235310,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234887,7 +235331,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234908,7 +235352,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -234996,7 +235440,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:15+08:00"
     },
@@ -235018,7 +235462,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235039,7 +235483,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235060,7 +235504,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235148,7 +235592,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:54+08:00"
     },
@@ -235170,7 +235614,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235191,7 +235635,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235212,7 +235656,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235300,7 +235744,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:51+08:00"
     },
@@ -235322,7 +235766,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235410,7 +235854,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:40+08:00"
     },
@@ -235432,7 +235876,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235520,7 +235964,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:45+08:00"
     },
@@ -235542,7 +235986,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235630,7 +236074,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:43+08:00"
     },
@@ -235652,7 +236096,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235740,7 +236184,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:39+08:00"
     },
@@ -235762,7 +236206,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235850,7 +236294,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:44+08:00"
     },
@@ -235872,7 +236316,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235893,7 +236337,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -235981,7 +236425,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:52+08:00"
     },
@@ -236003,7 +236447,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236091,7 +236535,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:30+08:00"
     },
@@ -236113,7 +236557,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236201,7 +236645,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:56+08:00"
     },
@@ -236223,7 +236667,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236244,7 +236688,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236265,7 +236709,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236353,7 +236797,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:57+08:00"
     },
@@ -236375,7 +236819,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236396,7 +236840,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236456,7 +236900,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:57+08:00"
     },
@@ -236478,7 +236922,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236538,7 +236982,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:57+08:00"
     },
@@ -236560,7 +237004,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236581,7 +237025,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236641,7 +237085,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:42+08:00"
     },
@@ -236663,7 +237107,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236723,7 +237167,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:42+08:00"
     },
@@ -236745,7 +237189,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236766,7 +237210,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236787,7 +237231,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236808,7 +237252,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236829,7 +237273,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236850,7 +237294,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236910,7 +237354,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:50+08:00"
     },
@@ -236932,7 +237376,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236953,7 +237397,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236974,7 +237418,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -236995,7 +237439,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237055,7 +237499,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:43+08:00"
     },
@@ -237077,7 +237521,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237137,7 +237581,7 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:48+08:00"
     },
@@ -237159,7 +237603,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237180,7 +237624,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237201,7 +237645,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237222,7 +237666,7 @@
       "comparison_count": 0,
       "comparisons": [],
       "evidence": [],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "没有当前目标交易日的可比报价"
     },
     {
@@ -237282,17 +237726,17 @@
           "exclusion_reason": null
         }
       ],
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
       "market_timestamp": "2026-11-16T15:55:45+08:00"
     }
   ],
   "validation_summary": {
-    "checked_at": "2026-11-16T15:56:01.669851+08:00",
+    "checked_at": "2026-11-16T16:47:41.617253+08:00",
     "target_date": "2026-11-16",
     "entity_count": 84,
     "check_count": 84,
-    "observation_count": 118,
+    "observation_count": 122,
     "verified": 0,
     "single_source": 33,
     "conflict": 0,
@@ -237358,6 +237802,20 @@
           },
           {
             "entity_id": "sh000001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-12",
+            "adjustment": "none",
+            "price": 3655.8295,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sh000001",
             "provider": "baostock",
             "upstream_provider": "baostock",
             "field": "close",
@@ -237386,6 +237844,20 @@
           },
           {
             "entity_id": "sh000001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-13",
+            "adjustment": "none",
+            "price": 3634.353,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sh000001",
             "provider": "tencent",
             "upstream_provider": "tencent",
             "field": "last",
@@ -237399,7 +237871,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:27+08:00"
       },
@@ -237461,6 +237933,20 @@
           },
           {
             "entity_id": "sz399001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-12",
+            "adjustment": "none",
+            "price": 11197.9763,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-12T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sz399001",
             "provider": "baostock",
             "upstream_provider": "baostock",
             "field": "close",
@@ -237489,6 +237975,20 @@
           },
           {
             "entity_id": "sz399001",
+            "provider": "stock_api",
+            "upstream_provider": null,
+            "field": "close",
+            "trade_date": "2026-11-13",
+            "adjustment": "none",
+            "price": 10968.7872,
+            "observed_at": "2026-11-16T16:47:41.617253+08:00",
+            "market_timestamp": "2026-11-13T15:00:00+08:00",
+            "timestamp_quality": "daily_close",
+            "used": false,
+            "exclusion_reason": "unknown_upstream"
+          },
+          {
+            "entity_id": "sz399001",
             "provider": "tencent",
             "upstream_provider": "tencent",
             "field": "last",
@@ -237502,7 +238002,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:06+08:00"
       },
@@ -237605,7 +238105,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:21+08:00"
       },
@@ -237708,7 +238208,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -237811,7 +238311,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -237914,7 +238414,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:09+08:00"
       },
@@ -237936,7 +238436,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238024,7 +238524,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:45+08:00"
       },
@@ -238046,7 +238546,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238106,7 +238606,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:49+08:00"
       },
@@ -238128,7 +238628,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238149,7 +238649,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238170,7 +238670,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238230,7 +238730,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:47+08:00"
       },
@@ -238252,7 +238752,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238340,7 +238840,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:40+08:00"
       },
@@ -238362,7 +238862,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238450,7 +238950,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:34+08:00"
       },
@@ -238472,7 +238972,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238560,7 +239060,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:45+08:00"
       },
@@ -238582,7 +239082,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238670,7 +239170,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:51+08:00"
       },
@@ -238692,7 +239192,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238713,7 +239213,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238734,7 +239234,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238822,7 +239322,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:15+08:00"
       },
@@ -238844,7 +239344,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238865,7 +239365,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238886,7 +239386,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -238974,7 +239474,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:54+08:00"
       },
@@ -238996,7 +239496,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239017,7 +239517,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239038,7 +239538,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239126,7 +239626,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:51+08:00"
       },
@@ -239148,7 +239648,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239236,7 +239736,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:40+08:00"
       },
@@ -239258,7 +239758,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239346,7 +239846,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:45+08:00"
       },
@@ -239368,7 +239868,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239456,7 +239956,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:43+08:00"
       },
@@ -239478,7 +239978,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239566,7 +240066,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:39+08:00"
       },
@@ -239588,7 +240088,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239676,7 +240176,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:44+08:00"
       },
@@ -239698,7 +240198,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239719,7 +240219,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239807,7 +240307,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:52+08:00"
       },
@@ -239829,7 +240329,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -239917,7 +240417,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:30+08:00"
       },
@@ -239939,7 +240439,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240027,7 +240527,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:56+08:00"
       },
@@ -240049,7 +240549,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240070,7 +240570,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240091,7 +240591,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240179,7 +240679,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:57+08:00"
       },
@@ -240201,7 +240701,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240222,7 +240722,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240282,7 +240782,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:57+08:00"
       },
@@ -240304,7 +240804,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240364,7 +240864,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:57+08:00"
       },
@@ -240386,7 +240886,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240407,7 +240907,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240467,7 +240967,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:42+08:00"
       },
@@ -240489,7 +240989,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240549,7 +241049,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:42+08:00"
       },
@@ -240571,7 +241071,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240592,7 +241092,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240613,7 +241113,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240634,7 +241134,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240655,7 +241155,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240676,7 +241176,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240736,7 +241236,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:50+08:00"
       },
@@ -240758,7 +241258,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240779,7 +241279,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240800,7 +241300,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240821,7 +241321,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240881,7 +241381,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:43+08:00"
       },
@@ -240903,7 +241403,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -240963,7 +241463,7 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:48+08:00"
       },
@@ -240985,7 +241485,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -241006,7 +241506,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -241027,7 +241527,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -241048,7 +241548,7 @@
         "comparison_count": 0,
         "comparisons": [],
         "evidence": [],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "没有当前目标交易日的可比报价"
       },
       {
@@ -241108,17 +241608,17 @@
             "exclusion_reason": null
           }
         ],
-        "checked_at": "2026-11-16T15:56:01.669851+08:00",
+        "checked_at": "2026-11-16T16:47:41.617253+08:00",
         "reason": "当前目标日期只有一个独立上游，尚无交叉确认",
         "market_timestamp": "2026-11-16T15:55:45+08:00"
       }
     ],
     "validation_summary": {
-      "checked_at": "2026-11-16T15:56:01.669851+08:00",
+      "checked_at": "2026-11-16T16:47:41.617253+08:00",
       "target_date": "2026-11-16",
       "entity_count": 84,
       "check_count": 84,
-      "observation_count": 118,
+      "observation_count": 122,
       "verified": 0,
       "single_source": 33,
       "conflict": 0,
@@ -241206,7 +241706,7 @@
           "timestamp": "2026-11-16T15:55:27+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 34.667363,
+          "age_seconds": 3134.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241233,7 +241733,7 @@
         "timestamp": "2026-11-16T15:55:27+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 34.667363,
+        "age_seconds": 3134.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241321,7 +241821,7 @@
           "timestamp": "2026-11-16T15:55:06+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 55.667363,
+          "age_seconds": 3155.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241348,7 +241848,7 @@
         "timestamp": "2026-11-16T15:55:06+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 55.667363,
+        "age_seconds": 3155.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241436,7 +241936,7 @@
           "timestamp": "2026-11-16T15:55:21+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 40.667363,
+          "age_seconds": 3140.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241463,7 +241963,7 @@
         "timestamp": "2026-11-16T15:55:21+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 40.667363,
+        "age_seconds": 3140.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241551,7 +242051,7 @@
           "timestamp": "2026-11-16T15:55:09+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 52.667363,
+          "age_seconds": 3152.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241578,7 +242078,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241666,7 +242166,7 @@
           "timestamp": "2026-11-16T15:55:09+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 52.667363,
+          "age_seconds": 3152.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241693,7 +242193,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241781,7 +242281,7 @@
           "timestamp": "2026-11-16T15:55:09+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 52.667363,
+          "age_seconds": 3152.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241808,7 +242308,7 @@
         "timestamp": "2026-11-16T15:55:09+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 52.667363,
+        "age_seconds": 3152.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -241896,7 +242396,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -241923,7 +242423,7 @@
         "timestamp": "2026-11-16T15:55:45+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 16.667363,
+        "age_seconds": 3116.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242011,7 +242511,7 @@
           "timestamp": "2026-11-16T15:55:49+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 12.667363,
+          "age_seconds": 3112.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242038,7 +242538,7 @@
         "timestamp": "2026-11-16T15:55:49+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 12.667363,
+        "age_seconds": 3112.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242126,7 +242626,7 @@
           "timestamp": "2026-11-16T15:55:47+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 14.667363,
+          "age_seconds": 3114.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242153,7 +242653,7 @@
         "timestamp": "2026-11-16T15:55:47+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 14.667363,
+        "age_seconds": 3114.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242241,7 +242741,7 @@
           "timestamp": "2026-11-16T15:55:40+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 21.667363,
+          "age_seconds": 3121.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242268,7 +242768,7 @@
         "timestamp": "2026-11-16T15:55:40+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 21.667363,
+        "age_seconds": 3121.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242356,7 +242856,7 @@
           "timestamp": "2026-11-16T15:55:34+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 27.667363,
+          "age_seconds": 3127.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242383,7 +242883,7 @@
         "timestamp": "2026-11-16T15:55:34+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 27.667363,
+        "age_seconds": 3127.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242471,7 +242971,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242498,7 +242998,7 @@
         "timestamp": "2026-11-16T15:55:45+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 16.667363,
+        "age_seconds": 3116.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242586,7 +243086,7 @@
           "timestamp": "2026-11-16T15:55:51+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 10.667363,
+          "age_seconds": 3110.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242613,7 +243113,7 @@
         "timestamp": "2026-11-16T15:55:51+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 10.667363,
+        "age_seconds": 3110.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242701,7 +243201,7 @@
           "timestamp": "2026-11-16T15:55:15+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 46.667363,
+          "age_seconds": 3146.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242728,7 +243228,7 @@
         "timestamp": "2026-11-16T15:55:15+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 46.667363,
+        "age_seconds": 3146.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242816,7 +243316,7 @@
           "timestamp": "2026-11-16T15:55:54+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 7.667363,
+          "age_seconds": 3107.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242843,7 +243343,7 @@
         "timestamp": "2026-11-16T15:55:54+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 7.667363,
+        "age_seconds": 3107.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -242931,7 +243431,7 @@
           "timestamp": "2026-11-16T15:55:51+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 10.667363,
+          "age_seconds": 3110.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -242958,7 +243458,7 @@
         "timestamp": "2026-11-16T15:55:51+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 10.667363,
+        "age_seconds": 3110.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243046,7 +243546,7 @@
           "timestamp": "2026-11-16T15:55:40+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 21.667363,
+          "age_seconds": 3121.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243073,7 +243573,7 @@
         "timestamp": "2026-11-16T15:55:40+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 21.667363,
+        "age_seconds": 3121.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243161,7 +243661,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243188,7 +243688,7 @@
         "timestamp": "2026-11-16T15:55:45+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 16.667363,
+        "age_seconds": 3116.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243276,7 +243776,7 @@
           "timestamp": "2026-11-16T15:55:43+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 18.667363,
+          "age_seconds": 3118.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243303,7 +243803,7 @@
         "timestamp": "2026-11-16T15:55:43+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 18.667363,
+        "age_seconds": 3118.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243391,7 +243891,7 @@
           "timestamp": "2026-11-16T15:55:39+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 22.667363,
+          "age_seconds": 3122.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243418,7 +243918,7 @@
         "timestamp": "2026-11-16T15:55:39+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 22.667363,
+        "age_seconds": 3122.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243506,7 +244006,7 @@
           "timestamp": "2026-11-16T15:55:44+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 17.667363,
+          "age_seconds": 3117.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243533,7 +244033,7 @@
         "timestamp": "2026-11-16T15:55:44+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 17.667363,
+        "age_seconds": 3117.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243621,7 +244121,7 @@
           "timestamp": "2026-11-16T15:55:52+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 9.667363,
+          "age_seconds": 3109.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243648,7 +244148,7 @@
         "timestamp": "2026-11-16T15:55:52+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 9.667363,
+        "age_seconds": 3109.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243736,7 +244236,7 @@
           "timestamp": "2026-11-16T15:55:30+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 31.667363,
+          "age_seconds": 3131.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243763,7 +244263,7 @@
         "timestamp": "2026-11-16T15:55:30+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 31.667363,
+        "age_seconds": 3131.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243851,7 +244351,7 @@
           "timestamp": "2026-11-16T15:55:56+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 5.667363,
+          "age_seconds": 3105.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243878,7 +244378,7 @@
         "timestamp": "2026-11-16T15:55:56+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 5.667363,
+        "age_seconds": 3105.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -243966,7 +244466,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -243993,7 +244493,7 @@
         "timestamp": "2026-11-16T15:55:57+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 4.667363,
+        "age_seconds": 3104.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244081,7 +244581,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244108,7 +244608,7 @@
         "timestamp": "2026-11-16T15:55:57+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 4.667363,
+        "age_seconds": 3104.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244196,7 +244696,7 @@
           "timestamp": "2026-11-16T15:55:57+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 4.667363,
+          "age_seconds": 3104.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244223,7 +244723,7 @@
         "timestamp": "2026-11-16T15:55:57+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 4.667363,
+        "age_seconds": 3104.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244311,7 +244811,7 @@
           "timestamp": "2026-11-16T15:55:42+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 19.667363,
+          "age_seconds": 3119.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244338,7 +244838,7 @@
         "timestamp": "2026-11-16T15:55:42+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 19.667363,
+        "age_seconds": 3119.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244426,7 +244926,7 @@
           "timestamp": "2026-11-16T15:55:42+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 19.667363,
+          "age_seconds": 3119.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244453,7 +244953,7 @@
         "timestamp": "2026-11-16T15:55:42+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 19.667363,
+        "age_seconds": 3119.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244541,7 +245041,7 @@
           "timestamp": "2026-11-16T15:55:50+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 11.667363,
+          "age_seconds": 3111.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244568,7 +245068,7 @@
         "timestamp": "2026-11-16T15:55:50+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 11.667363,
+        "age_seconds": 3111.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244656,7 +245156,7 @@
           "timestamp": "2026-11-16T15:55:43+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 18.667363,
+          "age_seconds": 3118.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244683,7 +245183,7 @@
         "timestamp": "2026-11-16T15:55:43+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 18.667363,
+        "age_seconds": 3118.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244771,7 +245271,7 @@
           "timestamp": "2026-11-16T15:55:48+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 13.667363,
+          "age_seconds": 3113.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244798,7 +245298,7 @@
         "timestamp": "2026-11-16T15:55:48+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 13.667363,
+        "age_seconds": 3113.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244886,7 +245386,7 @@
           "timestamp": "2026-11-16T15:55:45+08:00",
           "trade_date": "2026-11-16",
           "is_live": false,
-          "age_seconds": 16.667363,
+          "age_seconds": 3116.520137,
           "pe_ttm": null,
           "pe_dynamic": null,
           "pe_static": null,
@@ -244913,7 +245413,7 @@
         "timestamp": "2026-11-16T15:55:45+08:00",
         "trade_date": "2026-11-16",
         "is_live": false,
-        "age_seconds": 16.667363,
+        "age_seconds": 3116.520137,
         "pe_ttm": null,
         "pe_dynamic": null,
         "pe_static": null,
@@ -244943,5 +245443,144 @@
     "requested_symbols": 32,
     "message": "最多2次HTTP/轮（含robots）；固定UA、60秒缓存；来源禁令与429不绕过",
     "completed_at": "2026-11-16T15:56:01+08:00"
+  },
+  "stock_api_state": {
+    "version": 1,
+    "last_run_at": "2026-11-16T16:47:33+08:00",
+    "requests_this_run": 3,
+    "financial_status": "pending_constituents",
+    "financial_message": "待成分：未发现可用股票代码，跳过全市场估值请求",
+    "target_trade_date": "2026-11-13",
+    "calendar": {
+      "checked_at": "2026-11-16T16:47:33+08:00",
+      "last_attempt": "2026-11-16T16:47:33+08:00",
+      "records": [
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-09",
+          "is_open": 1,
+          "pretrade_date": "2026-11-06",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-10",
+          "is_open": 1,
+          "pretrade_date": "2026-11-09",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-11",
+          "is_open": 1,
+          "pretrade_date": "2026-11-10",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-12",
+          "is_open": 1,
+          "pretrade_date": "2026-11-11",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-13",
+          "is_open": 1,
+          "pretrade_date": "2026-11-12",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-14",
+          "is_open": 0,
+          "pretrade_date": "2026-11-13",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-15",
+          "is_open": 0,
+          "pretrade_date": "2026-11-13",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-16",
+          "is_open": 1,
+          "pretrade_date": "2026-11-13",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-17",
+          "is_open": 1,
+          "pretrade_date": "2026-11-16",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-18",
+          "is_open": 1,
+          "pretrade_date": "2026-11-17",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-19",
+          "is_open": 1,
+          "pretrade_date": "2026-11-18",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-20",
+          "is_open": 1,
+          "pretrade_date": "2026-11-19",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-21",
+          "is_open": 0,
+          "pretrade_date": "2026-11-20",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-22",
+          "is_open": 0,
+          "pretrade_date": "2026-11-20",
+          "matches_official_calendar": true
+        },
+        {
+          "exchange": "SSE",
+          "cal_date": "2026-11-23",
+          "is_open": 1,
+          "pretrade_date": "2026-11-20",
+          "matches_official_calendar": true
+        }
+      ],
+      "authority": "observation_only",
+      "official_rules_unchanged": true,
+      "start_date": "2026-11-09",
+      "end_date": "2026-11-23"
+    },
+    "index_requests": {
+      "sh000001": {
+        "target_date": "2026-11-13",
+        "last_attempt": "2026-11-16T16:47:33+08:00",
+        "last_success": "2026-11-16T16:47:41.617253+08:00",
+        "latest_trade_date": "2026-11-13"
+      },
+      "sz399001": {
+        "target_date": "2026-11-13",
+        "last_attempt": "2026-11-16T16:47:33+08:00",
+        "last_success": "2026-11-16T16:47:41.617253+08:00",
+        "latest_trade_date": "2026-11-13"
+      }
+    },
+    "index_cursor": 2,
+    "cooldown_until": null
   }
 }
