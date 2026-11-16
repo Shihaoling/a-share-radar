@@ -66,6 +66,8 @@ def run(offline=False, enable_mlp=False, output=None):
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
     dashboard['daily_review'] = daily_review(dashboard, now)
     dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
+    # Entity histories are canonical; avoid publishing the same bars twice.
+    dashboard.pop('history', None)
     atomic_json(path, dashboard)
     # Daily review history is compact. Prediction ledger lives in dashboard and
     # git history, preserving original forecasts and later settlement fields.

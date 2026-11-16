@@ -62,6 +62,11 @@ def _provider(observation):
     return compact
 
 
+def _adjustment(value):
+    normalized = str(value or "none").strip().lower()
+    return "none" if normalized in ("none", "unadjusted", "3", "不复权") else normalized
+
+
 def _entities(dashboard):
     objects = {}
     for collection in ("market", "sectors", "entities"):
@@ -93,7 +98,7 @@ def _evidence(raw, now):
     price, provider = _number(raw.get("price")), _provider(raw)
     result = {"entity_id": raw.get("entity_id"), "provider": raw.get("provider"),
               "upstream_provider": provider, "field": raw.get("field"),
-              "trade_date": raw.get("trade_date"), "adjustment": raw.get("adjustment"),
+              "trade_date": raw.get("trade_date"), "adjustment": _adjustment(raw.get("adjustment")),
               "price": price, "observed_at": observed.isoformat() if observed else raw.get("observed_at"),
               "market_timestamp": market_time.isoformat() if market_time else raw.get("market_timestamp"),
               "timestamp_quality": raw.get("timestamp_quality"), "used": False, "exclusion_reason": None}
@@ -117,7 +122,7 @@ def _evidence(raw, now):
 
 def _check(identity, entity, observations, now, target_date, preferred_field, calendar_error):
     evidence = [_evidence(raw, now) for raw in observations]
-    adjustment = str(entity.get("adjustment") or "none")
+    adjustment = _adjustment(entity.get("adjustment"))
     available = [e for e in evidence if not e["exclusion_reason"] and e["adjustment"] == adjustment]
     actual_date = max((e["trade_date"] for e in available), default=None)
     # Expose the older corroboratable date without upgrading the current check.
@@ -216,7 +221,7 @@ def _check(identity, entity, observations, now, target_date, preferred_field, ca
             check["status"] = "single_source"
             check["reason"] = "当前目标日期只有一个独立上游，尚无交叉确认"
         return check
-    tick = max(MINIMUM_TICK, _number(entity.get("tick_size")) or MINIMUM_TICK)
+    tick = _number(entity.get("tick_size")) or (0.001 if entity.get("basis") == "etf" else MINIMUM_TICK)
     for i, first in enumerate(chosen):
         for second in chosen[i + 1:]:
             difference = abs(first["price"] - second["price"])

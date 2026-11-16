@@ -12,6 +12,7 @@ import hashlib
 import importlib
 import json
 import math
+import random
 import re
 import threading
 import time
@@ -93,6 +94,19 @@ def _merge(a, b):
     return out
 
 
+def _incremental_start(item, default_start, end, overlap_days=7):
+    """Request a small correction overlap while retaining every cached bar."""
+    valid = []
+    for row in item.get("history", []):
+        try:
+            day = datetime.fromisoformat(str(row.get("date", ""))[:10]).date()
+        except (ValueError, TypeError):
+            continue
+        if day <= end:
+            valid.append(day)
+    return max(valid) - timedelta(days=max(0, int(overlap_days))) if valid else default_start
+
+
 class SourceUnavailable(RuntimeError):
     pass
 
@@ -129,7 +143,8 @@ class _Gate:
         elapsed = time.monotonic() - self.started
         if self.count >= int(self.cfg.get("max_http_requests", 48)) or elapsed >= float(self.cfg.get("request_budget_seconds", 100)):
             raise SourceUnavailable("达到本轮请求/时间预算，保留缓存待下次增量采集")
-        delay = float(self.cfg.get("min_request_interval_seconds", 2)) - (time.monotonic() - self.last.get(domain, 0))
+        jitter = random.uniform(0, min(0.8, max(0, float(self.cfg.get("request_jitter_seconds", 0.8)))))
+        delay = float(self.cfg.get("min_request_interval_seconds", 2)) + jitter - (time.monotonic() - self.last.get(domain, 0))
         if delay > 0:
             if elapsed + delay > float(self.cfg.get("request_budget_seconds", 100)):
                 raise SourceUnavailable("本轮时间预算不足")
@@ -166,7 +181,7 @@ class _Gate:
 
     def _raw_unlocked(self, url, headers=None):
         domain = self._before(url)
-        req = urllib.request.Request(url, headers={"User-Agent": self.cfg["user_agent"], **(headers or {})})
+        req = urllib.request.Request(url, headers={**(headers or {}), "User-Agent": self.cfg["user_agent"]})
         try:
             with urllib.request.urlopen(req, timeout=self.timeout()) as response:
                 self._status(response.status, response.headers, domain)
@@ -544,7 +559,7 @@ def fetch_data(previous=None, config=None, now=None):
             completed += 1
             item["history_attempt_at"] = stamp
             try:
-                start = (now - timedelta(days=int(cfg.get("history_days", 1000)))).strftime("%Y%m%d")
+                start = _incremental_start(item, (now - timedelta(days=int(cfg.get("history_days", 1000)))).date(), now.date(), cfg.get("history_overlap_days", 7)).strftime("%Y%m%d")
                 end = now.strftime("%Y%m%d")
                 if kind == "index":
                     frame = ak_call(["index_zh_daily_em", "stock_zh_index_daily_em"], symbol=item["id"], start_date=start, end_date=end)
@@ -556,7 +571,7 @@ def fetch_data(previous=None, config=None, now=None):
                     raise SourceUnavailable("未返回可用的已完成日K")
                 merged = {r["date"]: r for r in item.get("history", [])}
                 merged.update({r["date"]: r for r in bars})
-                item["history"] = sorted(merged.values(), key=lambda r: r["date"])[-int(cfg.get("max_history_rows", 900)):]
+                item["history"] = sorted(merged.values(), key=lambda r: r["date"])
                 item["history_updated_at"] = stamp
                 item.pop("history_error", None)
                 history[item["id"]] = item["history"]

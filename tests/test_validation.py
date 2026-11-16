@@ -46,6 +46,15 @@ class PriceValidationTests(unittest.TestCase):
         self.assertEqual(self.check(dashboard(observation(price=1), observation("sina", 1.02)))["data_checks"][0]["status"], "conflict")
         self.assertEqual(self.check(dashboard(observation(), observation("sina", 1000.5)))["data_checks"][0]["status"], "verified")
 
+    def test_unadjusted_alias_and_etf_tick(self):
+        data = dashboard(observation(price=1), observation("sina", price=1.005))
+        data["sectors"][0].update(basis="etf", adjustment="unadjusted")
+        check = self.check(data)["data_checks"][0]
+        self.assertEqual(check["status"], "conflict")
+        self.assertEqual(check["minimum_tick"], .001)
+        data["sectors"][0]["basis"] = "index"
+        self.assertEqual(self.check(data)["data_checks"][0]["status"], "verified")
+
     def test_different_dates_never_corroborate(self):
         result = self.check(dashboard(observation(), observation("sina", trade_date="2026-11-13")))
         self.assertEqual(result["data_checks"][0]["status"], "single_source")

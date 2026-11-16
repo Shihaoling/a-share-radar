@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import importlib
 import json
+import random
 import socket
 import threading
 import time
@@ -17,7 +18,7 @@ from datetime import timedelta
 from pathlib import Path
 
 from pipeline.calendar import is_trading_day, previous_trading_day
-from pipeline.sources import _Gate, _dt, _history, _merge, _number, _records, _text, SourceUnavailable
+from pipeline.sources import _Gate, _dt, _history, _incremental_start, _merge, _number, _records, _text, SourceUnavailable
 
 ROOT = Path(__file__).resolve().parents[1]
 _BAOSTOCK_LOCK = threading.RLock()
@@ -58,7 +59,7 @@ def _apply_bars(item, bars, provider, now, url):
         raise SourceUnavailable("来源未返回有效已完成日K")
     prior = {r["date"]: r for r in item.get("history", [])}
     prior.update({r["date"]: r for r in bars})
-    item["history"] = sorted(prior.values(), key=lambda x: x["date"])[-900:]
+    item["history"] = sorted(prior.values(), key=lambda x: x["date"])
     latest = item["history"][-1]
     previous = item["history"][-2] if len(item["history"]) > 1 else None
     pct = _number(latest.get("change_pct"))
@@ -175,6 +176,22 @@ def enrich_with_fallback(data, config=None, now=None):
         if time.monotonic() - started >= cfg["request_budget_seconds"]:
             raise SourceUnavailable("后备来源达到时间预算")
 
+    def incremental_start(item):
+        return _incremental_start(item, cutoff - timedelta(days=cfg["history_days"]), cutoff, cfg.get("history_overlap_days", 7))
+
+    def serial_pause():
+        pause = float(cfg["min_interval_seconds"]) + random.uniform(0, min(0.8, max(0, float(cfg.get("request_jitter_seconds", 0.8)))))
+        if time.monotonic() - started + pause >= cfg["request_budget_seconds"]:
+            raise SourceUnavailable("剩余预算不足以满足低频请求间隔")
+        time.sleep(pause)
+
+    def full_history_allowed(item):
+        value = item.get("sina_full_history_attempt_at")
+        last = _dt(value) if value else None
+        if last and (last.date() == now.date() or (now - last).total_seconds() < float(cfg.get("full_history_cache_seconds", 86400))):
+            return False
+        return True
+
     def note_error(sid, exc):
         errors[sid].append(_text(exc, 220))
         delay = getattr(exc, "retry_seconds", 1800)
@@ -199,9 +216,9 @@ def enrich_with_fallback(data, config=None, now=None):
                         break
                     try:
                         if bs_calls:
-                            time.sleep(float(cfg["min_interval_seconds"]))
+                            serial_pause()
                         bs_calls += 1
-                        rows = _rows(bs.query_history_k_data_plus(_bs_symbol(item["id"]), "date,code,open,high,low,close,volume,amount,pctChg", start_date=(cutoff - timedelta(days=cfg["history_days"])).isoformat(), end_date=cutoff.isoformat(), frequency="d", adjustflag="3"))
+                        rows = _rows(bs.query_history_k_data_plus(_bs_symbol(item["id"]), "date,code,open,high,low,close,volume,amount,pctChg", start_date=incremental_start(item).isoformat(), end_date=cutoff.isoformat(), frequency="d", adjustflag="3"))
                         bars = _history(rows, "baostock", now, 900)
                         bars = [b for b in bars if b["date"] <= cutoff.isoformat()]
                         observe(item["id"], bars, "baostock")
@@ -219,7 +236,7 @@ def enrich_with_fallback(data, config=None, now=None):
                 if fn and any(not _fresh(p, cutoff) for p in proxies):
                     budget()
                     if bs_calls < int(cfg["max_baostock_calls"]):
-                        time.sleep(float(cfg["min_interval_seconds"]))
+                        serial_pause()
                         bs_calls += 1
                         rows = _rows(fn(date=cutoff.isoformat()))
                         lookup = {str(r.get("code", "")).replace(".", ""): r for r in rows}
@@ -265,7 +282,7 @@ def enrich_with_fallback(data, config=None, now=None):
     if cfg["providers"]["tencent"].get("enabled", True) and allowed("tencent_fallback"):
         for item in [m for m in result.get("market", []) if needs_channel(m, "tencent")][:int(cfg["max_index_http_calls"])]:
             try:
-                frame = ak_call(["index_zh_daily_tx", "stock_zh_index_daily_tx"], symbol=item["id"], start_date=(cutoff - timedelta(days=cfg["history_days"])).strftime("%Y%m%d"), end_date=cutoff.strftime("%Y%m%d"))
+                frame = ak_call(["index_zh_daily_tx", "stock_zh_index_daily_tx"], symbol=item["id"], start_date=incremental_start(item).strftime("%Y%m%d"), end_date=cutoff.strftime("%Y%m%d"))
                 bars = [b for b in _history(frame, "tencent", now, 900) if b["date"] <= cutoff.isoformat()]
                 observe(item["id"], bars, "tencent")
                 if not _fresh(item, cutoff):
@@ -278,6 +295,9 @@ def enrich_with_fallback(data, config=None, now=None):
                 break
     if cfg["providers"]["sina"].get("enabled", True) and allowed("sina_index_fallback"):
         for item in [m for m in result.get("market", []) if needs_channel(m, "sina")][:int(cfg["max_index_http_calls"])]:
+            if not full_history_allowed(item):
+                continue
+            item["sina_full_history_attempt_at"] = stamp
             try:
                 frame = ak_call(["index_zh_daily_sina", "stock_zh_index_daily"], symbol=item["id"])
                 bars = [b for b in _history(frame, "sina", now, 900) if b["date"] <= cutoff.isoformat()]
@@ -300,9 +320,13 @@ def enrich_with_fallback(data, config=None, now=None):
                 continue
             if proxy["symbol"] in seen_symbols:
                 _apply_bars(proxy, seen_symbols[proxy["symbol"]], "sina", now, "https://finance.sina.com.cn/fund/quotes/" + proxy["code"] + "/bc.shtml")
+                proxy["sina_full_history_attempt_at"] = stamp
+                continue
+            if not full_history_allowed(proxy):
                 continue
             calls += 1
             proxy["fallback_history_attempt_at"] = stamp
+            proxy["sina_full_history_attempt_at"] = stamp
             try:
                 frame = ak_call(["fund_etf_hist_sina"], symbol=proxy["symbol"])
                 bars = [b for b in _history(frame, "sina", now, 900) if b["date"] <= cutoff.isoformat()]

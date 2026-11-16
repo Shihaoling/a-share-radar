@@ -305,5 +305,10 @@
   ],
   "verify_secondary": true,
   "max_secondary_verifications": 2,
-  "verification_note": "每天每指数最多一次额外校验，每轮轮转1至2个指数；记录独立供应商日K收盘价观察，未满足双源时显示待核验。"
+  "verification_note": "每天每指数最多一次额外校验，每轮轮转1至2个指数；记录独立供应商日K收盘价观察，未满足双源时显示待核验。",
+  "request_jitter_seconds": 0.8,
+  "history_overlap_days": 7,
+  "request_policy_note": "使用稳定、诚实的AshareRadar User-Agent，不轮换身份或代理；同域最小间隔外增加0–0.8秒随机抖动。请求次数与时长是本系统工程预算，不代表已知所有上游官方配额。尊重robots、403/429和Retry-After。支持日期范围的接口按缓存最后日期前7日增量请求，保留全部已存历史。",
+  "full_history_cache_seconds": 86400,
+  "full_history_note": "新浪不支持起始日期的全历史接口，每实体最多每日/24小时缓存允许时请求一次，失败仍受既有来源冷却约束。"
 }
