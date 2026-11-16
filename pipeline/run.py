@@ -8,6 +8,8 @@ from zoneinfo import ZoneInfo
 from pipeline.calendar import market_session
 from pipeline.model import update_predictions
 from pipeline.sources import fetch_data
+from pipeline.fallback import enrich_with_fallback
+from pipeline.validation import validate_prices
 from pipeline.review import daily_review
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,11 +39,13 @@ def run(offline=False, enable_mlp=False, output=None):
     config['market_session'] = market_session(now)
     # Actual runtime snapshots are regenerated; uncollected fields remain null.
     data = fetch_data(previous, config, now)
+    data['price_observations'] = previous.get('price_observations', [])
+    data = enrich_with_fallback(data, config, now)
     started_at = now
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     # Use batch completion as a conservative upper bound for newly available data.
     starts = {started_at.isoformat(), started_at.isoformat(timespec='seconds')}
-    time_fields = {'as_of','first_seen_at','fetched_at','last_success','history_updated_at','constituents_updated_at'}
+    time_fields = {'as_of','first_seen_at','fetched_at','last_success','history_updated_at','constituents_updated_at','observed_at'}
     def fix_availability(value):
         if isinstance(value, dict):
             for key, item in value.items():
@@ -58,9 +62,10 @@ def run(offline=False, enable_mlp=False, output=None):
         'notices':['定时任务可能延迟，请以各条数据的时间戳为准。',
                    '免费源覆盖不完整；研究输出不构成交易指令。',
                    '板块指数与总市值分开展示；主题重叠，市值不可相加。']}
+    dashboard = validate_prices(dashboard, now=now)
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
     dashboard['daily_review'] = daily_review(dashboard, now)
-    dashboard['status'] = 'ready' if any(s.get('as_of') for s in dashboard.get('sectors',[])) else 'pending'
+    dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
     atomic_json(path, dashboard)
     # Daily review history is compact. Prediction ledger lives in dashboard and
     # git history, preserving original forecasts and later settlement fields.

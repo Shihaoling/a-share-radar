@@ -2,7 +2,9 @@
 (() => {
   'use strict';
   let cfg, loaded = false, lastPage = null;
-  let current = {page:'overview', title:'市场总览'};
+  const titles = {overview:'市场总览',sectors:'板块雷达',news:'A股关联资讯',forecast:'预测实验室',review:'每日复盘',settings:'数据设置',analytics:'访问统计'};
+  const initial = location.hash.slice(1);
+  let current = {page: titles[initial] ? initial : 'overview', title: titles[initial] || titles.overview};
   function track(detail) {
     current = detail || current;
     if (!loaded || !window.goatcounter?.count) return;

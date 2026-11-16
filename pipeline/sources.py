@@ -355,7 +355,7 @@ def _news_item(raw, spec, sectors, config, now, old_by_id):
     previous = old_by_id.get(nid, {})
     published = _iso(raw.get("published_at")) if raw.get("published_at") else None
     # Lexical matches are topic associations, never a claim of return causality.
-    return {"id": nid, "title": title, "source": raw.get("source") or spec["name"], "source_id": spec["id"], "url": url, "published_at": published, "first_seen_at": previous.get("first_seen_at") or now.isoformat(timespec="seconds"), "fetched_at": now.isoformat(timespec="seconds"), "credibility": credibility, "category": spec.get("category", "全球产业"), "sector_ids": sector_ids, "summary": _text(raw.get("summary"), 500), "impact": "uncertain", "transmission": [], "analysis_method": "keyword_rules", "verification": "unverified", "sentiment": sentiment, "sentiment_score": score, "sentiment_method": "lexicon_rules", "sentiment_evidence": {"positive": pos, "negative": neg}, "sentiment_note": "标题词典语气，不代表对A股涨跌的判断；无命中为未知。", "include_in_sentiment": not rumor, "topic_note": "板块关联来自关键词匹配，未验证因果和收益方向", **relevance}
+    return {"id": nid, "title": title, "source": raw.get("source") or spec["name"], "source_id": spec["id"], "url": url, "published_at": published, "first_seen_at": previous.get("first_seen_at") or now.isoformat(timespec="seconds"), "fetched_at": now.isoformat(timespec="seconds"), "credibility": credibility, "category": spec.get("category", "全球产业"), "sector_ids": sector_ids, "summary": _text(raw.get("summary"), 240), "impact": "uncertain", "transmission": [], "analysis_method": "keyword_rules", "verification": "unverified", "sentiment": sentiment, "sentiment_score": score, "sentiment_method": "lexicon_rules", "sentiment_evidence": {"positive": pos, "negative": neg}, "sentiment_note": "标题词典语气，不代表对A股涨跌的判断；无命中为未知。", "include_in_sentiment": not rumor, "topic_note": "板块关联来自关键词匹配，未验证因果和收益方向", **relevance}
 
 
 def _parse_rss(data):
@@ -375,7 +375,7 @@ def _parse_rss(data):
                 if node.attrib.get("rel", "alternate") == "alternate":
                     link = node.attrib.get("href")
                     break
-        out.append({"title": val("title", "{http://www.w3.org/2005/Atom}title"), "url": link, "summary": val("description", "{http://www.w3.org/2005/Atom}summary"), "published_at": val("pubDate", "{http://www.w3.org/2005/Atom}published", "{http://www.w3.org/2005/Atom}updated")})
+        out.append({"title": val("title", "{http://www.w3.org/2005/Atom}title"), "url": link, "summary": val("description", "{http://www.w3.org/2005/Atom}summary"), "published_at": val("pubDate", "{http://purl.org/dc/elements/1.1/}date", "{http://www.w3.org/2005/Atom}published", "{http://www.w3.org/2005/Atom}updated")})
     return out
 
 
@@ -642,6 +642,6 @@ def fetch_data(previous=None, config=None, now=None):
             success(sid, f"本轮保留 {added} 条A股相关线索；过滤无关联内容，保留原文与时间")
         except Exception as exc:
             failure(sid, exc)
-    result["news"] = sorted(old_news.values(), key=lambda n: n.get("published_at") or n.get("first_seen_at") or "", reverse=True)[:int(cfg["max_news"])]
+    result["news"] = sorted(old_news.values(), key=lambda n: (bool(n.get("published_at")), n.get("published_at") or n.get("first_seen_at") or ""), reverse=True)[:int(cfg["max_news"])]
     result["collection"] = {"http_requests": market_gate.count + news_gate.count, "market_http_requests": market_gate.count, "news_http_requests": news_gate.count, "akshare_calls": ak_calls, "budget": cfg["max_http_requests"], "budget_seconds": {"market": market_cfg["request_budget_seconds"], "news": news_cfg["request_budget_seconds"]}, "started_at": stamp, "note": "所有匹配板块均参与历史/成分轮转；新闻保留独立请求预算，仅展示A股相关研究线索"}
     return result

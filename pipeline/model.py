@@ -192,7 +192,7 @@ def _settle(ledger, entities, now, config):
         if record.get("status") == "settled" or record.get("actual_price") is not None:
             continue
         entity = entities.get(record.get("sector_id"))
-        if entity is None or not record.get("target_date"):
+        if entity is None or entity.get("data_quality") == "conflict" or not record.get("target_date"):
             continue
         completed = record.get("target_kind") == "today_close"
         bars = _history(entity, now, config, completed_only=completed)
@@ -246,7 +246,21 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
     # Collapse exact duplicate IDs without overwriting any issued forecast.
     ledger = list({row["id"]: row for row in reversed(ledger) if row.get("id")}.values())
     ledger.sort(key=lambda row: row.get("issued_at") or "")
-    entities = {e["id"]: e for e in dashboard.get("market", []) + dashboard.get("sectors", []) if e.get("id")}
+    primary = [e for e in dashboard.get("market", []) + dashboard.get("sectors", []) if e.get("id")]
+    entities = {e["id"]: e for e in primary}
+    forecasting = {}
+    for entity in primary:
+        proxy = entity.get("proxy")
+        chosen = entity
+        if proxy and proxy.get("code"):
+            identity = entity["id"] + ":proxy:" + proxy["code"]
+            instrument = {**proxy, "id": identity, "name": entity.get("name", entity["id"]) + "（参考ETF：" + proxy.get("name", proxy["code"]) + "）", "basis": "etf"}
+            entities[identity] = instrument
+            main_date = max((r.get("date", "") for r in entity.get("history", [])), default="")
+            proxy_date = max((r.get("date", "") for r in proxy.get("history", [])), default="")
+            if proxy_date and proxy_date > main_date:
+                chosen = instrument
+        forecasting[chosen["id"]] = chosen
     _settle(ledger, entities, now, settings)
     session = market_session(now)
     news = _news_snapshot(dashboard, now)
@@ -254,7 +268,7 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
     issue_slot = now.replace(minute=slot_minutes * (now.minute // slot_minutes), second=0, microsecond=0).isoformat()
     predictions, by_target = [], deepcopy(previous.get("models", {}).get("by_target", {}))
     trained = False
-    for identity, entity in entities.items():
+    for identity, entity in forecasting.items():
         target, kind = session["target_date"], session["target_kind"]
         row = {"id": None, "sector_id": identity, "sector_name": entity.get("name", identity),
                "issued_at": now.isoformat(), "issue_slot": issue_slot, "cutoff_at": now.isoformat(),
@@ -269,6 +283,9 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
         if row["basis"] in ("etf", "stock"):
             row["target_label"] = "今日收盘价格" if kind == "today_close" else "下次开盘价格"
         predictions.append(row)
+        if entity.get("data_quality") == "conflict":
+            row["reason"] = "可比行情来源存在价格冲突，暂停预测，等待核验"
+            continue
         if target is None:
             row["reason"] = "目标交易日历未核实，暂停预测"
             continue

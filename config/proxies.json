@@ -1,0 +1,309 @@
+{
+  "description": "A股板块缺少原始指数数据时展示独立参考ETF。ETF成交价格/回报不是板块指数，也不是板块市值；不将ETF基金规模当成行业市值。基金代码与主题已在交易所来源核验，映射仅为研究相关性，不承诺完全覆盖。",
+  "verified_on": "2026-11-16",
+  "enabled": true,
+  "promote_proxy_to_sector": false,
+  "history_days": 1000,
+  "cache_seconds": 21600,
+  "max_baostock_calls": 12,
+  "max_http_calls": 12,
+  "max_etf_history_calls": 4,
+  "max_index_http_calls": 6,
+  "request_budget_seconds": 150,
+  "socket_timeout_seconds": 12,
+  "min_interval_seconds": 2,
+  "providers": {
+    "baostock": {
+      "enabled": true,
+      "url": "https://www.baostock.com/",
+      "policy_url": "https://www.baostock.com/blacklist",
+      "policy_note": "官方禁止并发连接，每日API不超过5万次；本模块串行连接，每轮最多12调用，不绕过访问限制。",
+      "etf_daily_docs": "https://baostock.com/mainContent?file=DailyUpdates.md"
+    },
+    "tencent": {
+      "enabled": true,
+      "url": "https://akshare.akfamily.xyz/data/index/index.html",
+      "note": "AKShare index_zh_daily_tx，按robots规则访问独立腾讯来源。"
+    },
+    "sina": {
+      "enabled": true,
+      "url": "https://akshare.akfamily.xyz/data/fund/fund_public.html",
+      "note": "AKShare fund_etf_hist_sina，按robots规则访问新浪ETF历史。"
+    }
+  },
+  "proxies": [
+    {
+      "sector_id": "agriculture",
+      "symbol": "sz159825",
+      "name": "农业ETF富国",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "农业主题股票参考",
+      "reference_url": "https://investor.szse.cn/knowledge/t20220718_594830.html",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "coal",
+      "symbol": "sh515220",
+      "name": "煤炭ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "中证煤炭股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "metals",
+      "symbol": "sh512400",
+      "name": "有色ETF南方",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "申万有色金属股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "semiconductor",
+      "symbol": "sh512480",
+      "name": "半导体ETF国联安",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "半导体产品与设备股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "home_appliances",
+      "symbol": "sz159996",
+      "name": "家电ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "家用电器股票参考",
+      "reference_url": "https://investor.szse.cn/knowledge/t20220718_594830.html",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "food_beverage",
+      "symbol": "sh515170",
+      "name": "食品饮料ETF华夏",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "细分食品饮料股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "pharmaceutical",
+      "symbol": "sz159938",
+      "name": "医药卫生ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "宽口径医药卫生参考，包含化学制药以外的医药行业",
+      "reference_url": "https://investor.szse.cn/knowledge/t20220718_594830.html",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "real_estate",
+      "symbol": "sh512200",
+      "name": "房地产ETF南方",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "全指房地产股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "banks",
+      "symbol": "sh512800",
+      "name": "银行ETF华宝",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "银行股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "securities",
+      "symbol": "sh512880",
+      "name": "证券ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "全指证券公司股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "media",
+      "symbol": "sh512980",
+      "name": "传媒ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "传媒股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "software",
+      "symbol": "sh512720",
+      "name": "计算机ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "宽口径计算机行业参考，并非纯软件板块",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "telecom",
+      "symbol": "sh515880",
+      "name": "通信ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "通信设备股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "defense",
+      "symbol": "sh512710",
+      "name": "军工龙头ETF富国",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "空天军工股票参考，非全部国防板块",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "automobiles",
+      "symbol": "sh515030",
+      "name": "新能源车ETF华夏",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "新能源汽车股票参考，并非全部整车行业",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "battery",
+      "symbol": "sz159755",
+      "name": "电池ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "电池主题股票参考",
+      "reference_url": "https://investor.szse.cn/knowledge/t20220718_594830.html",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "environment",
+      "symbol": "sh512580",
+      "name": "环保ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "环保产业股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "construction",
+      "symbol": "sh516970",
+      "name": "基建50ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "中证基建工程股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "ai",
+      "symbol": "sz159819",
+      "name": "人工智能ETF易方达",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "人工智能主题股票参考",
+      "reference_url": "https://investor.szse.cn/knowledge/t20220718_594830.html",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "innovation_drug",
+      "symbol": "sh515120",
+      "name": "创新药ETF广发",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "创新药产业股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "pv",
+      "symbol": "sh515790",
+      "name": "光伏ETF华泰柏瑞",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "光伏产业股票参考，并非仅建筑一体化",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "rare_earth",
+      "symbol": "sh516150",
+      "name": "稀土ETF嘉实",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "稀土产业股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "chip_local",
+      "symbol": "sh512760",
+      "name": "芯片ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "中华半导体芯片股票参考，并非纯国产替代篮子",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "compute",
+      "symbol": "sh516510",
+      "name": "云计算ETF易方达",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "云计算与大数据股票参考，并非纯算力硬件",
+      "reference_url": "https://www.sse.com.cn/assortment/fund/list/etfinfo/basic/index.shtml?FUNDID=516510",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "robotics",
+      "symbol": "sh562500",
+      "name": "机器人ETF华夏",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "机器人主题股票参考",
+      "reference_url": "https://www.sse.com.cn/disclosure/announcement/general/jjzssgg/c/c_20260129_10807343.shtml",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "humanoid",
+      "symbol": "sh562500",
+      "name": "机器人ETF华夏",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "宽口径机器人参考，并非纯人形机器人",
+      "reference_url": "https://www.sse.com.cn/disclosure/announcement/general/jjzssgg/c/c_20260129_10807343.shtml",
+      "verified_on": "2026-11-16"
+    },
+    {
+      "sector_id": "steel",
+      "symbol": "sh515210",
+      "name": "钢铁ETF国泰",
+      "basis": "etf",
+      "market_scope": "A-share",
+      "mapping_note": "钢铁股票参考",
+      "reference_url": "https://english.sse.com.cn/access/via/eligible/",
+      "verified_on": "2026-11-16"
+    }
+  ],
+  "verify_secondary": true,
+  "max_secondary_verifications": 2,
+  "verification_note": "每天每指数最多一次额外校验，每轮轮转1至2个指数；记录独立供应商日K收盘价观察，未满足双源时显示待核验。"
+}
