@@ -1,12 +1,12 @@
 {
   "2026-11-16": {
     "date": "2026-11-16",
-    "evaluated_at": "2026-11-16T18:28:11.956085+08:00",
+    "evaluated_at": "2026-11-16T21:46:59.096219+08:00",
     "timezone": "Asia/Shanghai",
-    "issued_count": 30,
+    "issued_count": 67,
     "settled_count": 0,
     "pending_count": 0,
-    "abstained_count": 31,
+    "abstained_count": 0,
     "direction_accuracy": null,
     "mae_pct": null,
     "baseline_mae_pct": null,
@@ -18,10 +18,10 @@
       "positive": 0,
       "negative": 1,
       "neutral": 0,
-      "uncertain": 9,
+      "uncertain": 10,
       "labels": {
-        "negative": 1,
-        "unknown": 9
+        "unknown": 10,
+        "negative": 1
       },
       "excluded_count": 60,
       "rumor_count": 1,
