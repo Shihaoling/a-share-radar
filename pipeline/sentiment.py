@@ -17,7 +17,8 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from .calendar import shanghai_now
 
 RULE_VERSION = "financial-tone-rules-v2"
-PIPELINE_VERSION = "sw2021-news-tone-v1"
+PIPELINE_VERSION = "sw2021-news-tone-v2"
+TAXONOMY_VERSION = "SW2021-L1-official-contract-v2"
 MODEL_ID = "yiyanghkust/finbert-tone-chinese"
 MODEL_REVISION = "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d"
 MODEL_LICENSE = "Apache-2.0"
@@ -27,7 +28,7 @@ MODEL_URL = f"https://huggingface.co/{MODEL_ID}/tree/{MODEL_REVISION}"
 # associations are possible; they are topic evidence, never a causal price claim.
 SW2021 = {
     "801010": ("农林牧渔", ["农业", "养殖", "种业", "生猪", "猪肉", "饲料", "粮食", "agriculture", "livestock", "pork", "grain"]),
-    "801020": ("煤炭", ["煤炭", "焦煤", "动力煤", "焦炭", "coal", "coking coal"]),
+    "801950": ("煤炭", ["煤炭", "焦煤", "动力煤", "焦炭", "coal", "coking coal"]),
     "801030": ("基础化工", ["基础化工", "化肥", "农药", "氟化工", "纯碱", "钛白粉", "化学原料", "chemicals", "fertilizer", "pesticide"]),
     "801040": ("钢铁", ["钢铁", "钢材", "铁矿石", "粗钢", "螺纹钢", "steel", "iron ore"]),
     "801050": ("有色金属", ["有色金属", "铜价", "铝价", "锂矿", "稀土", "黄金", "白银", "copper", "aluminium", "aluminum", "rare earth", "gold", "lithium"]),
@@ -54,7 +55,7 @@ SW2021 = {
     "801790": ("非银金融", ["非银金融", "证券公司", "券商", "保险", "保费", "资管", "brokerage", "insurer", "insurance premium", "asset management"]),
     "801880": ("汽车", ["汽车", "新能源车", "智能驾驶", "自动驾驶", "汽车零部件", "automobile", "automaker", "electric vehicle", "autonomous driving"]),
     "801890": ("机械设备", ["机械设备", "机器人", "机床", "工程机械", "工业自动化", "robotics", "machine tool", "industrial machinery", "automation"]),
-    "801950": ("美容护理", ["美容护理", "化妆品", "医美", "护肤", "cosmetics", "skin care", "beauty care"]),
+    "801980": ("美容护理", ["美容护理", "化妆品", "医美", "护肤", "cosmetics", "skin care", "beauty care"]),
     "801960": ("石油石化", ["石油", "石化", "原油", "油价", "炼油", "油气", "天然气", "crude oil", "oil price", "refinery", "petrochemical", "natural gas"]),
     "801970": ("环保", ["环保", "污水", "固废", "垃圾处理", "碳交易", "节能减排", "wastewater", "waste management", "carbon trading", "pollution control"]),
 }
@@ -281,8 +282,16 @@ def _finbert_scores(items, config):
 def _sw_code(entity):
     for key in ("index_code", "sw_code", "code", "id"):
         match = re.search(r"(?<!\d)(801\d{3})(?!\d)", str(entity.get(key) or ""))
-        if match and match.group(1) in SW2021:
-            return match.group(1)
+        if match:
+            code = match.group(1)
+            if code not in SW2021:
+                return None
+            # An explicit official code/name disagreement must not silently
+            # assign the wrong industry's vocabulary. Constituent links can
+            # still be evaluated independently of this taxonomy match.
+            if entity.get("name") and entity["name"] != SW2021[code][0]:
+                return None
+            return code
     return SW_NAMES.get(entity.get("name"))
 
 
@@ -477,7 +486,8 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         versions = sorted({e["model_version"] for e in evidence})
         sentiment = {"label": label, "score": score, "confidence": confidence, "confidence_kind": "heuristic_evidence",
                      "method": "+".join(methods) if methods else "no_coverage", "model_version": "+".join(versions) or PIPELINE_VERSION,
-                     "version": PIPELINE_VERSION, "as_of": now.isoformat(), "available_at": now.isoformat(), "date": now.date().isoformat(),
+                     "version": PIPELINE_VERSION, "taxonomy_version": TAXONOMY_VERSION,
+                     "as_of": now.isoformat(), "available_at": now.isoformat(), "date": now.date().isoformat(),
                      "window_start": window_start.isoformat(), "window_hours": window_hours,
                      "article_count": len(evidence), "scored_article_count": len(scored),
                      "source_count": len({e["source"] for e in evidence}), "evidence": evidence,
@@ -487,12 +497,15 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         snapshot = {key: sentiment[key] for key in ("date", "as_of", "available_at", "window_start", "score", "label", "article_count",
                                                     "scored_article_count", "source_count", "confidence", "method", "model_version", "feature_hash")}
         snapshot["news_ids"] = [e["news_id"] for e in evidence]
+        snapshot["pipeline_version"] = PIPELINE_VERSION
+        snapshot["taxonomy_version"] = TAXONOMY_VERSION
         snapshot["id"] = "sentiment-" + sentiment["feature_hash"]
         history = entity.setdefault("sentiment_history", [])
         if not any(row.get("id") == snapshot["id"] for row in history):
             history.append(snapshot)
         entity["sentiment"] = sentiment
     result["sentiment_summary"] = {"as_of": now.isoformat(), "version": PIPELINE_VERSION, "taxonomy": "SW2021_L1_31",
+                                   "taxonomy_version": TAXONOMY_VERSION,
                                    "stock_api_news_merged_count": stock_api_added, "stock_api_news_duplicate_count": stock_api_duplicates,
                                    "news_count": len(news_items), "eligible_count": len(eligible), "unique_news_count": len(representatives),
                                    "duplicate_count": len(eligible) - len(representatives), "excluded_count": len(excluded),

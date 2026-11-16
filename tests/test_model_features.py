@@ -44,6 +44,22 @@ class PointInTimeFeatureTests(unittest.TestCase):
         self.assertEqual(feature(unknown, "sentiment_score"), (0, 1))
         self.assertEqual(feature(future, "sentiment_score"), (0, 1))
 
+    def test_corrected_coal_beauty_taxonomy_excludes_legacy_snapshots_only(self):
+        rows = history()
+        old = {"date": "2026-11-13", "available_at": "2026-11-13T20:00:00+08:00", "score": .9, "article_count": 5}
+        current = {**old, "available_at": "2026-11-13T18:00:00+08:00", "score": -.3,
+                   "pipeline_version": "sw2021-news-tone-v2", "taxonomy_version": "SW2021-L1-official-contract-v2"}
+        for identity in ("801950.SI", "801980.SI", "801950.SI:proxy:sh510300"):
+            entity = {"id": identity, "sentiment_history": [old, {**old, "pipeline_version": "sw2021-news-tone-v1"}, current]}
+            original = deepcopy(entity)
+            values = model._features(rows, len(rows) - 1, entity)
+            self.assertEqual(feature(values, "sentiment_score"), (-.3, 0))
+            self.assertEqual(entity, original)
+            entity["sentiment_history"] = [old]
+            self.assertEqual(feature(model._features(rows, len(rows) - 1, entity), "sentiment_score"), (0, 1))
+        unaffected = {"id": "801010.SI", "sentiment_history": [old]}
+        self.assertEqual(feature(model._features(rows, len(rows) - 1, unaffected), "sentiment_score"), (.9, 0))
+
     def test_newly_collected_sentiment_is_visible_but_not_activated_without_history(self):
         data = dashboard()
         data["sectors"][0]["sentiment_history"] = [{"date": "2026-11-16", "available_at": "2026-11-16T07:00:00+08:00",

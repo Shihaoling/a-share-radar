@@ -54,8 +54,13 @@ def daily_review(dashboard, now=None, target_date=None):
         by_sector[row.get('sector_id')].append(row)
         by_task[row.get('target_kind')].append(row)
     news = [n for n in dashboard.get('news', []) if local_date(n.get('first_seen_at')) == day]
-    trusted = [n for n in news if n.get('credibility') != 'rumor']
-    counts = Counter(n.get('sentiment', 'uncertain') for n in trusted)
+    rumors = [n for n in news if n.get('credibility') == 'rumor' or n.get('sentiment_is_rumor')]
+    trusted = [n for n in news if n not in rumors and n.get('sentiment_eligible') is not False
+               and not n.get('sentiment_duplicate_of')]
+    labels = Counter(n.get('sentiment', 'unknown') for n in trusted)
+    counts = Counter(n.get('sentiment') if n.get('sentiment') in ('positive', 'negative', 'neutral')
+                     else 'uncertain' for n in trusted)
+    methods = sorted({n.get('sentiment_method') or n.get('analysis_method') or 'unspecified' for n in trusted})
     # Alignment is available only for pre-open news and FINAL matching daily bars;
     # it is a descriptive association, never a verified sentiment label accuracy.
     alignment = []
@@ -91,7 +96,8 @@ def daily_review(dashboard, now=None, target_date=None):
             'by_sector': [{'sector_id': k, 'name': v[0].get('sector_name', k), **summarize(v)} for k,v in by_sector.items()],
             'by_task': [{'target_kind': k, **summarize(v)} for k,v in by_task.items()],
             'sentiment': {**{k:counts[k] for k in ('positive','negative','neutral','uncertain')},
-                'rumor_count': len(news)-len(trusted), 'alignment_count':len(alignment),
+                'labels':dict(labels), 'excluded_count':len(news)-len(trusted),
+                'rumor_count': len(rumors), 'alignment_count':len(alignment),
                 'alignment_rate':mean(alignment) if alignment else None,
-                'method':'lexicon_rules', 'label_accuracy':None,
+                'method':'+'.join(methods) if methods else 'pending', 'label_accuracy':None,
                 'note':'仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。'}}

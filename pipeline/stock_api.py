@@ -243,6 +243,63 @@ def _stock_code(raw):
     return None
 
 
+def _quality(rows, quality=None):
+    quality = quality if quality is not None else {}
+    quality.update(received_count=len(rows), accepted_count=0, rejected_count=0, filtered_count=0,
+                   duplicate_count=0, reason_counts={}, field_invalid_counts={}, rejection_sample=[])
+    return quality
+
+
+def _quality_note(quality, reason, code=None, field=None, kind="rejected"):
+    if kind in ("rejected", "filtered", "duplicate"):
+        quality[kind + "_count"] += 1
+    quality["reason_counts"][reason] = quality["reason_counts"].get(reason, 0) + 1
+    if kind == "field":
+        quality["field_invalid_counts"][field] = quality["field_invalid_counts"].get(field, 0) + 1
+    if len(quality["rejection_sample"]) < 10:
+        sample = {"reason": reason}
+        # Only a public identifier-shaped value is eligible for diagnostics.
+        # Never retain an arbitrary response string, field value or message.
+        if isinstance(code, str) and re.fullmatch(r"\d{6}\.(?:SH|SZ|BJ)", code):
+            sample["ts_code"] = code
+        if field:
+            sample["field"] = field
+        quality["rejection_sample"].append(sample)
+
+
+def _optional_number(value, field, quality, code, minimum=None):
+    try:
+        return _number(value, nullable=True, minimum=minimum)
+    except (OverflowError, _Failure):
+        _quality_note(quality, "invalid_optional_number", code, field, "field")
+        return None
+
+
+def _is_non_a_stock(code):
+    return isinstance(code, str) and re.fullmatch(r"(?:900\d{3}\.SH|200\d{3}\.SZ)", code) is not None
+
+
+def _dedupe_record(records, blocked, record, quality):
+    code = record["ts_code"]
+    if code in blocked:
+        _quality_note(quality, "duplicate_conflict", code, "ts_code")
+    elif code not in records:
+        records[code] = record
+    elif records[code] == record:
+        _quality_note(quality, "identical_duplicate", code, "ts_code", "duplicate")
+    else:
+        del records[code]
+        blocked.add(code)
+        _quality_note(quality, "duplicate_conflict", code, "ts_code")
+        _quality_note(quality, "duplicate_conflict", code, "ts_code")
+
+
+def _finish_quality(quality, records):
+    quality["accepted_count"] = len(records)
+    quality["complete"] = bool(records) and not (quality["rejected_count"] or quality["field_invalid_counts"]
+                                                   or quality["reason_counts"].get("out_of_scope_security"))
+
+
 def _completed_dates(bars, cutoff):
     """Count distinct usable source bars, never trust a legacy completion flag."""
     days = set()
@@ -309,37 +366,51 @@ def _index_bars(rows, code, start, cutoff, stamp):
     return sorted(bars, key=lambda bar: bar["date"])
 
 
-def _basic_records(rows, cutoff, stamp):
-    records, seen = [], set()
+def _basic_records(rows, cutoff, stamp, quality=None):
+    quality = _quality(rows, quality)
+    records, blocked = {}, set()
     for row in rows:
-        code = _stock_code(row["ts_code"])
-        day = _date(row["trade_date"], compact=True)
-        if code is None or code != row["ts_code"] or code in seen:
-            raise _Failure("invalid_code")
-        if day != cutoff:
-            raise _Failure("date_mismatch")
-        seen.add(code)
-        close = _number(row["close"], minimum=0)
-        total_mv = _number(row["total_mv"], nullable=True, minimum=0)
-        pe = _number(row["pe_ttm"], nullable=True)
+        raw_code = row.get("ts_code")
+        if _is_non_a_stock(raw_code):
+            _quality_note(quality, "out_of_scope_security", raw_code, "ts_code", "filtered")
+            continue
+        try:
+            code = _stock_code(raw_code)
+            if code is None or code != raw_code:
+                raise _Failure("invalid_code")
+            day = _date(row["trade_date"], compact=True)
+            if day != cutoff:
+                raise _Failure("date_mismatch")
+            close = _number(row["close"], minimum=0)
+            if close <= 0:
+                raise _Failure("invalid_close")
+        except (OverflowError, _Failure) as exc:
+            reason = exc.code if isinstance(exc, _Failure) else "invalid_number"
+            _quality_note(quality, reason, raw_code, "ts_code" if reason == "invalid_code" else "trade_date" if reason in ("invalid_date", "date_mismatch") else "close")
+            continue
+        total_mv = _optional_number(row["total_mv"], "total_mv", quality, code, minimum=0)
+        pe = _optional_number(row["pe_ttm"], "pe_ttm", quality, code)
         pe = pe if pe is not None and pe > 0 else None
-        pb = _number(row["pb"], nullable=True)
+        pb = _optional_number(row["pb"], "pb", quality, code)
         cap = total_mv * 10000 if total_mv is not None else None
-        if close <= 0 or (cap is not None and not math.isfinite(cap)):
-            raise _Failure("invalid_number")
-        records.append({"ts_code": code, "trade_date": day.isoformat(), "close": close,
+        if cap is not None and not math.isfinite(cap):
+            total_mv, cap = None, None
+            _quality_note(quality, "invalid_optional_number", code, "total_mv", "field")
+        record = {"ts_code": code, "trade_date": day.isoformat(), "close": close,
                         "total_mv": total_mv, "total_mv_unit": "CNY_10000", "market_cap_cny": cap,
                         "vendor_pe_ttm": pe, "vendor_pb": pb, "vendor_pe_ttm_definition": PE_DEFINITION,
                         "vendor_pb_definition": PB_DEFINITION, "provider": "stock_api", "upstream_provider": "unknown",
                         "fetched_at": stamp, "as_of": day.isoformat() + "T15:00:00+08:00",
-                        "timestamp_quality": "daily_close"})
-        records[-1].update(turnover_rate=_number(row.get("turnover_rate"), nullable=True, minimum=0),
-                           volume_ratio=_number(row.get("volume_ratio"), nullable=True, minimum=0),
-                           circ_mv=_number(row.get("circ_mv"), nullable=True, minimum=0),
-                           date=day.isoformat(), available_at=stamp)
+                        "timestamp_quality": "daily_close"}
+        record.update(turnover_rate=_optional_number(row.get("turnover_rate"), "turnover_rate", quality, code, minimum=0),
+                      volume_ratio=_optional_number(row.get("volume_ratio"), "volume_ratio", quality, code, minimum=0),
+                      circ_mv=_optional_number(row.get("circ_mv"), "circ_mv", quality, code, minimum=0),
+                      date=day.isoformat(), available_at=stamp)
+        _dedupe_record(records, blocked, record, quality)
+    _finish_quality(quality, records)
     if not records:
-        raise _Failure("empty_response")
-    return records
+        raise _Failure("no_valid_daily_basic_rows")
+    return list(records.values())
 
 
 def _apply_index(result, item, bars, stamp, primary=False):
@@ -720,33 +791,62 @@ def _apply_sw(result, item, bars, stamp):
     item["market_cap_history"] = sorted(caps.values(), key=lambda row: row["date"])[-900:]
 
 
-def _members(rows, l1_code, token, stamp):
-    records, seen = [], set()
+def _members(rows, l1_code, token, stamp, quality=None):
+    quality = _quality(rows, quality)
+    records, blocked = {}, set()
+    today = _instant(stamp).date()
     for row in rows:
-        code = _stock_code(row["ts_code"])
-        if code != row["ts_code"] or not code or row["l1_code"] != l1_code:
-            raise _Failure("invalid_membership")
-        if any(not isinstance(row[key], str) or not re.fullmatch(r"(?:80|85)\d{4}\.SI", row[key]) for key in ("l1_code", "l2_code", "l3_code")):
-            raise _Failure("invalid_membership")
-        included = _date(row["in_date"], compact=True) if row["in_date"] else None
-        excluded = _date(row["out_date"], compact=True) if row["out_date"] else None
-        if included and excluded and excluded < included:
-            raise _Failure("invalid_membership")
-        if row["is_new"] not in ("Y", "N"):
-            raise _Failure("invalid_membership")
-        if row["is_new"] != "Y" or excluded:
+        raw_code = row.get("ts_code")
+        if row.get("is_new") == "N":
+            _quality_note(quality, "inactive_member", raw_code, "is_new", "filtered")
             continue
-        if code in seen:
-            raise _Failure("duplicate_member")
-        seen.add(code)
-        record = {key: row[key] for key in ("l1_code", "l2_code", "l3_code", "is_new")}
-        record.update({key: _clean_text(row[key], token) for key in ("name", "l1_name", "l2_name", "l3_name")})
+        try:
+            if row.get("is_new") != "Y":
+                raise _Failure("invalid_member_status")
+            excluded = _date(row["out_date"], compact=True) if row.get("out_date") else None
+            if excluded and excluded <= today:
+                _quality_note(quality, "inactive_member", raw_code, "out_date", "filtered")
+                continue
+            if row.get("l1_code") != l1_code:
+                raise _Failure("wrong_industry")
+            if _is_non_a_stock(raw_code):
+                _quality_note(quality, "out_of_scope_security", raw_code, "ts_code", "filtered")
+                continue
+            code = _stock_code(raw_code)
+            if code != raw_code or not code:
+                raise _Failure("invalid_code")
+            included = _date(row["in_date"], compact=True) if row.get("in_date") else None
+            if included and excluded and excluded < included:
+                raise _Failure("invalid_member_dates")
+            if included and included > today:
+                _quality_note(quality, "future_member", raw_code, "in_date", "filtered")
+                continue
+            name = _clean_text(row.get("name"), token)
+        except _Failure as exc:
+            _quality_note(quality, exc.code, raw_code, "l1_code" if exc.code == "wrong_industry" else "ts_code" if exc.code == "invalid_code" else "membership")
+            continue
+        record = {"l1_code": l1_code, "is_new": "Y", "name": name}
+        for key in ("l2_code", "l3_code"):
+            value = row.get(key)
+            if not isinstance(value, str) or not re.fullmatch(r"(?:80|85)\d{4}\.SI", value):
+                record[key] = None
+                _quality_note(quality, "invalid_optional_hierarchy", code, key, "field")
+            else:
+                record[key] = value
+        for key in ("l1_name", "l2_name", "l3_name"):
+            try:
+                record[key] = _clean_text(row.get(key), token)
+            except _Failure:
+                record[key] = ""
+                _quality_note(quality, "invalid_optional_text", code, key, "field")
         record.update(ts_code=code, code=code[:6], in_date=included.isoformat() if included else None,
-                      out_date=None, membership_fetched_at=stamp, membership_available_at=stamp)
-        records.append(record)
+                      out_date=excluded.isoformat() if excluded else None,
+                      membership_fetched_at=stamp, membership_available_at=stamp)
+        _dedupe_record(records, blocked, record, quality)
+    _finish_quality(quality, records)
     if not records:
-        raise _Failure("empty_membership")
-    return records
+        raise _Failure("no_valid_membership_rows")
+    return list(records.values())
 
 
 def _attach_members(item, cached):
@@ -755,6 +855,8 @@ def _attach_members(item, cached):
     for record in cached["records"]:
         stock = existing.get(record["ts_code"], {})
         stock.update(copy.deepcopy(record))
+        stock.setdefault("price", None)
+        stock.setdefault("market_cap", None)
         members.append(stock)
     item["constituents"] = members
     item.update(constituent_count=len(members) if cached["complete"] else None,
@@ -763,8 +865,31 @@ def _attach_members(item, cached):
                 membership_note="当前成分映射快照，不能当作历史时点已知成分")
 
 
+def _rank_constituents(sector, cutoff):
+    members = sector.get("constituents", [])
+    candidates = [stock for stock in members if stock.get("market_cap_date") == cutoff.isoformat()
+                  and isinstance(stock.get("market_cap"), (int, float)) and math.isfinite(stock["market_cap"]) and stock["market_cap"] > 0]
+    if candidates:
+        selected = sorted(candidates, key=lambda stock: stock["market_cap"], reverse=True)[:10]
+        basis, rank_date = "total_market_cap", cutoff.isoformat()
+    else:
+        selected, basis, rank_date = members[:10], "membership_order", None
+    sector["stocks"] = [copy.deepcopy(stock) for stock in selected]
+    for stock in sector["stocks"]:
+        stock["rank_basis"] = basis
+        stock["rank_date"] = rank_date
+        stock.setdefault("price", None)
+    sector.update(rank_basis=basis, rank_date=rank_date)
+
+
 def _apply_primary_basic(sectors, cache, cutoff):
     if cache.get("trade_date") != cutoff.isoformat():
+        for sector in sectors:
+            _rank_constituents(sector, cutoff)
+            sector["valuation_coverage"] = {"matched_count": 0, "membership_count": len(sector.get("constituents", [])),
+                                             "ratio": 0 if sector.get("constituents") else None, "trade_date": cutoff.isoformat(),
+                                             "complete": False, "membership_complete": sector.get("membership_complete", False),
+                                             "possibly_truncated": cache.get("possibly_truncated", False)}
         return
     lookup = {row["ts_code"]: row for row in cache.get("records", [])}
     for sector in sectors:
@@ -789,15 +914,15 @@ def _apply_primary_basic(sectors, cache, cutoff):
             history = {value["date"]: value for value in stock.get("daily_basic_history", []) if value.get("date")}
             history[row["date"]] = copy.deepcopy(row)
             stock["daily_basic_history"] = sorted(history.values(), key=lambda value: value["date"])[-260:]
-        candidates = [stock for stock in sector.get("constituents", []) if stock.get("market_cap_date") == cutoff.isoformat() and stock.get("market_cap") is not None]
-        sector["stocks"] = [copy.deepcopy(stock) for stock in sorted(candidates, key=lambda stock: stock["market_cap"], reverse=True)[:10]]
-        sector.update(rank_basis="total_market_cap", rank_date=cutoff.isoformat())
+        _rank_constituents(sector, cutoff)
         total = len(sector.get("constituents", []))
         sector["valuation_coverage"] = {"matched_count": matched, "membership_count": total,
                                          "ratio": matched / total if total else None, "trade_date": cutoff.isoformat(),
                                          "possibly_truncated": cache.get("possibly_truncated", False),
                                          "membership_complete": sector.get("membership_complete", False),
-                                         "complete": bool(total and matched == total and sector.get("membership_complete") and not cache.get("possibly_truncated"))}
+                                         "quality": copy.deepcopy(cache.get("quality", {})),
+                                         "complete": bool(total and matched == total and sector.get("membership_complete") and not cache.get("possibly_truncated")
+                                                          and cache.get("quality", {}).get("complete", True))}
 
 
 def _realtime(rows, allowed, now, api, token):
@@ -924,7 +1049,7 @@ def enrich_with_stock_api(data, config=None, now=None):
         raise ValueError("invalid_now")
     stamp = now.isoformat(timespec="seconds")
     old = result.get("stock_api_state", {})
-    state = {key: copy.deepcopy(old[key]) for key in ("calendar", "classification", "daily_basic", "members", "endpoints",
+    state = {key: copy.deepcopy(old[key]) for key in ("calendar", "classification", "daily_basic", "members", "member_attempts", "endpoints",
              "index_requests", "index_cursor", "sw_history_requests", "sw_history_cursor", "member_cursor", "cooldown_until", "news", "realtime") if key in old}
     state.update(version=2, primary=True, last_run_at=stamp, requests_this_run=0)
     result["stock_api_state"] = state
@@ -998,7 +1123,14 @@ def enrich_with_stock_api(data, config=None, now=None):
             errors.append(exc.code)
             delay = exc.retry_seconds or (900 if exc.code != "budget_exhausted" else 0)
             retry = (now + timedelta(seconds=delay)).isoformat(timespec="seconds") if delay else None
-            if api == "sw_daily" and exc.code == "daily_not_published":
+            if api == "index_member_all" and exc.code == "no_valid_membership_rows":
+                target = params["l1_code"]
+                target_state = state.setdefault("member_attempts", {}).setdefault(target, {})
+                target_state.update(last_attempt=stamp, status="cooldown", error_code=exc.code, cooldown_until=retry)
+                # Invalid rows belong to this industry, not an API permission.
+                # Existing API cooldowns are still checked before any request.
+                status.update(status="partial", error_code=exc.code, cooldown_until=None)
+            elif api == "sw_daily" and exc.code == "daily_not_published":
                 status.update(status="pending", error_code=exc.code, snapshot_retry_after=retry,
                               snapshot_target_date=params.get("trade_date"), cooldown_until=None)
                 status.setdefault("snapshot_cooldowns", {})[params.get("trade_date")] = retry
@@ -1112,10 +1244,15 @@ def enrich_with_stock_api(data, config=None, now=None):
     basic = state.get("daily_basic", {})
     if sectors and basic.get("trade_date") != cutoff.isoformat():
         def save_basic(rows):
-            records = _basic_records(rows, cutoff, stamp)
+            quality = {}
+            try:
+                records = _basic_records(rows, cutoff, stamp, quality)
+            finally:
+                basic["quality"] = quality
+                state["daily_basic"] = basic
             basic.update(trade_date=cutoff.isoformat(), fetched_at=stamp, records=records, row_count=len(rows),
                          possibly_truncated=len(rows) >= 6000, full_market_request=True,
-                         completeness="possibly_truncated" if len(rows) >= 6000 else "not_verified")
+                         completeness="possibly_truncated" if len(rows) >= 6000 else "partial" if not quality["complete"] else "not_verified")
             state["daily_basic"] = basic
         attempt("daily_basic", {"trade_date": cutoff.strftime("%Y%m%d")}, save_basic)
     cal = state.get("calendar", {})
@@ -1156,6 +1293,7 @@ def enrich_with_stock_api(data, config=None, now=None):
         state["index_cursor"] = (position + 1) % len(indices)
         count += 1
     members = state.setdefault("members", {})
+    member_attempts = state.setdefault("member_attempts", {})
     cursor = int(_bounded(state.get("member_cursor"), 0, 0, 1000000)) % max(1, len(sectors))
     count = 0
     for offset in range(len(sectors)):
@@ -1164,13 +1302,24 @@ def enrich_with_stock_api(data, config=None, now=None):
         position = (cursor + offset) % len(sectors)
         sector = sectors[position]
         cached = members.get(sector["id"], {})
+        retry = _instant(member_attempts.get(sector["id"], {}).get("cooldown_until"))
+        if retry and retry > now:
+            continue
         fetched = _instant(cached.get("fetched_at"))
-        if fetched and (now - fetched).total_seconds() < 86400 * 7:
+        ttl = 86400 * 7 if cached.get("complete") else 900
+        if fetched and (now - fetched).total_seconds() < ttl:
             continue
         def save_members(rows, sector=sector):
-            records = _members(rows, sector["id"], token, stamp)
-            members[sector["id"]] = {"records": records, "fetched_at": stamp, "complete": len(rows) < 2000,
-                                     "possibly_truncated": len(rows) >= 2000, "received_count": len(rows)}
+            quality = {}
+            try:
+                records = _members(rows, sector["id"], token, stamp, quality)
+            finally:
+                member_attempts.setdefault(sector["id"], {}).update(last_attempt=stamp, quality=quality)
+            complete = len(rows) < 2000 and quality["complete"]
+            members[sector["id"]] = {"records": records, "fetched_at": stamp, "complete": complete,
+                                     "possibly_truncated": len(rows) >= 2000, "received_count": len(rows), "quality": quality}
+            member_attempts[sector["id"]].update(status="success" if complete else "partial", error_code=None,
+                                                 last_success=stamp, cooldown_until=None)
         attempt("index_member_all", {"l1_code": sector["id"], "is_new": "Y"}, save_members)
         state["member_cursor"] = (position + 1) % len(sectors)
         count += 1

@@ -107,6 +107,21 @@ def basic_row(day='20261116', ts_code='600000.SH'):
             'total_share': 12, 'float_share': 10, 'free_share': 8}
 
 
+def primary_basic_rows():
+    return [dict(basic_row(ts_code=f'{prefix}{number:03}.SH'), total_mv=100 + number)
+            for prefix in ('600', '601', '603') for number in range(12)]
+
+
+def member_rows(l1_code):
+    prefix = {'801010.SI': '600', '801030.SI': '601', '801040.SI': '603'}.get(l1_code, '605')
+    return [{'l1_code': l1_code, 'l1_name': 'Fixture Sector',
+             'l2_code': '801011.SI', 'l2_name': 'Fixture L2',
+             'l3_code': '850111.SI', 'l3_name': 'Fixture L3',
+             'ts_code': f'{prefix}{number:03}.SH', 'name': f'Stock {number}',
+             'in_date': '20200101', 'out_date': None, 'is_new': 'Y'}
+            for number in range(12)]
+
+
 class Provider:
     def __init__(self, overrides=None, primary=False, now=NOW):
         self.requests = []
@@ -132,8 +147,7 @@ class Provider:
         if api == 'daily_basic':
             rows = [basic_row()]
             if self.primary:
-                rows = [dict(basic_row(ts_code=f'{prefix}{number:03}.SH'), total_mv=100 + number)
-                        for prefix in ('600', '601', '603') for number in range(12)]
+                rows = primary_basic_rows()
             return Response(pack(fields, rows))
         if api == 'index_classify':
             return Response(pack(fields, [
@@ -152,15 +166,7 @@ class Provider:
                     for code in codes for day in days]
             return Response(pack(fields, rows))
         if api == 'index_member_all':
-            code = payload['params']['l1_code']
-            prefix = {'801010.SI': '600', '801030.SI': '601', '801040.SI': '603'}.get(code, '605')
-            rows = [{'l1_code': code, 'l1_name': 'Fixture Sector',
-                     'l2_code': '801011.SI', 'l2_name': 'Fixture L2',
-                     'l3_code': '850111.SI', 'l3_name': 'Fixture L3',
-                     'ts_code': f'{prefix}{number:03}.SH', 'name': f'Stock {number}',
-                     'in_date': '20200101', 'out_date': None, 'is_new': 'Y'}
-                    for number in range(12)]
-            return Response(pack(fields, rows))
+            return Response(pack(fields, member_rows(payload['params']['l1_code'])))
         if api in ('rt_idx_k', 'rt_sw_k'):
             codes = ['000001.SH'] if api == 'rt_idx_k' else ['801010.SI', '801030.SI']
             trade_time = min(self.now, self.now.replace(hour=15, minute=0, second=0))
@@ -1039,6 +1045,178 @@ class PrimaryStockApiTests(unittest.TestCase):
         self.assertNotIn('sentiment', story)
         self.assertNotIn('sector_ids', story)
         self.assertEqual(result.get('news', []), [])
+        self.assert_safe(result)
+
+    def test_mixed_a_b_and_unknown_codes_preserve_valid_rows_with_quality_counts(self):
+        basic = primary_basic_rows() + [basic_row(ts_code=code)
+                                      for code in ('200001.SZ', '900901.SH', '921001.BJ')]
+        def mixed_members(payload):
+            rows = member_rows(payload['params']['l1_code'])
+            rows.extend(dict(rows[0], ts_code=code) for code in ('200001.SZ', '900901.SH', '921001.BJ'))
+            return pack(payload['fields'].split(','), rows)
+        overrides = {'daily_basic': lambda payload: pack(payload['fields'].split(','), basic),
+                     'index_member_all': mixed_members}
+        with fake_provider(overrides, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        cache = result['stock_api_state']['daily_basic']
+        quality = cache['quality']
+        self.assertEqual((quality['received_count'], quality['accepted_count'],
+                          quality['filtered_count'], quality['rejected_count']), (39, 36, 2, 1))
+        self.assertTrue(all(not row['ts_code'].startswith(('200', '900', '921')) for row in cache['records']))
+        self.assertLessEqual(len(quality['rejection_sample']), 10)
+        for sector in result['sectors']:
+            member_quality = result['stock_api_state']['members'][sector['id']]['quality']
+            self.assertEqual((member_quality['received_count'], member_quality['accepted_count'],
+                              member_quality['filtered_count'], member_quality['rejected_count']), (15, 12, 2, 1))
+            self.assertEqual(len(sector['constituents']), 12)
+            self.assertFalse(sector['membership_complete'])
+            self.assertFalse(sector['valuation_coverage']['complete'])
+            self.assertEqual(len(sector['stocks']), 10)
+        self.assert_safe(result)
+
+    def test_bad_optional_fields_are_null_without_discarding_valid_stock_rows(self):
+        rows = primary_basic_rows()
+        rows[0].update(pe_ttm=SECRET, pb='--', turnover_rate=-1, volume_ratio='NaN', circ_mv='--')
+        rows[1].update(pe_ttm=0, pb=-2)
+        with fake_provider({'daily_basic': lambda payload: pack(payload['fields'].split(','), rows)}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        cache = result['stock_api_state']['daily_basic']
+        quality = cache['quality']
+        self.assertEqual(quality['accepted_count'], 36)
+        self.assertEqual(quality['rejected_count'], 0)
+        records = {row['ts_code']: row for row in cache['records']}
+        row = records['600000.SH']
+        for key in ('vendor_pe_ttm', 'vendor_pb', 'turnover_rate', 'volume_ratio', 'circ_mv'):
+            self.assertIsNone(row[key])
+        for field in ('pe_ttm', 'pb', 'turnover_rate', 'volume_ratio', 'circ_mv'):
+            self.assertGreaterEqual(quality['field_invalid_counts'].get(field, 0), 1)
+        self.assertEqual(row['close'], 11.5)
+        self.assertEqual(row['market_cap_cny'], 1000000)
+        self.assertEqual(records['600001.SH']['vendor_pb'], -2)
+        self.assertIsNone(records['600001.SH']['vendor_pe_ttm'])
+        self.assertTrue(all(sector['valuation_coverage']['matched_count'] == 12 for sector in result['sectors']))
+        self.assertTrue(all(not sector['valuation_coverage']['complete'] for sector in result['sectors']))
+        self.assert_safe(result)
+
+    def test_nonstandard_json_nan_still_rejects_the_payload_instead_of_persisting_it(self):
+        rows = primary_basic_rows()
+        rows[0]['pb'] = float('nan')
+        with fake_provider({'daily_basic': lambda payload: pack(payload['fields'].split(','), rows)}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        self.assertFalse(result['stock_api_state'].get('daily_basic', {}).get('records'))
+        self.assertEqual(result['stock_api_state']['endpoints']['daily_basic']['error_code'], 'invalid_number')
+        self.assert_safe(result)
+
+    def test_exited_members_are_filtered_before_irrelevant_bad_code_and_hierarchy(self):
+        def exited_rows(payload):
+            rows = member_rows(payload['params']['l1_code'])
+            rows.append(dict(rows[0], is_new='N', ts_code=SECRET, l1_code='bad',
+                             l2_code=None, l3_code=None, in_date='bad-date', out_date='bad-date'))
+            rows.append(dict(rows[0], is_new='Y', ts_code=SECRET, l1_code='bad',
+                             l2_code=None, l3_code=None, in_date='bad-date', out_date='20261101'))
+            return pack(payload['fields'].split(','), rows)
+        with fake_provider({'index_member_all': exited_rows}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        for sector in result['sectors']:
+            quality = result['stock_api_state']['members'][sector['id']]['quality']
+            self.assertEqual((quality['received_count'], quality['accepted_count'],
+                              quality['filtered_count'], quality['rejected_count']), (14, 12, 2, 0))
+            self.assertTrue(sector['membership_complete'])
+            self.assertEqual(len(sector['stocks']), 10)
+        self.assert_safe(result)
+
+    def test_missing_or_bad_lower_hierarchy_keeps_verified_l1_mapping_but_marks_partial(self):
+        def partial_rows(payload):
+            rows = member_rows(payload['params']['l1_code'])
+            rows[0].update(l2_code=None, l3_code=SECRET)
+            return pack(payload['fields'].split(','), rows)
+        with fake_provider({'index_member_all': partial_rows}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        for sector in result['sectors']:
+            quality = result['stock_api_state']['members'][sector['id']]['quality']
+            self.assertEqual(quality['accepted_count'], 12)
+            self.assertEqual(quality['rejected_count'], 0)
+            self.assertGreaterEqual(quality['field_invalid_counts'].get('l2_code', 0), 1)
+            self.assertGreaterEqual(quality['field_invalid_counts'].get('l3_code', 0), 1)
+            row = sector['constituents'][0]
+            self.assertIsNone(row['l2_code'])
+            self.assertIsNone(row['l3_code'])
+            self.assertEqual(row['l1_code'], sector['id'])
+            self.assertFalse(sector['membership_complete'])
+            self.assertEqual(len(sector['stocks']), 10)
+        self.assert_safe(result)
+
+    def test_exact_duplicates_deduplicate_but_conflicting_codes_are_fully_quarantined(self):
+        first, conflict, final = [basic_row(ts_code=f'60000{number}.SH') for number in range(3)]
+        basic = [first, deepcopy(first), conflict, dict(conflict, total_mv=999), final]
+        def duplicate_members(payload):
+            first, conflict, final = member_rows(payload['params']['l1_code'])[:3]
+            rows = [first, deepcopy(first), conflict, dict(conflict, name='Conflicting name'), final]
+            return pack(payload['fields'].split(','), rows)
+        overrides = {'daily_basic': lambda payload: pack(payload['fields'].split(','), basic),
+                     'index_member_all': duplicate_members}
+        with fake_provider(overrides, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        cache = result['stock_api_state']['daily_basic']
+        quality = cache['quality']
+        self.assertEqual((quality['received_count'], quality['accepted_count'],
+                          quality['duplicate_count'], quality['rejected_count']), (5, 2, 1, 2))
+        self.assertEqual({row['ts_code'] for row in cache['records']}, {'600000.SH', '600002.SH'})
+        for sector in result['sectors']:
+            quality = result['stock_api_state']['members'][sector['id']]['quality']
+            self.assertEqual((quality['received_count'], quality['accepted_count'],
+                              quality['duplicate_count'], quality['rejected_count']), (5, 2, 1, 2))
+            self.assertEqual(len(sector['constituents']), 2)
+            self.assertTrue(all(not row['code'].endswith('001') for row in sector['constituents']))
+            self.assertFalse(sector['membership_complete'])
+        self.assert_safe(result)
+
+    def test_one_empty_membership_only_cools_that_industry_and_other_industries_continue(self):
+        def rows_for_sector(payload):
+            code = payload['params']['l1_code']
+            rows = member_rows(code)
+            if code == '801010.SI':
+                rows = [dict(rows[0], ts_code='921001.BJ')]
+            return pack(payload['fields'].split(','), rows)
+        with fake_provider({'index_member_all': rows_for_sector}, primary=True) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        requested = [request['params']['l1_code'] for request in provider.requests
+                     if request['api_name'] == 'index_member_all']
+        self.assertEqual(requested, ['801010.SI', '801030.SI'])
+        sectors = {sector['id']: sector for sector in result['sectors']}
+        self.assertEqual(len(sectors['801010.SI']['constituents']), 0)
+        self.assertEqual(len(sectors['801030.SI']['constituents']), 12)
+        self.assertEqual(len(sectors['801030.SI']['stocks']), 10)
+        self.assertTrue(result['stock_api_state']['member_attempts']['801010.SI']['cooldown_until'])
+        self.assertFalse(result['stock_api_state']['endpoints']['index_member_all'].get('cooldown_until'))
+        with fake_provider({'index_member_all': rows_for_sector}, primary=True) as (provider, _, _):
+            cached = collect_stock_api(result, now=NOW + timedelta(minutes=5))
+        self.assertNotIn('801010.SI', [request['params']['l1_code'] for request in provider.requests
+                                    if request['api_name'] == 'index_member_all'])
+        cached['stock_api_state']['endpoints']['index_member_all']['cooldown_until'] = (NOW + timedelta(hours=1)).isoformat()
+        with fake_provider(primary=True) as (provider, _, _):
+            blocked = collect_stock_api(cached, now=NOW + timedelta(minutes=20))
+        self.assertNotIn('index_member_all', [request['api_name'] for request in provider.requests])
+        self.assert_safe(blocked)
+
+    def test_unavailable_valuation_still_shows_names_in_membership_order_without_prices(self):
+        denied = {'code': 2002, 'msg': SECRET, 'data': None}
+        def reversed_members(payload):
+            rows = list(reversed(member_rows(payload['params']['l1_code'])))
+            return pack(payload['fields'].split(','), rows)
+        with fake_provider({'daily_basic': denied, 'index_member_all': reversed_members}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        for sector in result['sectors']:
+            self.assertEqual(len(sector['constituents']), 12)
+            self.assertEqual(len(sector['stocks']), 10)
+            self.assertEqual([stock['name'] for stock in sector['stocks']],
+                             [f'Stock {number}' for number in range(11, 1, -1)])
+            self.assertEqual(sector['rank_basis'], 'membership_order')
+            self.assertIsNone(sector['rank_date'])
+            for stock in sector['stocks']:
+                self.assertIsNone(stock['price'])
+                self.assertEqual(stock['rank_basis'], 'membership_order')
+                self.assertIsNone(stock['rank_date'])
         self.assert_safe(result)
 
 

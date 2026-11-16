@@ -3,10 +3,24 @@ from datetime import datetime
 import unittest
 from unittest.mock import patch
 
-from pipeline.sentiment import aggregate_entity_sentiment, SW2021, MODEL_REVISION, MODEL_ID
+from pipeline.sentiment import aggregate_entity_sentiment, SW2021, MODEL_REVISION, MODEL_ID, PIPELINE_VERSION, TAXONOMY_VERSION
 
 
 NOW = datetime.fromisoformat("2026-11-17T10:00:00+08:00")
+
+# Regression fixture copied from the actual index_classify(src=SW2021, level=L1)
+# records in /tmp/a-share-radar-upgraded.json, inspected on 2026-11-17. Keep this
+# independent of the implementation dictionary; CI needs no API or local export.
+OFFICIAL_CLASSIFICATION = {
+    "801010": "农林牧渔", "801030": "基础化工", "801040": "钢铁", "801050": "有色金属",
+    "801080": "电子", "801110": "家用电器", "801120": "食品饮料", "801130": "纺织服饰",
+    "801140": "轻工制造", "801150": "医药生物", "801160": "公用事业", "801170": "交通运输",
+    "801180": "房地产", "801200": "商贸零售", "801210": "社会服务", "801230": "综合",
+    "801710": "建筑材料", "801720": "建筑装饰", "801730": "电力设备", "801740": "国防军工",
+    "801750": "计算机", "801760": "传媒", "801770": "通信", "801780": "银行",
+    "801790": "非银金融", "801880": "汽车", "801890": "机械设备", "801950": "煤炭",
+    "801960": "石油石化", "801970": "环保", "801980": "美容护理",
+}
 
 
 def news(title, **kwargs):
@@ -32,6 +46,41 @@ class SentimentTests(unittest.TestCase):
         self.assertEqual(result["sectors"][1]["sentiment"]["label"], "unknown")
         self.assertIsNone(result["sectors"][1]["sentiment"]["score"])
         self.assertEqual(result["market"][0]["sentiment"]["label"], "unknown")
+
+    def test_all_codes_and_names_match_real_official_classification(self):
+        self.assertEqual({code: entry[0] for code, entry in SW2021.items()}, OFFICIAL_CLASSIFICATION)
+        self.assertEqual(len(OFFICIAL_CLASSIFICATION), 31)
+        self.assertNotIn("801020", SW2021)
+
+    def test_coal_and_beauty_keywords_use_their_real_sw2021_codes(self):
+        data = dashboard(news("煤炭需求增长", id="coal"), news("化妆品需求增长", id="beauty"))
+        data["sectors"] = [{"id": "801950.SI", "index_code": "801950.SI", "name": "煤炭"},
+                           {"id": "801980.SI", "index_code": "801980.SI", "name": "美容护理"}]
+        result = self.process(data)
+        self.assertEqual([e["news_id"] for e in result["sectors"][0]["sentiment"]["evidence"]], ["coal"])
+        self.assertEqual([e["news_id"] for e in result["sectors"][1]["sentiment"]["evidence"]], ["beauty"])
+        self.assertEqual(result["sectors"][0]["sentiment"]["evidence"][0]["associations"][0]["industry"], "煤炭")
+
+    def test_explicit_code_name_mismatch_cannot_use_wrong_keyword_dictionary(self):
+        data = dashboard(news("化妆品需求增长"))
+        data["sectors"] = [{"id": "801950.SI", "name": "美容护理"}]
+        self.assertEqual(self.process(data)["sectors"][0]["sentiment"]["label"], "unknown")
+
+    def test_old_associations_recomputed_and_new_snapshot_has_corrected_taxonomy(self):
+        data = dashboard(news("化妆品需求增长", id="beauty"))
+        data["sectors"] = [{"id": "801950.SI", "name": "煤炭", "sentiment_history": [
+            {"id": "old-v1", "date": "2026-11-17", "available_at": "2026-11-17T09:00:00+08:00",
+             "score": .5, "feature_hash": "old-wrong-mapping", "pipeline_version": "sw2021-news-tone-v1"}]}]
+        data["news"][0]["sentiment_associations"] = {"801950.SI": [{"industry": "美容护理"}]}
+        original_history = deepcopy(data["sectors"][0]["sentiment_history"])
+        result = self.process(data)
+        self.assertEqual(result["sectors"][0]["sentiment"]["label"], "unknown")
+        self.assertEqual(result["news"][0]["sentiment_associations"], {})
+        self.assertEqual(result["sectors"][0]["sentiment_history"][0], original_history[0])
+        new = result["sectors"][0]["sentiment_history"][-1]
+        self.assertEqual(new["pipeline_version"], PIPELINE_VERSION)
+        self.assertEqual(new["taxonomy_version"], TAXONOMY_VERSION)
+        self.assertNotEqual(new["feature_hash"], "old-wrong-mapping")
 
     def test_actual_constituent_name_and_code_link_news(self):
         for title in ("示例芯片公司利润下降", "600000 营收增长"):

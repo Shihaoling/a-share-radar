@@ -2,7 +2,7 @@ name: Update research and publish
 on:
   push:
     branches: [main]
-    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json']
+    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json', 'web/data/view.json', 'web/data/health.json']
   workflow_dispatch:
     inputs:
       enable_mlp:
@@ -34,6 +34,8 @@ on:
     # Combined with full refreshes: approximately five-minute snapshot cadence.
     # Pipeline skips holidays, pre-open, lunch and after-close quote-only runs.
     - cron: '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+    # Capture vendor industry closes released later than exchange close, 18:17 Shanghai.
+    - cron: '17 10 * * 1-5'
     # Evening world news and weekend updates, Shanghai 21:17.
     - cron: '17 13 * * *'
 permissions:
@@ -111,12 +113,26 @@ jobs:
           else
             python -m pipeline.run
           fi
+      - name: Build lightweight website snapshot and health summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from pipeline.publish import publish_view, health_summary
+          from pipeline.run import atomic_json
+          data = json.loads(Path('web/data/dashboard.json').read_text())
+          publish_view(data, 'web/data/view.json')
+          health = health_summary(data)
+          atomic_json('web/data/health.json', health)
+          print('DATA_HEALTH ' + json.dumps(health, ensure_ascii=False, allow_nan=False))
+          print('VIEW_BYTES', Path('web/data/view.json').stat().st_size)
+          PY
       - name: Persist observations and forecast ledger
         if: github.event_name != 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add web/data/dashboard.json web/data/reviews.json
+          git add web/data/dashboard.json web/data/reviews.json web/data/view.json web/data/health.json
           if [ -f web/data/tushare-capabilities.json ]; then git add web/data/tushare-capabilities.json; fi
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh observations and daily review [skip ci]'

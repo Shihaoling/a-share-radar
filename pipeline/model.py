@@ -98,10 +98,19 @@ def _history(entity, now, config, completed_only=True):
 def _pit_record(entity, day, cutoff, keys, max_age_days=0):
     """Only recorded, dated observations; current entity values are never backfilled."""
     records = []
+    identity = str(entity.get("id") or entity.get("index_code") or entity.get("code") or "").split(":", 1)[0].split(".", 1)[0]
     for key in keys:
         for row in entity.get(key, []) or []:
             if not isinstance(row, dict):
                 continue
+            if key == "sentiment_history" and identity in ("801950", "801980"):
+                # v1 reversed the coal/beauty identifiers. Keep those snapshots
+                # for audit, but never use them as historical model evidence.
+                version = str(row.get("pipeline_version") or "")
+                prefix = "sw2021-news-tone-v"
+                number = version[len(prefix):] if version.startswith(prefix) else ""
+                if not number.isdigit() or int(number) < 2:
+                    continue
             available = _timestamp(row.get("available_at") or row.get("fetched_at"))
             raw_day = row.get("date") or row.get("trade_date")
             try:

@@ -16,6 +16,7 @@ from pipeline.intraday import collect_intraday
 from pipeline.metrics import compute_metrics
 from pipeline.stock_api import enrich_with_stock_api
 from pipeline.sentiment import aggregate_entity_sentiment
+from pipeline.publish import publish_view
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -122,6 +123,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         reviews[day] = revised
     reviews[dashboard['daily_review']['date']] = dashboard['daily_review']
     atomic_json(review_path, reviews)
+    publish_view(dashboard, path.parent/'view.json')
     print(json.dumps({'status':dashboard['status'], 'sectors':len(dashboard.get('sectors',[])),
           'news':len(dashboard.get('news',[])), 'forecasts':len(dashboard.get('predictions',[])),
           'output':str(path)},ensure_ascii=False))

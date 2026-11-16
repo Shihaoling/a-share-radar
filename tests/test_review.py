@@ -24,4 +24,16 @@ class ReviewTests(unittest.TestCase):
         self.assertEqual(r['rumor_count'],1)
         self.assertEqual(r['positive'],0)
         self.assertEqual(r['negative'],1)
+    def test_finbert_unknown_and_mixed_remain_in_daily_summary(self):
+        template={'first_seen_at':'2026-11-16T10:00:00+08:00','sentiment_method':'finbert_chinese_cpu'}
+        news=[dict(template,sentiment=label) for label in ('positive','mixed','unknown')]
+        news.append(dict(template,sentiment='negative',sentiment_is_rumor=True))
+        news.append(dict(template,sentiment='positive',sentiment_duplicate_of='one'))
+        r=daily_review({'news':news},NOW)['sentiment']
+        self.assertEqual(r['positive'],1)
+        self.assertEqual(r['uncertain'],2)
+        self.assertEqual(r['labels']['mixed'],1)
+        self.assertEqual(r['rumor_count'],1)
+        self.assertEqual(r['method'],'finbert_chinese_cpu')
+        self.assertIsNone(r['label_accuracy'])
 if __name__=='__main__': unittest.main()

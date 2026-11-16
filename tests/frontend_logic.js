@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {displayQuote,sectorQuote,normalizeDashboard,quantItem,sentimentLabel,newsTone,openMetricHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -98,8 +98,20 @@ function runFrontendChecks(source) {
   check('per-article model tone is distinguished from directional impact',()=>{const node=api.newsTone({sentiment:'negative',sentiment_method:'finbert_chinese_cpu',impact:'positive'});const output=text(node);ok(output.includes('文本语气'));ok(output.includes('偏负面'));ok(output.includes('金融文本模型'));ok(!output.includes('潜在利好'));});
   check('per-article fallback rules are explicitly identified',()=>{const output=text(api.newsTone({sentiment:'positive',sentiment_method:'financial-tone-rules-v2'}));ok(output.includes('偏正面'));ok(output.includes('规则分析'));});
   check('per-article missing sentiment remains unknown',()=>{ok(text(api.newsTone({})).includes('暂无覆盖'));});
+  check('membership fallback is never claimed to be turnover ranked',()=>{eq(api.stockRankLabel({rank_basis:'membership_order'}),'成分示例 · 市值排序待数据');eq(api.stockRankLabel({stocks:[{rank_basis:'membership_order'}]}),'成分示例 · 市值排序待数据');});
+  check('unknown member order remains explicitly unconfirmed',()=>{eq(api.stockRankLabel({stocks:[]}),'成分示例 · 排序依据待确认');});
+  check('known turnover order remains available for retained datasets',()=>{eq(api.stockRankLabel({rank_basis:'turnover_amount'}),'按已获取成交额排序');});
   check('stock rank basis is used when the sector rank basis is absent',()=>{const copy=JSON.parse(JSON.stringify(d));copy.sectors[0].stocks=[{code:'600000',name:'测试股票',price:10,as_of:'2026-11-13',timestamp_quality:'daily_close',rank_basis:'total_market_cap'}];api.state.data=copy;api.state.page='sectors';api.state.search='';api.state.selected=copy.sectors[0].id;api.render();ok(text(root).includes('按已获取总市值排序'));api.state.data=d;});
   check('vendor help states published methodology and independent date',()=>{api.openMetricHelp({name:'测试行业',vendor_pe:18.5,vendor_valuation_date:'2026-11-13'},'pe_ttm');const content=text(doc.body.children.at(-1));ok(content.includes('未声明 TTM'));ok(content.includes('2026-11-13'));ok(content.includes('未在本网站用归母利润'));});
   for(const key of ['pe_ttm','pb','sharpe'])check(`metric help ${key} handles missing data`,()=>api.openMetricHelp(d.sectors[0],key));
+  class Immediate {constructor(value,error){this.value=value;this.error=error;}then(fn){if(this.error)return this;try{const value=fn(this.value);return value instanceof Immediate?value:new Immediate(value);}catch(error){return new Immediate(null,error);}}catch(fn){if(!this.error)return this;try{return new Immediate(fn(this.error));}catch(error){return new Immediate(null,error);}}}
+  function requestFixture(responses){const calls=[];let value,error;const fetcher=(url,options)=>{calls.push({url,options});const next=responses.shift();if(next instanceof Error)return new Immediate(null,next);return new Immediate({status:next.status,ok:next.status>=200&&next.status<300,json:()=>new Immediate(next.body,next.jsonError)});};api.requestSnapshot(fetcher,12345).then(x=>value=x).catch(e=>error=e);return{calls,value,error};}
+  check('lightweight view is the preferred request',()=>{const r=requestFixture([{status:200,body:d}]);eq(r.calls.length,1);eq(r.calls[0].url,'./data/view.json?t=12345');eq(r.calls[0].options.cache,'no-store');eq(r.value,d);});
+  check('view 404 alone falls back to full dashboard with matching cache bust',()=>{const r=requestFixture([{status:404},{status:200,body:d}]);eq(r.calls.length,2);eq(r.calls[1].url,'./data/dashboard.json?t=12345');eq(r.value,d);});
+  check('view server error does not trigger expensive dashboard fallback',()=>{const r=requestFixture([{status:500}]);eq(r.calls.length,1);ok(r.error.message.includes('500'));});
+  check('view network failure preserves failure without fallback',()=>{const r=requestFixture([new Error('offline')]);eq(r.calls.length,1);eq(r.error.message,'offline');});
+  check('invalid view schema does not silently switch datasets',()=>{const r=requestFixture([{status:200,body:{schema_version:2,market:[],sectors:[]}}]);eq(r.calls.length,1);ok(r.error.message.includes('数据格式'));});
+  check('unsafe array shape is rejected before rendering',()=>{const r=requestFixture([{status:200,body:{...d,news:{}}}]);ok(r.error.message.includes('news'));});
+  check('fallback dashboard is validated too',()=>{const r=requestFixture([{status:404},{status:200,body:{market:[],sectors:[]}}]);eq(r.calls.length,2);ok(r.error);});
   return {passed, failures};
 }
