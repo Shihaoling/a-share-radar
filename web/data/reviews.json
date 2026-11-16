@@ -1,7 +1,7 @@
 {
   "2026-11-16": {
     "date": "2026-11-16",
-    "evaluated_at": "2026-11-16T15:03:23.559131+08:00",
+    "evaluated_at": "2026-11-16T15:05:30.556609+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 0,
     "settled_count": 0,
@@ -15,11 +15,11 @@
     "by_sector": [],
     "by_task": [],
     "sentiment": {
-      "positive": 0,
+      "positive": 5,
       "negative": 0,
       "neutral": 0,
-      "uncertain": 0,
-      "rumor_count": 0,
+      "uncertain": 57,
+      "rumor_count": 1,
       "alignment_count": 0,
       "alignment_rate": null,
       "method": "lexicon_rules",
