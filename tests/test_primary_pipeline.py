@@ -1,11 +1,12 @@
 """Primary-source ownership and latest-quote integration contracts."""
 import unittest
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from unittest.mock import patch
 from pipeline.sources import fetch_data
 from pipeline.fallback import _apply_bars
 from pipeline.intraday import collect_intraday, _stock_symbol
-from pipeline.run import bootstrap_data
+from pipeline.run import bootstrap_data, bootstrap_coverage
+from pipeline.calendar import is_trading_day
 
 
 class PrimaryPipelineTests(unittest.TestCase):
@@ -46,6 +47,21 @@ class PrimaryPipelineTests(unittest.TestCase):
         self.assertEqual(run.call_count, 2)
         self.assertFalse(run.call_args_list[0].kwargs['stock_api_only'])
         self.assertTrue(run.call_args_list[1].kwargs['stock_api_only'])
+
+    def test_bootstrap_requires_real_labeled_samples_not_raw_bar_count(self):
+        bars = []
+        day = date(2026, 1, 1)
+        while len(bars) < 181:
+            if is_trading_day(day):
+                bars.append({'date': day.isoformat(), 'open': 100., 'close': 101., 'high':102., 'low':99., 'complete':True})
+            day += timedelta(days=1)
+        entity = {'id':'801780.SI', 'taxonomy':'SW2021', 'level':'L1', 'source_history':{'stock_api':bars[:180]}}
+        now = datetime.fromisoformat('2026-11-16T18:00:00+08:00')
+        self.assertEqual(bootstrap_coverage({'sectors':[entity]}, now=now)['history_ready'], 0)
+        entity['source_history']['stock_api'] = bars
+        self.assertEqual(bootstrap_coverage({'sectors':[entity]}, now=now)['history_ready'], 1)
+        entity['source_history']['stock_api'] = bars[:170] + bars[:50]
+        self.assertEqual(bootstrap_coverage({'sectors':[entity]}, now=now)['history_ready'], 0)
 
 
 if __name__ == '__main__':

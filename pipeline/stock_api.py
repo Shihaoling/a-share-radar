@@ -24,6 +24,7 @@ from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous
 
 ENDPOINT = "https://t.xiaodefa.top/"
 MAX_BYTES = 4 * 1024 * 1024
+MIN_HISTORY_BARS = 181
 FIELDS = {
     "trade_cal": "exchange,cal_date,is_open,pretrade_date",
     "index_daily": "ts_code,trade_date,close,open,high,low,pre_close,change,pct_chg,vol,amount",
@@ -240,6 +241,22 @@ def _stock_code(raw):
     if re.fullmatch(r"(?:[48]\d{5}|920\d{3})(?:\.BJ)?", raw):
         return raw[:6] + ".BJ"
     return None
+
+
+def _completed_dates(bars, cutoff):
+    """Count distinct usable source bars, never trust a legacy completion flag."""
+    days = set()
+    for bar in bars:
+        if not isinstance(bar, dict) or bar.get("complete") is False or bar.get("is_complete") is False:
+            continue
+        try:
+            day = _date(bar.get("date"))
+            close = _number(bar.get("close"), minimum=0)
+        except _Failure:
+            continue
+        if close > 0 and day <= cutoff and is_trading_day(day) is True:
+            days.add(day)
+    return days
 
 
 def _calendar(rows, start, end):
@@ -1023,12 +1040,16 @@ def enrich_with_stock_api(data, config=None, now=None):
     classification = state.get("classification", {})
     if not quotes_only:
         cached_at = _instant(classification.get("fetched_at"))
-        if not cached_at or (now - cached_at).total_seconds() >= 86400 * 7:
+        classification_complete = classification.get("complete") and len(classification.get("records", [])) == 31
+        classification_ttl = 86400 * 7 if classification_complete else 900
+        if not cached_at or (now - cached_at).total_seconds() >= classification_ttl:
             def save_classification(rows):
                 records = _classifications(rows, token)
-                old_records = {row["index_code"]: row for row in classification.get("records", [])}
+                old_records = {} if len(records) == 31 else {row["index_code"]: row for row in classification.get("records", [])}
                 old_records.update({row["index_code"]: row for row in records})
-                classification.update(records=list(old_records.values()), fetched_at=stamp, complete=len(records) == 31,
+                if len(old_records) > 31:
+                    raise _Failure("invalid_classification")
+                classification.update(records=list(old_records.values()), fetched_at=stamp, complete=len(old_records) == 31,
                                       expected_count=31, received_count=len(records))
                 state["classification"] = classification
             attempt("index_classify", {"src": "SW2021", "level": "L1"}, save_classification)
@@ -1115,16 +1136,22 @@ def enrich_with_stock_api(data, config=None, now=None):
             break
         position = (cursor + offset) % len(indices)
         item = indices[position]
-        cached = index_attempts.get(item["id"], {})
-        if cached.get("target_date") == cutoff.isoformat() and cached.get("complete"):
-            continue
         history = item.get("source_history", {}).get("stock_api", [])
-        start = _date(history[-1]["date"]) - timedelta(days=7) if history else cutoff - timedelta(days=365)
+        days = _completed_dates(history, cutoff)
+        cached = index_attempts.setdefault(item["id"], {})
+        cached["history_count"] = len(days)
+        if len(days) < MIN_HISTORY_BARS:
+            cached["complete"] = False
+        if cached.get("target_date") == cutoff.isoformat() and cached.get("complete") and len(days) >= MIN_HISTORY_BARS:
+            continue
+        start = max(days) - timedelta(days=7) if len(days) >= MIN_HISTORY_BARS else cutoff - timedelta(days=365)
         def save_index(rows, item=item, start=start):
             bars = _index_bars(rows, _index_code(item), start, cutoff, stamp)
             _apply_index(result, item, bars, stamp, primary=True)
+            count = len(_completed_dates(item.get("source_history", {}).get("stock_api", []), cutoff))
             index_attempts[item["id"]] = {"target_date": cutoff.isoformat(), "last_success": stamp,
-                                         "complete": bars[-1]["date"] == cutoff.isoformat()}
+                                         "history_count": count, "latest_trade_date": bars[-1]["date"],
+                                         "complete": count >= MIN_HISTORY_BARS and bars[-1]["date"] == cutoff.isoformat()}
         attempt("index_daily", {"ts_code": _index_code(item), "start_date": start.strftime("%Y%m%d"), "end_date": cutoff.strftime("%Y%m%d")}, save_index)
         state["index_cursor"] = (position + 1) % len(indices)
         count += 1
@@ -1167,21 +1194,26 @@ def enrich_with_stock_api(data, config=None, now=None):
             break
         position = (cursor + offset) % len(sectors)
         sector = sectors[position]
-        cached = history_requests.get(sector["id"], {})
-        recent = _instant(cached.get("last_success"))
-        if cached.get("target_date") == cutoff.isoformat() and (cached.get("complete") or (recent and (now - recent).total_seconds() < 21600 and cached.get("history_count", 0) >= 180)):
-            continue
         old_bars = sector.get("source_history", {}).get("stock_api", [])
-        start = _date(old_bars[-1]["date"]) - timedelta(days=7) if len(old_bars) >= 180 else cutoff - timedelta(days=365)
+        days = _completed_dates(old_bars, cutoff)
+        cached = history_requests.setdefault(sector["id"], {})
+        cached["history_count"] = len(days)
+        if len(days) < MIN_HISTORY_BARS:
+            cached["complete"] = False
+        recent = _instant(cached.get("last_success"))
+        if len(days) >= MIN_HISTORY_BARS and cached.get("target_date") == cutoff.isoformat() and (cached.get("complete") or (recent and (now - recent).total_seconds() < 21600)):
+            continue
+        start = max(days) - timedelta(days=7) if len(days) >= MIN_HISTORY_BARS else cutoff - timedelta(days=365)
         def save_history(rows, sector=sector, start=start):
             grouped = _sw_bars(rows, {sector["id"]}, start, cutoff, stamp, token)
             if not grouped:
                 raise _Failure("empty_completed_bars")
             bars = grouped[sector["id"]]
             _apply_sw(result, sector, bars, stamp)
+            count = len(_completed_dates(sector.get("source_history", {}).get("stock_api", []), cutoff))
             history_requests[sector["id"]] = {"target_date": cutoff.isoformat(), "last_success": stamp,
-                                             "history_count": len(sector.get("history", [])), "latest_trade_date": bars[-1]["date"],
-                                             "complete": bars[-1]["date"] == cutoff.isoformat() and len(rows) < 4000}
+                                             "history_count": count, "latest_trade_date": bars[-1]["date"],
+                                             "complete": count >= MIN_HISTORY_BARS and bars[-1]["date"] == cutoff.isoformat() and len(rows) < 4000}
         attempt("sw_daily", {"ts_code": sector["id"], "start_date": start.strftime("%Y%m%d"), "end_date": cutoff.strftime("%Y%m%d")}, save_history)
         state["sw_history_cursor"] = (position + 1) % len(sectors)
         count += 1

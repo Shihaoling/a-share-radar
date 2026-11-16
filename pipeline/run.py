@@ -127,12 +127,20 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
           'output':str(path)},ensure_ascii=False))
     return dashboard
 
-def bootstrap_coverage(data):
+def bootstrap_coverage(data, config=None, now=None):
+    from pipeline.model import DEFAULTS, _history, _samples
+    settings = {**DEFAULTS, 'min_train': 120, 'holdout_size': 20, **(config or {})}
+    clock = now or datetime.now(ZoneInfo('Asia/Shanghai'))
+    required = settings['min_train'] + 2 * settings['holdout_size']
+    def training_ready(entity):
+        primary = {**entity, 'history': entity.get('source_history', {}).get('stock_api', [])}
+        bars = _history(primary, clock, settings)
+        return len(_samples(bars, primary)) >= required
     sectors = [s for s in data.get('sectors', []) if s.get('taxonomy') == 'SW2021' and s.get('level') == 'L1']
     return {'industries': len(sectors),
             'members_complete': sum(bool(s.get('membership_complete')) for s in sectors),
-            'history_ready': sum(len(s.get('source_history', {}).get('stock_api', [])) >= 180 for s in sectors),
-            'indices_ready': sum(len(s.get('source_history', {}).get('stock_api', [])) >= 180 for s in data.get('market', []))}
+            'history_ready': sum(training_ready(s) for s in sectors),
+            'indices_ready': sum(training_ready(s) for s in data.get('market', []))}
 
 def bootstrap_data(rounds=8, output=None, enable_mlp=False):
     """One bounded initial fill; subsequent rounds reuse every non-primary source.
@@ -146,7 +154,7 @@ def bootstrap_data(rounds=8, output=None, enable_mlp=False):
     data = {}
     for index in range(rounds):
         data = run(output=output, enable_mlp=enable_mlp, stock_api_only=index > 0, bootstrap=True)
-        coverage = bootstrap_coverage(data)
+        coverage = bootstrap_coverage(data, load(ROOT/'config/settings.json', {}))
         print(json.dumps({'bootstrap_round': index + 1, **coverage}, ensure_ascii=False), flush=True)
         if (coverage['industries'] == coverage['members_complete'] == coverage['history_ready'] == 31
                 and coverage['indices_ready'] == len(data.get('market', []))):

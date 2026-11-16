@@ -90,6 +90,16 @@ def index_row(ts_code='000001.SH', day='20261116', close=3100):
             'pct_chg': 3.3333, 'vol': 123.5, 'amount': 456.75}
 
 
+def trading_dates(count=181):
+    days = []
+    day = NOW.date()
+    while len(days) < count:
+        if is_trading_day(day) is True:
+            days.append(day.strftime('%Y%m%d'))
+        day -= timedelta(days=1)
+    return list(reversed(days))
+
+
 def basic_row(day='20261116', ts_code='600000.SH'):
     return {'ts_code': ts_code, 'trade_date': day, 'close': 11.5,
             'total_mv': 123.4, 'circ_mv': 100, 'pe_ttm': 8.5, 'pb': 0.8,
@@ -530,6 +540,33 @@ class PrimaryStockApiTests(unittest.TestCase):
         self.assertEqual(sectors['809999.SI']['keywords'], ['农林牧渔'])
         self.assert_safe(result)
 
+    def test_partial_classification_rechecks_after_fifteen_minutes_and_merges_codes(self):
+        options = {'stock_api': {'max_index_calls': 0, 'max_member_calls': 0,
+                                 'max_sw_history_calls': 0, 'news_enabled': False}}
+        with fake_provider(primary=True):
+            first = collect_stock_api(canonical_seed(), options, NOW)
+        self.assertFalse(first['stock_api_state']['classification']['complete'])
+        with fake_provider(primary=True) as (provider, _, _):
+            cached = collect_stock_api(first, options, NOW + timedelta(minutes=5))
+        self.assertNotIn('index_classify', [request['api_name'] for request in provider.requests])
+        self.assertEqual({sector['id'] for sector in cached['sectors']}, {'801010.SI', '801030.SI'})
+        # A legacy complete flag alone is insufficient when only two records exist.
+        cached['stock_api_state']['classification']['complete'] = True
+        new_row = {'index_code': '801040.SI', 'industry_name': '钢铁', 'parent_code': '0',
+                   'level': 'L1', 'industry_code': '230000', 'is_pub': '1', 'src': 'SW2021'}
+        override = lambda payload: pack(payload['fields'].split(','), [new_row])
+        with fake_provider({'index_classify': override}, primary=True) as (provider, opener, _):
+            refreshed = collect_stock_api(cached, options, NOW + timedelta(minutes=16))
+        self.assertIn('index_classify', [request['api_name'] for request in provider.requests])
+        self.assertEqual({sector['id'] for sector in refreshed['sectors']},
+                         {'801010.SI', '801030.SI', '801040.SI'})
+        classification = refreshed['stock_api_state']['classification']
+        self.assertEqual(len(classification['records']), 3)
+        self.assertFalse(classification['complete'])
+        self.assertEqual(classification['fetched_at'], (NOW + timedelta(minutes=16)).isoformat(timespec='seconds'))
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assert_safe(refreshed)
+
     def test_quotes_only_requests_two_realtime_apis_and_reuses_sixty_second_cache(self):
         with fake_provider(primary=True, now=LIVE_NOW) as (provider, opener, _):
             result = collect_stock_api(canonical_seed(), {'stock_api': {'quotes_only': True}}, LIVE_NOW)
@@ -674,6 +711,103 @@ class PrimaryStockApiTests(unittest.TestCase):
             self.assertEqual(sector['market_cap'], 50000000)
             self.assertEqual(sector['market_cap_unit'], 'CNY')
             self.assertEqual(bar['upstream_provider'], 'unknown')
+        self.assert_safe(result)
+
+    def test_short_index_cache_overrides_old_complete_marker_then_becomes_complete(self):
+        data = canonical_seed()
+        short_history = [{'date': day, 'close': 3000, 'source': 'stock_api', 'complete': True}
+                         for day in ('2026-11-13', '2026-11-16')]
+        data['market'][0]['source_history'] = {'stock_api': deepcopy(short_history)}
+        data['stock_api_state'] = {'index_requests': {'sh000001': {
+            'target_date': '2026-11-16', 'complete': True,
+            'last_success': (NOW - timedelta(hours=1)).isoformat()}}}
+        days = trading_dates()
+        def full_index_history(payload):
+            rows = [index_row(payload['params']['ts_code'], day, 3000 + position)
+                    for position, day in enumerate(days)]
+            return pack(payload['fields'].split(','), rows)
+        options = {'stock_api': {'max_requests': 999, 'max_member_calls': 0,
+                                 'max_sw_history_calls': 0, 'news_enabled': False}}
+        with fake_provider({'index_daily': full_index_history}, primary=True) as (provider, opener, _):
+            result = collect_stock_api(data, options, NOW)
+        requests = [request for request in provider.requests if request['api_name'] == 'index_daily']
+        self.assertEqual(len(requests), 1)
+        self.assertEqual(requests[0]['params']['start_date'], '20251116')
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assertEqual(len(result['market'][0]['source_history']['stock_api']), 181)
+        self.assertTrue(result['stock_api_state']['index_requests']['sh000001']['complete'])
+        with fake_provider(primary=True) as (provider, opener, _):
+            again = collect_stock_api(result, options, NOW + timedelta(minutes=5))
+        self.assertNotIn('index_daily', [request['api_name'] for request in provider.requests])
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assert_safe(again)
+
+    def test_short_sw_cache_overrides_old_complete_marker_then_becomes_complete(self):
+        data = canonical_seed()
+        short_history = [{'date': day, 'close': 1010, 'source': 'stock_api',
+                          'api': 'sw_daily', 'complete': True}
+                         for day in ('2026-11-13', '2026-11-16')]
+        requests = {}
+        for sector in data['sectors']:
+            sector['source_history'] = {'stock_api': deepcopy(short_history)}
+            requests[sector['id']] = {'target_date': '2026-11-16', 'complete': True,
+                                      'last_success': (NOW - timedelta(hours=1)).isoformat()}
+        data['stock_api_state'] = {'sw_history_requests': requests}
+        days = trading_dates()
+        def full_sw_history(payload):
+            params = payload['params']
+            codes = [params['ts_code']] if params.get('ts_code') else ['801010.SI', '801030.SI']
+            selected = days if params.get('ts_code') else [params['trade_date']]
+            rows = [{'ts_code': code, 'trade_date': day, 'name': 'Fixture SW Index',
+                     'open': 1000, 'low': 995, 'high': 1020, 'close': 1010, 'change': 10,
+                     'pct_change': 1, 'vol': 123, 'amount': 456, 'pe': 18, 'pb': 2,
+                     'float_mv': 3000, 'total_mv': 5000} for code in codes for day in selected]
+            return pack(payload['fields'].split(','), rows)
+        options = {'stock_api': {'max_requests': 999, 'max_index_calls': 0,
+                                 'max_member_calls': 0, 'news_enabled': False}}
+        with fake_provider({'sw_daily': full_sw_history}, primary=True) as (provider, opener, _):
+            result = collect_stock_api(data, options, NOW)
+        histories = [request for request in provider.requests if request['api_name'] == 'sw_daily'
+                     and 'ts_code' in request['params']]
+        self.assertEqual(len(histories), 2)
+        self.assertTrue(all(request['params']['start_date'] == '20251116' for request in histories))
+        self.assertLessEqual(opener.open.call_count, 12)
+        for sector in result['sectors']:
+            self.assertEqual(len(sector['source_history']['stock_api']), 181)
+            self.assertTrue(result['stock_api_state']['sw_history_requests'][sector['id']]['complete'])
+        with fake_provider(primary=True) as (provider, opener, _):
+            again = collect_stock_api(result, options, NOW + timedelta(minutes=5))
+        self.assertFalse(any(request['api_name'] == 'sw_daily' and 'ts_code' in request['params']
+                             for request in provider.requests))
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assert_safe(again)
+
+    def test_exactly_one_hundred_eighty_cached_bars_still_require_history_backfill(self):
+        data = canonical_seed()
+        dates = [datetime.strptime(day, '%Y%m%d').date().isoformat() for day in trading_dates(180)]
+        bars = [{'date': day, 'close': 3000, 'source': 'stock_api', 'complete': True} for day in dates]
+        data['market'][0]['source_history'] = {'stock_api': deepcopy(bars)}
+        state = {'index_requests': {'sh000001': {'target_date': '2026-11-16', 'complete': True}},
+                 'sw_history_requests': {}}
+        for sector in data['sectors']:
+            sector['source_history'] = {'stock_api': [dict(bar, api='sw_daily') for bar in bars]}
+            state['sw_history_requests'][sector['id']] = {'target_date': '2026-11-16', 'complete': True}
+        data['stock_api_state'] = state
+        options = {'stock_api': {'max_member_calls': 0, 'news_enabled': False}}
+        with fake_provider(primary=True) as (provider, opener, _):
+            result = collect_stock_api(data, options, NOW)
+        index_requests = [request for request in provider.requests if request['api_name'] == 'index_daily']
+        sw_requests = [request for request in provider.requests if request['api_name'] == 'sw_daily'
+                       and 'ts_code' in request['params']]
+        self.assertEqual(len(index_requests), 1)
+        self.assertEqual(len(sw_requests), 2)
+        self.assertTrue(all(request['params']['start_date'] == '20251116'
+                            for request in index_requests + sw_requests))
+        self.assertFalse(result['stock_api_state']['index_requests']['sh000001']['complete'])
+        for sector in result['sectors']:
+            self.assertEqual(len(sector['source_history']['stock_api']), 180)
+            self.assertFalse(result['stock_api_state']['sw_history_requests'][sector['id']]['complete'])
+        self.assertLessEqual(opener.open.call_count, 12)
         self.assert_safe(result)
 
     def test_backfilled_ohlc_keeps_trade_time_while_valuation_availability_stays_actual(self):
