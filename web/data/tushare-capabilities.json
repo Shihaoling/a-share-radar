@@ -207,43 +207,55 @@
     ]
   },
   "live_news": {
-    "checked_at": "2026-11-16T17:08:59.389058+08:00",
+    "checked_at": "2026-11-16T19:29:43.301954+08:00",
     "group": "live_news",
     "requests": 4,
+    "requested_limit": 3,
     "results": [
       {
         "api": "rt_idx_k",
         "params": {
-          "ts_code": "000001.SH,399001.SZ"
+          "ts_code": "000001.SH,399001.SZ",
+          "limit": 3
         },
         "status": "unavailable",
-        "error_code": "api_denied"
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
       },
       {
         "api": "rt_sw_k",
         "params": {
-          "ts_code": "801780.SI"
+          "ts_code": "801780.SI",
+          "limit": 3
         },
         "status": "unavailable",
-        "error_code": "api_denied"
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
       },
       {
         "api": "news",
         "params": {
           "src": "cls",
-          "start_date": "2026-11-16 16:08:59",
-          "end_date": "2026-11-16 17:08:59"
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:43",
+          "limit": 3
         },
         "status": "unavailable",
-        "error_code": "api_denied"
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
       },
       {
         "api": "index_daily",
         "params": {
           "ts_code": "000001.SH",
-          "trade_date": "20261116"
+          "trade_date": "20261116",
+          "limit": 3
         },
         "status": "success",
+        "query_match": true,
         "row_count": 1,
         "fields": [
           "ts_code",
@@ -274,6 +286,986 @@
           }
         ]
       }
-    ]
+    ],
+    "stopped_reason": null
+  },
+  "financials": {
+    "checked_at": "2026-11-16T19:29:07.692795+08:00",
+    "group": "financials",
+    "requests": 7,
+    "requested_limit": 3,
+    "results": [
+      {
+        "api": "income",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "revenue",
+          "n_income_attr_p"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "revenue": 170899152276.34,
+            "n_income_attr_p": 86228146421.62
+          }
+        ]
+      },
+      {
+        "api": "income_vip",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "revenue",
+          "n_income_attr_p"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "revenue": 170899152276.34,
+            "n_income_attr_p": 86228146421.62
+          }
+        ]
+      },
+      {
+        "api": "balancesheet",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "total_assets",
+          "total_liab",
+          "total_hldr_eqy_exc_min_int"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "total_assets": 298944579918.7,
+            "total_liab": 56933264798.1,
+            "total_hldr_eqy_exc_min_int": 233105984399.47
+          }
+        ]
+      },
+      {
+        "api": "cashflow",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "n_cashflow_act",
+          "n_cashflow_inv_act",
+          "n_cash_flows_fnc_act"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "n_cashflow_act": 92463692168.43,
+            "n_cashflow_inv_act": -1785202630.71,
+            "n_cash_flows_fnc_act": -71067506484.81
+          }
+        ]
+      },
+      {
+        "api": "fina_indicator",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "eps",
+          "roe",
+          "netprofit_yoy",
+          "debt_to_assets"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "end_date": "20241231",
+            "eps": 68.64,
+            "roe": 38.4283,
+            "netprofit_yoy": 15.38,
+            "debt_to_assets": 19.0448
+          }
+        ]
+      },
+      {
+        "api": "forecast",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 3,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "type",
+          "p_change_min",
+          "p_change_max",
+          "net_profit_min",
+          "net_profit_max"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250113",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          },
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250103",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          },
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250103",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          }
+        ]
+      },
+      {
+        "api": "express",
+        "params": {
+          "ts_code": "000001.SZ",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "empty",
+        "query_match": null,
+        "row_count": 0,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "revenue",
+          "n_income",
+          "total_assets",
+          "total_hldr_eqy_exc_min_int"
+        ],
+        "sample": []
+      }
+    ],
+    "stopped_reason": null
+  },
+  "audit_15000": {
+    "checked_at": "2026-11-16T19:29:07.692780+08:00",
+    "group": "audit_15000",
+    "requests": 20,
+    "results": [
+      {
+        "api": "income",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "revenue",
+          "n_income_attr_p"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "revenue": 170899152276.34,
+            "n_income_attr_p": 86228146421.62
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "income_vip",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "revenue",
+          "n_income_attr_p"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "revenue": 170899152276.34,
+            "n_income_attr_p": 86228146421.62
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "balancesheet",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "total_assets",
+          "total_liab",
+          "total_hldr_eqy_exc_min_int"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "total_assets": 298944579918.7,
+            "total_liab": 56933264798.1,
+            "total_hldr_eqy_exc_min_int": 233105984399.47
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "cashflow",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "report_type": "1",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "f_ann_date",
+          "end_date",
+          "n_cashflow_act",
+          "n_cashflow_inv_act",
+          "n_cash_flows_fnc_act"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "f_ann_date": "20250403",
+            "end_date": "20241231",
+            "n_cashflow_act": 92463692168.43,
+            "n_cashflow_inv_act": -1785202630.71,
+            "n_cash_flows_fnc_act": -71067506484.81
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "fina_indicator",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "eps",
+          "roe",
+          "netprofit_yoy",
+          "debt_to_assets"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250403",
+            "end_date": "20241231",
+            "eps": 68.64,
+            "roe": 38.4283,
+            "netprofit_yoy": 15.38,
+            "debt_to_assets": 19.0448
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "forecast",
+        "params": {
+          "ts_code": "600519.SH",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 3,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "type",
+          "p_change_min",
+          "p_change_max",
+          "net_profit_min",
+          "net_profit_max"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250113",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          },
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250103",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          },
+          {
+            "ts_code": "600519.SH",
+            "ann_date": "20250103",
+            "end_date": "20241231",
+            "type": "略增",
+            "p_change_min": 14.67,
+            "p_change_max": 14.67,
+            "net_profit_min": 8570000.0,
+            "net_profit_max": 8570000.0
+          }
+        ],
+        "group": "financials"
+      },
+      {
+        "api": "express",
+        "params": {
+          "ts_code": "000001.SZ",
+          "period": "20241231",
+          "limit": 3
+        },
+        "status": "empty",
+        "query_match": null,
+        "row_count": 0,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "end_date",
+          "revenue",
+          "n_income",
+          "total_assets",
+          "total_hldr_eqy_exc_min_int"
+        ],
+        "sample": [],
+        "group": "financials"
+      },
+      {
+        "api": "fund_basic",
+        "params": {
+          "market": "E",
+          "status": "L",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 3,
+        "fields": [
+          "ts_code",
+          "name",
+          "fund_type",
+          "found_date",
+          "market"
+        ],
+        "sample": [
+          {
+            "ts_code": "520790.SH",
+            "name": "兴业中证港股通互联网ETF",
+            "fund_type": "股票型",
+            "found_date": "20260319",
+            "market": "E"
+          },
+          {
+            "ts_code": "159160.SZ",
+            "name": "东财中证电池主题ETF",
+            "fund_type": "股票型",
+            "found_date": "20260319",
+            "market": "E"
+          },
+          {
+            "ts_code": "520680.SH",
+            "name": "南方中证港股通汽车产业主题ETF",
+            "fund_type": "股票型",
+            "found_date": "20260318",
+            "market": "E"
+          }
+        ],
+        "group": "fund_macro"
+      },
+      {
+        "api": "fund_nav",
+        "params": {
+          "ts_code": "510300.SH",
+          "nav_date": "20261113",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "nav_date",
+          "unit_nav",
+          "accum_nav"
+        ],
+        "sample": [
+          {
+            "ts_code": "510300.SH",
+            "ann_date": "20261113",
+            "nav_date": "20261113",
+            "unit_nav": 4.0919,
+            "accum_nav": 1.8443
+          }
+        ],
+        "group": "fund_macro"
+      },
+      {
+        "api": "cn_cpi",
+        "params": {
+          "m": "202412",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "month",
+          "nt_val",
+          "nt_yoy",
+          "nt_mom"
+        ],
+        "sample": [
+          {
+            "month": "202412",
+            "nt_val": 100.1,
+            "nt_yoy": 0.1,
+            "nt_mom": 0.0
+          }
+        ],
+        "group": "fund_macro"
+      },
+      {
+        "api": "cn_gdp",
+        "params": {
+          "q": "2024Q4",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "quarter",
+          "gdp",
+          "gdp_yoy"
+        ],
+        "sample": [
+          {
+            "quarter": "2024Q4",
+            "gdp": 1348066.2,
+            "gdp_yoy": 5.0
+          }
+        ],
+        "group": "fund_macro"
+      },
+      {
+        "api": "rt_idx_k",
+        "params": {
+          "ts_code": "000001.SH,399001.SZ",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "live_news"
+      },
+      {
+        "api": "rt_sw_k",
+        "params": {
+          "ts_code": "801780.SI",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "live_news"
+      },
+      {
+        "api": "news",
+        "params": {
+          "src": "cls",
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:43",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "live_news"
+      },
+      {
+        "api": "index_daily",
+        "params": {
+          "ts_code": "000001.SH",
+          "trade_date": "20261116",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "close",
+          "open",
+          "high",
+          "low",
+          "pre_close",
+          "change",
+          "pct_chg",
+          "vol",
+          "amount"
+        ],
+        "sample": [
+          {
+            "ts_code": "000001.SH",
+            "trade_date": "20261116",
+            "close": 3602.5698,
+            "open": 3611.5366,
+            "high": 3623.1183,
+            "low": 3586.5677,
+            "pre_close": 3634.353,
+            "change": -31.7832,
+            "pct_chg": -0.8745,
+            "vol": 461643487.0,
+            "amount": 706214352.2734
+          }
+        ],
+        "group": "live_news"
+      },
+      {
+        "api": "news",
+        "params": {
+          "src": "eastmoney",
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:56",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "news_extended"
+      },
+      {
+        "api": "major_news",
+        "params": {
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:56",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "news_extended"
+      },
+      {
+        "api": "cctv_news",
+        "params": {
+          "date": "20261115",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "news_extended"
+      },
+      {
+        "api": "anns_d",
+        "params": {
+          "ts_code": "600519.SH",
+          "start_date": "20250101",
+          "end_date": "20250630",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error",
+        "group": "news_extended"
+      },
+      {
+        "api": "cyq_perf",
+        "params": {
+          "ts_code": "600519.SH",
+          "trade_date": "20261113",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "weight_avg",
+          "winner_rate"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "trade_date": "20261113",
+            "weight_avg": 1388.47,
+            "winner_rate": 80.28
+          }
+        ],
+        "group": "premium"
+      }
+    ],
+    "groups_completed": [
+      "financials",
+      "fund_macro",
+      "live_news",
+      "news_extended",
+      "premium"
+    ],
+    "stopped_reason": null
+  },
+  "fund_macro": {
+    "checked_at": "2026-11-16T19:29:29.653468+08:00",
+    "group": "fund_macro",
+    "requests": 4,
+    "requested_limit": 3,
+    "results": [
+      {
+        "api": "fund_basic",
+        "params": {
+          "market": "E",
+          "status": "L",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 3,
+        "fields": [
+          "ts_code",
+          "name",
+          "fund_type",
+          "found_date",
+          "market"
+        ],
+        "sample": [
+          {
+            "ts_code": "520790.SH",
+            "name": "兴业中证港股通互联网ETF",
+            "fund_type": "股票型",
+            "found_date": "20260319",
+            "market": "E"
+          },
+          {
+            "ts_code": "159160.SZ",
+            "name": "东财中证电池主题ETF",
+            "fund_type": "股票型",
+            "found_date": "20260319",
+            "market": "E"
+          },
+          {
+            "ts_code": "520680.SH",
+            "name": "南方中证港股通汽车产业主题ETF",
+            "fund_type": "股票型",
+            "found_date": "20260318",
+            "market": "E"
+          }
+        ]
+      },
+      {
+        "api": "fund_nav",
+        "params": {
+          "ts_code": "510300.SH",
+          "nav_date": "20261113",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "ann_date",
+          "nav_date",
+          "unit_nav",
+          "accum_nav"
+        ],
+        "sample": [
+          {
+            "ts_code": "510300.SH",
+            "ann_date": "20261113",
+            "nav_date": "20261113",
+            "unit_nav": 4.0919,
+            "accum_nav": 1.8443
+          }
+        ]
+      },
+      {
+        "api": "cn_cpi",
+        "params": {
+          "m": "202412",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "month",
+          "nt_val",
+          "nt_yoy",
+          "nt_mom"
+        ],
+        "sample": [
+          {
+            "month": "202412",
+            "nt_val": 100.1,
+            "nt_yoy": 0.1,
+            "nt_mom": 0.0
+          }
+        ]
+      },
+      {
+        "api": "cn_gdp",
+        "params": {
+          "q": "2024Q4",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "quarter",
+          "gdp",
+          "gdp_yoy"
+        ],
+        "sample": [
+          {
+            "quarter": "2024Q4",
+            "gdp": 1348066.2,
+            "gdp_yoy": 5.0
+          }
+        ]
+      }
+    ],
+    "stopped_reason": null
+  },
+  "news_extended": {
+    "checked_at": "2026-11-16T19:29:56.499536+08:00",
+    "group": "news_extended",
+    "requests": 4,
+    "requested_limit": 3,
+    "results": [
+      {
+        "api": "news",
+        "params": {
+          "src": "eastmoney",
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:56",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
+      },
+      {
+        "api": "major_news",
+        "params": {
+          "start_date": "2026-11-16 00:00:00",
+          "end_date": "2026-11-16 19:29:56",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
+      },
+      {
+        "api": "cctv_news",
+        "params": {
+          "date": "20261115",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
+      },
+      {
+        "api": "anns_d",
+        "params": {
+          "ts_code": "600519.SH",
+          "start_date": "20250101",
+          "end_date": "20250630",
+          "limit": 3
+        },
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": 403,
+        "provider_reason": "provider_error"
+      }
+    ],
+    "stopped_reason": null
+  },
+  "premium": {
+    "checked_at": "2026-11-16T19:30:09.810018+08:00",
+    "group": "premium",
+    "requests": 1,
+    "requested_limit": 3,
+    "results": [
+      {
+        "api": "cyq_perf",
+        "params": {
+          "ts_code": "600519.SH",
+          "trade_date": "20261113",
+          "limit": 3
+        },
+        "status": "success",
+        "query_match": true,
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "weight_avg",
+          "winner_rate"
+        ],
+        "sample": [
+          {
+            "ts_code": "600519.SH",
+            "trade_date": "20261113",
+            "weight_avg": 1388.47,
+            "winner_rate": 80.28
+          }
+        ]
+      }
+    ],
+    "stopped_reason": null
   }
 }
