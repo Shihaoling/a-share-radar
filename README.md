@@ -2,6 +2,8 @@
 
 [网站](https://shihaoling.github.io/a-share-radar/) · [自动更新记录](https://github.com/Shihaoling/a-share-radar/actions)
 
+接手本机训练、模型上传和整站维护，请先读[完整交接文档](docs/HANDOFF.md)：包含 Windows 命令、真实进度、验证门槛、完整模型包上传、上线验收、架构与当前未完成事项。
+
 研究主体是中国 A 股：沪深大盘、行业与热门主题、A 股成分股。国际信息只作为中国板块的政策、汇率、能源和供应链影响因素。项目不连接交易账户，不自动下单。
 
 ## 已实现
