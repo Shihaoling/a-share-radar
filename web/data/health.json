@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T21:00:16.592287+08:00",
+  "generated_at": "2026-11-16T21:29:19.562759+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -1611,7 +1611,7 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-16T21:00:16+08:00",
+      "last_run_at": "2026-11-16T21:26:30+08:00",
       "requests_this_run": 0,
       "status": "success",
       "endpoints": {},
@@ -1635,42 +1635,41 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-16T21:00:16.592287+08:00",
+    "as_of": "2026-11-16T21:29:19.562759+08:00",
     "target_date": "2026-11-17",
     "target_kind": "next_open",
     "reference_date": "2026-11-16",
-    "model": "unavailable",
-    "status": "pending",
+    "model": "zero_return",
+    "status": "baseline",
     "model_version": "shared-equity-ohlcv-v1",
     "note": "先逐股预测，再按可得流通市值汇总；当前分类/上市股票池可能含幸存偏差，不声称历史全市场无偏回测。",
     "coverage": {
       "universe_count": 5572,
-      "predicted_count": 0,
+      "predicted_count": 5565,
       "known_weight_count": 5572,
-      "weight_coverage": 0.0,
-      "count_coverage": 0.0,
+      "weight_coverage": 0.9999282194238225,
+      "count_coverage": 0.9987437185929648,
       "weights_complete": true
     },
     "collection": {
-      "status": "cooldown",
+      "status": "ready",
       "source": "stock_api",
       "endpoint": "daily",
       "requested_days": 180,
       "available_calendar_days": 180,
-      "cached_days": 14,
-      "collected_days": 0,
-      "requests_this_run": 0,
-      "partial_data_days": 11,
-      "excluded_rows": 22,
+      "cached_days": 15,
+      "collected_days": 165,
+      "requests_this_run": 165,
+      "partial_data_days": 80,
+      "excluded_rows": 409,
       "latest_date": "2026-11-16",
       "reference_note": "日线价格未复权；下一交易日开盘/收盘收益以该日供应商pre_close为参考。除权日该参考可能不同于上一交易日原始收盘价；没有除权事件信息时不承诺绝对价格。",
       "universe_basis": "observed_daily_A_shares; historical_membership_not_verified",
-      "missing_days": 166,
-      "cooldown_until": "2026-11-16T21:50:35.471829+08:00",
-      "error_code": "api_denied"
+      "missing_days": 0
     },
     "stock_status_counts": {
-      "pending": 5572
+      "baseline": 5565,
+      "pending": 7
     },
     "evaluation": {
       "settled_count": 0,
@@ -1680,10 +1679,10 @@
       "note": "每日首次预测固定留档；零收益不作上涨/下跌判断，不计入方向准确率。"
     },
     "training": {
-      "status": "insufficient_history",
+      "note": "共享股票模型；仅历史量价特征。未超过零收益基线时不晋升。当前股票池筛选可能产生幸存偏差。",
       "promoted": false,
-      "trained_at": "2026-11-16T21:00:16.592287+08:00",
-      "note": "共享股票模型；仅历史量价特征。未超过零收益基线时不晋升。当前股票池筛选可能产生幸存偏差。"
+      "status": "evaluated",
+      "trained_at": "2026-11-16T21:26:31.237710+08:00"
     }
   },
   "news_count": 70,

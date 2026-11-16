@@ -1,0 +1,252 @@
+{
+  "format_version": "equity-sequence-v1",
+  "created_at": "2026-11-16T13:28:26.395476+00:00",
+  "status": "trained_candidates",
+  "promoted": false,
+  "eligible_for_promotion": false,
+  "experiment_status": "bounded_pilot",
+  "production_unchanged": true,
+  "target_names": [
+    "next_open_return_pct",
+    "next_close_return_pct"
+  ],
+  "target_unit": "percent",
+  "labels": "100*(next.open_or_close/next.pre_close-1)",
+  "samples": 30352,
+  "stocks": 254,
+  "archive_stocks": 5601,
+  "selected_stocks": 256,
+  "selection": "first_sorted_codes_limited_pilot",
+  "parameters": {
+    "history_dir": "/home/runner/work/a-share-radar/a-share-radar/data/equity/daily",
+    "model_dir": "/home/runner/work/a-share-radar/a-share-radar/data/equity/models",
+    "models": "ridge,gru,tcn",
+    "max_stocks": 256,
+    "epochs": 4,
+    "batch_size": 128,
+    "hidden": 32,
+    "layers": 2,
+    "dropout": 0.1,
+    "window": 60,
+    "learning_rate": 0.0003,
+    "patience": 4,
+    "min_train_dates": 60,
+    "validation_dates": 20,
+    "test_dates": 20,
+    "seed": 42,
+    "device": "cpu",
+    "cpu_threads": 4
+  },
+  "models": {
+    "zero": {
+      "validation": {
+        "next_open_return_pct": {
+          "mae_pct": 0.7147237062454224,
+          "rmse_pct": 1.2775378227233887,
+          "direction_accuracy": null,
+          "direction_samples": 0
+        },
+        "next_close_return_pct": {
+          "mae_pct": 1.887569546699524,
+          "rmse_pct": 2.668370485305786,
+          "direction_accuracy": null,
+          "direction_samples": 0
+        },
+        "mean_mae_pct": 1.3011465072631836,
+        "samples": 5053
+      }
+    },
+    "ridge": {
+      "validation": {
+        "next_open_return_pct": {
+          "mae_pct": 0.7156972885131836,
+          "rmse_pct": 1.2585480213165283,
+          "direction_accuracy": 0.5866729902774485,
+          "direction_samples": 4217
+        },
+        "next_close_return_pct": {
+          "mae_pct": 1.8823760747909546,
+          "rmse_pct": 2.6614067554473877,
+          "direction_accuracy": 0.5172129457843744,
+          "direction_samples": 4851
+        },
+        "mean_mae_pct": 1.2990366220474243,
+        "samples": 5053
+      },
+      "alpha": 10.0,
+      "features": "sequence_last_mean_std_24"
+    },
+    "gru": {
+      "validation": {
+        "next_open_return_pct": {
+          "mae_pct": 0.6976462854351165,
+          "rmse_pct": 1.2497216687749968,
+          "direction_accuracy": 0.6421626748873607,
+          "direction_samples": 4217
+        },
+        "next_close_return_pct": {
+          "mae_pct": 1.8681865132250828,
+          "rmse_pct": 2.6495844052131594,
+          "direction_accuracy": 0.5458668315811173,
+          "direction_samples": 4851
+        },
+        "mean_mae_pct": 1.2829163993300998,
+        "samples": 5053
+      },
+      "epochs_completed": 4,
+      "curve": [
+        {
+          "epoch": 1,
+          "train_huber": 1.1341025937228737,
+          "validation_mae_pct": 1.2857246398925781
+        },
+        {
+          "epoch": 2,
+          "train_huber": 1.128021107748064,
+          "validation_mae_pct": 1.2833378314971924
+        },
+        {
+          "epoch": 3,
+          "train_huber": 1.1268682938694863,
+          "validation_mae_pct": 1.2829164266586304
+        },
+        {
+          "epoch": 4,
+          "train_huber": 1.1258483479226544,
+          "validation_mae_pct": 1.2848436832427979
+        }
+      ],
+      "parameters": 10434,
+      "elapsed_seconds": 24.965,
+      "peak_cuda_allocated_bytes": null,
+      "checkpoint": "/home/runner/work/a-share-radar/a-share-radar/data/equity/models/gru_20261116T132827933855Z.pt",
+      "promoted": false
+    },
+    "tcn": {
+      "validation": {
+        "next_open_return_pct": {
+          "mae_pct": 0.6995216191779318,
+          "rmse_pct": 1.2488799728080207,
+          "direction_accuracy": 0.6314915816931468,
+          "direction_samples": 4217
+        },
+        "next_close_return_pct": {
+          "mae_pct": 1.8577869501631659,
+          "rmse_pct": 2.6533458446155387,
+          "direction_accuracy": 0.5454545454545454,
+          "direction_samples": 4851
+        },
+        "mean_mae_pct": 1.2786542846705489,
+        "samples": 5053
+      },
+      "epochs_completed": 4,
+      "curve": [
+        {
+          "epoch": 1,
+          "train_huber": 1.1311056371305392,
+          "validation_mae_pct": 1.2824229001998901
+        },
+        {
+          "epoch": 2,
+          "train_huber": 1.1189902616719036,
+          "validation_mae_pct": 1.2815272808074951
+        },
+        {
+          "epoch": 3,
+          "train_huber": 1.1092929601910932,
+          "validation_mae_pct": 1.2959190607070923
+        },
+        {
+          "epoch": 4,
+          "train_huber": 1.1022666081253836,
+          "validation_mae_pct": 1.2786542177200317
+        }
+      ],
+      "parameters": 22882,
+      "elapsed_seconds": 25.008,
+      "peak_cuda_allocated_bytes": null,
+      "checkpoint": "/home/runner/work/a-share-radar/a-share-radar/data/equity/models/tcn_20261116T132827933855Z.pt",
+      "promoted": false
+    }
+  },
+  "warnings": [
+    "A single chronological split is a pilot, not robust multi-regime evidence; no expected investment return is claimed."
+  ],
+  "universe_caveat": "Archive may contain current-universe survivorship bias; historical membership is not inferred.",
+  "promotion_policy": "Research only: validation and confirmation gates do not automatically change production.",
+  "split": {
+    "train": {
+      "samples": 19735,
+      "start": "2026-05-21",
+      "end": "2026-09-08",
+      "dates": 78
+    },
+    "validation": {
+      "samples": 5053,
+      "start": "2026-09-10",
+      "end": "2026-10-15",
+      "dates": 20
+    },
+    "test": {
+      "samples": 5058,
+      "start": "2026-10-19",
+      "end": "2026-11-13",
+      "dates": 20
+    },
+    "gap_sessions": 1
+  },
+  "device": "cpu",
+  "runtime_device_name": "current runtime cpu",
+  "selected_by_validation": "tcn",
+  "confirmation": {
+    "zero": {
+      "next_open_return_pct": {
+        "mae_pct": 0.8174155354499817,
+        "rmse_pct": 1.437467098236084,
+        "direction_accuracy": null,
+        "direction_samples": 0
+      },
+      "next_close_return_pct": {
+        "mae_pct": 2.0127601623535156,
+        "rmse_pct": 2.8440427780151367,
+        "direction_accuracy": null,
+        "direction_samples": 0
+      },
+      "mean_mae_pct": 1.4150878190994263,
+      "samples": 5058
+    },
+    "ridge": {
+      "next_open_return_pct": {
+        "mae_pct": 0.8055704236030579,
+        "rmse_pct": 1.3883965015411377,
+        "direction_accuracy": 0.6174528301886792,
+        "direction_samples": 4240
+      },
+      "next_close_return_pct": {
+        "mae_pct": 2.045513868331909,
+        "rmse_pct": 2.8882017135620117,
+        "direction_accuracy": 0.4738898026315789,
+        "direction_samples": 4864
+      },
+      "mean_mae_pct": 1.4255422353744507,
+      "samples": 5058
+    },
+    "tcn": {
+      "next_open_return_pct": {
+        "mae_pct": 0.8196853995323181,
+        "rmse_pct": 1.4069538116455078,
+        "direction_accuracy": 0.6113207547169811,
+        "direction_samples": 4240
+      },
+      "next_close_return_pct": {
+        "mae_pct": 2.100379705429077,
+        "rmse_pct": 2.9466423988342285,
+        "direction_accuracy": 0.4465460526315789,
+        "direction_samples": 4864
+      },
+      "mean_mae_pct": 1.46003258228302,
+      "samples": 5058
+    }
+  },
+  "elapsed_seconds": 63.762
+}
