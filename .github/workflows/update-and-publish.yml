@@ -13,6 +13,10 @@ on:
         description: 'Only collect intraday snapshots during market hours'
         type: boolean
         default: false
+      stock_api_only:
+        description: 'Only validate/update the configured stock API; reuse other sources'
+        type: boolean
+        default: false
   schedule:
     # UTC: 09:07/09:37–15:37 Shanghai; off the busy top of the hour.
     # GitHub scheduling is best effort, never a real-time market feed.
@@ -49,11 +53,15 @@ jobs:
       - name: Update snapshots and evaluate predictions
         if: github.event_name != 'push'
         env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          STOCK_API_ONLY: ${{ inputs.stock_api_only }}
           ENABLE_MLP: ${{ inputs.enable_mlp }}
           QUOTES_ONLY: ${{ inputs.quotes_only }}
           SCHEDULE: ${{ github.event.schedule }}
         run: |
-          if [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5' ]; then
+          if [ "$STOCK_API_ONLY" = "true" ]; then
+            python -m pipeline.run --stock-api-only
+          elif [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5' ]; then
             python -m pipeline.run --quotes-only
           elif [ "$ENABLE_MLP" = "true" ]; then
             python -m pipeline.run --enable-mlp

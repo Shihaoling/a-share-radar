@@ -3,6 +3,7 @@
   "enable_mlp": false,
   "prediction_interval_minutes": 30,
   "risk_free_rate_annual": 0.02,
+  "stock_api": {"enabled": true, "max_requests": 4, "min_interval_seconds": 3},
   "intraday": {"enabled": true, "cache_seconds": 60, "max_points": 2000, "max_constituent_stocks": 20},
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",

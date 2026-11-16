@@ -1,4 +1,4 @@
-"""python -m pipeline.run [--offline] [--quotes-only] [--enable-mlp] [--output PATH]."""
+"""python -m pipeline.run [--offline] [--quotes-only|--stock-api-only] [--enable-mlp] [--output PATH]."""
 import argparse
 from copy import deepcopy
 import json
@@ -14,6 +14,7 @@ from pipeline.validation import validate_prices
 from pipeline.review import daily_review
 from pipeline.intraday import collect_intraday
 from pipeline.metrics import compute_metrics
+from pipeline.stock_api import enrich_with_stock_api
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,7 +31,9 @@ def atomic_json(path, value):
     temp.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
     os.replace(temp, path)
 
-def run(offline=False, enable_mlp=False, output=None, quotes_only=False):
+def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_api_only=False):
+    if quotes_only and stock_api_only:
+        raise ValueError('两种单源更新模式不能同时启用。')
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     path = Path(output) if output else ROOT / 'web/data/dashboard.json'
     previous = load(path, {})
@@ -47,10 +50,10 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False):
             print(json.dumps({'status':'skipped', 'reason':'非盘中快照时段，不请求行情源'}, ensure_ascii=False))
             return previous
     # Actual runtime snapshots are regenerated; uncollected fields remain null.
-    if quotes_only and previous:
+    if (quotes_only or stock_api_only) and previous:
         data = deepcopy(previous)
     else:
-        daily_config = {**config, 'network_enabled': False} if quotes_only else config
+        daily_config = {**config, 'network_enabled': False} if quotes_only or stock_api_only else config
         data = fetch_data(previous, daily_config, now)
         data['price_observations'] = previous.get('price_observations', [])
         data = enrich_with_fallback(data, daily_config, now)
@@ -58,8 +61,16 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False):
             data[key] = deepcopy(previous.get(key, {}))
         # Preserve provider cooldowns and latest quotes across full refreshes.
         data['sources'].extend(deepcopy([s for s in previous.get('sources', []) if s.get('type') == 'intraday']))
+        data['stock_api_state'] = deepcopy(previous.get('stock_api_state', {}))
+        data['sources'].extend(deepcopy([s for s in previous.get('sources', []) if s.get('id') == 'stock_api']))
+    # Authenticated daily service is excluded from frequent quote-only runs.
+    if not quotes_only:
+        data = enrich_with_stock_api(data, config, now)
     started_at = now
-    data = collect_intraday(data, config, datetime.now(ZoneInfo('Asia/Shanghai')))
+    quote_clock = datetime.now(ZoneInfo('Asia/Shanghai'))
+    # Recompute cached quote freshness even when this mode forbids quote HTTP.
+    quote_config = {**config, 'network_enabled': False} if stock_api_only else config
+    data = collect_intraday(data, quote_config, quote_clock)
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     # Use batch completion as a conservative upper bound for newly available data.
     starts = {started_at.isoformat(), started_at.isoformat(timespec='seconds')}
@@ -112,6 +123,7 @@ if __name__ == '__main__':
     p.add_argument('--offline', action='store_true', help='仅使用已有缓存；首次运行为空状态')
     p.add_argument('--enable-mlp', action='store_true', help='启用小型神经网络挑战模型')
     p.add_argument('--quotes-only', action='store_true', help='仅批量更新盘中快照；复用新闻与日线缓存')
+    p.add_argument('--stock-api-only', action='store_true', help='只验证/更新用户行情接口，复用其他来源缓存')
     p.add_argument('--output')
     args = p.parse_args()
-    run(args.offline, args.enable_mlp, args.output, args.quotes_only)
+    run(args.offline, args.enable_mlp, args.output, args.quotes_only, args.stock_api_only)
