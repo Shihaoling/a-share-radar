@@ -9,12 +9,20 @@ import urllib.error
 from unittest.mock import Mock, patch
 
 from pipeline.calendar import is_trading_day
-from pipeline.stock_api import _Failure, _NoRedirect, enrich_with_stock_api
+from pipeline.stock_api import _Failure, _NoRedirect, enrich_with_stock_api as collect_stock_api
 
 
 NOW = datetime.fromisoformat('2026-11-16T19:00:00+08:00')
 SECRET = 'synthetic-test-secret-do-not-persist'
 ENDPOINT = 'https://t.xiaodefa.top/'
+LIVE_NOW = NOW.replace(hour=14, minute=0)
+
+
+def enrich_with_stock_api(data, config=None, now=None):
+    """Exercise the supported supplement mode in the original safety contracts."""
+    options = deepcopy(config or {})
+    options.setdefault('stock_api', {}).setdefault('primary', False)
+    return collect_stock_api(data, options, now)
 
 
 class Response:
@@ -90,9 +98,11 @@ def basic_row(day='20261116', ts_code='600000.SH'):
 
 
 class Provider:
-    def __init__(self, overrides=None):
+    def __init__(self, overrides=None, primary=False, now=NOW):
         self.requests = []
         self.overrides = overrides or {}
+        self.primary = primary
+        self.now = now
 
     def __call__(self, request, **kwargs):
         payload = json.loads(request.data)
@@ -110,17 +120,65 @@ class Provider:
             code = payload['params']['ts_code']
             return Response(pack(fields, [index_row(code, '20261113', 3000), index_row(code)]))
         if api == 'daily_basic':
-            return Response(pack(fields, [basic_row()]))
+            rows = [basic_row()]
+            if self.primary:
+                rows = [dict(basic_row(ts_code=f'{prefix}{number:03}.SH'), total_mv=100 + number)
+                        for prefix in ('600', '601', '603') for number in range(12)]
+            return Response(pack(fields, rows))
+        if api == 'index_classify':
+            return Response(pack(fields, [
+                {'index_code': code, 'industry_name': name, 'parent_code': '0',
+                 'level': 'L1', 'industry_code': industry, 'is_pub': '1', 'src': 'SW2021'}
+                for code, name, industry in [('801010.SI', '农林牧渔', '110000'),
+                                             ('801030.SI', '基础化工', '220000')]]))
+        if api == 'sw_daily':
+            params = payload['params']
+            codes = [params['ts_code']] if params.get('ts_code') else ['801010.SI', '801030.SI']
+            days = [params['trade_date']] if params.get('trade_date') else ['20261113', '20261116']
+            rows = [{'ts_code': code, 'trade_date': day, 'name': 'Fixture SW Index',
+                     'open': 1000, 'low': 995, 'high': 1020, 'close': 1010,
+                     'change': 10, 'pct_change': 1, 'vol': 123, 'amount': 456,
+                     'pe': 18, 'pb': 2, 'float_mv': 3000, 'total_mv': 5000}
+                    for code in codes for day in days]
+            return Response(pack(fields, rows))
+        if api == 'index_member_all':
+            code = payload['params']['l1_code']
+            prefix = {'801010.SI': '600', '801030.SI': '601', '801040.SI': '603'}.get(code, '605')
+            rows = [{'l1_code': code, 'l1_name': 'Fixture Sector',
+                     'l2_code': '801011.SI', 'l2_name': 'Fixture L2',
+                     'l3_code': '850111.SI', 'l3_name': 'Fixture L3',
+                     'ts_code': f'{prefix}{number:03}.SH', 'name': f'Stock {number}',
+                     'in_date': '20200101', 'out_date': None, 'is_new': 'Y'}
+                    for number in range(12)]
+            return Response(pack(fields, rows))
+        if api in ('rt_idx_k', 'rt_sw_k'):
+            codes = ['000001.SH'] if api == 'rt_idx_k' else ['801010.SI', '801030.SI']
+            trade_time = min(self.now, self.now.replace(hour=15, minute=0, second=0))
+            rows = [{'ts_code': code, 'name': 'Fixture live index',
+                     'trade_time': trade_time.strftime('%Y-%m-%d %H:%M:%S'),
+                     'close': 3111 if api == 'rt_idx_k' else 1011,
+                     'pre_close': 3000 if api == 'rt_idx_k' else 1000,
+                     'open': 3005 if api == 'rt_idx_k' else 1005,
+                     'high': 3120 if api == 'rt_idx_k' else 1020,
+                     'low': 3000 if api == 'rt_idx_k' else 1000,
+                     'vol': 12345, 'amount': 67890} for code in codes]
+            return Response(pack(fields, rows))
+        if api == 'news':
+            return Response(pack(fields, [{'datetime': '2026-11-16 18:45:00',
+                                          'content': 'Fixture financial news content',
+                                          'title': 'Fixture financial headline',
+                                          'channels': 'A股'}]))
         raise AssertionError('Unexpected fixture API')
 
 
 @contextmanager
-def fake_provider(overrides=None):
-    provider = Provider(overrides)
+def fake_provider(overrides=None, primary=False, now=NOW, capability_seed=None):
+    provider = Provider(overrides, primary=primary, now=now)
     opener = Mock()
     opener.open.side_effect = provider
     with patch.dict(os.environ, {'STOCK_API_TOKEN': SECRET}), \
          patch('pipeline.stock_api.urllib.request.build_opener', return_value=opener), \
+         patch('pipeline.stock_api._capability_seed', return_value=capability_seed or {}), \
          patch('pipeline.stock_api.time.sleep') as sleep:
         yield provider, opener, sleep
 
@@ -399,6 +457,455 @@ class StockApiTests(unittest.TestCase):
                 result = enrich_with_stock_api(seed(stocks=True), now=NOW)
             self.assertNotIn('stock_api_daily_basic', result['sectors'][0]['stocks'][0])
             self.assert_safe(result)
+
+
+def canonical_seed():
+    result = seed()
+    result['sectors'] = [
+        {'id': code, 'code': code, 'index_code': code, 'name': name,
+         'taxonomy': 'SW2021', 'basis': 'index', 'kind': 'industry',
+         'history': [], 'stocks': [], 'constituents': [], 'price': None}
+        for code, name in [('801010.SI', '农林牧渔'), ('801030.SI', '基础化工')]]
+    return result
+
+
+class PrimaryStockApiTests(unittest.TestCase):
+    def assert_safe(self, result):
+        self.assertNotIn(SECRET, json.dumps(result, ensure_ascii=False, allow_nan=False))
+
+    def test_primary_missing_token_and_offline_never_initialize_transport(self):
+        data = canonical_seed()
+        original = deepcopy(data)
+        with patch.dict(os.environ, {}, clear=True), \
+             patch('pipeline.stock_api.urllib.request.build_opener') as build:
+            missing = collect_stock_api(data, now=NOW)
+        build.assert_not_called()
+        self.assertEqual(source(missing)['error_code'], 'not_configured')
+        with patch.dict(os.environ, {'STOCK_API_TOKEN': SECRET}), \
+             patch('pipeline.stock_api.urllib.request.build_opener') as build:
+            offline = collect_stock_api(data, {'network_enabled': False}, NOW)
+        build.assert_not_called()
+        self.assertEqual(source(offline)['error_code'], 'offline')
+        self.assertEqual(data, original)
+        self.assert_safe(missing)
+        self.assert_safe(offline)
+
+    def test_primary_uses_canonical_sw_ids_and_archives_previous_sectors(self):
+        data = seed(stocks=True)
+        original = deepcopy(data)
+        with fake_provider(primary=True) as (provider, opener, _):
+            result = collect_stock_api(data, {'stock_api': {'max_requests': 999}}, now=NOW)
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assertIn('index_classify', [row['api_name'] for row in provider.requests])
+        self.assertEqual({row['id'] for row in result['sectors']}, {'801010.SI', '801030.SI'})
+        self.assertTrue(all(row['id'] == row['code'] == row['index_code']
+                            for row in result['sectors']))
+        self.assertTrue(all(row['taxonomy'] == 'SW2021' and row['basis'] == 'index'
+                            for row in result['sectors']))
+        classification = result['stock_api_state']['classification']
+        self.assertEqual(classification['expected_count'], 31)
+        self.assertEqual(classification['received_count'], 2)
+        self.assertFalse(classification['complete'])
+        self.assertIn('fixture_sector', [row['id'] for row in result['archived_sectors']])
+        self.assertEqual(data, original)
+        self.assert_safe(result)
+
+    def test_industry_keywords_join_official_codes_without_replacing_api_names(self):
+        rows = [{'index_code': code, 'industry_name': name, 'parent_code': '0', 'level': 'L1',
+                 'industry_code': industry, 'is_pub': '1', 'src': 'SW2021'}
+                for code, name, industry in [('801010.SI', '供应商官方行业甲', '110000'),
+                                             ('801030.SI', '供应商官方行业乙', '220000'),
+                                             ('809999.SI', '农林牧渔', '990000')]]
+        override = lambda payload: pack(payload['fields'].split(','), rows)
+        options = {'stock_api': {'max_member_calls': 0, 'max_sw_history_calls': 0,
+                                 'news_enabled': False}}
+        with fake_provider({'index_classify': override}, primary=True):
+            result = collect_stock_api(canonical_seed(), options, NOW)
+        sectors = {row['id']: row for row in result['sectors']}
+        self.assertEqual(sectors['801010.SI']['name'], '供应商官方行业甲')
+        self.assertEqual(sectors['801030.SI']['name'], '供应商官方行业乙')
+        self.assertIn('生猪', sectors['801010.SI']['keywords'])
+        self.assertIn('化肥', sectors['801030.SI']['keywords'])
+        self.assertEqual(sectors['809999.SI']['name'], '农林牧渔')
+        self.assertEqual(sectors['809999.SI']['keywords'], ['农林牧渔'])
+        self.assert_safe(result)
+
+    def test_quotes_only_requests_two_realtime_apis_and_reuses_sixty_second_cache(self):
+        with fake_provider(primary=True, now=LIVE_NOW) as (provider, opener, _):
+            result = collect_stock_api(canonical_seed(), {'stock_api': {'quotes_only': True}}, LIVE_NOW)
+        self.assertEqual({row['api_name'] for row in provider.requests}, {'rt_idx_k', 'rt_sw_k'})
+        self.assertEqual(opener.open.call_count, 2)
+        index_quote = result['market'][0]['live_quote']
+        sector_quote = result['sectors'][0]['live_quote']
+        self.assertEqual(index_quote['volume_unit'], 'unknown')
+        self.assertEqual(sector_quote['volume_unit'], 'share')
+        self.assertEqual(sector_quote['amount_unit'], 'CNY')
+        self.assertEqual(sector_quote['amount'], 67890)
+        self.assertEqual(sector_quote['upstream_provider'], 'unknown')
+        self.assert_safe(result)
+        with fake_provider(primary=True, now=LIVE_NOW + timedelta(seconds=30)) as (_, opener, _):
+            cached = collect_stock_api(result, {'stock_api': {'quotes_only': True}}, LIVE_NOW + timedelta(seconds=30))
+        self.assertEqual(opener.open.call_count, 0)
+        with fake_provider(primary=True, now=LIVE_NOW + timedelta(seconds=61)) as (provider, opener, _):
+            refreshed = collect_stock_api(cached, {'stock_api': {'quotes_only': True}}, LIVE_NOW + timedelta(seconds=61))
+        self.assertEqual({row['api_name'] for row in provider.requests}, {'rt_idx_k', 'rt_sw_k'})
+        self.assertEqual(opener.open.call_count, 2)
+        self.assert_safe(refreshed)
+
+    def test_api_permission_denial_only_cools_the_denied_endpoint(self):
+        denied = {'code': 2002, 'msg': SECRET, 'data': None}
+        with fake_provider({'index_classify': denied}, primary=True) as (provider, _, _):
+            result = collect_stock_api(seed(), now=NOW)
+        requested = [row['api_name'] for row in provider.requests]
+        self.assertIn('index_classify', requested)
+        self.assertIn('index_daily', requested)
+        self.assertTrue(result['stock_api_state']['endpoints']['index_classify']['cooldown_until'])
+        self.assertFalse(result['stock_api_state'].get('cooldown_until'))
+        self.assert_safe(result)
+        with fake_provider(primary=True) as (provider, _, _):
+            again = collect_stock_api(result, now=NOW + timedelta(minutes=5))
+        self.assertNotIn('index_classify', [row['api_name'] for row in provider.requests])
+        self.assert_safe(again)
+
+    def test_failed_calendar_check_is_not_repeated_within_twenty_four_hours(self):
+        malformed = {'code': 0, 'data': {'fields': [], 'items': []}}
+        with fake_provider({'trade_cal': malformed}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        with fake_provider(primary=True) as (provider, _, _):
+            again = collect_stock_api(result, now=NOW + timedelta(minutes=20))
+        self.assertNotIn('trade_cal', [request['api_name'] for request in provider.requests])
+        self.assert_safe(again)
+
+    def test_recent_permission_probe_skips_unavailable_live_and_news_apis(self):
+        probe = {'live_news': {'checked_at': (NOW - timedelta(hours=1)).isoformat(),
+                              'results': [{'api': api, 'error_code': 'api_denied'}
+                                          for api in ('rt_idx_k', 'rt_sw_k', 'news')]}}
+        with fake_provider(primary=True, capability_seed=probe) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        requested = {request['api_name'] for request in provider.requests}
+        self.assertTrue(requested.isdisjoint({'rt_idx_k', 'rt_sw_k', 'news'}))
+        self.assertIn('sw_daily', requested)
+        for api in ('rt_idx_k', 'rt_sw_k', 'news'):
+            endpoint = result['stock_api_state']['endpoints'][api]
+            self.assertEqual(endpoint['error_code'], 'api_denied')
+            self.assertTrue(endpoint['capability_probe'])
+        self.assert_safe(result)
+
+    def test_old_permission_probe_cannot_override_a_newer_endpoint_success(self):
+        probe = {'live_news': {'checked_at': (NOW - timedelta(hours=1)).isoformat(),
+                              'results': [{'api': 'rt_idx_k', 'error_code': 'api_denied'}]}}
+        data = canonical_seed()
+        data['stock_api_state'] = {'endpoints': {'rt_idx_k': {
+            'last_success': (NOW - timedelta(minutes=30)).isoformat(),
+            'status': 'success', 'cooldown_until': None}}}
+        with fake_provider(primary=True, capability_seed=probe) as (provider, _, _):
+            result = collect_stock_api(data, {'stock_api': {'quotes_only': True}}, NOW)
+        self.assertIn('rt_idx_k', [request['api_name'] for request in provider.requests])
+        self.assertEqual(result['stock_api_state']['endpoints']['rt_idx_k']['status'], 'success')
+        self.assert_safe(result)
+
+    def test_http_429_still_cools_the_whole_service_in_primary_mode(self):
+        error = urllib.error.HTTPError(ENDPOINT, 429, SECRET, {'Retry-After': '120'}, None)
+        with fake_provider({'rt_idx_k': error}, primary=True, now=LIVE_NOW) as (_, opener, _):
+            result = collect_stock_api(canonical_seed(), {'stock_api': {'quotes_only': True}}, LIVE_NOW)
+        self.assertEqual(opener.open.call_count, 1)
+        self.assertTrue(result['stock_api_state'].get('cooldown_until'))
+        with fake_provider(primary=True, now=LIVE_NOW) as (_, opener, _):
+            again = collect_stock_api(result, {'stock_api': {'quotes_only': True}}, LIVE_NOW + timedelta(seconds=61))
+        self.assertEqual(opener.open.call_count, 0)
+        self.assert_safe(again)
+
+    def test_realtime_timestamp_must_be_complete_same_day_and_not_future(self):
+        invalid = ['14:00:00', '2026-11-17 14:00:00', '2026-11-16 14:01:00',
+                   '2026-11-13 14:00:00', 'not-a-date']
+        for stamp in invalid:
+            row = {'ts_code': '000001.SH', 'name': 'Fixture Index', 'trade_time': stamp,
+                   'close': 3111, 'pre_close': 3000, 'open': 3005,
+                   'high': 3120, 'low': 3000, 'vol': 12345, 'amount': 67890}
+            override = lambda payload, value=row: pack(payload['fields'].split(','), [value])
+            with self.subTest(stamp=stamp):
+                with fake_provider({'rt_idx_k': override}, primary=True, now=LIVE_NOW) as (provider, _, _):
+                    result = collect_stock_api(canonical_seed(), {'stock_api': {'quotes_only': True}}, LIVE_NOW)
+                self.assertEqual(result['market'][0]['price'], 2990)
+                self.assertNotIn('live_quote', result['market'][0])
+                self.assertIn('rt_sw_k', [request['api_name'] for request in provider.requests])
+                self.assert_safe(result)
+
+    def test_confirmed_daily_close_is_primary_after_close_while_live_observation_is_retained(self):
+        denied = {'code': 2002, 'msg': SECRET, 'data': None}
+        for live in (False, True):
+            data = canonical_seed()
+            item = data['market'][0]
+            stamp = '2026-11-16T15:00:02+08:00' if live else '2026-11-16T15:00:00+08:00'
+            item.update(price=3099, quote_date='2026-11-16', as_of=stamp,
+                        timestamp_quality='source_reported' if live else 'daily_close')
+            item['history'].append({'date': '2026-11-16', 'close': 3099, 'source': 'other'})
+            if live:
+                item['live_quote'] = {'price': 3099, 'quote_timestamp': stamp,
+                                      'timestamp_quality': 'source_reported', 'provider': 'stock_api'}
+            with fake_provider({'rt_idx_k': denied, 'rt_sw_k': denied}, primary=True):
+                result = collect_stock_api(data, now=NOW)
+            self.assertEqual(result['market'][0]['price'], 3100)
+            self.assertEqual(result['market'][0]['timestamp_quality'], 'daily_close')
+            self.assertEqual(result['market'][0]['history'][-1]['close'], 3100)
+            if live:
+                self.assertEqual(result['market'][0]['live_quote']['price'], 3099)
+                self.assertEqual(result['market'][0]['live_quote']['quote_timestamp'], stamp)
+            self.assertEqual(result['market'][0]['prediction'], item['prediction'])
+            self.assert_safe(result)
+
+    def test_sw_history_has_explicit_units_and_market_cap_converts_to_yuan(self):
+        with fake_provider(primary=True) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        histories = [request for request in provider.requests
+                     if request['api_name'] == 'sw_daily' and 'ts_code' in request['params']]
+        self.assertLessEqual(len(histories), 2)
+        self.assertTrue(histories)
+        self.assertEqual(histories[0]['params']['start_date'], '20251116')
+        for sector in result['sectors']:
+            bar = sector['history'][-1]
+            self.assertEqual(bar['date'], '2026-11-16')
+            self.assertEqual(bar['volume'], 123)
+            self.assertEqual(bar['volume_unit'], '万股')
+            self.assertEqual(bar['amount'], 456)
+            self.assertEqual(bar['amount_unit'], 'CNY_10000')
+            self.assertEqual(bar['amount_cny'], 4560000)
+            self.assertEqual(bar['market_cap_cny'], 50000000)
+            self.assertEqual(sector['market_cap'], 50000000)
+            self.assertEqual(sector['market_cap_unit'], 'CNY')
+            self.assertEqual(bar['upstream_provider'], 'unknown')
+        self.assert_safe(result)
+
+    def test_backfilled_ohlc_keeps_trade_time_while_valuation_availability_stays_actual(self):
+        with fake_provider(primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        stamp = NOW.isoformat(timespec='seconds')
+        for sector in result['sectors']:
+            past = next(bar for bar in sector['history'] if bar['date'] == '2026-11-13')
+            self.assertEqual(past['as_of'], '2026-11-13T15:00:00+08:00')
+            self.assertEqual(past['fetched_at'], stamp)
+            self.assertNotIn('available_at', past)
+            self.assertEqual(past['valuation_available_at'], stamp)
+            feature = next(row for row in sector['feature_history'] if row['date'] == '2026-11-13')
+            self.assertEqual(feature['available_at'], stamp)
+            self.assertGreater(datetime.fromisoformat(feature['available_at']),
+                               datetime.fromisoformat(past['as_of']))
+
+        def revised_history(payload):
+            code = payload['params']['ts_code']
+            rows = [{'ts_code': code, 'trade_date': day, 'name': 'Fixture SW Index',
+                     'open': 1000, 'low': 995, 'high': 1020, 'close': 1010, 'change': 10,
+                     'pct_change': 1, 'vol': 123, 'amount': 456, 'pe': 21 if day == '20261113' else 18,
+                     'pb': 2, 'float_mv': 3000, 'total_mv': 5000}
+                    for day in ('20261113', '20261116')]
+            return pack(payload['fields'].split(','), rows)
+
+        for status in result['stock_api_state']['sw_history_requests'].values():
+            status['complete'] = False
+        later = NOW + timedelta(hours=1)
+        with fake_provider({'sw_daily': revised_history}, primary=True):
+            refreshed = collect_stock_api(result, now=later)
+        for sector in refreshed['sectors']:
+            features = {row['date']: row for row in sector['feature_history']}
+            self.assertEqual(features['2026-11-13']['vendor_pe'], 21)
+            self.assertEqual(features['2026-11-13']['available_at'], later.isoformat(timespec='seconds'))
+            self.assertEqual(features['2026-11-16']['available_at'], stamp)
+            past = next(bar for bar in sector['history'] if bar['date'] == '2026-11-13')
+            self.assertNotIn('available_at', past)
+            self.assertEqual(past['valuation_available_at'], later.isoformat(timespec='seconds'))
+        self.assert_safe(refreshed)
+
+    def test_legacy_valuation_marker_migrates_without_removing_explicit_price_constraints(self):
+        data = canonical_seed()
+        stamp = (NOW - timedelta(hours=1)).isoformat(timespec='seconds')
+        classification = []
+        for position, sector in enumerate(data['sectors']):
+            bar = {'date': '2026-11-13', 'open': 1000, 'close': 1010, 'api': 'sw_daily',
+                   'source': 'stock_api', 'as_of': '2026-11-13T15:00:00+08:00',
+                   'fetched_at': stamp, 'available_at': stamp}
+            if position:
+                bar['price_available_at'] = '2026-11-13T15:00:00+08:00'
+            sector['history'] = [deepcopy(bar)]
+            sector['source_history'] = {'stock_api': [deepcopy(bar)]}
+            sector['feature_history'] = [{'date': '2026-11-13', 'vendor_pe': 18,
+                                          'available_at': stamp, 'fetched_at': stamp}]
+            classification.append({'index_code': sector['id'], 'industry_name': sector['name'],
+                                   'parent_code': '0', 'level': 'L1', 'industry_code': '110000',
+                                   'is_pub': 1, 'src': 'SW2021'})
+        data['stock_api_state'] = {'classification': {'records': classification,
+                                   'fetched_at': stamp, 'complete': False,
+                                   'expected_count': 31, 'received_count': 2}}
+        original = deepcopy(data)
+        with fake_provider(primary=True) as (_, opener, _):
+            result = collect_stock_api(data, {'stock_api': {'max_requests': 0}}, NOW)
+        self.assertEqual(opener.open.call_count, 0)
+        migrated, constrained = result['sectors']
+        for bars in (migrated['history'], migrated['source_history']['stock_api'],
+                     result['history'][migrated['id']]):
+            self.assertNotIn('available_at', bars[0])
+            self.assertEqual(bars[0]['valuation_available_at'], stamp)
+            self.assertEqual(bars[0]['as_of'], '2026-11-13T15:00:00+08:00')
+        for bars in (constrained['history'], constrained['source_history']['stock_api']):
+            self.assertEqual(bars[0]['available_at'], stamp)
+            self.assertEqual(bars[0]['price_available_at'], '2026-11-13T15:00:00+08:00')
+        self.assertEqual(migrated['feature_history'][0]['available_at'], stamp)
+        self.assertEqual(constrained['feature_history'][0]['available_at'], stamp)
+        self.assertEqual(data, original)
+        self.assert_safe(result)
+
+    def test_numeric_conversions_cannot_introduce_nonfinite_derived_values(self):
+        sw_row = {'ts_code': '801010.SI', 'trade_date': '20261116', 'name': 'Fixture',
+                  'open': 1000, 'low': 995, 'high': 1020, 'close': 1010, 'change': 10,
+                  'pct_change': 1, 'vol': 123, 'amount': 1e308, 'pe': 18, 'pb': 2,
+                  'float_mv': 3000, 'total_mv': 5000}
+        override = lambda payload: pack(payload['fields'].split(','), [sw_row])
+        with fake_provider({'sw_daily': override}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        self.assert_safe(result)
+        self.assertFalse(result['sectors'][0]['history'])
+        rt_row = {'ts_code': '000001.SH', 'name': 'Fixture', 'trade_time': '2026-11-16 14:00:00',
+                  'close': 1e308, 'pre_close': 1e-308, 'open': 1e308, 'high': 1e308,
+                  'low': 1e308, 'vol': 1, 'amount': 1}
+        override = lambda payload: pack(payload['fields'].split(','), [rt_row])
+        with fake_provider({'rt_idx_k': override}, primary=True, now=LIVE_NOW):
+            result = collect_stock_api(canonical_seed(), {'stock_api': {'quotes_only': True}}, LIVE_NOW)
+        self.assert_safe(result)
+        self.assertEqual(result['market'][0]['price'], 2990)
+
+    def test_membership_preserves_all_constituents_and_ranks_top_ten_by_same_day_cap(self):
+        with fake_provider(primary=True) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        member_calls = [request for request in provider.requests if request['api_name'] == 'index_member_all']
+        self.assertEqual(len(member_calls), 2)
+        self.assertTrue(all(request['params']['is_new'] == 'Y' for request in member_calls))
+        for sector in result['sectors']:
+            self.assertEqual(len(sector['constituents']), 12)
+            self.assertEqual(len(sector['stocks']), 10)
+            self.assertEqual(sector['rank_basis'], 'total_market_cap')
+            self.assertTrue(sector['membership_complete'])
+            caps = [stock['market_cap'] for stock in sector['stocks']]
+            self.assertEqual(caps, sorted(caps, reverse=True))
+            self.assertEqual(caps[0], 1110000)
+            self.assertEqual(caps[-1], 1020000)
+            self.assertTrue(sector['valuation_coverage']['complete'])
+            stock = sector['stocks'][0]
+            self.assertEqual(stock['market_cap_date'], '2026-11-16')
+            self.assertEqual(stock['turnover_rate'], 1)
+            self.assertEqual(stock['volume_ratio'], 1.1)
+            self.assertEqual(stock['rank_basis'], 'total_market_cap')
+            self.assertNotIn('pe_ttm', stock)
+            self.assertEqual(stock['stock_api_daily_basic']['vendor_pe_ttm'], 8.5)
+        self.assert_safe(result)
+
+    def test_membership_at_provider_row_limit_cannot_claim_complete(self):
+        def truncated_members(payload):
+            code = payload['params']['l1_code']
+            rows = [{'l1_code': code, 'l1_name': 'Fixture Sector', 'l2_code': '801011.SI',
+                     'l2_name': 'Fixture L2', 'l3_code': '850111.SI', 'l3_name': 'Fixture L3',
+                     'ts_code': f'{prefix}{number:03}.SH', 'name': f'Stock {number}',
+                     'in_date': '20200101', 'out_date': None, 'is_new': 'Y'}
+                    for prefix in ('600', '601') for number in range(1000)]
+            return pack(payload['fields'].split(','), rows)
+        with fake_provider({'index_member_all': truncated_members}, primary=True):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        for sector in result['sectors']:
+            membership = result['stock_api_state']['members'][sector['id']]
+            self.assertEqual(len(sector['constituents']), 2000)
+            self.assertTrue(membership['possibly_truncated'])
+            self.assertFalse(membership['complete'])
+            self.assertFalse(sector['membership_complete'])
+            self.assertFalse(sector['valuation_coverage']['complete'])
+        self.assert_safe(result)
+
+    def test_empty_after_close_snapshot_retains_previous_date_and_marks_stale(self):
+        data = canonical_seed()
+        for sector in data['sectors']:
+            sector.update(price=999, quote_date='2026-11-13', as_of='2026-11-13T15:00:00+08:00')
+            sector['daily_quote'] = {'quote_date': '2026-11-13', 'price': 999}
+        denied = {'code': 2002, 'msg': SECRET, 'data': None}
+        with fake_provider({'rt_idx_k': denied, 'rt_sw_k': denied,
+                            'sw_daily': lambda payload: pack(payload['fields'].split(','), [])},
+                           primary=True) as (provider, _, _):
+            result = collect_stock_api(data, now=NOW.replace(hour=15, minute=5))
+        snapshots = [request for request in provider.requests if request['api_name'] == 'sw_daily']
+        self.assertEqual(snapshots[0]['params']['trade_date'], '20261116')
+        for sector in result['sectors']:
+            self.assertEqual(sector['price'], 999)
+            self.assertEqual(sector['quote_date'], '2026-11-13')
+            self.assertTrue(sector['stale'])
+            self.assertTrue(sector['daily_stale'])
+        self.assert_safe(result)
+
+    def test_unpublished_today_snapshot_falls_back_without_blocking_sw_history(self):
+        def staged_sw(payload):
+            params = payload['params']
+            if params.get('trade_date') == '20261116':
+                return pack(payload['fields'].split(','), [])
+            codes = [params['ts_code']] if params.get('ts_code') else ['801010.SI', '801030.SI']
+            rows = [{'ts_code': code, 'trade_date': '20261113', 'name': 'Fixture SW Index',
+                     'open': 1000, 'low': 995, 'high': 1020, 'close': 1010, 'change': 10,
+                     'pct_change': 1, 'vol': 123, 'amount': 456, 'pe': 18, 'pb': 2,
+                     'float_mv': 3000, 'total_mv': 5000} for code in codes]
+            return pack(payload['fields'].split(','), rows)
+        denied = {'code': 2002, 'msg': SECRET, 'data': None}
+        overrides = {'rt_idx_k': denied, 'rt_sw_k': denied, 'sw_daily': staged_sw}
+        options = {'stock_api': {'news_enabled': False}}
+        with fake_provider(overrides, primary=True) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), options, NOW)
+        requests = [request for request in provider.requests if request['api_name'] == 'sw_daily']
+        self.assertIn('20261116', [request['params'].get('trade_date') for request in requests])
+        self.assertIn('20261113', [request['params'].get('trade_date') for request in requests])
+        self.assertTrue(any('ts_code' in request['params'] for request in requests))
+        self.assertFalse(result['stock_api_state']['endpoints']['sw_daily'].get('cooldown_until'))
+        for sector in result['sectors']:
+            self.assertEqual(sector['daily_quote']['quote_date'], '2026-11-13')
+            self.assertTrue(sector['daily_stale'])
+        with fake_provider(overrides, primary=True) as (provider, _, _):
+            again = collect_stock_api(result, options, NOW + timedelta(minutes=5))
+        self.assertFalse(any(request['api_name'] == 'sw_daily' and
+                             request['params'].get('trade_date') == '20261116'
+                             for request in provider.requests))
+        self.assert_safe(again)
+
+    def test_configured_catchup_can_fetch_more_than_two_memberships_and_histories(self):
+        rows = [{'index_code': code, 'industry_name': name, 'parent_code': '0', 'level': 'L1',
+                 'industry_code': industry, 'is_pub': '1', 'src': 'SW2021'}
+                for code, name, industry in [('801010.SI', '农林牧渔', '110000'),
+                                             ('801030.SI', '基础化工', '220000'),
+                                             ('801040.SI', '钢铁', '230000')]]
+        override = lambda payload: pack(payload['fields'].split(','), rows)
+        options = {'stock_api': {'max_requests': 999, 'max_index_calls': 0,
+                                 'max_member_calls': 8, 'max_sw_history_calls': 8,
+                                 'news_enabled': False}}
+        with fake_provider({'index_classify': override}, primary=True) as (provider, opener, _):
+            result = collect_stock_api(canonical_seed(), options, NOW)
+        members = [request for request in provider.requests if request['api_name'] == 'index_member_all']
+        histories = [request for request in provider.requests if request['api_name'] == 'sw_daily'
+                     and 'ts_code' in request['params']]
+        self.assertEqual(len(members), 3)
+        self.assertEqual(len(histories), 3)
+        self.assertLessEqual(opener.open.call_count, 12)
+        self.assertEqual(len(result['sectors']), 3)
+        self.assertTrue(all(len(sector['constituents']) == 12 for sector in result['sectors']))
+        self.assert_safe(result)
+
+    def test_news_is_separate_normalized_and_has_no_invented_sentiment(self):
+        row = {'datetime': '2026-11-16 18:45:00', 'content': '<p>Content ' + SECRET + '</p>',
+               'title': '<b>Headline</b>', 'channels': 'A股'}
+        with fake_provider({'news': lambda payload: pack(payload['fields'].split(','), [row])}, primary=True) as (provider, _, _):
+            result = collect_stock_api(canonical_seed(), now=NOW)
+        news_request = next(request for request in provider.requests if request['api_name'] == 'news')
+        self.assertEqual(news_request['params']['src'], 'cls')
+        self.assertIn('start_date', news_request['params'])
+        self.assertIn('end_date', news_request['params'])
+        story = result['stock_api_news'][0]
+        self.assertEqual(story['title'], 'Headline')
+        self.assertEqual(story['source'], 'cls')
+        self.assertEqual(story['upstream_provider'], 'unknown')
+        self.assertNotIn('sentiment', story)
+        self.assertNotIn('sector_ids', story)
+        self.assertEqual(result.get('news', []), [])
+        self.assert_safe(result)
 
 
 if __name__ == '__main__':

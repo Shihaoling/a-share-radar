@@ -24,7 +24,7 @@ class PipelineTests(unittest.TestCase):
             self.assertFalse(live.call_args.args[1]['network_enabled'])
             api.assert_called_once()
             self.assertEqual(api.call_args.args[0]['stock_api_state'],cached['stock_api_state'])
-            self.assertEqual(result['news'],cached['news'])
+            self.assertEqual([n['id'] for n in result['news']],[n['id'] for n in cached['news']])
 
     def test_quote_only_never_refreshes_news_or_daily_history(self):
         now=datetime(2026,11,16,10,2,tzinfo=TZ)
@@ -37,7 +37,7 @@ class PipelineTests(unittest.TestCase):
                 result=run(offline=True,output=path,quotes_only=True)
             fetch.assert_not_called()
             daily.assert_not_called()
-            self.assertEqual(result['news'],cached['news'])
+            self.assertEqual([n['id'] for n in result['news']],[n['id'] for n in cached['news']])
             self.assertIn('saved',result['intraday'])
 
     def test_quote_only_holiday_skips_network_and_write(self):

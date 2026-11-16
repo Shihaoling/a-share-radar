@@ -58,7 +58,9 @@ def _apply_bars(item, bars, provider, now, url):
     if not bars:
         raise SourceUnavailable("来源未返回有效已完成日K")
     prior = {r["date"]: r for r in item.get("history", [])}
-    prior.update({r["date"]: r for r in bars})
+    for bar in bars:
+        if prior.get(bar["date"], {}).get("source") != "stock_api":
+            prior[bar["date"]] = bar
     item["history"] = sorted(prior.values(), key=lambda x: x["date"])
     latest = item["history"][-1]
     previous = item["history"][-2] if len(item["history"]) > 1 else None
@@ -66,6 +68,12 @@ def _apply_bars(item, bars, provider, now, url):
     if pct is None and previous and previous.get("close"):
         pct = (latest["close"] / previous["close"] - 1) * 100
     stamp = latest["date"] + "T15:00:00+08:00"
+    # Backups can fill gaps without replacing a primary observation or a newer quote.
+    primary_bar = latest.get("source") == "stock_api"
+    old_time = _dt(item.get("as_of")) if item.get("as_of") else None
+    if primary_bar or (old_time and old_time > _dt(stamp)):
+        item["history_updated_at"] = now.isoformat(timespec="seconds")
+        return
     item.update(price=latest["close"], open=latest.get("open"), change_pct=pct,
                 as_of=stamp, quote_date=latest["date"], fetched_at=now.isoformat(timespec="seconds"),
                 timestamp_quality="daily_close", provider=provider, source=provider,

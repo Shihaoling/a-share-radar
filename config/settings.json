@@ -1,9 +1,12 @@
 {
   "network_enabled": true,
+  "primary_provider": "stock_api",
   "enable_mlp": false,
   "prediction_interval_minutes": 30,
   "risk_free_rate_annual": 0.02,
-  "stock_api": {"enabled": true, "max_requests": 4, "min_interval_seconds": 3},
+  "stock_api": {"enabled": true, "primary": true, "max_requests": 12, "min_interval_seconds": 3},
+  "sentiment": {"enabled": true, "model_enabled": true, "max_model_articles": 120},
+  "fallback": {"verify_secondary": true, "max_secondary_verifications": 1},
   "intraday": {"enabled": true, "cache_seconds": 60, "max_points": 2000, "max_constituent_stocks": 20},
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",

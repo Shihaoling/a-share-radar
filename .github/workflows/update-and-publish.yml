@@ -22,6 +22,11 @@ on:
         type: choice
         options: ['none', 'core', 'live_news']
         default: 'none'
+      bootstrap_rounds:
+        description: 'Initial SW31 fill; at most 12 primary requests per round'
+        type: choice
+        options: ['0', '8']
+        default: '0'
   schedule:
     # UTC: 09:07/09:37–15:37 Shanghai; off the busy top of the hour.
     # GitHub scheduling is best effort, never a real-time market feed.
@@ -53,8 +58,35 @@ jobs:
           cache: pip
       - name: Install data and model dependencies
         run: python -m pip install -r requirements.txt
+      - name: Cache Chinese finance sentiment model
+        if: github.event_name != 'push' && inputs.probe_group != 'core' && inputs.probe_group != 'live_news' && inputs.quotes_only != true && github.event.schedule != '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: finbert-chinese-e91b1a3-python312
+      - name: Install CPU sentiment inference
+        if: github.event_name != 'push' && inputs.probe_group != 'core' && inputs.probe_group != 'live_news' && inputs.quotes_only != true && github.event.schedule != '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
+          python -m pip install -r requirements-sentiment.txt
       - name: Verify time, leakage and review invariants
         run: python -m unittest discover -s tests -v
+      - name: Verify real Chinese finance model inference
+        if: github.event_name == 'workflow_dispatch' && inputs.bootstrap_rounds == '8' && inputs.probe_group == 'none'
+        run: |
+          python - <<'PY'
+          from pipeline.sentiment import _finbert_scores, MODEL_ID, MODEL_REVISION
+          items = [
+              {'id': 'positive', 'title': '公司营业收入和净利润均大幅增长，业绩明显超出市场预期。'},
+              {'id': 'negative', 'title': '公司营业收入和净利润大幅下降，持续亏损且面临债务违约风险。'},
+          ]
+          scores = _finbert_scores(items, {'torch_threads': 2})
+          assert all(v['method'] == 'finbert_chinese_cpu' and v['model_version'] == MODEL_ID + '@' + MODEL_REVISION for v in scores.values())
+          assert scores['positive']['score'] > scores['negative']['score']
+          for key, value in scores.items():
+              print(key, value['label'], value['score'], value['method'])
+          print('CPU_MODEL_SMOKE_OK')
+          PY
       - name: Update snapshots and evaluate predictions
         if: github.event_name != 'push'
         env:
@@ -64,9 +96,12 @@ jobs:
           ENABLE_MLP: ${{ inputs.enable_mlp }}
           QUOTES_ONLY: ${{ inputs.quotes_only }}
           SCHEDULE: ${{ github.event.schedule }}
+          BOOTSTRAP_ROUNDS: ${{ inputs.bootstrap_rounds }}
         run: |
           if [ "$PROBE_GROUP" = "core" ] || [ "$PROBE_GROUP" = "live_news" ]; then
             python -m pipeline.probe_stock_api --group "$PROBE_GROUP"
+          elif [ "$BOOTSTRAP_ROUNDS" = "8" ]; then
+            python -m pipeline.run --bootstrap-rounds 8
           elif [ "$STOCK_API_ONLY" = "true" ]; then
             python -m pipeline.run --stock-api-only
           elif [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5' ]; then

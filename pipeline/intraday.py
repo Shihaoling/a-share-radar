@@ -145,6 +145,9 @@ def parse_sina(payload, now):
 
 
 def _stock_symbol(code):
+    if re.fullmatch(r"\d{6}\.(?:SH|SZ|BJ)", str(code or "").upper()):
+        raw = str(code).lower()
+        return raw[-2:] + raw[:6]
     code = str(code or "").lower().replace(".", "")
     if re.fullmatch(r"(?:sh|sz|bj)\d{6}", code):
         return code
@@ -196,7 +199,8 @@ def _refresh_freshness(data, now):
     for targets in _targets(data, stock_count).values():
         for target in targets:
             latest = data.get("intraday", {}).get(target["entity_id"], {}).get("latest")
-            if isinstance(latest, dict):
+            current = target["object"].get("live_quote") or {}
+            if isinstance(latest, dict) and str(latest.get("quote_timestamp") or "") > str(current.get("quote_timestamp") or ""):
                 target["object"]["live_quote"] = latest
     for entry in data.get("intraday", {}).values():
         quotes.extend(entry.get("providers", {}).values())
@@ -211,7 +215,7 @@ def _refresh_freshness(data, now):
         timestamp = _dt(quote.get("quote_timestamp")) if quote.get("quote_timestamp") else None
         age = (now - timestamp).total_seconds() if timestamp else None
         quote["age_seconds"] = age
-        quote["is_live"] = bool(timestamp and quote.get("timestamp_quality") == "source_reported"
+        quote["is_live"] = bool(timestamp and quote.get("timestamp_quality") in {"source_reported", "exchange_timestamp"}
                                 and continuous and timestamp.date() == now.date() and 0 <= age <= 300)
 
 
@@ -250,6 +254,15 @@ def collect_intraday(data, config=None, now=None):
     robots = state.setdefault("robots", {})
     series = result.setdefault("intraday", {})
     targets = _targets(result, max(0, min(30, int(opts["max_constituent_stocks"]))))
+    if (config or {}).get("primary_provider") == "stock_api":
+        def needs_backup(target):
+            q = target["object"].get("live_quote") or {}
+            stamp = _dt(q.get("quote_timestamp")) if q.get("quote_timestamp") else None
+            if q.get("provider") != "stock_api" or stamp is None or stamp.date() != now.date() or stamp > now:
+                return True
+            return not ((now - stamp).total_seconds() <= 300 or (now.hour >= 15 and stamp.hour >= 15))
+        targets = {symbol: [t for t in rows if needs_backup(t)] for symbol, rows in targets.items()}
+        targets = {symbol: rows for symbol, rows in targets.items() if rows}
     if not targets:
         state["message"] = "尚无已确认的指数/ETF/成分股代码"
         return result

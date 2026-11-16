@@ -412,9 +412,14 @@ def fetch_data(previous=None, config=None, now=None):
         raise ValueError("now 必须为 datetime 或 ISO 日期")
     stamp = now.isoformat(timespec="seconds")
     old_sectors = {s["id"]: s for s in previous.get("sectors", [])}
-    sectors = [_seed_sector(seed, old_sectors.get(seed["id"])) for seed in sector_cfg["sectors"]]
-    known = {s["id"] for s in sectors}
-    sectors.extend(_seed_sector(s, s) for s in previous.get("sectors", []) if s["id"] not in known)
+    primary_stock_api = cfg.get("primary_provider") == "stock_api"
+    if primary_stock_api:
+        # The primary adapter owns its taxonomy; never reseed legacy themes.
+        sectors = copy.deepcopy(previous.get("sectors", []))
+    else:
+        sectors = [_seed_sector(seed, old_sectors.get(seed["id"])) for seed in sector_cfg["sectors"]]
+        known = {s["id"] for s in sectors}
+        sectors.extend(_seed_sector(s, s) for s in previous.get("sectors", []) if s["id"] not in known)
     old_market = {m["id"]: m for m in previous.get("market", [])}
     market = []
     for spec in cfg["akshare"]["market_indices"]:
@@ -443,11 +448,14 @@ def fetch_data(previous=None, config=None, now=None):
     news = []
     for item in copy.deepcopy(previous.get("news", [])):
         relevance = _a_share_relevance(item.get("title", ""), item.get("summary", ""), item.get("sector_ids", []), sectors)
-        if relevance:
-            item.update(relevance)
+        if relevance or primary_stock_api:
+            item.update(relevance or {})
             news.append(item)
     history = copy.deepcopy(previous.get("history", {}))
     result = {"market": market, "sectors": sectors, "news": news, "sources": list(states.values()), "history": history, "official_portals": cfg.get("official_portals", [])}
+    for key in ("archived_sectors", "taxonomy", "sentiment_state"):
+        if key in previous:
+            result[key] = copy.deepcopy(previous[key])
     for item in sectors:
         quote_time = _dt(item.get("as_of")) if item.get("as_of") else None
         item["stale"] = not (quote_time and (now - quote_time).total_seconds() <= cfg["cache_seconds"]["quotes"])
@@ -503,7 +511,7 @@ def fetch_data(previous=None, config=None, now=None):
 
     market_errors = []
     market_successes = []
-    if cfg["akshare"].get("enabled", True) and usable("eastmoney", cfg["cache_seconds"]["quotes"]):
+    if not primary_stock_api and cfg["akshare"].get("enabled", True) and usable("eastmoney", cfg["cache_seconds"]["quotes"]):
         try:
             frame = ak_call(["index_zh_spot_em", "stock_zh_index_spot_em"], symbol="沪深重要指数")
             lookup = {str(_get(r, "代码", "code")): r for r in _validated_records(frame, ["代码", "最新价", "涨跌幅"])}
