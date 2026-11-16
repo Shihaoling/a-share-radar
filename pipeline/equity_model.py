@@ -485,7 +485,7 @@ def update_equity_predictions(dashboard, history_dir, model_dir, now=None, confi
         elif not bars or bars[-1]["date"] != reference_day:
             prediction["note"] = "缺少目标前一交易日完整行情；停牌或缺失数据不沿用旧价。"
         elif not training_ready:
-            prediction["note"] = "共享模型历史覆盖不足，尚未完成按日期验证。"
+            prediction["note"] = "本站可用历史训练样本不足，尚未完成按日期验证。"
         elif features is None:
             prediction["note"] = "量价历史窗口不足或字段无效。"
         else:

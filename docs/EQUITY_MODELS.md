@@ -30,7 +30,11 @@
 
 ## 可直接运行
 
-先查看网页“个股模型 · 训练与核验”的已归档交易日数。接口拒绝、限频或连接失败后，`data/equity/state.json` 保留冷却时间；冷却未到不重复请求，也不清除冷却来绕过来源限制。GitHub Actions会在后续任务断点续传。首轮目标180日，训练样本未足够时股票预测保持待生成。
+先查看网页“个股模型 · 训练与核验”的已归档交易日数。**“本站历史不足”表示已经下载并通过校验的数据不足，不表示Tushare没有历史。** 官方 `daily` 文档说明提供全部历史，支持按交易日获取全市场；本站首轮180个交易日是采集和试训的预算目标，不是接口历史上限。停牌日不保证有记录，新股也不具有上市之前的历史。
+
+接口拒绝、限频或连接失败后，`data/equity/state.json` 保留冷却时间；冷却未到不重复请求，也不清除冷却来绕过来源限制。未知业务错误与明确权限/限频错误分别记录。每轮对连接或未知业务错误合计最多重试一次、等待30秒；明确权限或限频错误不重试。GitHub Actions会在后续任务断点续传。训练样本未足够时股票预测保持待生成。
+
+2026-11-16的首次补齐停在14日，第15批（2026-10-27）返回业务错误。旧程序没有保留服务方错误码和分类，不能确定原始原因；它设置的一小时冷却也不代表服务方限制。当天21:05（北京时间）按同一全市场参数复核该日期成功，收到5,571行，其中1条停牌无成交记录排除，保留5,570行。补齐从已验证成功的日期继续，并改为至少6秒间隔。官方服务与当前兼容服务的历史覆盖及权限仍应分别核验，单次成功不能证明兼容服务所有接口都具有官方的完整权限。
 
 本机配置 `STOCK_API_TOKEN` 环境变量后，可分批补充更长历史（命令不回显令牌，已有完整日期自动跳过）：
 
@@ -92,6 +96,8 @@ predicted_returns_pct = predict_neural_samples(bundle, sequences)  # shape: N ×
 
 ## 参考来源
 
+- [Tushare官方历史范围与权限](https://tushare.pro/document/1?doc_id=108)
+- [Tushare daily参数、字段与批量获取方式](https://tushare.pro/document/2?doc_id=27)
 - [Microsoft Qlib A股研究基准](https://github.com/microsoft/qlib/blob/main/examples/benchmarks/README.md?plain=1)
 - [Qlib Alpha360的60日量价设计](https://github.com/microsoft/qlib/blob/main/qlib/contrib/data/loader.py)
 - [Qlib GRU官方实现](https://github.com/microsoft/qlib/blob/main/qlib/contrib/model/pytorch_gru_ts.py)

@@ -152,7 +152,7 @@ function equityValue(item) {
 }
 function equityStatus(item) {
   const value=equityValue(item);
-  if(value===null)return ({pending:'等待数据 / 训练',insufficient_history:'历史样本不足',suspended:'暂停预测',stale:'数据待更新'})[item?.status]||'尚未形成预测';
+  if(value===null)return ({pending:'等待数据 / 训练',insufficient_history:'本站可用训练样本不足',suspended:'暂停预测',stale:'数据待更新'})[item?.status]||'尚未形成预测';
   if(item.status==='partial')return'部分覆盖 · 研究结果';
   return item.status==='baseline'||/zero|baseline|naive/.test(item.model||'')?'基线预测':'个股汇总 · 研究预测';
 }
@@ -233,7 +233,7 @@ function equityStocksPanel(d) {
       h('td',{},h('strong',{},x.name||x.code),h('div',{class:'panel-subtitle'},`${x.code} · ${sectorName(x.sector_id,d)}`)),
       h('td',{class:`numeric ${sign(equityValue(x))}`},equityValue(x)===null?'—':pct(equityValue(x)),h('div',{class:'panel-subtitle'},'相对目标交易日除权参考价')),
       h('td',{},x.target_date||'待确定',h('div',{class:'panel-subtitle'},equityTarget(x)),h('div',{class:'panel-subtitle'},`特征日期 ${x.reference_date||'待更新'}`)),
-      h('td',{},equityStatus(x),h('div',{class:'panel-subtitle'},x.model||'模型待就绪'),x.note?h('div',{class:'panel-subtitle'},x.note):null)))))):empty('暂无符合条件的个股结果','数据管道按交易日批量补齐日线；历史不足或模型未就绪时不复制指数预测。'),
+      h('td',{},equityStatus(x),h('div',{class:'panel-subtitle'},x.model||'模型待就绪'),x.note?h('div',{class:'panel-subtitle'},x.note):null)))))):empty('暂无符合条件的个股结果','数据管道按交易日批量补齐日线；本站历史缓存尚未补齐或模型未就绪时保留空值。'),
     h('div',{class:'equity-pagination'},h('span',{},`第 ${result.page+1} / ${result.pageCount} 页 · ${result.count} 只`),h('div',{},
       h('button',{type:'button',class:'outline-button',disabled:result.page===0,onClick:()=>{state.equityPage--;render();}},'上一页'),
       h('button',{type:'button',class:'outline-button',disabled:result.page>=result.pageCount-1,onClick:()=>{state.equityPage++;render();}},'下一页')))),null,'wide-panel');
@@ -242,12 +242,12 @@ function equityTrainingPanel(d) {
   const f=d.equity_forecast||{},t=f.training||{},e=f.evaluation||{},c=d.equity_collection||{},n=t.neural_candidates||{};
   const status=t.promoted?'已通过升级门槛':['validated','evaluated'].includes(t.status)?'候选已评估 · 保留基线':['training','evaluating'].includes(t.status)?'候选模型验证中':'数据与训练准备中';
   const neural=Object.entries(n.models||{});
-  const collectionText=`历史日线 ${Number(c.cached_days||0)+Number(c.collected_days||0)} / ${c.requested_days||180} 个交易日 · 本轮请求 ${c.requests_this_run||0} 次`;
-  const reason=({rate_limited:'请求达到来源限制',authorization_denied:'来源拒绝授权',permission_denied:'接口权限不足',points_insufficient:'来源报告积分不足',provider_error:'来源返回业务错误'})[c.provider_reason]||({api_denied:'来源拒绝本次请求',transport_error:'连接暂不可用',incomplete_batch:'返回数据未通过完整性检查'})[c.error_code]||c.error_code;
+  const collectionText=`本站已归档 ${Number(c.cached_days||0)+Number(c.collected_days||0)} / 本次计划 ${c.requested_days||180} 个交易日 · 本轮请求 ${c.requests_this_run||0} 次`;
+  const reason=({rate_limited:'请求达到来源限制',authorization_denied:'来源拒绝授权',permission_denied:'接口权限不足',points_insufficient:'来源报告积分不足',provider_error:'来源返回业务错误'})[c.provider_reason]||({api_denied:'上次下载请求未成功，具体原因尚未识别',transport_error:'连接暂不可用',incomplete_batch:'返回数据未通过完整性检查'})[c.error_code]||c.error_code;
   return panel('个股模型 · 训练与核验',status,h('div',{class:'mini-info'},h('div',{class:'tags'},pill(`当前 ${f.model||'尚未训练'}`,'official'),pill('小型 GRU / TCN 候选'),pill(`训练 ${t.train_samples??0} · 验证 ${t.validation_samples??0} · 测试 ${t.test_samples??0}`)),
-    h('p',{class:'inline-note'},collectionText),reason?h('div',{class:'info-strip'},`${reason}；已保留缓存。${c.cooldown_until?`最早恢复时间 ${dateText(c.cooldown_until)}，由后续任务续传。`:'等待后续更新。'}`):null,
+    h('p',{class:'inline-note'},collectionText),h('p',{class:'inline-note'},'Tushare daily 提供历史日线；这里的计划天数是本站采集预算，不是接口历史上限。'),reason?h('div',{class:'info-strip'},`${reason}；已保留缓存。${c.cooldown_until?`最早恢复时间 ${dateText(c.cooldown_until)}，由后续任务续传。`:'等待后续更新。'}`):null,
     h('p',{class:'inline-note'},t.note||'共用日期边界划分训练、验证和测试样本，保留时间间隔。神经网络需优于基线与当前模型，才替换正式预测。'),
-    neural.length?h('div',{},h('p',{class:'inline-note'},`离线候选 · ${n.device||'设备待确认'} · ${n.selected_stocks??n.stocks??0} 只股票；尚未部署神经网络。`),h('div',{class:'table-wrap'},h('table',{},h('thead',{},h('tr',{},['候选模型','开盘验证MAE','收盘验证MAE','已训练轮次'].map(x=>h('th',{},x)))),h('tbody',{},neural.map(([name,r])=>h('tr',{},h('td',{},name.toUpperCase()),h('td',{},num(r.validation?.next_open_return_pct?.mae_pct,4)),h('td',{},num(r.validation?.next_close_return_pct?.mae_pct,4)),h('td',{},r.epochs_completed??'—'))))))):h('p',{class:'inline-note'},'GRU / TCN 尚无真实数据试训报告；历史不足时不以合成测试成绩替代。'),
+    neural.length?h('div',{},h('p',{class:'inline-note'},`离线候选 · ${n.device||'设备待确认'} · ${n.selected_stocks??n.stocks??0} 只股票；尚未部署神经网络。`),h('div',{class:'table-wrap'},h('table',{},h('thead',{},h('tr',{},['候选模型','开盘验证MAE','收盘验证MAE','已训练轮次'].map(x=>h('th',{},x)))),h('tbody',{},neural.map(([name,r])=>h('tr',{},h('td',{},name.toUpperCase()),h('td',{},num(r.validation?.next_open_return_pct?.mae_pct,4)),h('td',{},num(r.validation?.next_close_return_pct?.mae_pct,4)),h('td',{},r.epochs_completed??'—'))))))):h('p',{class:'inline-note'},'GRU / TCN 尚无真实数据试训报告；本站历史下载并验证完成后运行真实数据训练。'),
     h('div',{class:'equity-evaluation'},h('div',{},h('span',{},'已结算个股预测'),h('strong',{},e.settled_count??0)),h('div',{},h('span',{},'已结算方向命中率'),h('strong',{},accuracy(e.direction_accuracy))),h('div',{},h('span',{},'平均绝对误差'),h('strong',{},finite(e.mae_pct)?`${num(e.mae_pct)} 个百分点`:'—'))),
     h('div',{class:'info-strip'},'当前上市股票与当前申万成分的历史研究存在幸存偏差和成员回填限制。日线样本不能证明盘中预测能力；记录原始预测，真实结果到达后再评估。')) ,null,'wide-panel');
 }
