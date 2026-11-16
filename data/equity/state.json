@@ -1,1 +1,13 @@
-{"last_success":"2026-11-16T20:50:33.865954+08:00","last_trade_date":"2026-10-28","cooldown_until":"2026-11-16T21:50:35.471829+08:00","error_code":"api_denied","last_attempt":"2026-11-16T20:50:35.471853+08:00"}
+{
+  "last_success": "2026-11-16T21:05:28.109569+08:00",
+  "last_trade_date": "2026-10-27",
+  "cooldown_until": null,
+  "error_code": null,
+  "last_attempt": "2026-11-16T20:50:35.471853+08:00",
+  "recovery": {
+    "verified_at": "2026-11-16T21:05:28.109569+08:00",
+    "trade_date": "2026-10-27",
+    "full_market_rows": 5571,
+    "reason": "Same failed full-market request succeeded in bounded diagnostic; old unknown-error cooldown released."
+  }
+}

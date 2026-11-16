@@ -112,9 +112,11 @@ def _parse_payload(payload, day):
         raise _Failure("invalid_payload", 900)
     if payload["code"] != 0:
         reason = _provider_reason(payload)
-        raise _Failure("api_denied", 86400 if reason in {
+        if payload['code'] in (401, 403) and reason == 'provider_error':
+            reason = 'authorization_denied'
+        raise _Failure("api_denied" if reason != 'provider_error' else 'provider_error', 86400 if reason in {
             "authorization_denied", "permission_denied", "points_insufficient"
-        } or payload["code"] in (401, 403) else 3600,
+        } or payload["code"] in (401, 403) else 300 if reason == 'provider_error' else 3600,
             provider_code=payload["code"], provider_reason=reason)
     data = payload.get("data")
     if not isinstance(data, dict):
@@ -382,11 +384,25 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
                          timeout=cfg.get("timeout_seconds", 15),
                          budget=cfg.get("budget_seconds", 3600), now=now)
     summary["status"] = "partial"
+    transient_retries = 0
     for day in missing:
         if client.count >= client.max_requests:
             break
         try:
-            rows, quality, complete = client.request(day)
+            try:
+                rows, quality, complete = client.request(day)
+            except _Failure as transient:
+                # At most ONE extra request in the entire bounded batch. Never
+                # retry authentication, permission or explicit frequency errors.
+                retryable = transient.code == 'transport_error' or transient.provider_reason == 'provider_error'
+                if not retryable or transient_retries >= 1 or client.count >= client.max_requests or client.remaining() <= 30:
+                    raise
+                transient_retries += 1
+                if cfg.get('progress', False):
+                    print(json.dumps({'equity_retry_date': day, 'reason': transient.code,
+                                      'provider_code': transient.provider_code, 'wait_seconds': 30}), flush=True)
+                time.sleep(30)
+                rows, quality, complete = client.request(day)
             fetched_at = _now().isoformat()
             batch = {"schema_version": 1, "trade_date": day, "fetched_at": fetched_at,
                      "complete": complete, "source": "stock_api", "upstream_provider": "unknown",

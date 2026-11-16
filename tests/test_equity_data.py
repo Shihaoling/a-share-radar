@@ -196,6 +196,36 @@ class EquityDataTests(unittest.TestCase):
             self.assertEqual(second["status"], "cooldown")
             self.assertEqual(mocked.call_count, 1)
 
+    def test_unknown_business_error_is_not_labeled_permission_denied(self):
+        with self.assertRaises(_Failure) as caught:
+            _parse_payload({'code': -1, 'msg': 'temporary upstream error'}, '2026-11-16')
+        self.assertEqual(caught.exception.code, 'provider_error')
+        self.assertEqual(caught.exception.retry_seconds, 300)
+
+    def test_one_transient_retry_in_entire_batch_then_stops(self):
+        attempts = []
+        def request(client, day):
+            client.count += 1
+            attempts.append(day)
+            raise _Failure('provider_error', 300, provider_code=-1, provider_reason='provider_error')
+        with tempfile.TemporaryDirectory() as temporary, patch.dict('os.environ', {'STOCK_API_TOKEN': SECRET}), \
+             patch.object(DailyClient, 'request', request), patch('pipeline.equity_data.time.sleep') as sleep:
+            result = collect_equity_history(dashboard(), {}, NOW, max_requests=10, output_dir=temporary)
+        self.assertEqual(len(attempts), 2)
+        self.assertEqual(attempts[0], attempts[1])
+        sleep.assert_called_once_with(30)
+        self.assertEqual(result['provider_code'], -1)
+        self.assertEqual(result['status'], 'unavailable')
+
+    def test_explicit_permission_error_never_retries(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.dict('os.environ', {'STOCK_API_TOKEN': SECRET}), \
+             patch.object(DailyClient, 'request', side_effect=_Failure('api_denied', 86400, provider_code=403, provider_reason='authorization_denied')) as mocked, \
+             patch('pipeline.equity_data.time.sleep') as sleep:
+            result = collect_equity_history(dashboard(), {}, NOW, output_dir=temporary)
+        mocked.assert_called_once()
+        sleep.assert_not_called()
+        self.assertEqual(result['provider_code'], 403)
+
     def test_incomplete_or_mismatched_file_never_loaded(self):
         with tempfile.TemporaryDirectory() as temporary:
             rows, _, _ = _parse_payload(payload([row()]), "2026-11-16")
