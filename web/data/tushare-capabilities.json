@@ -1,0 +1,209 @@
+{
+  "core": {
+    "checked_at": "2026-11-16T17:07:29.864211+08:00",
+    "group": "core",
+    "requests": 4,
+    "results": [
+      {
+        "api": "index_classify",
+        "params": {
+          "src": "SW2021",
+          "level": "L1"
+        },
+        "status": "success",
+        "row_count": 31,
+        "fields": [
+          "index_code",
+          "industry_name",
+          "level",
+          "industry_code",
+          "is_pub",
+          "parent_code",
+          "src"
+        ],
+        "sample": [
+          {
+            "index_code": "801010.SI",
+            "industry_name": "农林牧渔",
+            "level": "L1",
+            "industry_code": "110000",
+            "is_pub": "1",
+            "parent_code": "0",
+            "src": "SW2021"
+          },
+          {
+            "index_code": "801030.SI",
+            "industry_name": "基础化工",
+            "level": "L1",
+            "industry_code": "220000",
+            "is_pub": "1",
+            "parent_code": "0",
+            "src": "SW2021"
+          },
+          {
+            "index_code": "801040.SI",
+            "industry_name": "钢铁",
+            "level": "L1",
+            "industry_code": "230000",
+            "is_pub": "1",
+            "parent_code": "0",
+            "src": "SW2021"
+          }
+        ]
+      },
+      {
+        "api": "sw_daily",
+        "params": {
+          "trade_date": "20261113"
+        },
+        "status": "success",
+        "row_count": 439,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "name",
+          "open",
+          "low",
+          "high",
+          "close",
+          "pct_change",
+          "vol",
+          "amount",
+          "pe",
+          "pb",
+          "float_mv",
+          "total_mv"
+        ],
+        "sample": [
+          {
+            "ts_code": "859721.SI",
+            "trade_date": "20261113",
+            "name": "环保设备Ⅲ",
+            "open": 1757.52,
+            "low": 1712.08,
+            "high": 1785.53,
+            "close": 1719.59,
+            "pct_change": -1.89,
+            "vol": 19228.0,
+            "amount": 198485.0,
+            "pe": 32.62,
+            "pb": 1.81,
+            "float_mv": 6435409.0,
+            "total_mv": 12923351.0
+          },
+          {
+            "ts_code": "859631.SI",
+            "trade_date": "20261113",
+            "name": "炼油化工",
+            "open": 3422.69,
+            "low": 3391.75,
+            "high": 3495.79,
+            "close": 3459.57,
+            "pct_change": 1.36,
+            "vol": 59079.0,
+            "amount": 540643.0,
+            "pe": 12.81,
+            "pb": 1.21,
+            "float_mv": 28171384.0,
+            "total_mv": 293620963.0
+          },
+          {
+            "ts_code": "859713.SI",
+            "trade_date": "20261113",
+            "name": "固废治理",
+            "open": 1941.86,
+            "low": 1901.59,
+            "high": 1967.47,
+            "close": 1913.21,
+            "pct_change": -1.58,
+            "vol": 31458.0,
+            "amount": 308956.0,
+            "pe": 16.6,
+            "pb": 1.45,
+            "float_mv": 11984142.0,
+            "total_mv": 27809224.0
+          }
+        ]
+      },
+      {
+        "api": "index_member_all",
+        "params": {
+          "l1_code": "801780.SI"
+        },
+        "status": "success",
+        "row_count": 42,
+        "fields": [
+          "l1_code",
+          "l1_name",
+          "ts_code",
+          "name",
+          "in_date",
+          "out_date",
+          "is_new"
+        ],
+        "sample": [
+          {
+            "l1_code": "801780.SI",
+            "l1_name": "银行",
+            "ts_code": "601288.SH",
+            "name": "农业银行",
+            "in_date": "20100610",
+            "out_date": "",
+            "is_new": "Y"
+          },
+          {
+            "l1_code": "801780.SI",
+            "l1_name": "银行",
+            "ts_code": "601328.SH",
+            "name": "交通银行",
+            "in_date": "20070514",
+            "out_date": "",
+            "is_new": "Y"
+          },
+          {
+            "l1_code": "801780.SI",
+            "l1_name": "银行",
+            "ts_code": "601398.SH",
+            "name": "工商银行",
+            "in_date": "20061026",
+            "out_date": "",
+            "is_new": "Y"
+          }
+        ]
+      },
+      {
+        "api": "daily_basic",
+        "params": {
+          "ts_code": "000001.SZ",
+          "trade_date": "20261113"
+        },
+        "status": "success",
+        "row_count": 1,
+        "fields": [
+          "ts_code",
+          "trade_date",
+          "close",
+          "turnover_rate",
+          "volume_ratio",
+          "pe_ttm",
+          "pb",
+          "total_mv",
+          "circ_mv"
+        ],
+        "sample": [
+          {
+            "ts_code": "000001.SZ",
+            "trade_date": "20261113",
+            "close": 12.07,
+            "turnover_rate": 1.1282,
+            "volume_ratio": 1.91,
+            "pe_ttm": 5.3871,
+            "pb": 0.4914,
+            "total_mv": 23422943.2674,
+            "circ_mv": 23422661.795
+          }
+        ]
+      }
+    ]
+  }
+}
