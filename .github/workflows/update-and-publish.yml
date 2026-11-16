@@ -29,7 +29,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -39,6 +40,7 @@ jobs:
       - name: Verify time, leakage and review invariants
         run: python -m unittest discover -s tests -v
       - name: Update snapshots and evaluate predictions
+        if: github.event_name != 'push'
         env:
           ENABLE_MLP: ${{ inputs.enable_mlp }}
         run: |
@@ -48,12 +50,14 @@ jobs:
             python -m pipeline.run
           fi
       - name: Persist observations and forecast ledger
+        if: github.event_name != 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add web/data/dashboard.json web/data/reviews.json
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh observations and daily review [skip ci]'
+            git pull --rebase origin main
             git push
           fi
       - uses: actions/configure-pages@v5
