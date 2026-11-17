@@ -17,6 +17,7 @@ from .sources import _Gate, SourceUnavailable
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = 'article-html-v1'
+PUBLICATION_VERSION = 'publisher-labelled-time-v2'
 
 
 def text_hash(text):
@@ -130,7 +131,7 @@ def publication_metadata(raw, url, now=None):
             if not isinstance(item,dict):continue
             if isinstance(item.get('@graph'),list):queue.extend(item['@graph'])
             if item.get('datePublished'):candidates.append(('jsonld:datePublished',str(item['datePublished'])))
-    for selector in ['#pubtime','.publish-time','.pubtime','.time','[itemprop="datePublished"]']:
+    for selector in ['#pubtime','.publish-time','.pubtime','.time','.infos > .item','[itemprop="datePublished"]']:
         candidates.extend((selector,n.get_text(' ',strip=True)) for n in soup.select(selector))
     valid=[]
     for method,value in candidates:
@@ -145,7 +146,7 @@ def publication_metadata(raw, url, now=None):
         if at is not None:
             at=shanghai_now(at)
             if at<=now and at.year>=2000:valid.append((at,method,value[:160]))
-    receipt={'status':'unknown','source_url':url,'checked_at':now.isoformat()}
+    receipt={'status':'unknown','parser_version':PUBLICATION_VERSION,'source_url':url,'checked_at':now.isoformat()}
     if not valid:return {'publication_verification':receipt}
     if max(v[0] for v in valid)-min(v[0] for v in valid)>timedelta(minutes=5):
         receipt['status']='conflict';return {'publication_verification':receipt}
@@ -166,6 +167,11 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
                 'request_budget_seconds': 240, 'max_http_requests': 64, 'max_response_bytes': 4000000, 'timeout_seconds': 15}
     gate = gate or ArticleGate(gate_cfg)
     enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
+    # A content-only extraction failure is local to that URL, not an IP block.
+    for host,until in list(state['hosts'].items()):
+        causes=[r for r in state['articles'].values() if urlsplit(str(r.get('url',''))).hostname==host and r.get('retry_after')==until]
+        if causes and all(r.get('reason') in ('article_body_not_found','restricted_article','multipage_article_requires_review') for r in causes):
+            state['hosts'].pop(host,None)
     attempted = 0; hosts = {}; reused = 0
     for n in sorted(result.get('news', []), key=lambda x: x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
         if n.get('primary_shadowed'):continue
@@ -181,7 +187,7 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
         row = state['articles'].get(key, {})
         if row.get('url') != url:
             row = {}
-        metadata_pending=cfg.get('verify_publication_times') and not row.get('publication_verification')
+        metadata_pending=cfg.get('verify_publication_times') and row.get('publication_verification',{}).get('parser_version')!=PUBLICATION_VERSION
         if row.get('status') == 'complete' and not metadata_pending:
             reused += 1
         elif enabled and url and attempted < int(cfg.get('max_articles_per_run', 20)):
@@ -208,8 +214,8 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
                 allowed = {'article_body_not_found', 'access_challenge', 'restricted_article', 'redirect_not_followed', 'multipage_article_requires_review', 'non_public_address', 'invalid_public_url', 'response_too_large'}
                 row = {'url': url, 'status': 'unavailable', 'reason': reason if reason in allowed else 'source_unavailable',
                        'attempted_at': now.isoformat(), 'retry_after': (now + timedelta(seconds=retry)).isoformat()}
-                # Stop this host after any unsuccessful page, including robots.
-                state['hosts'][host] = row['retry_after']
+                if row['reason'] not in ('article_body_not_found','restricted_article','multipage_article_requires_review'):
+                    state['hosts'][host] = row['retry_after']
             state['articles'][key] = row
         n['full_text_status'] = row.get('status') or ('no_article_url' if not url else 'deferred')
         if row.get('status') == 'complete':

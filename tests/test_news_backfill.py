@@ -18,7 +18,7 @@ class BackfillTests(unittest.TestCase):
   self.assertEqual(result['published_at'],'2026-11-16T19:31:00+08:00')
   unknown=publication_metadata('<article>2026年11月17日 20:30 事件</article>','https://example.test/20261117',NOW)
   self.assertNotIn('published_at',unknown)
-  chinese=publication_metadata('<div class="time">2026年11月17日 09:30</div>','https://example.test',NOW)
+  chinese=publication_metadata('<div class="infos"><div class="item">2026年11月17日 09:30</div><div class="item">来源：新华财经</div></div>','https://example.test',NOW)
   self.assertEqual(chinese['published_at'],'2026-11-17T09:30:00+08:00')
  def test_conflicting_and_future_publication_dates_are_not_invented(self):
   html='<meta property="article:published_time" content="2026-11-16T19:31:00+08:00"><div class="time">2026年11月17日 09:30</div>'
@@ -45,6 +45,22 @@ class BackfillTests(unittest.TestCase):
   c=Client();r=collect_primary_minutes(d,{'network_enabled':True,'primary_minutes':{'target_date':'2026-11-17','frequency':'1min','require_complete_session':True}},NOW,c)
   self.assertEqual(c.params['freq'],'1min');self.assertEqual(c.params['limit'],300)
   self.assertEqual(r['intraday']['sh000001']['points'],[old]);self.assertFalse(r['primary_minutes_state']['completed'])
+ def test_missing_body_cools_only_that_article_and_resumes_other_pages(self):
+  from pipeline.news_content import enrich_full_text,text_hash
+  with TemporaryDirectory() as t:
+   until=(NOW+timedelta(days=1)).isoformat();bad='https://finance.eastmoney.com/a/bad.html';good='https://finance.eastmoney.com/a/good.html'
+   Path(t,'cache.json').write_text(json.dumps({'hosts':{'finance.eastmoney.com':until},'articles':{text_hash(bad):{'url':bad,'status':'unavailable','reason':'article_body_not_found','retry_after':until}}}))
+   class Gate:
+    def __init__(self):self.calls=[]
+    def get(self,url):self.calls.append(url);return ('<article>'+'完整正文'*40+'</article>').encode(),{}
+   gate=Gate();out=enrich_full_text({'news':[{'id':'bad','url':bad},{'id':'good','url':good}]},{'network_enabled':True},NOW,t,gate)
+   self.assertEqual(gate.calls,[good]);self.assertEqual(out['news'][1]['full_text_status'],'complete')
+ def test_same_headline_quick_news_cannot_overwrite_article_body(self):
+  from pipeline.sentiment import _merge_stock_api_news
+  a={'id':'html','title':'同标题完整新闻不能覆盖','published_at':'2026-11-17T12:00:00+08:00','full_text':'完整网页正文','full_text_status':'complete'}
+  b={'provider':'stock_api','source':'cls','title':a['title'],'published_at':a['published_at'],'content':'快讯','full_text':'快讯','full_text_status':'complete'}
+  d={'news':[a],'stock_api_news':[b]};_merge_stock_api_news(d,NOW)
+  self.assertEqual(a['full_text'],'完整网页正文');self.assertEqual(len(d['news']),2)
  def test_worker_pins_requested_cohort_persists_progress_and_does_not_backdate_model_time(self):
   with TemporaryDirectory() as t:
    root=Path(t)

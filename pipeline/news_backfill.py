@@ -1,11 +1,11 @@
 """Persistent, low-frequency online completion of an explicitly requested cohort."""
 from copy import deepcopy
-from datetime import timedelta
+from datetime import datetime,timedelta
 from pathlib import Path
 import json
 from .calendar import shanghai_now,previous_trading_day,is_trading_day
 from .run import load,atomic_json
-from .news_content import enrich_full_text
+from .news_content import enrich_full_text,text_hash
 from .minimax_news import enrich_minimax
 from .news_digest import enrich_digest
 from .news_trust import apply_source_whitelist
@@ -20,12 +20,33 @@ def run(root=None,now=None,collector=None,analyzer=None,digester=None):
     if not request.get('articles'):return {'status':'not_requested'}
     state_path=root/'data/news_content/backfill-state.json';state=load(state_path,{})
     if state.get('request_id')!=request['request_id']:state={'request_id':request['request_id'],'runs':0}
-    if state.get('next_allowed_after','')>now.isoformat():return state
-    d=load(root/'web/data/dashboard.json',{});cfg=load(root/'config/settings.json',{});cfg['network_enabled']=True
+    if state.get('schedule_version')!='half-hour-v2' and state.get('last_run_at'):
+        state['next_allowed_after']=(shanghai_now(datetime.fromisoformat(state.get('started_at') or (state.get('content') or {}).get('as_of') or state['last_run_at']))+timedelta(minutes=25)).isoformat()
+    d=load(root/'web/data/dashboard.json',{})
+    # A saved, hash-matched publisher receipt can correct time without another GET.
+    receipts=load(root/'data/news_content/publication-receipts.json',{}).get('receipts',[])
+    cache=load(root/'data/news_content/cache.json',{});corrected=False
+    for receipt in receipts:
+        n=next((n for n in d.get('news',[]) if n.get('id')==receipt.get('id') and n.get('url')==receipt.get('url')),None)
+        meta=receipt.get('metadata',{})
+        if not n or text_hash(n.get('full_text') or '')!=receipt.get('body_hash') or meta.get('publication_verification',{}).get('status')!='verified':continue
+        if n.get('publication_verification')==meta.get('publication_verification'):continue
+        n.update(deepcopy(meta));row=cache.get('articles',{}).get(text_hash(receipt['url']),{})
+        if row.get('text_hash')==receipt['body_hash']:row.update(deepcopy(meta))
+        corrected=True
+    if corrected:
+        ids={n['id'] for n in request['articles']};rows=[n for n in d.get('news',[]) if n.get('id') in ids]
+        state['publication_verified']=sum(n.get('publication_verification',{}).get('status')=='verified' for n in rows)
+        state['publication_unconfirmed']=state.get('body_complete',0)-state['publication_verified']
+        d['news_backfill_summary']=state;d['generated_at']=now.isoformat();d['news_archive_summary']=archive_news(d,now,root/'data/news_archive')
+        atomic_json(root/'data/news_content/cache.json',cache);atomic_json(state_path,state);atomic_json(root/'web/data/dashboard.json',d);publish_view(d,root/'web/data/view.json')
+    if state.get('next_allowed_after','')>now.isoformat():
+        print(json.dumps(state,ensure_ascii=False));return state
+    cfg=load(root/'config/settings.json',{});cfg['network_enabled']=True
     known={n['id']:n for n in d.setdefault('news',[])}
     for item in request['articles']:
         if item['id'] not in known:d['news'].append(deepcopy(item));known[item['id']]=d['news'][-1]
-    ids={n['id'] for n in request['articles']}
+    ids=list(dict.fromkeys(n['id'] for n in request['articles']))
     selected=[deepcopy(known[i]) for i in ids]
     for n in selected:n['primary_shadowed']=False
     batch=max(1,min(8,int(request.get('batch_size',8))))
@@ -49,7 +70,7 @@ def run(root=None,now=None,collector=None,analyzer=None,digester=None):
         d['news_backfill_digest']=revised['news_digest']
         if d.get('news_digest',{}).get('date') in (None,request['digest_date']):d['news_digest']=revised['news_digest']
     completed=full==len(ids) and scored==len(ids)
-    state.update(status='complete' if completed else 'in_progress',runs=state['runs']+1,total=len(ids),body_complete=full,publication_verified=dated,publication_unconfirmed=full-dated,model_complete=scored,last_run_at=shanghai_now().isoformat(),next_allowed_after=(shanghai_now()+timedelta(minutes=30)).isoformat(),content=result.get('news_content_summary'),model=result.get('minimax_summary'))
+    state.update(schedule_version='half-hour-v2',started_at=now.isoformat(),status='complete' if completed else 'in_progress',runs=state['runs']+1,total=len(ids),body_complete=full,publication_verified=dated,publication_unconfirmed=full-dated,model_complete=scored,last_run_at=shanghai_now().isoformat(),next_allowed_after=(now+timedelta(minutes=25)).isoformat(),content=result.get('news_content_summary'),model=result.get('minimax_summary'))
     d['news_backfill_summary']=state;d['generated_at']=shanghai_now().isoformat()
     # Historical labels remain historical; new analyses are archived only now.
     d['news_archive_summary']=archive_news(d,root=root/'data/news_archive')

@@ -1,0 +1,21 @@
+{
+  "receipts": [
+    {
+      "id": "e40dac8c698cf18c2ca7",
+      "url": "https://finance.eastmoney.com/a/202611173933128336.html",
+      "body_hash": "c341d14aef056a098f72a9a2281e3c79593d35573baa6939e21db4b9b899be54",
+      "metadata": {
+        "published_at": "2026-11-17T21:13:00+08:00",
+        "published_at_verified_at": "2026-11-18T00:27:32.061154+08:00",
+        "publication_verification": {
+          "status": "verified",
+          "parser_version": "publisher-labelled-time-v2",
+          "source_url": "https://finance.eastmoney.com/a/202611173933128336.html",
+          "checked_at": "2026-11-18T00:27:32.061154+08:00",
+          "method": ".infos > .item",
+          "source_value": "2026年11月17日 21:13"
+        }
+      }
+    }
+  ]
+}

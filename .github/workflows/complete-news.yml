@@ -2,7 +2,7 @@ name: Complete requested news and one-minute history
 on:
   push:
     branches: [main]
-    paths: ['data/news_content/backfill-request.json', 'pipeline/news_backfill.py', '.github/workflows/complete-news.yml']
+    paths: ['data/news_content/backfill-request.json', 'data/news_content/publication-receipts.json', 'pipeline/news_backfill.py', '.github/workflows/complete-news.yml']
   workflow_dispatch:
   schedule:
     - cron: '12,42 * * * *'
