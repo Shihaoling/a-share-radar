@@ -80,10 +80,13 @@
     ],
     "cursor": 4,
     "status": "partial",
-    "checked_at": "2026-11-17T22:48:58.199616+08:00",
+    "checked_at": "2026-11-17T23:02:46.815813+08:00",
     "credential_match": true,
-    "next_allowed_after": "2026-11-17T22:49:58.199586+08:00",
+    "next_allowed_after": "2026-11-17T23:03:46.815794+08:00",
     "planned_apis": 23,
-    "pending_apis": 19
+    "pending_apis": 19,
+    "minute_entities_completed": 4,
+    "migration_completed": "2026-11-17T23:02:46.811239+08:00",
+    "deferred_api": "news"
   }
 }
