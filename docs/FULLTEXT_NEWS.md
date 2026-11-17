@@ -40,3 +40,5 @@ MiniMax综合解读覆盖当日已收录全部条目，按发布时间或未知�
 
 ## 历史分钟核验
 sw_mins（申万历史分钟）和idx_mins（交易所指数历史分钟）与rt_idx_min（指数实时分钟）、rt_idx_k/rt_sw_k（实时行情）分别核验。官方历史接口支持5min，时间格式YYYY-MM-DD HH:MM:SS。一次核验分别使用前一交易日、801003.SI和000001.SH，各1次请求，不连续重试；记录到web/data/minute-access.json。仅当历史请求成功时，才解除相应未知旧错误的冷却并允许至多2次当日补数；总调用上限4。报告包含公开参数、行数、固定原因和数值错误码，绝不包含token或服务原始消息。完成标记防止后续push重复验证。
+
+2026-11-17 21:50真实复核：对2026-11-16、5min的两个历史请求，兼容服务sw_mins返回provider_code=2002、authorization_denied；idx_mins返回业务码403、provider_error。并非实时分钟测试，也不等同于官方账户没有历史分钟权限。网页分别显示认证/授权/积分/参数/未支持/未知错误，保留数值码。报告见web/data/minute-access.json。

@@ -177,7 +177,7 @@ function trendPanel(d,sec){
  const requested=state.metric==='intraday',fallback=requested&&!ticks.length,metric=fallback?'index':state.metric;
  const intraday=metric==='intraday',hist=intraday?ticks:metric==='cap'?item.market_cap_history:item.history;
  return panel(`${item.name||'市场'} · 走势`,intraday?'今日走势 · 实际采样点':metric==='cap'?'总市值快照 · 人民币':`日线截至 ${item.history?.at(-1)?.date||'待更新'}`,
-  h('div',{},fallback?h('p',{class:'chart-data-note'},isCanonicalSector(item)?(['permission_denied','authorization_denied','points_insufficient'].includes(d.primary_minutes_state?.endpoints?.sw_mins?.error_code)?'当前 Tushare 服务未开放申万分钟权限，暂显示日线；可切换东财盘中参考查看网页采样。':'尚未取得申万历史分钟数据，暂显示日线；服务错误正在核验，可切换东财盘中参考查看独立网页采样。'):'暂无分时采样，先显示已有日线。'):null,
+  h('div',{},fallback?h('p',{class:'chart-data-note'},isCanonicalSector(item)?minuteFallbackNote(d):'暂无分时采样，先显示已有日线。'):null,
    h('div',{class:'chart-body'},h('div',{class:'chart-meta'},h('strong',{},metric==='cap'?amount(item.market_cap):intraday?num(ticks.at(-1)?.price):num(mainQuote.price)),h('span',{},item.name||'上证指数')),chart(hist,{metric,range:intraday?null:state.range})),
    !intraday&&metric!=='cap'?quoteCaption(mainQuote):null,intraday?tickNote(ticks):null,
    h('div',{class:'chart-footer'},h('span',{class:'legend'},h('i',{}),item.name||'上证指数'),h('span',{},intraday?'悬停查看时间与点位':'悬停查看日期与点位'))),
@@ -190,6 +190,7 @@ function overview(d){const market=d.market.length?d.market:[{name:'上证指数'
 function forecastDigest(d){const f=d.direction_probability||{},rows=[...(f.sectors||[]),...(f.market||[])].slice(0,3);return panel('收盘方向 · 模型概率',null,rows.length?h('div',{class:'forecast-digest'},rows.map(r=>h('div',{class:'leader-row'},h('strong',{},r.name),h('span',{},r.target_date),h('span',{class:'up'},`涨 ${accuracy(probabilityValue(f,r))}`),h('span',{class:'down'},`跌 ${accuracy(probabilityValue(f,r,'down_probability'))}`)))):h('p',{class:'inline-note'},'分类模型等待最新完整收盘数据。'),button('查看概率与测试 ↗',()=>go('forecast'),'text-button'));}
 function targetLabel(p){return ['close','today_close'].includes(p.target_kind)?'今日收盘涨跌':'下次开盘点位';}
 function newsTone(n){const raw=n.sentiment,st=raw&&typeof raw==='object'?raw:{label:raw},method=String(n.sentiment_method||st.method||'');const model=/model|minimax|finbert|transformer|neural/i.test(method),rules=/rule|lexicon|keyword/i.test(method),methodLabel=model&&rules?'模型与规则综合':model?'金融文本模型':rules?'规则分析':'分析方式待确认';return h('div',{class:'news-tone-row'},h('span',{class:'tone-prefix'},'文本语气'),pill(sentimentLabel({...st,article_count:1}),sentimentClass(st)),h('span',{},methodLabel));}
+function minuteFallbackNote(d){const e=d.primary_minutes_state?.endpoints?.sw_mins||{},reason=e.provider_reason||e.error_code;const note=reason==='authorization_denied'?'当前服务的申万历史分钟请求认证失败':reason==='permission_denied'?'当前服务拒绝申万历史分钟权限':reason==='points_insufficient'?'当前服务返回申万历史分钟积分不足':reason==='unsupported_api'?'当前服务未支持申万历史分钟接口':reason==='invalid_parameters'?'申万历史分钟参数被当前服务拒绝':e.error_code?'申万历史分钟请求失败，原因待核验':'尚未取得申万历史分钟数据';return `${note}${Number.isInteger(e.provider_code)?`（业务码 ${e.provider_code}）`:''}，暂显示日线；可切换东财盘中参考查看独立网页采样。`;}
 function newsSummaryCard(n,compact=false){
  const a=n.llm_analysis;if(a?.status!=='ready'||!a.summary)return null;
  const label=x=>({positive:'利好',negative:'利空',mixed:'影响分化',neutral:'中性',unknown:'待判断'})[x]||'待判断';
