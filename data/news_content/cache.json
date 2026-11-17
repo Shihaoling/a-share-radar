@@ -1304,6 +1304,101 @@
       "reason": "article_body_not_found",
       "attempted_at": "2026-11-18T03:46:40.960778+08:00",
       "retry_after": "2026-11-19T03:46:40.960778+08:00"
+    },
+    "2645f119145cc2f4e486b4b2ebb2636f76abbf599e21ea7001d1998a2a630143": {
+      "url": "https://finance.eastmoney.com/a/202609243883883745.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T04:18:11.766050+08:00",
+      "retry_after": "2026-11-19T04:18:11.766050+08:00"
+    },
+    "e4c9569e964680d9f4d9830c272a4686440ca1ffaa0265864cc0df23037eb724": {
+      "url": "https://finance.eastmoney.com/a/202609183878768024.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T04:18:11.766050+08:00",
+      "retry_after": "2026-11-19T04:18:11.766050+08:00"
+    },
+    "719f059eefddff3cefa4137c104daccd5d8868e94a971eaf5cd170016b84bfac": {
+      "url": "https://finance.eastmoney.com/a/202609173877526518.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T04:18:11.766050+08:00",
+      "retry_after": "2026-11-19T04:18:11.766050+08:00"
+    },
+    "85af8c8b7720daea2845d5598aeae0073495272cede4fd90a25e794ccca0863d": {
+      "url": "https://finance.eastmoney.com/a/202609113872310849.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T04:18:11.766050+08:00",
+      "retry_after": "2026-11-19T04:18:11.766050+08:00"
+    },
+    "bc8a06d1807b2b0a39e177397d50f867234e8786033ba895f34d8663f7549cb8": {
+      "url": "https://finance.eastmoney.com/a/202609103870780961.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T04:18:11.766050+08:00",
+      "retry_after": "2026-11-19T04:18:11.766050+08:00"
+    },
+    "6bee919e4a3a14b9cddb56cb79cf86fb4107fa7fb0c487e832ddc7f4a33a8590": {
+      "url": "https://finance.eastmoney.com/a/202611173933128638.html",
+      "status": "complete",
+      "full_text": "11月17日，北京商报记者从海关总署获悉，海关总署发布了西部陆海新通道对外贸易指数。数据显示，2019年以来，西部陆海新通道对外贸易指数连续6年稳步上行，2025年攀升至178.2点，新通道对外贸发展的支撑和带动作用持续增强。\n在通道规模稳方面，2025年，全国经新通道进出口1.65万亿元。其中，出口7671.9亿元，进口8871.1亿元，均较2019年实现翻番。在集聚效应方面，2025年，经新通道出口商品涉及6094个海关8位商品编码，进口涉及2187个。在市场联通方面，截至2025年底，新通道已辐射160余个国内站点，通达全球700余个\n港口\n（口岸），内外双向联通作用日益凸显，依托新通道开展进出口的企业数量达4.8万家。在开放效益方面，2025年，沿线省区市经新通道出口高技术产品占同类产品出口比重升至13%，进口工业\n机器人\n、机床等资本品占同类产品进口比重近两成。新通道进出口以人民币申报成交规模近3500亿元，成为人民币国际化的重要载体。在发展潜力方面，新通道联通国家和地区对华经贸合作日益密切，沿线省区市地区生产总值、人均可支配收入较快增长，2025年新增注册企业数量占全国比重达18.6%，为新通道贸易发展提供了广阔空间。\n（文章来源：北京商报）",
+      "text_hash": "74b7d0749171ae422a78162f75eccb00527aea12cf24775a9ef0e68f65195290",
+      "fetched_at": "2026-11-18T04:20:15.654907+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611173933128638.html",
+      "published_at": "2026-11-17T21:12:00+08:00",
+      "published_at_verified_at": "2026-11-18T04:20:15.654927+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611173933128638.html",
+        "checked_at": "2026-11-18T04:20:15.654927+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月17日 21:12"
+      }
+    },
+    "a63bcf09415fa48dfab13c9b6f6b42a1f55f25705e554b70f81f67e06c107f37": {
+      "url": "https://finance.eastmoney.com/a/202611173933125293.html",
+      "status": "complete",
+      "full_text": "借力深圳APEC窗口，中国支付市场的制度型开放迎来标志性落地。\n11月16日，中国银联与Visa正式实现双向网络“一点对接”互联互通。距离Visa获批在华筹备\n银行\n卡清算机构仅过去一个月，外资卡组织完成了从“拿到入场门票”到“打通运行链路”的关键跨越，这也意味着我国支付开放进入基础设施互通的“通路阶段”。\n对入境境外消费者而言，来华消费长期面临三大痛点——外卡受理场景不全、绑定境内钱包手续繁琐、换汇与手续费成本偏高。\n大量境外游客、商务人士手持\n国际银行\n卡，却无法便捷覆盖交通、商超、\n餐饮\n、退税等日常场景，制约了入境消费与跨境人流往来。\n本次互联互通直接解决了上述市场堵点。依托双方打通的对接通道，境外Visa持卡人无需境内\n银行\n卡、无需本地手机号、无需提前换汇，通过Nihao China App即可在全国银联终端体系扫码支付，实现全场景无障碍消费。\n出境端，国内银联钱包用户，通过银联支付凭证可接入Visa全球非接受理网络，国人境外商旅、留学、消费的支付选择更多、体验更稳，\n跨境支付\n便利度全面升级。\n此次合作也是双方持续深化战略协同的延续。今年2月，银联国际与Visa已落地跨境汇款合作，打通了个人跨境资金流转通道。\n而本次清算网络双向互通，层级更高、影响更广，是两大全球顶级支付基础设施的体系级对接。在数字化、全球化的支付趋势下，单一封闭的区域支付生态早已无法适配跨境经贸、人员流动的高频需求，网络互通、规则互认、生态共建已经成为全球支付行业的确定性趋势。\n本次互通实现了双向利好、双向升级。对Visa而言，彻底补齐了其在华场景落地短板，大幅提升中国市场服务能力；对中国银联而言，借助Visa全球海量受理网络，进一步突破境内场景边界，大幅提升中国支付体系的全球化辐射力。\n未来更多境外区域性支付网络，均可参考这一“本土网络+全球网络”互通模式，为全球支付打破壁垒、兼容发展提供可复制的行业范式。\n更具前瞻性的是，双方将\nAI智能体\n支付作为下一阶段核心布局。\n当前智能体支付普遍停留在零散场景试点，缺乏统一的互通标准与安全框架。中国银联与Visa将联合搭建智能体支付互操作协议、建立标准化可信支付框架，为智能自动化交易、AI自主商务场景确立统一的风险规则、授权基准。这将推动智能支付从碎片化试点走向规模化商用，为全球下一代支付技术奠定合规、安全、统一的底层基础。\n支付行业没有永恒的壁垒，只有持续的迭代。从放开外资清算机构准入的“开门”，到基础设施互联互通的“通路”，本次中国银联与Visa合作，是中国金融制度型开放的鲜活样本。\n（文章来源：北京商报）",
+      "text_hash": "a4b6a87b4fed2f1b93bced6a07506f09b4aa8194c53554200acd84976614af39",
+      "fetched_at": "2026-11-18T04:20:36.341863+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611173933125293.html",
+      "published_at": "2026-11-17T21:08:00+08:00",
+      "published_at_verified_at": "2026-11-18T04:20:36.341884+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611173933125293.html",
+        "checked_at": "2026-11-18T04:20:36.341884+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月17日 21:08"
+      }
+    },
+    "bc2dc80bef64fd95d289f97a916677140950564b8bac1b57b1a5aa5913b27449": {
+      "url": "https://finance.eastmoney.com/a/202611173933126857.html",
+      "status": "complete",
+      "full_text": "新华财经成都11月17日电（记者袁波）四川省统计局17日发布数据显示，今年1至10月，四川省规模以上工业增加值同比增长6.8%，规模以上工业企业产品销售率为95.5%。\n分三大门类看，采矿业增加值同比增长4.4%；制造业增长6.8%；\n电力\n、热力、燃气及水生产和供应业增长8.3%。\n分经济类型看，国有控股企业增加值同比增长6.5%；股份制企业增长7.2%；私营企业增长3.3%。\n分行业看，41个大类行业中32个行业增加值同比实现增长。其中，\n计算机\n、\n通信\n和其他\n电子\n设备制造业增长12.3%，电气机械和器材制造业增长11.6%，\n化学原料\n和\n化学制品\n制造业增长8.4%，\n电力\n、热力生产和供应业增长8.3%，医药制造业增长7.4%。\n分产品看，发电量增长2.2%，\n锂\n离子\n电池\n增长84.6%，\n新能源\n汽车\n增长63.7%，集成电路增长22.1%，工业\n机器人\n增长11.0%。\n数据还显示，1至10月，四川省实现社会消费品零售总额24374.7亿元，同比增长1.6%。从热点商品看，限额以上企业（单位）文化办公用品类零售额同比增长21.5%，通讯器材类增长13.0%，烟酒类增长11.7%，粮油、食品类增长10.2%，\n家用电器\n和音像器材类增长6.6%。\n（文章来源：新华财经）",
+      "text_hash": "9411130543653849e98a626f8049ac30612edf290b82c8e1623fe0ec23f84816",
+      "fetched_at": "2026-11-18T04:20:56.547969+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611173933126857.html",
+      "published_at": "2026-11-17T21:04:00+08:00",
+      "published_at_verified_at": "2026-11-18T04:20:56.547991+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611173933126857.html",
+        "checked_at": "2026-11-18T04:20:56.547991+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月17日 21:04"
+      }
     }
   },
   "hosts": {
