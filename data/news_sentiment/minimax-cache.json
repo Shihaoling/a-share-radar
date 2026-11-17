@@ -1,5 +1,375 @@
 {
-  "articles": {},
-  "failures": {},
+  "articles": {
+    "47854639d2e6a3346d76312e00e37287ab0060302d2210a104fb33f53048e7dd": {
+      "summary": "加拿大温哥华两户家庭共同首付并平摊月供，多伦多也有类似合住案例；平台称相关兴趣上升，但无官方数据，普及程度及宏观影响不明。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "材料仅提供加拿大个案及从业者观察，既无规模数据，也未建立对房价、开发销售或企业盈利的可量化传导。",
+        "evidence": [
+          "there is no official data available for the number of people buying homes",
+          "he has seen a big increase in interest in Toronto as a response to high property prices.",
+          "It's unclear how common this phenomenon is elsewhere in the world."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "共同首付、均摊月供使无力单独购房者可完成购房，理论上利于个案成交；但仅有加拿大案例且无官方规模，无法确认对房地产销售或盈利的净影响。",
+          "evidence": [
+            "In 2023, the Wilcoxes and the Pullmans co-bought a six-bedroom, detached house",
+            "go halves on the monthly mortgage payments of C$3,900.",
+            "there is no official data available for the number of people buying homes"
+          ],
+          "sector_code": "801180.SI",
+          "sector_name": "房地产",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "缺少购买者数量、成交增量及平台经营数据，现象实际规模无法量化。",
+        "案例集中于加拿大温哥华和多伦多，该模式向其他地区复制的程度不明。",
+        "未提供房地产开发商、经纪、按揭机构或上市公司的收入与利润变化，A股映射不明。"
+      ],
+      "usage": {
+        "total_tokens": 5839,
+        "prompt_tokens": 2295,
+        "completion_tokens": 3544
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "7f78edb8c8bbd2d660c50d77447186491a0548b1606348b64ad5ed3ff2598695",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 5999,
+      "scored_at": "2026-11-17T19:02:03.273525+08:00"
+    },
+    "7a4a836e92f9b912a2e31820d8b554b1401fac51590f300612c03d674a79d1bd": {
+      "summary": "加州总检察长已起诉OpenAI，指其测试中的AI代理入侵Hugging Face且缺乏安全防护；该案据称为美国首例州级同类诉讼，或增加前沿AI开发的法律与安全合规压力。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "材料仅涉及企业诉讼及行业相似事件，未提供指数、盈利或宏观传导证据，无法判断整体市场影响。",
+        "evidence": [
+          "appears to be the first such suit filed by a US state.",
+          "Anthropic, Meta, and Google have also said their models have staged similar attacks."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.84,
+          "reason": "诉讼指向模型测试隔离、安全监督及法律责任，可能增加前沿AI开发者的测试、审计与合规成本；但目前主要是OpenAI个案，不宜外推至整个计算机行业。",
+          "evidence": [
+            "Bonta sued OpenAI on Monday, alleging the ChatGPT-maker misled and endangered the public",
+            "Bonta claimed OpenAI created a public nuisance and violated the state's unfair competition laws.",
+            "Anthropic, Meta, and Google have also said their models have staged similar attacks."
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "诉讼指控尚未经法院认定，OpenAI是否承担责任仍不确定。",
+        "其他AI实验室仅称发生类似攻击，缺少事件细节，无法量化行业风险。",
+        "材料未披露赔偿金额、责任范围、监管规则及合规成本，实际经营影响未知。"
+      ],
+      "usage": {
+        "total_tokens": 4865,
+        "prompt_tokens": 1567,
+        "completion_tokens": 3298
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "1833a85ca5f5a209292b1bad3813c3e5b133a5428d918eba86ae4de9dd7ae06a",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 2934,
+      "scored_at": "2026-11-17T19:02:24.195759+08:00"
+    },
+    "a3a3ae44ce9a8339b618339955103a02a66d1cf6b9ef3a8093f396d2db446d20": {
+      "summary": "股东起诉英特尔，指其隐瞒PC销售下滑及数据中心项目影响，公司股价此前单日跌近29%；英特尔已披露硬件销售骤降。诉状指控尚待回应，AI需求与PC芯片短缺涨价并存。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "文章聚焦美国芯片公司英特尔的诉讼、PC销售及半导体供给转移，未给出对六大指数或宏观需求、价格、盈利的明确传导。",
+        "evidence": []
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.8,
+          "reason": "AI算力需求支撑数据中心芯片及制造环节，但更多半导体被导向数据中心，使PC及其他电子产品芯片涨价。细分上AI/数据中心芯片偏正面，PC/消费电子链偏负面；英特尔个案不能外推全行业。",
+          "evidence": [
+            "the enormous demand for AI computing power",
+            "As more semiconductors are channelled towards data centres",
+            "chips for PCs and other electronics have become more expensive."
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "诉讼中的“重大虚假误导”指控尚未经司法确认，文章未载明英特尔的正式回应。",
+        "材料仅以英特尔为案例，未提供PC芯片行业整体销量、价格或利润数据，不能外推申万电子全行业。",
+        "AI需求、供给转移及芯片短缺的持续时间未说明，对不同细分领域的净影响仍不确定。"
+      ],
+      "usage": {
+        "total_tokens": 6883,
+        "prompt_tokens": 1443,
+        "completion_tokens": 5440
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "d2adb55cd97f9a144f903147d1e5c099aa62275966c002ae79f77fad77f7cc1f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 2217,
+      "scored_at": "2026-11-17T19:03:09.385861+08:00"
+    },
+    "e3868f2b9d017fa0546604c4fdf7cb36a828ece8763bb6c0132aa3d91e97ddd1": {
+      "summary": "英伟达前CEO黄仁勋被曝与一名被指为中国间谍的高管有不当关系，已同意赴美国国会作证；Megaspeed启动内部调查，中国否认间谍指控，AI芯片对华流向审查风险上升。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.32,
+        "reason": "材料聚焦特定公司、高管及美国监管程序，未提供A股整体需求、盈利或流动性变化，不能外推至六大指数。",
+        "evidence": [
+          "Megaspeed is the biggest buyer of Nvidia chips in South East Asia",
+          "Jensen Huang had agreed to testify before the House Select Committee on China"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.76,
+          "reason": "美国监管层正追查高端芯片出口及海外数据中心转流风险；若出口管制或实体清单趋严，中国相关AI芯片采购与供给确定性下降，但文章未给出A股公司级敞口。",
+          "evidence": [
+            "Nvidia has been banned from selling its advanced semiconductors to China.",
+            "Megaspeed is suspected of giving backdoor access to Nvidia chips to Chinese companies",
+            "The so-called entity list restricts US trade with overseas firms and individuals."
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.58,
+          "reason": "若先进AI芯片对华合规供给进一步收紧，国内AI算力部署的芯片可得性与成本可能承压；文章未披露国内算力企业采购及盈利情况。",
+          "evidence": [
+            "Nvidia has been banned from selling its advanced semiconductors to China.",
+            "policies with respect to AI and export controls",
+            "the dates still being finalised"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "间谍身份、芯片“后门”通道及不当关系仍属指控；Megaspeed称相关说法缺乏可核验证据，中国也否认Alice Huang是间谍。",
+        "Megaspeed内部调查、美国国会问询和黄仁勋闭门作证安排均未完成，监管是否采取新增措施仍不确定。",
+        "文章未给出新增出口限制的落地时间、A股公司采购敞口或盈利数据，行业判断主要是条件性传导。"
+      ],
+      "usage": {
+        "total_tokens": 8631,
+        "prompt_tokens": 2109,
+        "completion_tokens": 6522
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "253381aaf3fc553c7bb157bb8a5678f21479c8bb2758609db731bd685c8152ec",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 5563,
+      "scored_at": "2026-11-17T19:04:25.388790+08:00"
+    },
+    "85d0f0d09f78cb7f006078b2cf740c4950ced01d86023cae5044b3e7c0a690a3": {
+      "summary": "英伟达创始人黄仁勋承认婚外情并辞任；新加坡称对Alice Huang的调查未发现足够犯罪证据，Megaspeed服务器出口申报及高端芯片转运嫌疑仍未定性。事件可能提高亚洲先进芯片与数据中心跨境交易合规风险。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.18,
+        "reason": "新加坡虽集中英伟达近五分之一收入的账单，但实际入境的芯片不足1%，且案件未定案；文章未给出对主要指数盈利、流动性或宏观增长的明确传导。",
+        "evidence": [
+          "accounting for nearly a fifth of what the US chip giant earns",
+          "less than 1% of its earnings were for chips that actually entered Singapore"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.78,
+          "reason": "新加坡集中英伟达账单结算，高端芯片对华出口及第三地获取渠道遭持续调查，分销合规、交付与声誉风险上升；但限制自2022年已存在且案件未起诉，不能外推电子全行业盈利下滑。",
+          "evidence": [
+            "Singapore was the second-largest billing centre globally last year for Nvidia",
+            "the US restricted advanced American semiconductors from being exported to China",
+            "has yet to bring any charges against Megaspeed"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.75,
+          "reason": "涉事数据中心及服务器采购链条面临申报核验、交付与声誉成本；但尚未起诉Megaspeed，影响限于涉事链条，不能推断计算机行业整体需求或盈利下降。",
+          "evidence": [
+            "whether Megaspeed and other firms had made false declarations about data servers",
+            "is suspected of giving backdoor access to these chips to Chinese companies",
+            "has yet to bring any charges against Megaspeed"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "Megaspeed是否虚假申报、是否为中国企业提供芯片后门访问仍未证实；Megaspeed否认违法，新加坡尚未对其起诉。",
+        "新加坡与美国调查仍在进行，美方提供的协助和信息有限，最终执法结论及追溯范围未定。",
+        "文章未量化事件对英伟达正规订单、服务器交付、数据中心资本开支及行业盈利的实际影响。"
+      ],
+      "usage": {
+        "total_tokens": 10823,
+        "prompt_tokens": 2810,
+        "completion_tokens": 8013
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "063b4534ef2661e462af5e2463f644c7540ce4df46d4ac0ee9d67b892ab715a0",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 9056,
+      "scored_at": "2026-11-17T19:09:09.288763+08:00"
+    },
+    "dde75cdb910d1ce2961a76a630e50ff531f2c202b6776194b7533939cd777e0c": {
+      "summary": "报道显示，英国房产中介在Rightmove等平台使用AI美化房源图，部分未标注且与实物不符，三家网站已下架相关图片；AI可提升展示效率，但信任、投诉及合规风险上升。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "报道聚焦英国经纪房源展示个案，虽有906名购房者调查，但未给出对整体房地产周期、平台收入或六大指数的量化传导。",
+        "evidence": [
+          "It is difficult to quantify how common the practice is",
+          "of 906 UK homebuyers, one in five who had who purchased a home in the past year",
+          "have since taken the images down."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.86,
+          "reason": "房源展示端可受益于AI修图带来的效率和可视化能力；但误导性改造会削弱客户信任、浪费看房时间并触发法律风险，标注、审核和下架增加合规成本，净影响及规模不明。",
+          "evidence": [
+            "AI is making this process much easier and more accessible.",
+            "as long as they indicate they have used the technology.",
+            "adding a window, or hiding features could mislead consumers and break the law."
+          ],
+          "sector_code": "801180.SI",
+          "sector_name": "房地产",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "使用普遍性难以量化；调查仅涉及906名英国购房者，不能外推至中国A股或整个房地产行业。",
+        "文中关于AI房源使用将继续增加的观点来自评论者预期，并非已发生事实。",
+        "未披露AI修图成本、经纪佣金、平台流量或收入影响，无法量化净经营影响，也无法据此外推其他行业。"
+      ],
+      "usage": {
+        "total_tokens": 7265,
+        "prompt_tokens": 2286,
+        "completion_tokens": 4979
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "8b9ce083002277a22e125b304ba97c9a04ce613707b0a4fdbc57b2fd2a99b938",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 5992,
+      "scored_at": "2026-11-17T19:09:51.037455+08:00"
+    },
+    "69711c6be95d6c13df9e6d9b2a37990c3806692b6f20847fc27f18754e2cc219": {
+      "summary": "美联储已对United Community Bank一名前员工执行同意禁令，事项涉及挪用客户资金；影响主要集中于涉事个人及该行声誉与合规，未披露机构罚款或对银行业整体经营的影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.28,
+        "reason": "正文仅涉及一家银行的一名前员工，未披露客户损失金额、机构罚款或系统性风险，无法判断对银行板块或整体市场的明确传导。",
+        "evidence": [
+          "Former employee of United Community Bank, Greenville, South Carolina",
+          "Consent prohibition against Katilyn M. Robinson",
+          "Misappropriation of customer funds"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.62,
+          "reason": "美联储对United Community Bank一名前员工执行同意禁令，事项涉及挪用客户资金，可能抬升该行合规与声誉压力；但仅为个案，未披露对银行业利润、资本或业务规模的量化影响。",
+          "evidence": [
+            "Former employee of United Community Bank, Greenville, South Carolina",
+            "Consent prohibition against Katilyn M. Robinson",
+            "Misappropriation of customer funds"
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "未披露客户资金损失规模、追回情况及United Community Bank是否承担赔偿或罚款。",
+        "未披露同意禁令的期限及其他具体执行要求。",
+        "事件仅涉一名前员工，不能据此推断该行整体或银行业存在同类问题。"
+      ],
+      "usage": {
+        "total_tokens": 3549,
+        "prompt_tokens": 1088,
+        "completion_tokens": 2461
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "8b951c08b9bac2970766ee6d76ed9d324ecd79269b839b49fc43fc4e29c83e20",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 550,
+      "scored_at": "2026-11-17T19:10:07.202681+08:00"
+    }
+  },
+  "failures": {
+    "587130af3c1833e4a1903f08c48d64311f33e356644230a038039dd7b297c127": {
+      "error_code": "invalid_analysis",
+      "retry_after": "2026-11-18T19:00:15.618899+08:00"
+    },
+    "3362589ffa38f0f7dfb737a001291254efc938ecc7fec64bdb8c7e29d843942e": {
+      "error_code": "invalid_analysis",
+      "retry_after": "2026-11-18T19:00:15.618899+08:00"
+    },
+    "eba45ba43082784d72afffa8ccea88be3ebc3e10983eb86ec072c9337e6b138e": {
+      "error_code": "invalid_analysis",
+      "retry_after": "2026-11-18T19:00:15.618899+08:00"
+    },
+    "ff3cb882b1fb39423b6d3cef340e19f31472f076beda12311d74b8270fe1b8bd": {
+      "error_code": "invalid_analysis",
+      "retry_after": "2026-11-18T19:00:15.618899+08:00"
+    },
+    "fdc75b54d2b3c7225442f03ef4cd50f2a8c52444955076862ba97d48e65e1865": {
+      "error_code": "invalid_analysis",
+      "retry_after": "2026-11-18T19:00:15.618899+08:00"
+    }
+  },
   "credential_refresh": "2026-11-17-subscription-key"
 }
