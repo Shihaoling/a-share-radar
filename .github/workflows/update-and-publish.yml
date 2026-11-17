@@ -93,14 +93,14 @@ jobs:
               out.write('run='+str(bool(required) and not ready).lower()+'\n')
           PY
       - name: Cache Chinese finance sentiment model
-        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5')
+        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name == 'workflow_dispatch' && inputs.bootstrap_rounds == '8' && inputs.probe_group == 'none')
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
           key: finbert-bilingual-e91b1a3-0bc2ac1-python312
           restore-keys: finbert-chinese-e91b1a3-python312
       - name: Install CPU sentiment inference
-        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5')
+        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name == 'workflow_dispatch' && inputs.bootstrap_rounds == '8' && inputs.probe_group == 'none')
         run: |
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
           python -m pip install -r requirements-sentiment.txt
@@ -177,11 +177,11 @@ jobs:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           python - <<'PY'
-          import json,subprocess
+          import json,subprocess,os
           from pathlib import Path
           p=Path('data/news_sentiment/fulltext-report.json')
           old=json.loads(p.read_text()) if p.exists() else {}
-          if old.get('request_id') != 'fulltext-minimax-v1':
+          if old.get('request_id') != 'fulltext-minimax-v1' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
               subprocess.run(['python','-m','pipeline.news_update'],check=True)
           PY
       - name: Install online probability classifier dependencies

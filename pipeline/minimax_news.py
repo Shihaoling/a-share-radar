@@ -126,7 +126,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
     except (ValueError, OSError): cache = {'articles': {}}
     key = os.environ.get('MINIMAX_API_KEY', ''); model = cfg.get('model', DEFAULT_MODEL)
     enabled = config.get('network_enabled', False) and cfg.get('enabled', True)
-    count = 0; reused = 0; started = time.monotonic(); error = None
+    count = 0; successful = 0; reused = 0; started = time.monotonic(); error = None
     for n in sorted(result.get('news', []), key=lambda x:x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
         # Sources without a retrievable body stay explicitly pending; a title or
         # feed abstract must never masquerade as an analysis of the full article.
@@ -144,6 +144,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
                 row = {**analysis, 'status': 'ready', 'model': model, 'prompt_version': PROMPT_VERSION,
                        'input_hash': h, 'input_scope': 'entire_extracted_article_body', 'input_characters': len(n['full_text']),
                        'scored_at': shanghai_now().isoformat()}
+                successful += 1
                 cache['articles'][cache_key] = row; n['llm_analysis'] = deepcopy(row)
                 cache.pop('last_error', None)
             except ModelFailure as e:
@@ -155,7 +156,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
             n['sector_ids'] = [s['sector_code'] for s in n['llm_analysis']['sector_impacts']]
         else: n.setdefault('llm_status', 'missing_key' if not key and enabled else 'deferred')
     path.write_text(json.dumps(cache, ensure_ascii=False, indent=2)+'\n')
-    result['minimax_summary'] = {'model': model, 'prompt_version': PROMPT_VERSION, 'inferred': count, 'reused': reused,
+    result['minimax_summary'] = {'model': model, 'prompt_version': PROMPT_VERSION, 'inferred': successful, 'attempted': count, 'reused': reused,
         'ready': sum(n.get('llm_status') == 'ready' for n in result.get('news', [])), 'key_configured': bool(key),
         'status': 'error' if error else 'ready' if key else 'missing_key', 'last_error': error or cache.get('last_error'),
         'cooldown_until': cache.get('cooldown_until'), 'as_of': now.isoformat()}
