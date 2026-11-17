@@ -511,6 +511,98 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 3535,
       "scored_at": "2026-11-17T19:23:30.239015+08:00"
+    },
+    "6e79465f30ec3b7c192153e15c66b03230cfe6d83736e8e0439fadbdf08b8843": {
+      "summary": "Skims因148美元圣诞日历内容遭社交媒体批评，将向已购客户提供全额退款或商品抵扣。退款与口碑压力目前仅指向该品牌，尚无证据显示服饰或零售行业整体受影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.91,
+        "reason": "事件仅涉及Skims一款圣诞日历，虽已出现退款与舆情批评，但文章未提供行业销售、盈利或指数传导证据，不能据此判断整体市场方向。",
+        "evidence": [
+          "offering customers refunds for its $148 (£110) advent calendar",
+          "has been widely criticised on social media"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.78,
+          "reason": "仅对Skims塑身衣及服装品牌业务构成负面：日历价值感争议已形成退款或信用抵扣压力，并可能削弱品牌口碑；未提供销量和财务数据，不外推A股服饰公司或整个行业。",
+          "evidence": [
+            "The shapewear and clothing business was co-founded by Kardashian in 2019",
+            "the calendar didn't meet expectations",
+            "offer a full refund or credit to put towards other products"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "today"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.65,
+          "reason": "分析师称圣诞日历仍受欢迎，但相关热度略有下降、内容须匹配价格；对销售该类商品的零售渠道形成需求尚存与转化、客单承压并存的混合影响，缺少销售数据，不能外推整个零售业。",
+          "evidence": [
+            "Advent calendars remain popular",
+            "the buzz around them has reduced a little bit",
+            "the contents have to justify the price tag"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "Skims未披露涉事日历销量、退款申请比例、退款金额及其对营收和利润的影响。",
+        "社交媒体批评主要是用户与分析师的定性观察，文章未提供复购或本次事件相关的销售数据。",
+        "关于圣诞日历热度与价值感的评论不足以证明服装或零售行业整体需求发生变化。"
+      ],
+      "usage": {
+        "total_tokens": 6279,
+        "prompt_tokens": 1746,
+        "completion_tokens": 4533
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "f4fb008c6f249839def64bb81fd5d9b8bdb85c44c0b5d021426d5db88ac27cde",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3290,
+      "scored_at": "2026-11-17T19:37:50.538396+08:00"
+    },
+    "3ba902441b53ce5c84ea92c80ef2a1d68381262aab818338be0600672cda69dd": {
+      "summary": "欧洲央行研究显示，LLM可更系统识别央行沟通语调，声明及会间讲话可独立于利率决议影响利率预期与风险资产定价；演讲认为，政策利率脱离有效下限时反应函数指引优于利率路径指引，未提出新的政策操作。",
+      "tone": "neutral",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "央行沟通影响利率预期和金融条件的传导明确，但本文属于研究综述及作者观点，未宣布新的加息、降息或资产购买决定，也未呈现明确的净鹰鸽信号，因此无法判断六大指数方向。",
+        "evidence": [
+          "Central bank communication can influence interest rate expectations and financial conditions",
+          "A hawkish communication signals a higher probability of future tightening",
+          "A dovish communication signals a higher probability of future easing"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "演讲称观点仅代表个人，不能视为欧洲央行管理委员会集体立场或新的政策决定。",
+        "研究主要针对欧元区，文中未提供其对中国A股行业收入、成本或估值的直接传导证据。",
+        "LLM语调指标依赖问题设计、训练数据和人工验证；反应函数指引与路径指引的比较证据也被作者称为提示性而非结论性。"
+      ],
+      "usage": {
+        "total_tokens": 15894,
+        "prompt_tokens": 12455,
+        "completion_tokens": 3439
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "94834847692993261776fc5847a742720bfa6ccc1a303088c452e1ff0164b42c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 54435,
+      "scored_at": "2026-11-17T19:38:30.668871+08:00"
     }
   },
   "failures": {
@@ -521,6 +613,10 @@
     "eba45ba43082784d72afffa8ccea88be3ebc3e10983eb86ec072c9337e6b138e": {
       "error_code": "invalid_analysis_ungrounded_evidence",
       "retry_after": "2026-11-18T19:18:24.543112+08:00"
+    },
+    "3a860ec127973f08531e74d80bd95facb286907281843a06c51ad1be5f0ecbfb": {
+      "error_code": "incomplete_response",
+      "retry_after": "2026-11-17T20:05:32.811652+08:00"
     }
   },
   "credential_refresh": "2026-11-17-subscription-key",
