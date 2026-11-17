@@ -1,27 +1,27 @@
 {
-  "completed_at": "2026-11-17T19:48:49.133563+08:00",
-  "request_id": "fulltext-minimax-reference-v5",
+  "completed_at": "2026-11-17T19:57:43.744003+08:00",
+  "request_id": "fulltext-minimax-domestic-v6",
   "content": {
     "attempted": 0,
     "reused": 26,
     "complete": 26,
     "total": 75,
-    "as_of": "2026-11-17T19:44:34.844644+08:00",
+    "as_of": "2026-11-17T19:54:14.729177+08:00",
     "status": "cache_only"
   },
   "model": {
     "model": "MiniMax-M3.1-Flash",
     "prompt_version": "fulltext-sw31-impact-v2-refs",
     "inferred": 1,
-    "attempted": 3,
-    "reused": 12,
-    "ready": 13,
-    "pending_bodies": 13,
+    "attempted": 1,
+    "reused": 13,
+    "ready": 14,
+    "pending_bodies": 12,
     "key_configured": true,
     "status": "partial",
     "last_error": null,
     "cooldown_until": null,
-    "as_of": "2026-11-17T19:48:47.278773+08:00"
+    "as_of": "2026-11-17T19:57:42.540080+08:00"
   },
   "api_check": null
 }

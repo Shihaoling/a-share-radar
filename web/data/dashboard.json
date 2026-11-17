@@ -17036,8 +17036,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -34097,8 +34097,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -51155,8 +51155,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -68202,8 +68202,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -78311,8 +78311,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -95358,8 +95358,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -135353,30 +135353,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-50324c1f53915225826078eb"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.86,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "28fac33b6548f3e209625db6",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-28fac33b6548f3e209625db6"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.86,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.86,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.86,
+                "reason": "CBOT玉米涨0.44%，小麦跌1.07%、大豆跌0.57%，国内豆一、菜粕走弱；品种分化且成本、产量数据缺失，行业净影响不确定。",
+                "evidence": [
+                  "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+                  "收平，报33525美元/吨。\n国际\n农产品\n：\n纽约尾盘，彭博谷物分类指数跌0.24%，报29.6597点，亚太早盘开始交易以来持续处于下跌状态。CBOT玉米期货涨0.44%，CBOT小麦期货跌1.07%，CBOT大豆期货跌0.57%。\n外汇市场\n人民币：\n11月16日，在岸人民币北京时间16:30收报6.6678，较上一交易日上涨29点。离岸人民币北京时间18:00报6.6673，较上一交易日上涨50点。在岸/离岸人民币北京时间18:00价差为-6点。\n人民币外汇掉期："
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "50324c1f53915225826078eb",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "28fac33b6548f3e209625db6",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -135490,7 +135546,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -206694,30 +206750,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-68467be4909aac612acbf798"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.88,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "6d0b184a7837b49e93671a2a",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-6d0b184a7837b49e93671a2a"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.88,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.88,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.88,
+                "reason": "苯、丁二烯胶、苯乙烯等期货上涨，若价格兑现有助相关产品收入；但原油同步上涨抬高原料成本，品种价差分化使整体盈利难定。",
+                "evidence": [
+                  "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+                  "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "68467be4909aac612acbf798",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "6d0b184a7837b49e93671a2a",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -206831,7 +206943,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -231617,8 +231729,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -231654,7 +231766,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -268229,30 +268341,87 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-1b8efe033be99a4998d6774f"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": -1.0,
+          "label": "negative",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.96,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "339e14efb6ec079a03f6819d",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-339e14efb6ec079a03f6819d"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "negative",
+        "score": -1.0,
+        "confidence": 0.96,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "negative",
+            "score": -1.0,
+            "confidence": 0.96,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "negative",
+                "score": -1.0,
+                "confidence": 0.96,
+                "reason": "沪银跌超6%、国际白银跌超4.5%，铜铝锌镍锡等亦收跌；相关矿山及冶炼销售价格与利润承压，但单日波动不足以证明长期供需逆转。",
+                "evidence": [
+                  "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+                  "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+                  "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "1b8efe033be99a4998d6774f",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "339e14efb6ec079a03f6819d",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -268366,7 +268535,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -347025,30 +347194,87 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-fe97fd3abc9f32504f45f2cf"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.95,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "c50f081afbb1767015e27a50",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-c50f081afbb1767015e27a50"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.95,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.95,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.95,
+                "reason": "AI加速器资本开支与HBM需求预测下调，通用IT型NAND价格及ASP预期承压；企业级NAND需求仍强，通用与高端需求分化。",
+                "evidence": [
+                  "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+                  "价格大涨后，PC与手机厂商削减存储配置、减少元器件采购，同时大型云厂商订单回落。NAND厂商抢占市场份额、供应商之间的价格竞争，也对价格形成压制。进一步加剧下行压力的是，全球20%–30%的NAND产能来自老旧产线，这类产能持续面向通用IT市场出货。\n美银预计，通用IT领域NAND价格明年一季度还将继续下跌5%–10%\n，带动整体平均售价（ASP）小幅走低，这和市场此前预期的涨幅超10%形成反差。",
+                  "一位行业人士表示：“本轮走弱主要集中在手机、PC所用的通用型NAND”，并补充称，AI\n数据中心\n所用企业级NAND需求依旧强劲。\n外交部回应\n：\n11月16日，外交部发言人毛宁主持例行记者会。有记者问：据报道，美国和9个国家共同签署了有关\n人工智能\n的相关宣言。请问中方认为这是否会影响接下来的中美元首会晤？毛宁表示，\n中方一贯认为\n人工智能\n是全人类的共同财富，在这个领域不应当以意识形态划线或者是搞封闭排他的小圈子"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "fe97fd3abc9f32504f45f2cf",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "c50f081afbb1767015e27a50",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -347162,7 +347388,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -378583,8 +378809,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -378708,7 +378934,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -412735,8 +412961,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -412865,7 +413091,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -444890,8 +445116,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -444932,7 +445158,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -483642,8 +483868,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -483684,7 +483910,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -561285,8 +561511,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -561415,7 +561641,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -596825,8 +597051,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -596955,7 +597181,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -631422,30 +631648,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-ff3d5a706983342345216247"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.78,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "58855f24ef7553dfd57a070a",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-58855f24ef7553dfd57a070a"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.78,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.78,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.78,
+                "reason": "国际油价下跌有助降低部分燃油成本，国内原油期货上涨又可能抬升国内燃油支出；燃油传导比例与定价机制未给出，公路、航空等净影响不确定。",
+                "evidence": [
+                  "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+                  "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "ff3d5a706983342345216247",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "58855f24ef7553dfd57a070a",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -631506,7 +631788,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -662479,8 +662761,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -662580,7 +662862,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -693862,8 +694144,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -693904,7 +694186,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -723479,8 +723761,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -723551,7 +723833,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -745948,8 +746230,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -745990,7 +746272,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -774292,30 +774574,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-3ab02e83864a966b8e944ecb"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.85,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "a9ae120dd09885065929f315",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-a9ae120dd09885065929f315"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.85,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.85,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.85,
+                "reason": "玻璃期货跌近2%指向产品售价承压，纯碱期货亦跌超1%可降低部分原料成本；缺少成本占比、销量与库存数据，玻璃子行业净盈利难定。",
+                "evidence": [
+                  "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+                  "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "3ab02e83864a966b8e944ecb",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "a9ae120dd09885065929f315",
+        "signal_kind": "industry_impact_v1"
       },
       "constituent_count": 80,
       "membership_count": 80,
@@ -774376,7 +774714,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -811906,8 +812244,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -812007,7 +812345,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -879279,30 +879617,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-cf5be8ee5b06ba03e154ca61"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.91,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "11488951586a5a32d8c2b909",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-11488951586a5a32d8c2b909"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.91,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.91,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.91,
+                "reason": "储能方案明确支持锂/钠离子及本质安全固态电池，特高压外送破万亿度体现存量通道运行；但AI电力需求预测下修压低远期增量预期。",
+                "evidence": [
+                  "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+                  "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "cf5be8ee5b06ba03e154ca61",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "11488951586a5a32d8c2b909",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -879421,7 +879815,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -915187,8 +915581,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -915288,7 +915682,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -976092,20 +976486,45 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-f64f125fcc009ac471a98f16"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": -0.6129815374416384,
+          "label": "mixed",
+          "article_count": 3,
+          "scored_article_count": 3,
+          "source_count": 2,
+          "confidence": 0.8812608541141856,
+          "method": "finbert_english_cpu+minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v1+MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs+ProsusAI/finbert@0bc2ac10dda6929bcb1f77ccc43c7ec5c424f031",
+          "feature_hash": "ff383e05b2537e70ad526f96",
+          "signal_kind": "legacy_tone",
+          "news_ids": [
+            "63bd91bde38071d00aeb",
+            "56c2cb6720edfceee1fb",
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-ff383e05b2537e70ad526f96"
         }
       ],
       "sentiment": {
-        "label": "negative",
-        "score": -0.9712093351292425,
-        "confidence": 0.9107001528739929,
+        "label": "mixed",
+        "score": -0.6129815374416384,
+        "confidence": 0.8812608541141856,
         "confidence_kind": "heuristic_evidence",
-        "method": "finbert_chinese_cpu+finbert_english_cpu+minimax_full_text",
-        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v1+ProsusAI/finbert@0bc2ac10dda6929bcb1f77ccc43c7ec5c424f031+yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
+        "method": "finbert_english_cpu+minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v1+MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs+ProsusAI/finbert@0bc2ac10dda6929bcb1f77ccc43c7ec5c424f031",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -976183,30 +976602,34 @@
             "published_at": "2026-11-17T06:00:14+08:00",
             "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
             "publication_time_status": "known",
-            "label": "negative",
-            "score": -0.9897654798114672,
-            "confidence": 0.9910440444946289,
-            "method": "finbert_chinese_cpu",
-            "model_version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
-            "input_hash": "5cbcdcf0f28f25dc958cf570",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.89,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
             "credibility": "trusted",
             "associations": [
               {
-                "method": "sw2021_l1_keywords",
-                "sw_code": "801750.SI",
-                "industry": "计算机",
-                "terms": [
-                  "算力"
-                ],
-                "weight": 0.75
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.89,
+                "reason": "全球AI加速器资本开支预测下修，削弱算力扩容预期；但暂定GPU采购合同与168MW数据中心规划推进，为国内项目供应商提供支撑，内外项目分化。",
+                "evidence": [
+                  "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+                  "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+                  "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+                ]
               }
             ],
             "duplicate_count": 0,
-            "aggregation_weight": 0.675
+            "aggregation_weight": 0.9
           }
         ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "f64f125fcc009ac471a98f16",
+        "feature_hash": "ff383e05b2537e70ad526f96",
         "signal_kind": "legacy_tone"
       },
       "rank_date": "2026-11-17",
@@ -976326,7 +976749,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1011428,58 +1011851,50 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-06860997500126c293677650"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": null,
+          "label": "unknown",
+          "article_count": 0,
+          "scored_article_count": 0,
+          "source_count": 0,
+          "confidence": null,
+          "method": "no_coverage",
+          "model_version": "sw2021-news-impact-v4",
+          "feature_hash": "07159525c269c1290da3219a",
+          "signal_kind": "legacy_tone",
+          "news_ids": [],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-07159525c269c1290da3219a"
         }
       ],
       "sentiment": {
-        "label": "negative",
-        "score": -0.9897654798114672,
-        "confidence": 0.9910440444946289,
+        "label": "unknown",
+        "score": null,
+        "confidence": null,
         "confidence_kind": "heuristic_evidence",
-        "method": "finbert_chinese_cpu",
-        "model_version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
+        "method": "no_coverage",
+        "model_version": "sw2021-news-impact-v4",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 1,
-        "scored_article_count": 1,
-        "source_count": 1,
-        "evidence": [
-          {
-            "news_id": "7174e29a7751a9f3fb37",
-            "title": "东方财富财经早餐 11月17日周二",
-            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
-            "source": "东方财富财经早餐",
-            "published_at": "2026-11-17T06:00:14+08:00",
-            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
-            "publication_time_status": "known",
-            "label": "negative",
-            "score": -0.9897654798114672,
-            "confidence": 0.9910440444946289,
-            "method": "finbert_chinese_cpu",
-            "model_version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
-            "input_hash": "5cbcdcf0f28f25dc958cf570",
-            "credibility": "trusted",
-            "associations": [
-              {
-                "method": "constituent_name",
-                "terms": [
-                  "文投控股"
-                ],
-                "stock_code": "600715",
-                "weight": 1.0
-              }
-            ],
-            "duplicate_count": 0,
-            "aggregation_weight": 0.9
-          }
-        ],
+        "article_count": 0,
+        "scored_article_count": 0,
+        "source_count": 0,
+        "evidence": [],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "06860997500126c293677650",
+        "feature_hash": "07159525c269c1290da3219a",
         "signal_kind": "legacy_tone"
       },
       "rank_date": "2026-11-17",
@@ -1011599,7 +1012014,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1046123,8 +1046538,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1046253,7 +1046668,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1070684,8 +1071099,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1070844,7 +1071259,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1099706,20 +1100121,43 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-94a70a7de3f9627f92aa04f2"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 1.0,
+          "label": "positive",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.62,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "4396ca4e094f14eab33ef497",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-4396ca4e094f14eab33ef497"
         }
       ],
       "sentiment": {
-        "label": "negative",
-        "score": -0.9897654798114672,
-        "confidence": 0.9910440444946289,
+        "label": "positive",
+        "score": 1.0,
+        "confidence": 0.62,
         "confidence_kind": "heuristic_evidence",
-        "method": "finbert_chinese_cpu",
-        "model_version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1099735,21 +1100173,25 @@
             "published_at": "2026-11-17T06:00:14+08:00",
             "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
             "publication_time_status": "known",
-            "label": "negative",
-            "score": -0.9897654798114672,
-            "confidence": 0.9910440444946289,
-            "method": "finbert_chinese_cpu",
-            "model_version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
-            "input_hash": "5cbcdcf0f28f25dc958cf570",
+            "label": "positive",
+            "score": 1.0,
+            "confidence": 0.62,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
             "credibility": "trusted",
             "associations": [
               {
-                "method": "constituent_name",
-                "terms": [
-                  "东方财富"
-                ],
-                "stock_code": "300059",
-                "weight": 1.0
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "positive",
+                "score": 1.0,
+                "confidence": 0.62,
+                "reason": "证监会国际顾问委员会建议扩大中长期资金来源、畅通私募基金循环并提升市场稳定性；若落实将改善证券基金业务的资金供给与退出环境，但目前仅为咨询意见。",
+                "evidence": [
+                  "毛宁表示，这是中俄美三国元首历史上首次面对面会晤，\n将围绕维护世界和平、促进大国关系战略稳定深入交换意见，具有开创性意义\n。中俄美加强沟通，管控分歧，稳定关系，符合三国利益，也是国际社会的期待，有利于稳定世界局势，推动对话合作。\n中国证监会国际顾问委员会会议召开\n：\n中国证监会国际顾问委员会第23次会议2026年11月13日在上海召开。委员们在\n扩大中长期资金来源、渠道和入市方式，提升资本市场内在稳定性\n，畅通私募基金循环，推动私募投资与公开市场的高效协同，深刻认识准确把握",
+                  "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。"
+                ]
               }
             ],
             "duplicate_count": 0,
@@ -1099757,8 +1100199,8 @@
           }
         ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "94a70a7de3f9627f92aa04f2",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "4396ca4e094f14eab33ef497",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -1099877,7 +1100319,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1156616,30 +1157058,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-7a801d9882d388788d532e08"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.95,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "2e9a98eca334b22b87593c1d",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-2e9a98eca334b22b87593c1d"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.95,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.95,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.95,
+                "reason": "工信部将每年评估并公布车企供应商账款支付情况；大额应付、故意拉长账期或投诉较多者将被约谈整改，有助于约束拖欠，但不能推断终端需求。",
+                "evidence": [
+                  "根据大模型API聚合平台OpenRouter，在11月9日至11月15日这一周，DeepSeek V4.1 Flash 1017完成59.2万亿Token调用，居全球首位。\n汽车\n：\n中国\n汽车\n工业协会16日发布《关于开展\n汽车\n企业供应商账款支付调研评估工作的通知》，相关负责人表示，按照要求，工业和信息化部将每年开展一次系统调研评估并公布评估结果，晒晒“成绩单”，鼓励先进典型，督促后进整改，推动塑造良好产业生态。",
+                  "对应付账款规模大、故意拉长账期或投诉较多的汽车企业，工业和信息化部将联合相关部门开展约谈并督促整改\n。\n具身智能：\n16日，华为云举办具身世界模型发布会。会上，华为云具身产品线总裁、具身智能Lab主任吴小东\n发布首款昇腾原生的具身世界模型CloudRobo-WM1.2\n，并宣布将进行权重、推理、代码开源。该模型基于国产算力昇腾进行训练，在RoboTwin 2.0、LiberoPro 2.0两个评测基准中均排名第一。\n电网设备\n：\n据报道，记者从国网内蒙古东部\n电力"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "7a801d9882d388788d532e08",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "2e9a98eca334b22b87593c1d",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -1156758,7 +1157256,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1246692,8 +1247190,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1246822,7 +1247320,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1270249,8 +1270747,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1270291,7 +1270789,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1295515,30 +1296013,86 @@
           "taxonomy_version": "SW2021-L1-official-contract-v2",
           "window_policy_version": "published-and-observed-v1",
           "id": "sentiment-764119bd73b739f10b0026e4"
+        },
+        {
+          "date": "2026-11-17",
+          "as_of": "2026-11-17T19:57:42.566664+08:00",
+          "available_at": "2026-11-17T19:57:42.566664+08:00",
+          "window_start": "2026-11-17T00:00:00+08:00",
+          "score": 0.0,
+          "label": "mixed",
+          "article_count": 1,
+          "scored_article_count": 1,
+          "source_count": 1,
+          "confidence": 0.94,
+          "method": "minimax_full_text",
+          "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+          "feature_hash": "f3fb9ba31ed6aa952ffc736a",
+          "signal_kind": "industry_impact_v1",
+          "news_ids": [
+            "7174e29a7751a9f3fb37"
+          ],
+          "pipeline_version": "sw2021-news-impact-v4",
+          "taxonomy_version": "SW2021-L1-official-contract-v2",
+          "window_policy_version": "published-and-observed-v1",
+          "id": "sentiment-f3fb9ba31ed6aa952ffc736a"
         }
       ],
       "sentiment": {
-        "label": "unknown",
-        "score": null,
-        "confidence": null,
+        "label": "mixed",
+        "score": 0.0,
+        "confidence": 0.94,
         "confidence_kind": "heuristic_evidence",
-        "method": "no_coverage",
-        "model_version": "sw2021-news-impact-v4",
+        "method": "minimax_full_text",
+        "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
-        "article_count": 0,
-        "scored_article_count": 0,
-        "source_count": 0,
-        "evidence": [],
+        "article_count": 1,
+        "scored_article_count": 1,
+        "source_count": 1,
+        "evidence": [
+          {
+            "news_id": "7174e29a7751a9f3fb37",
+            "title": "东方财富财经早餐 11月17日周二",
+            "url": "https://finance.eastmoney.com/a/202611163932144347.html",
+            "source": "东方财富财经早餐",
+            "published_at": "2026-11-17T06:00:14+08:00",
+            "first_seen_at": "2026-11-17T09:18:50.460366+08:00",
+            "publication_time_status": "known",
+            "label": "mixed",
+            "score": 0.0,
+            "confidence": 0.94,
+            "method": "minimax_full_text",
+            "model_version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+            "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+            "credibility": "trusted",
+            "associations": [
+              {
+                "method": "minimax_full_text_impact",
+                "weight": 1.0,
+                "direction": "mixed",
+                "score": 0.0,
+                "confidence": 0.94,
+                "reason": "国际WTI下跌3.47%压低上游实现价格，国内原油期货上涨超2%则抬升炼化原料成本；基准和时点差异使上下游净影响不确定。",
+                "evidence": [
+                  "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+                  "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+                ]
+              }
+            ],
+            "duplicate_count": 0,
+            "aggregation_weight": 0.9
+          }
+        ],
         "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。",
-        "feature_hash": "764119bd73b739f10b0026e4",
-        "signal_kind": "legacy_tone"
+        "feature_hash": "f3fb9ba31ed6aa952ffc736a",
+        "signal_kind": "industry_impact_v1"
       },
       "rank_date": "2026-11-17",
       "valuation_coverage": {
@@ -1295657,7 +1296211,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1330605,8 +1331159,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1330677,7 +1331231,7 @@
       ],
       "funds_note": "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1353914,8 +1354468,8 @@
         "version": "sw2021-news-impact-v4",
         "taxonomy_version": "SW2021-L1-official-contract-v2",
         "window_policy_version": "published-and-observed-v1",
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
-        "available_at": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
+        "available_at": "2026-11-17T19:58:08.437142+08:00",
         "date": "2026-11-17",
         "window_start": "2026-11-17T00:00:00+08:00",
         "window_hours": 72.0,
@@ -1353956,7 +1354510,7 @@
       "funds": [],
       "funds_note": "暂无通过A股行业主题规则的券商关联基金；不以宽基或跨境基金补位。",
       "equity_prediction": {
-        "as_of": "2026-11-17T19:49:19.479077+08:00",
+        "as_of": "2026-11-17T19:58:08.437142+08:00",
         "target_date": "2026-11-18",
         "target_kind": "next_open",
         "reference_date": "2026-11-17",
@@ -1354528,29 +1355082,285 @@
       "credibility": "trusted",
       "category": "国内财经",
       "sector_ids": [
+        "801010.SI",
+        "801030.SI",
+        "801040.SI",
+        "801050.SI",
+        "801080.SI",
+        "801120.SI",
+        "801140.SI",
+        "801150.SI",
+        "801170.SI",
+        "801180.SI",
+        "801710.SI",
+        "801720.SI",
+        "801730.SI",
+        "801740.SI",
         "801750.SI",
         "801760.SI",
-        "801790.SI"
+        "801780.SI",
+        "801790.SI",
+        "801880.SI",
+        "801960.SI"
       ],
       "summary": "【东方财富财经早餐 11月17日周二】1、调用量冲上全球第一，DeepSeek开始对免费用户“限额”了。2、机构下修AI算力预测：2028年资本开支预测下调近三成，五年硅片出货面积下调17%。3、15天10板文投控股紧急公告：可能被*ST。",
       "impact": "uncertain",
       "transmission": [],
-      "analysis_method": "keyword_rules",
+      "analysis_method": "minimax_full_text",
       "verification": "unverified",
-      "sentiment": "negative",
-      "sentiment_score": -0.9897654798114672,
-      "sentiment_method": "finbert_chinese_cpu",
+      "sentiment": "mixed",
+      "sentiment_score": 0.0,
+      "sentiment_method": "minimax_full_text",
       "sentiment_evidence": {
-        "attribution": "文本分类输出；非词级因果解释",
-        "input_excerpt": "东方财富财经早餐 11月17日周二\n【东方财富财经早餐 11月17日周二】1、调用量冲上全球第一，DeepSeek开始对免费用户“限额”了。2、机构下修AI算力预测：2028年资本开支预测下调近三成，五年硅片出货面积下调17%。3、15天10板文投控股紧急公告：可能被*ST。",
-        "model_probabilities": {
-          "negative": 0.9910440444946289,
-          "neutral": 0.00767742283642292,
-          "positive": 0.001278564683161676
-        },
-        "token_limit": 512
+        "sector_impacts": [
+          {
+            "direction": "mixed",
+            "confidence": 0.95,
+            "reason": "AI加速器资本开支与HBM需求预测下调，通用IT型NAND价格及ASP预期承压；企业级NAND需求仍强，通用与高端需求分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "价格大涨后，PC与手机厂商削减存储配置、减少元器件采购，同时大型云厂商订单回落。NAND厂商抢占市场份额、供应商之间的价格竞争，也对价格形成压制。进一步加剧下行压力的是，全球20%–30%的NAND产能来自老旧产线，这类产能持续面向通用IT市场出货。\n美银预计，通用IT领域NAND价格明年一季度还将继续下跌5%–10%\n，带动整体平均售价（ASP）小幅走低，这和市场此前预期的涨幅超10%形成反差。",
+              "一位行业人士表示：“本轮走弱主要集中在手机、PC所用的通用型NAND”，并补充称，AI\n数据中心\n所用企业级NAND需求依旧强劲。\n外交部回应\n：\n11月16日，外交部发言人毛宁主持例行记者会。有记者问：据报道，美国和9个国家共同签署了有关\n人工智能\n的相关宣言。请问中方认为这是否会影响接下来的中美元首会晤？毛宁表示，\n中方一贯认为\n人工智能\n是全人类的共同财富，在这个领域不应当以意识形态划线或者是搞封闭排他的小圈子"
+            ],
+            "sector_code": "801080.SI",
+            "sector_name": "电子",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.89,
+            "reason": "全球AI加速器资本开支预测下修，削弱算力扩容预期；但暂定GPU采购合同与168MW数据中心规划推进，为国内项目供应商提供支撑，内外项目分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801750.SI",
+            "sector_name": "计算机",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.91,
+            "reason": "储能方案明确支持锂/钠离子及本质安全固态电池，特高压外送破万亿度体现存量通道运行；但AI电力需求预测下修压低远期增量预期。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+            ],
+            "sector_code": "801730.SI",
+            "sector_name": "电力设备",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.95,
+            "reason": "工信部将每年评估并公布车企供应商账款支付情况；大额应付、故意拉长账期或投诉较多者将被约谈整改，有助于约束拖欠，但不能推断终端需求。",
+            "evidence": [
+              "根据大模型API聚合平台OpenRouter，在11月9日至11月15日这一周，DeepSeek V4.1 Flash 1017完成59.2万亿Token调用，居全球首位。\n汽车\n：\n中国\n汽车\n工业协会16日发布《关于开展\n汽车\n企业供应商账款支付调研评估工作的通知》，相关负责人表示，按照要求，工业和信息化部将每年开展一次系统调研评估并公布评估结果，晒晒“成绩单”，鼓励先进典型，督促后进整改，推动塑造良好产业生态。",
+              "对应付账款规模大、故意拉长账期或投诉较多的汽车企业，工业和信息化部将联合相关部门开展约谈并督促整改\n。\n具身智能：\n16日，华为云举办具身世界模型发布会。会上，华为云具身产品线总裁、具身智能Lab主任吴小东\n发布首款昇腾原生的具身世界模型CloudRobo-WM1.2\n，并宣布将进行权重、推理、代码开源。该模型基于国产算力昇腾进行训练，在RoboTwin 2.0、LiberoPro 2.0两个评测基准中均排名第一。\n电网设备\n：\n据报道，记者从国网内蒙古东部\n电力"
+            ],
+            "sector_code": "801880.SI",
+            "sector_name": "汽车",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "positive",
+            "confidence": 0.62,
+            "reason": "证监会国际顾问委员会建议扩大中长期资金来源、畅通私募基金循环并提升市场稳定性；若落实将改善证券基金业务的资金供给与退出环境，但目前仅为咨询意见。",
+            "evidence": [
+              "毛宁表示，这是中俄美三国元首历史上首次面对面会晤，\n将围绕维护世界和平、促进大国关系战略稳定深入交换意见，具有开创性意义\n。中俄美加强沟通，管控分歧，稳定关系，符合三国利益，也是国际社会的期待，有利于稳定世界局势，推动对话合作。\n中国证监会国际顾问委员会会议召开\n：\n中国证监会国际顾问委员会第23次会议2026年11月13日在上海召开。委员们在\n扩大中长期资金来源、渠道和入市方式，提升资本市场内在稳定性\n，畅通私募基金循环，推动私募投资与公开市场的高效协同，深刻认识准确把握",
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。"
+            ],
+            "sector_code": "801790.SI",
+            "sector_name": "非银金融",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.94,
+            "reason": "国际WTI下跌3.47%压低上游实现价格，国内原油期货上涨超2%则抬升炼化原料成本；基准和时点差异使上下游净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801960.SI",
+            "sector_name": "石油石化",
+            "horizon": "today"
+          },
+          {
+            "direction": "negative",
+            "confidence": 0.96,
+            "reason": "沪银跌超6%、国际白银跌超4.5%，铜铝锌镍锡等亦收跌；相关矿山及冶炼销售价格与利润承压，但单日波动不足以证明长期供需逆转。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801050.SI",
+            "sector_name": "有色金属",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.88,
+            "reason": "苯、丁二烯胶、苯乙烯等期货上涨，若价格兑现有助相关产品收入；但原油同步上涨抬高原料成本，品种价差分化使整体盈利难定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801030.SI",
+            "sector_name": "基础化工",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.85,
+            "reason": "玻璃期货跌近2%指向产品售价承压，纯碱期货亦跌超1%可降低部分原料成本；缺少成本占比、销量与库存数据，玻璃子行业净盈利难定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。"
+            ],
+            "sector_code": "801710.SI",
+            "sector_name": "建筑材料",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.84,
+            "reason": "铁矿石期货跌超3%指向钢厂原料成本下降，但正文未提供钢价、产量、需求及成本占比，钢铁企业净盈利方向无法判断。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱"
+            ],
+            "sector_code": "801040.SI",
+            "sector_name": "钢铁",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.86,
+            "reason": "CBOT玉米涨0.44%，小麦跌1.07%、大豆跌0.57%，国内豆一、菜粕走弱；品种分化且成本、产量数据缺失，行业净影响不确定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "收平，报33525美元/吨。\n国际\n农产品\n：\n纽约尾盘，彭博谷物分类指数跌0.24%，报29.6597点，亚太早盘开始交易以来持续处于下跌状态。CBOT玉米期货涨0.44%，CBOT小麦期货跌1.07%，CBOT大豆期货跌0.57%。\n外汇市场\n人民币：\n11月16日，在岸人民币北京时间16:30收报6.6678，较上一交易日上涨29点。离岸人民币北京时间18:00报6.6673，较上一交易日上涨50点。在岸/离岸人民币北京时间18:00价差为-6点。\n人民币外汇掉期："
+            ],
+            "sector_code": "801010.SI",
+            "sector_name": "农林牧渔",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.78,
+            "reason": "国际油价下跌有助降低部分燃油成本，国内原油期货上涨又可能抬升国内燃油支出；燃油传导比例与定价机制未给出，公路、航空等净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801170.SI",
+            "sector_name": "交通运输",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.69,
+            "reason": "胜宏科技董事会通过707亿元综合授信申请，但未披露实际提款、定价或银行收益；单一企业融资不能外推银行业息差与资产质量。",
+            "evidence": [
+              "、广发\n银行\n、\n农业银行\n、\n渤海银行\n、\n工商银行\n、\n建设银行\n、\n中国银行\n等多家\n银行\n申请合计707亿元\n综合\n授信额度\n。\n综合\n授信业务品种主要包括但不限于流动资金贷款、贸易融资、票据业务、供应链金融、项目贷款、信用证业务、跨境融资等。\n金科股份\n：公司股票于2026年11月16日收盘价为0.97元/股，低于1元。根据相关规定，\n公司股票存在可能因股价低于面值被终止上市的风险\n。本公告为公司首次终止上市风险提示公告。\n山鹰国际\n："
+            ],
+            "sector_code": "801780.SI",
+            "sector_name": "银行",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.87,
+            "reason": "金科股份收盘价低于1元并首次提示可能终止上市风险，反映该公司短期上市与流动性压力；单一公司事件不足以推导房地产行业景气。",
+            "evidence": [
+              "、广发\n银行\n、\n农业银行\n、\n渤海银行\n、\n工商银行\n、\n建设银行\n、\n中国银行\n等多家\n银行\n申请合计707亿元\n综合\n授信额度\n。\n综合\n授信业务品种主要包括但不限于流动资金贷款、贸易融资、票据业务、供应链金融、项目贷款、信用证业务、跨境融资等。\n金科股份\n：公司股票于2026年11月16日收盘价为0.97元/股，低于1元。根据相关规定，\n公司股票存在可能因股价低于面值被终止上市的风险\n。本公告为公司首次终止上市风险提示公告。\n山鹰国际\n："
+            ],
+            "sector_code": "801180.SI",
+            "sector_name": "房地产",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.89,
+            "reason": "山鹰国际收盘价首次低于1元，但须连续20个交易日每日收盘价均低于1元才可能终止上市；条件尚未完成，不能外推轻工制造行业风险。",
+            "evidence": [
+              "公司股票在11月16日收盘价为0.94元/股，首次低于人民币1元。根据相关规定，若公司股票连续20个交易日的每日收盘价均低于1元，\n可能被上交所终止上市交易\n。\n*ST美丽\n：\n公司股票当日收盘价为0.95元/股，低于1元。根据《深圳证券交易所股票上市规则》第9.2.3条（一）“在深圳证券交易所仅发行A股股票的上市公司，首次出现股票收盘价低于1元情形的，应当在次一交易日开市前披露公司股票可能被终止上市的风险提示公告”的规定，公司应当披露股票\n可能被终止上市的风险\n提示公告。"
+            ],
+            "sector_code": "801140.SI",
+            "sector_name": "轻工制造",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.89,
+            "reason": "文投控股AI漫剧收入占比约2.57%，同时面临退市风险警示；两项均为单一公司信息，不能推导传媒行业需求或景气。",
+            "evidence": [
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。"
+            ],
+            "sector_code": "801760.SI",
+            "sector_name": "传媒",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.85,
+            "reason": "一鸣食品拟募资不超2.2亿元建设植乳基营养食品产线，利于公司扩产但仍属计划；对食品饮料整体需求和格局的影响无法由单家公司判断。",
+            "evidence": [
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801120.SI",
+            "sector_name": "食品饮料",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.86,
+            "reason": "科伦4个品种纳入医保目录有助相关药品准入与潜在放量，但仅为单一公司，且可能伴随价格约束；不能外推医药生物行业销售或盈利。",
+            "evidence": [
+              "数据中心\n是公司当前的核心自建项目，\n一、二、三期合计规划产能168MW，各期梯度推进\n。\n科伦药业\n：公司及控股子公司共计4个品种\n（3个药品新增纳入、1个新增2项适应症）纳入国家医保目录\n。上述药品2025年度合计销售额为5.21亿元，2026年1—6月合计销售额为5.43亿元，分别约占同期公司营业收入的2.82%、6.15%。\n华康洁净\n：公司预中标河北工程大学附属\n医院\n复兴院区二期工程医疗专项工程施工项目，\n中标金额9405.64万元\n。"
+            ],
+            "sector_code": "801150.SI",
+            "sector_name": "医药生物",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.93,
+            "reason": "光启技术子公司获17.9亿元超材料框架合同，预计影响2027年及2028年上半年业绩；订单集中于单一公司，不能外推军工行业需求。",
+            "evidence": [
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801740.SI",
+            "sector_name": "国防军工",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.92,
+            "reason": "华康洁净预中标9405.64万元医疗专项施工项目，增加公司订单可见度但尚未披露合同落地；单一项目不足以判断建筑装饰行业需求。",
+            "evidence": [
+              "数据中心\n是公司当前的核心自建项目，\n一、二、三期合计规划产能168MW，各期梯度推进\n。\n科伦药业\n：公司及控股子公司共计4个品种\n（3个药品新增纳入、1个新增2项适应症）纳入国家医保目录\n。上述药品2025年度合计销售额为5.21亿元，2026年1—6月合计销售额为5.43亿元，分别约占同期公司营业收入的2.82%、6.15%。\n华康洁净\n：公司预中标河北工程大学附属\n医院\n复兴院区二期工程医疗专项工程施工项目，\n中标金额9405.64万元\n。"
+            ],
+            "sector_code": "801720.SI",
+            "sector_name": "建筑装饰",
+            "horizon": "medium_term"
+          }
+        ],
+        "market_effect": {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "AI资本开支预测下修与NAND降价偏负面，储能政策偏正面；信号集中于细分行业且缺少权重，正文没有给出统一映射至六大指数的宏观传导。",
+          "evidence": [
+            "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+            "按照最新模型，2030年全球AI加速器资本开支将从此前预测的1.531万亿美元降至9230亿美元，减少6080亿美元。与此同时，2026年至2030年加速器逻辑硅片出货面积累计预测下调17%。\nNAND闪存价格下跌：\n美银在一份报告中表示，\n自10月中下旬以来，NAND闪存现货价格已下跌约20%\n。512 Gb NAND晶圆现货价格报14.30美元，单周下跌12%，较上一季度下跌32%。分析师认为，本轮下跌原因在于：\n存储芯片",
+            "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+          ]
+        }
       },
-      "sentiment_note": "中文财经文本分类；softmax置信未经本项目校准，不是上涨或下跌概率",
+      "sentiment_note": "全文语气；各行业的经营影响分别判断，自评确定度不代表股价概率。",
       "include_in_sentiment": true,
       "topic_note": "板块关联来自关键词匹配，未验证因果和收益方向",
       "market_scope": "A-share",
@@ -1354563,55 +1355373,181 @@
       },
       "relevance_verified": false,
       "full_text_status": "complete",
-      "llm_status": "analysis_unavailable",
+      "llm_status": "ready",
       "sentiment_publication_time_status": "known",
       "sentiment_eligible": true,
       "sentiment_exclusion_reason": null,
       "sentiment_time_note": "发布时间与首次观察时间均已核实在当前统计窗口内",
       "sentiment_is_rumor": false,
       "sentiment_associations": {
-        "801750.SI": [
+        "801010.SI": [
           {
-            "method": "sw2021_l1_keywords",
-            "sw_code": "801750.SI",
-            "industry": "计算机",
-            "terms": [
-              "算力"
-            ],
-            "weight": 0.75
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.86,
+            "reason": "CBOT玉米涨0.44%，小麦跌1.07%、大豆跌0.57%，国内豆一、菜粕走弱；品种分化且成本、产量数据缺失，行业净影响不确定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "收平，报33525美元/吨。\n国际\n农产品\n：\n纽约尾盘，彭博谷物分类指数跌0.24%，报29.6597点，亚太早盘开始交易以来持续处于下跌状态。CBOT玉米期货涨0.44%，CBOT小麦期货跌1.07%，CBOT大豆期货跌0.57%。\n外汇市场\n人民币：\n11月16日，在岸人民币北京时间16:30收报6.6678，较上一交易日上涨29点。离岸人民币北京时间18:00报6.6673，较上一交易日上涨50点。在岸/离岸人民币北京时间18:00价差为-6点。\n人民币外汇掉期："
+            ]
           }
         ],
-        "801760.SI": [
+        "801030.SI": [
           {
-            "method": "constituent_name",
-            "terms": [
-              "文投控股"
-            ],
-            "stock_code": "600715",
-            "weight": 1.0
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.88,
+            "reason": "苯、丁二烯胶、苯乙烯等期货上涨，若价格兑现有助相关产品收入；但原油同步上涨抬高原料成本，品种价差分化使整体盈利难定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ]
+          }
+        ],
+        "801050.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "negative",
+            "score": -1.0,
+            "confidence": 0.96,
+            "reason": "沪银跌超6%、国际白银跌超4.5%，铜铝锌镍锡等亦收跌；相关矿山及冶炼销售价格与利润承压，但单日波动不足以证明长期供需逆转。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ]
+          }
+        ],
+        "801080.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.95,
+            "reason": "AI加速器资本开支与HBM需求预测下调，通用IT型NAND价格及ASP预期承压；企业级NAND需求仍强，通用与高端需求分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "价格大涨后，PC与手机厂商削减存储配置、减少元器件采购，同时大型云厂商订单回落。NAND厂商抢占市场份额、供应商之间的价格竞争，也对价格形成压制。进一步加剧下行压力的是，全球20%–30%的NAND产能来自老旧产线，这类产能持续面向通用IT市场出货。\n美银预计，通用IT领域NAND价格明年一季度还将继续下跌5%–10%\n，带动整体平均售价（ASP）小幅走低，这和市场此前预期的涨幅超10%形成反差。",
+              "一位行业人士表示：“本轮走弱主要集中在手机、PC所用的通用型NAND”，并补充称，AI\n数据中心\n所用企业级NAND需求依旧强劲。\n外交部回应\n：\n11月16日，外交部发言人毛宁主持例行记者会。有记者问：据报道，美国和9个国家共同签署了有关\n人工智能\n的相关宣言。请问中方认为这是否会影响接下来的中美元首会晤？毛宁表示，\n中方一贯认为\n人工智能\n是全人类的共同财富，在这个领域不应当以意识形态划线或者是搞封闭排他的小圈子"
+            ]
+          }
+        ],
+        "801170.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.78,
+            "reason": "国际油价下跌有助降低部分燃油成本，国内原油期货上涨又可能抬升国内燃油支出；燃油传导比例与定价机制未给出，公路、航空等净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ]
+          }
+        ],
+        "801710.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.85,
+            "reason": "玻璃期货跌近2%指向产品售价承压，纯碱期货亦跌超1%可降低部分原料成本；缺少成本占比、销量与库存数据，玻璃子行业净盈利难定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。"
+            ]
+          }
+        ],
+        "801730.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.91,
+            "reason": "储能方案明确支持锂/钠离子及本质安全固态电池，特高压外送破万亿度体现存量通道运行；但AI电力需求预测下修压低远期增量预期。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+            ]
+          }
+        ],
+        "801750.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.89,
+            "reason": "全球AI加速器资本开支预测下修，削弱算力扩容预期；但暂定GPU采购合同与168MW数据中心规划推进，为国内项目供应商提供支撑，内外项目分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ]
           }
         ],
         "801790.SI": [
           {
-            "method": "constituent_name",
-            "terms": [
-              "东方财富"
-            ],
-            "stock_code": "300059",
-            "weight": 1.0
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "positive",
+            "score": 1.0,
+            "confidence": 0.62,
+            "reason": "证监会国际顾问委员会建议扩大中长期资金来源、畅通私募基金循环并提升市场稳定性；若落实将改善证券基金业务的资金供给与退出环境，但目前仅为咨询意见。",
+            "evidence": [
+              "毛宁表示，这是中俄美三国元首历史上首次面对面会晤，\n将围绕维护世界和平、促进大国关系战略稳定深入交换意见，具有开创性意义\n。中俄美加强沟通，管控分歧，稳定关系，符合三国利益，也是国际社会的期待，有利于稳定世界局势，推动对话合作。\n中国证监会国际顾问委员会会议召开\n：\n中国证监会国际顾问委员会第23次会议2026年11月13日在上海召开。委员们在\n扩大中长期资金来源、渠道和入市方式，提升资本市场内在稳定性\n，畅通私募基金循环，推动私募投资与公开市场的高效协同，深刻认识准确把握",
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。"
+            ]
+          }
+        ],
+        "801880.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.95,
+            "reason": "工信部将每年评估并公布车企供应商账款支付情况；大额应付、故意拉长账期或投诉较多者将被约谈整改，有助于约束拖欠，但不能推断终端需求。",
+            "evidence": [
+              "根据大模型API聚合平台OpenRouter，在11月9日至11月15日这一周，DeepSeek V4.1 Flash 1017完成59.2万亿Token调用，居全球首位。\n汽车\n：\n中国\n汽车\n工业协会16日发布《关于开展\n汽车\n企业供应商账款支付调研评估工作的通知》，相关负责人表示，按照要求，工业和信息化部将每年开展一次系统调研评估并公布评估结果，晒晒“成绩单”，鼓励先进典型，督促后进整改，推动塑造良好产业生态。",
+              "对应付账款规模大、故意拉长账期或投诉较多的汽车企业，工业和信息化部将联合相关部门开展约谈并督促整改\n。\n具身智能：\n16日，华为云举办具身世界模型发布会。会上，华为云具身产品线总裁、具身智能Lab主任吴小东\n发布首款昇腾原生的具身世界模型CloudRobo-WM1.2\n，并宣布将进行权重、推理、代码开源。该模型基于国产算力昇腾进行训练，在RoboTwin 2.0、LiberoPro 2.0两个评测基准中均排名第一。\n电网设备\n：\n据报道，记者从国网内蒙古东部\n电力"
+            ]
+          }
+        ],
+        "801960.SI": [
+          {
+            "method": "minimax_full_text_impact",
+            "weight": 1.0,
+            "direction": "mixed",
+            "score": 0.0,
+            "confidence": 0.94,
+            "reason": "国际WTI下跌3.47%压低上游实现价格，国内原油期货上涨超2%则抬升炼化原料成本；基准和时点差异使上下游净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ]
           }
         ]
       },
-      "sentiment_confidence": 0.9910440444946289,
-      "sentiment_confidence_kind": "model_softmax_uncalibrated",
+      "sentiment_confidence": null,
+      "sentiment_confidence_kind": "llm_evidence_self_assessment",
       "sentiment_model": {
-        "version": "yiyanghkust/finbert-tone-chinese@e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
-        "model_id": "yiyanghkust/finbert-tone-chinese",
-        "revision": "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
-        "license": "Apache-2.0"
+        "version": "MiniMax-M3.1-Flash@fulltext-sw31-impact-v2-refs",
+        "model_id": "MiniMax-M3.1-Flash",
+        "revision": "fulltext-sw31-impact-v2-refs",
+        "license": null
       },
-      "sentiment_scored_at": "2026-11-17T17:23:08.049200+08:00",
-      "sentiment_input_hash": "5cbcdcf0f28f25dc958cf570",
+      "sentiment_scored_at": "2026-11-17T19:57:42.524233+08:00",
+      "sentiment_input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
       "sentiment_duplicate_sources": [
         "东方财富财经早餐"
       ],
@@ -1354623,7 +1355559,276 @@
       "full_text": "每日精选\n习近平在广东中山考察：\n中共中央总书记、国家主席、中央军委主席习近平16日在广东省中山市考察时强调，深入学习贯彻党的二十届五中全会精神，把全会作出的各项决策部署不折不扣落到实处，以持之以恒推进全面从严治党的新成效，\n更好推动珠江口东西两岸融合发展，奋力开创粤港澳大湾区高质量发展新局面\n。\n外交部谈中俄美元首会晤\n：\n外交部发言人毛宁11月16日主持例行记者会。总台央视记者提问：中方发布了中俄美三国元首深圳会晤的消息。能否介绍会晤安排及中方对会晤的期待？毛宁表示，这是中俄美三国元首历史上首次面对面会晤，\n将围绕维护世界和平、促进大国关系战略稳定深入交换意见，具有开创性意义\n。中俄美加强沟通，管控分歧，稳定关系，符合三国利益，也是国际社会的期待，有利于稳定世界局势，推动对话合作。\n中国证监会国际顾问委员会会议召开\n：\n中国证监会国际顾问委员会第23次会议2026年11月13日在上海召开。委员们在\n扩大中长期资金来源、渠道和入市方式，提升资本市场内在稳定性\n，畅通私募基金循环，推动私募投资与公开市场的高效协同，深刻认识准确把握\n人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。按照最新模型，2030年全球AI加速器资本开支将从此前预测的1.531万亿美元降至9230亿美元，减少6080亿美元。与此同时，2026年至2030年加速器逻辑硅片出货面积累计预测下调17%。\nNAND闪存价格下跌：\n美银在一份报告中表示，\n自10月中下旬以来，NAND闪存现货价格已下跌约20%\n。512 Gb NAND晶圆现货价格报14.30美元，单周下跌12%，较上一季度下跌32%。分析师认为，本轮下跌原因在于：\n存储芯片\n价格大涨后，PC与手机厂商削减存储配置、减少元器件采购，同时大型云厂商订单回落。NAND厂商抢占市场份额、供应商之间的价格竞争，也对价格形成压制。进一步加剧下行压力的是，全球20%–30%的NAND产能来自老旧产线，这类产能持续面向通用IT市场出货。\n美银预计，通用IT领域NAND价格明年一季度还将继续下跌5%–10%\n，带动整体平均售价（ASP）小幅走低，这和市场此前预期的涨幅超10%形成反差。一位行业人士表示：“本轮走弱主要集中在手机、PC所用的通用型NAND”，并补充称，AI\n数据中心\n所用企业级NAND需求依旧强劲。\n外交部回应\n：\n11月16日，外交部发言人毛宁主持例行记者会。有记者问：据报道，美国和9个国家共同签署了有关\n人工智能\n的相关宣言。请问中方认为这是否会影响接下来的中美元首会晤？毛宁表示，\n中方一贯认为\n人工智能\n是全人类的共同财富，在这个领域不应当以意识形态划线或者是搞封闭排他的小圈子\n，各方应当携手促进人工智能的发展和治理，推动人工智能服务全人类。关于中美元首会晤双方保持着沟通。\n热点题材\n算力\n：\n11月16日，不少用户在社交媒体上反映，\nDeepSeek近期对App及网页版的使用额度进行了调整，包括限制长对话、每日使用额度以及单次文字输入长度，原因是“算力不足”\n。部分用户甚至在使用不到两小时后，就收到了额度耗尽的提示。根据大模型API聚合平台OpenRouter，在11月9日至11月15日这一周，DeepSeek V4.1 Flash 1017完成59.2万亿Token调用，居全球首位。\n汽车\n：\n中国\n汽车\n工业协会16日发布《关于开展\n汽车\n企业供应商账款支付调研评估工作的通知》，相关负责人表示，按照要求，工业和信息化部将每年开展一次系统调研评估并公布评估结果，晒晒“成绩单”，鼓励先进典型，督促后进整改，推动塑造良好产业生态。\n对应付账款规模大、故意拉长账期或投诉较多的汽车企业，工业和信息化部将联合相关部门开展约谈并督促整改\n。\n具身智能：\n16日，华为云举办具身世界模型发布会。会上，华为云具身产品线总裁、具身智能Lab主任吴小东\n发布首款昇腾原生的具身世界模型CloudRobo-WM1.2\n，并宣布将进行权重、推理、代码开源。该模型基于国产算力昇腾进行训练，在RoboTwin 2.0、LiberoPro 2.0两个评测基准中均排名第一。\n电网设备\n：\n据报道，记者从国网内蒙古东部\n电力\n有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行\n、广发\n银行\n、\n农业银行\n、\n渤海银行\n、\n工商银行\n、\n建设银行\n、\n中国银行\n等多家\n银行\n申请合计707亿元\n综合\n授信额度\n。\n综合\n授信业务品种主要包括但不限于流动资金贷款、贸易融资、票据业务、供应链金融、项目贷款、信用证业务、跨境融资等。\n金科股份\n：公司股票于2026年11月16日收盘价为0.97元/股，低于1元。根据相关规定，\n公司股票存在可能因股价低于面值被终止上市的风险\n。本公告为公司首次终止上市风险提示公告。\n山鹰国际\n：\n公司股票在11月16日收盘价为0.94元/股，首次低于人民币1元。根据相关规定，若公司股票连续20个交易日的每日收盘价均低于1元，\n可能被上交所终止上市交易\n。\n*ST美丽\n：\n公司股票当日收盘价为0.95元/股，低于1元。根据《深圳证券交易所股票上市规则》第9.2.3条（一）“在深圳证券交易所仅发行A股股票的上市公司，首次出现股票收盘价低于1元情形的，应当在次一交易日开市前披露公司股票可能被终止上市的风险提示公告”的规定，公司应当披露股票\n可能被终止上市的风险\n提示公告。\n文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算\n数据中心\n是公司当前的核心自建项目，\n一、二、三期合计规划产能168MW，各期梯度推进\n。\n科伦药业\n：公司及控股子公司共计4个品种\n（3个药品新增纳入、1个新增2项适应症）纳入国家医保目录\n。上述药品2025年度合计销售额为5.21亿元，2026年1—6月合计销售额为5.43亿元，分别约占同期公司营业收入的2.82%、6.15%。\n华康洁净\n：公司预中标河北工程大学附属\n医院\n复兴院区二期工程医疗专项工程施工项目，\n中标金额9405.64万元\n。\n点击查看更多上市公司重大公告>>\n环球市场\n特朗普称不介意黄仁勋重掌\n英伟达\n：\n11月16日，美国总统特朗普表示，不介意黄仁勋重新出任\n英伟达\n首席执行官，并称很多人希望黄仁勋回归，“这当然不是一个坏主意”。特朗普还表示，黄仁勋“吸取了深刻教训”。此前，美国财政部长贝森特曾呼吁\n英伟达\n进行“大幅调整”，并通过外部招聘寻找新任领导人。\n英伟达推出面向高性能计算的Vera CPU机架级平台：\n英伟达今日宣布推出面向高性能计算的Vera CPU机架级平台。Vera为智能体科学带来更高性能，能效比x86 CPU提升一倍。完整的Vera CPU平台将由\n戴尔科技\n、HPE、联想和Supermicro提供。\n谷歌云公布了第七代Ironwood TPU的10项测试结果：\n谷歌云公布了基于第七代Ironwood TPU的10项测试结果，涵盖前沿预训练以及首个面向智能体强化学习（RL）的MLPerf基准。在智能体强化学习方面，640块Ironwood TPU在18.02分钟内达到了目标模型的编码基准目标准确率，同时运行代码生成和学习，使训练芯片的等待时间占比低于3%。\n交易提示\n点击立即参与申购>>\n债市纵览\nShibor\n：\n11月16日，隔夜shibor报1.3040%，上涨0.7个基点；7天shibor报1.3900%，上涨0.9个基点；3个月shibor报1.4000%，与上日持平。\n欧债：\n欧市尾盘，英国10年期国债收益率涨2.5个基点，报5.360%。德国10年期国债收益率涨1.2个基点，报3.389%。法国10年期国债收益率涨3.8个基点，报4.959%。意大利10年期国债收益率涨2.8个基点，报4.448%。西班牙10年期国债收益率涨2.4个基点，报3.962%。希腊10年期国债收益率涨3.6个基点，报4.307%。\n美债：\n纽约尾盘，美国10年期国债收益率跌2.23个基点，报5.1129%。两年期美债收益率跌2.53个基点，报4.8166%；30年期美债收益率跌0.54个基点，报5.4602%。2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱\n、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。\n国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴\n收平，报33525美元/吨。\n国际\n农产品\n：\n纽约尾盘，彭博谷物分类指数跌0.24%，报29.6597点，亚太早盘开始交易以来持续处于下跌状态。CBOT玉米期货涨0.44%，CBOT小麦期货跌1.07%，CBOT大豆期货跌0.57%。\n外汇市场\n人民币：\n11月16日，在岸人民币北京时间16:30收报6.6678，较上一交易日上涨29点。离岸人民币北京时间18:00报6.6673，较上一交易日上涨50点。在岸/离岸人民币北京时间18:00价差为-6点。\n人民币外汇掉期：\n11月16日，截至北京时间16:30，美元兑人民币6个月掉期报-991.25点，美元兑人民币1年掉期报-2058.99点。\n美元：\n美元指数16日上涨。衡量美元对六种主要货币的美元指数当天上涨0.13%，在汇市尾市收于103.549。截至纽约汇市尾市，1欧元兑换1.1003美元，低于前一交易日的1.1023美元；1英镑兑换1.3186美元，低于前一交易日的1.3210美元。1美元兑换159.48日元，低于前一交易日的159.78日元；1美元兑换0.8399瑞士法郎，高于前一交易日的0.8395瑞士法郎；1美元兑换1.4293加元，高于前一交易日的1.4267加元；1美元兑换10.0949瑞典克朗，高于前一交易日的10.0722瑞典克朗。\n财经日历",
       "full_text_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
       "full_text_fetched_at": "2026-11-17T19:24:36.237204+08:00",
-      "full_text_method": "html:#ContentBody"
+      "full_text_method": "html:#ContentBody",
+      "llm_analysis": {
+        "summary": "机构将2028—2030年AI加速器资本开支预测下调28%—41%，自10月中下旬以来通用IT型NAND现货价跌约20%，AI硬件需求预期与存储价格承压。推进具身智能、固态电池、算力项目及特高压运营，并披露扩产、订单和退市风险，影响分化。",
+        "tone": "mixed",
+        "fact_status": "reported_fact",
+        "market_effect": {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "AI资本开支预测下修与NAND降价偏负面，储能政策偏正面；信号集中于细分行业且缺少权重，正文没有给出统一映射至六大指数的宏观传导。",
+          "evidence": [
+            "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+            "按照最新模型，2030年全球AI加速器资本开支将从此前预测的1.531万亿美元降至9230亿美元，减少6080亿美元。与此同时，2026年至2030年加速器逻辑硅片出货面积累计预测下调17%。\nNAND闪存价格下跌：\n美银在一份报告中表示，\n自10月中下旬以来，NAND闪存现货价格已下跌约20%\n。512 Gb NAND晶圆现货价格报14.30美元，单周下跌12%，较上一季度下跌32%。分析师认为，本轮下跌原因在于：\n存储芯片",
+            "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+          ]
+        },
+        "sector_impacts": [
+          {
+            "direction": "mixed",
+            "confidence": 0.95,
+            "reason": "AI加速器资本开支与HBM需求预测下调，通用IT型NAND价格及ASP预期承压；企业级NAND需求仍强，通用与高端需求分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "价格大涨后，PC与手机厂商削减存储配置、减少元器件采购，同时大型云厂商订单回落。NAND厂商抢占市场份额、供应商之间的价格竞争，也对价格形成压制。进一步加剧下行压力的是，全球20%–30%的NAND产能来自老旧产线，这类产能持续面向通用IT市场出货。\n美银预计，通用IT领域NAND价格明年一季度还将继续下跌5%–10%\n，带动整体平均售价（ASP）小幅走低，这和市场此前预期的涨幅超10%形成反差。",
+              "一位行业人士表示：“本轮走弱主要集中在手机、PC所用的通用型NAND”，并补充称，AI\n数据中心\n所用企业级NAND需求依旧强劲。\n外交部回应\n：\n11月16日，外交部发言人毛宁主持例行记者会。有记者问：据报道，美国和9个国家共同签署了有关\n人工智能\n的相关宣言。请问中方认为这是否会影响接下来的中美元首会晤？毛宁表示，\n中方一贯认为\n人工智能\n是全人类的共同财富，在这个领域不应当以意识形态划线或者是搞封闭排他的小圈子"
+            ],
+            "sector_code": "801080.SI",
+            "sector_name": "电子",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.89,
+            "reason": "全球AI加速器资本开支预测下修，削弱算力扩容预期；但暂定GPU采购合同与168MW数据中心规划推进，为国内项目供应商提供支撑，内外项目分化。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801750.SI",
+            "sector_name": "计算机",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.91,
+            "reason": "储能方案明确支持锂/钠离子及本质安全固态电池，特高压外送破万亿度体现存量通道运行；但AI电力需求预测下修压低远期增量预期。",
+            "evidence": [
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。",
+              "有限公司获悉，截至11月16日0时，\n内蒙古通过\n特高压\n外送通道累计外送电量突破1万亿度大关\n，成为我国首个\n特高压\n累计外送电量破万亿度的省区。\n固态电池\n：\n国家发展改革委、国家能源局日前印发《“十五五”新型储能实施方案》。方案提出，发展中短时能量型\n电池\n储能技术。研制大容量、宽温域、高安全、抗干扰\n锂\n/\n钠离子电池\n储能系统；\n优化固液混合态\n电池\n核心部件，研究本质安全\n固态电池\n技术\n。\n公司新闻\n胜宏科技\n：公司董事会审议通过向\n浦发银行\n、\n平安银行"
+            ],
+            "sector_code": "801730.SI",
+            "sector_name": "电力设备",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.95,
+            "reason": "工信部将每年评估并公布车企供应商账款支付情况；大额应付、故意拉长账期或投诉较多者将被约谈整改，有助于约束拖欠，但不能推断终端需求。",
+            "evidence": [
+              "根据大模型API聚合平台OpenRouter，在11月9日至11月15日这一周，DeepSeek V4.1 Flash 1017完成59.2万亿Token调用，居全球首位。\n汽车\n：\n中国\n汽车\n工业协会16日发布《关于开展\n汽车\n企业供应商账款支付调研评估工作的通知》，相关负责人表示，按照要求，工业和信息化部将每年开展一次系统调研评估并公布评估结果，晒晒“成绩单”，鼓励先进典型，督促后进整改，推动塑造良好产业生态。",
+              "对应付账款规模大、故意拉长账期或投诉较多的汽车企业，工业和信息化部将联合相关部门开展约谈并督促整改\n。\n具身智能：\n16日，华为云举办具身世界模型发布会。会上，华为云具身产品线总裁、具身智能Lab主任吴小东\n发布首款昇腾原生的具身世界模型CloudRobo-WM1.2\n，并宣布将进行权重、推理、代码开源。该模型基于国产算力昇腾进行训练，在RoboTwin 2.0、LiberoPro 2.0两个评测基准中均排名第一。\n电网设备\n：\n据报道，记者从国网内蒙古东部\n电力"
+            ],
+            "sector_code": "801880.SI",
+            "sector_name": "汽车",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "positive",
+            "confidence": 0.62,
+            "reason": "证监会国际顾问委员会建议扩大中长期资金来源、畅通私募基金循环并提升市场稳定性；若落实将改善证券基金业务的资金供给与退出环境，但目前仅为咨询意见。",
+            "evidence": [
+              "毛宁表示，这是中俄美三国元首历史上首次面对面会晤，\n将围绕维护世界和平、促进大国关系战略稳定深入交换意见，具有开创性意义\n。中俄美加强沟通，管控分歧，稳定关系，符合三国利益，也是国际社会的期待，有利于稳定世界局势，推动对话合作。\n中国证监会国际顾问委员会会议召开\n：\n中国证监会国际顾问委员会第23次会议2026年11月13日在上海召开。委员们在\n扩大中长期资金来源、渠道和入市方式，提升资本市场内在稳定性\n，畅通私募基金循环，推动私募投资与公开市场的高效协同，深刻认识准确把握",
+              "人工智能\n发展带来的机遇与挑战，加快提高监管的智能化水平和金融基础设施安全性，深化高水平、制度型开放，共建务实有效的全球金融治理框架等方面提出了咨询意见与工作建议。\n机构下调未来AI资本开支\n：\n半导体\n研究机构SemiAnalysis在最新模型更新中，大幅下调了未来数年AI加速器出货、资本开支、HBM需求和\n电力\n需求预测。其中，2028年至2030年的调整幅度尤为明显：\n2028年全球AI加速器资本开支预测被下调28%，2029年和2030年分别下调41%和40%\n。"
+            ],
+            "sector_code": "801790.SI",
+            "sector_name": "非银金融",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.94,
+            "reason": "国际WTI下跌3.47%压低上游实现价格，国内原油期货上涨超2%则抬升炼化原料成本；基准和时点差异使上下游净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801960.SI",
+            "sector_name": "石油石化",
+            "horizon": "today"
+          },
+          {
+            "direction": "negative",
+            "confidence": 0.96,
+            "reason": "沪银跌超6%、国际白银跌超4.5%，铜铝锌镍锡等亦收跌；相关矿山及冶炼销售价格与利润承压，但单日波动不足以证明长期供需逆转。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801050.SI",
+            "sector_name": "有色金属",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.88,
+            "reason": "苯、丁二烯胶、苯乙烯等期货上涨，若价格兑现有助相关产品收入；但原油同步上涨抬高原料成本，品种价差分化使整体盈利难定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801030.SI",
+            "sector_name": "基础化工",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.85,
+            "reason": "玻璃期货跌近2%指向产品售价承压，纯碱期货亦跌超1%可降低部分原料成本；缺少成本占比、销量与库存数据，玻璃子行业净盈利难定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。"
+            ],
+            "sector_code": "801710.SI",
+            "sector_name": "建筑材料",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.84,
+            "reason": "铁矿石期货跌超3%指向钢厂原料成本下降，但正文未提供钢价、产量、需求及成本占比，钢铁企业净盈利方向无法判断。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱"
+            ],
+            "sector_code": "801040.SI",
+            "sector_name": "钢铁",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.86,
+            "reason": "CBOT玉米涨0.44%，小麦跌1.07%、大豆跌0.57%，国内豆一、菜粕走弱；品种分化且成本、产量数据缺失，行业净影响不确定。",
+            "evidence": [
+              "2/10年期美债收益率利差涨0.71个基点，报+29.402个基点。10年期通胀保值国债（TIPS）收益率涨1.83个基点，至2.9030%；两年期TIPS收益率涨3.42个基点，至2.6489%；30年期TIPS收益率涨1.99个基点，至3.3083%。\n商品\n期货\n国内\n期货\n：\n11月16日，国内商品\n期货\n收盘，主力合约多数下跌。跌幅方面，沪银跌超6%，红枣跌超4%，豆一、碳酸\n锂\n、\n铁矿石\n、铂跌超3%，玻璃、沪锡、沪\n镍\n跌近2%，钯、\n纯碱",
+              "收平，报33525美元/吨。\n国际\n农产品\n：\n纽约尾盘，彭博谷物分类指数跌0.24%，报29.6597点，亚太早盘开始交易以来持续处于下跌状态。CBOT玉米期货涨0.44%，CBOT小麦期货跌1.07%，CBOT大豆期货跌0.57%。\n外汇市场\n人民币：\n11月16日，在岸人民币北京时间16:30收报6.6678，较上一交易日上涨29点。离岸人民币北京时间18:00报6.6673，较上一交易日上涨50点。在岸/离岸人民币北京时间18:00价差为-6点。\n人民币外汇掉期："
+            ],
+            "sector_code": "801010.SI",
+            "sector_name": "农林牧渔",
+            "horizon": "today"
+          },
+          {
+            "direction": "mixed",
+            "confidence": 0.78,
+            "reason": "国际油价下跌有助降低部分燃油成本，国内原油期货上涨又可能抬升国内燃油支出；燃油传导比例与定价机制未给出，公路、航空等净影响不确定。",
+            "evidence": [
+              "、菜粕、鸡蛋、纸浆等跌超1%；涨幅方面，低硫燃油涨近3%，纯苯、丁二烯胶、原油、苯乙烯涨超2%，乙二醇、燃油、烧碱涨超1%。\n国际\n黄金\n：\nCOMEX\n黄金\n期货当月连续合约下跌32.70美元，跌幅0.84%，报3853.6美元/盎司。COMEX\n白银\n期货当月连续合约下跌2.25美元，跌幅4.57%，报46.875美元/盎司。现货\n黄金\n下跌37.97美元，跌幅0.98%，报3851.06美元/盎司。现货\n白银\n下跌1.94美元，跌幅3.97%，报46.96美元/盎司。",
+              "国际原油：\n国际油价11月16日下跌。截至发稿，纽约商品交易所WTI原油期货当月连续合约下跌3.07美元，报每桶85.49美元，跌幅为3.47%。\n国际金属：\nLME期\n铜\n收跌143美元，报13256美元/吨。LME期\n铝\n收跌6美元，报3004美元/吨。LME期锌收跌12美元，报3698美元/吨。LME期铅收跌19美元，报1875美元/吨。LME期\n镍\n收跌127美元，报15858美元/吨。LME期锡收跌526美元，报46174美元/吨。LME期\n钴"
+            ],
+            "sector_code": "801170.SI",
+            "sector_name": "交通运输",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.69,
+            "reason": "胜宏科技董事会通过707亿元综合授信申请，但未披露实际提款、定价或银行收益；单一企业融资不能外推银行业息差与资产质量。",
+            "evidence": [
+              "、广发\n银行\n、\n农业银行\n、\n渤海银行\n、\n工商银行\n、\n建设银行\n、\n中国银行\n等多家\n银行\n申请合计707亿元\n综合\n授信额度\n。\n综合\n授信业务品种主要包括但不限于流动资金贷款、贸易融资、票据业务、供应链金融、项目贷款、信用证业务、跨境融资等。\n金科股份\n：公司股票于2026年11月16日收盘价为0.97元/股，低于1元。根据相关规定，\n公司股票存在可能因股价低于面值被终止上市的风险\n。本公告为公司首次终止上市风险提示公告。\n山鹰国际\n："
+            ],
+            "sector_code": "801780.SI",
+            "sector_name": "银行",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.87,
+            "reason": "金科股份收盘价低于1元并首次提示可能终止上市风险，反映该公司短期上市与流动性压力；单一公司事件不足以推导房地产行业景气。",
+            "evidence": [
+              "、广发\n银行\n、\n农业银行\n、\n渤海银行\n、\n工商银行\n、\n建设银行\n、\n中国银行\n等多家\n银行\n申请合计707亿元\n综合\n授信额度\n。\n综合\n授信业务品种主要包括但不限于流动资金贷款、贸易融资、票据业务、供应链金融、项目贷款、信用证业务、跨境融资等。\n金科股份\n：公司股票于2026年11月16日收盘价为0.97元/股，低于1元。根据相关规定，\n公司股票存在可能因股价低于面值被终止上市的风险\n。本公告为公司首次终止上市风险提示公告。\n山鹰国际\n："
+            ],
+            "sector_code": "801180.SI",
+            "sector_name": "房地产",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.89,
+            "reason": "山鹰国际收盘价首次低于1元，但须连续20个交易日每日收盘价均低于1元才可能终止上市；条件尚未完成，不能外推轻工制造行业风险。",
+            "evidence": [
+              "公司股票在11月16日收盘价为0.94元/股，首次低于人民币1元。根据相关规定，若公司股票连续20个交易日的每日收盘价均低于1元，\n可能被上交所终止上市交易\n。\n*ST美丽\n：\n公司股票当日收盘价为0.95元/股，低于1元。根据《深圳证券交易所股票上市规则》第9.2.3条（一）“在深圳证券交易所仅发行A股股票的上市公司，首次出现股票收盘价低于1元情形的，应当在次一交易日开市前披露公司股票可能被终止上市的风险提示公告”的规定，公司应当披露股票\n可能被终止上市的风险\n提示公告。"
+            ],
+            "sector_code": "801140.SI",
+            "sector_name": "轻工制造",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.89,
+            "reason": "文投控股AI漫剧收入占比约2.57%，同时面临退市风险警示；两项均为单一公司信息，不能推导传媒行业需求或景气。",
+            "evidence": [
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。"
+            ],
+            "sector_code": "801760.SI",
+            "sector_name": "传媒",
+            "horizon": "today"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.85,
+            "reason": "一鸣食品拟募资不超2.2亿元建设植乳基营养食品产线，利于公司扩产但仍属计划；对食品饮料整体需求和格局的影响无法由单家公司判断。",
+            "evidence": [
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801120.SI",
+            "sector_name": "食品饮料",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.86,
+            "reason": "科伦4个品种纳入医保目录有助相关药品准入与潜在放量，但仅为单一公司，且可能伴随价格约束；不能外推医药生物行业销售或盈利。",
+            "evidence": [
+              "数据中心\n是公司当前的核心自建项目，\n一、二、三期合计规划产能168MW，各期梯度推进\n。\n科伦药业\n：公司及控股子公司共计4个品种\n（3个药品新增纳入、1个新增2项适应症）纳入国家医保目录\n。上述药品2025年度合计销售额为5.21亿元，2026年1—6月合计销售额为5.43亿元，分别约占同期公司营业收入的2.82%、6.15%。\n华康洁净\n：公司预中标河北工程大学附属\n医院\n复兴院区二期工程医疗专项工程施工项目，\n中标金额9405.64万元\n。"
+            ],
+            "sector_code": "801150.SI",
+            "sector_name": "医药生物",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.93,
+            "reason": "光启技术子公司获17.9亿元超材料框架合同，预计影响2027年及2028年上半年业绩；订单集中于单一公司，不能外推军工行业需求。",
+            "evidence": [
+              "文投控股\n：\n公司AI漫剧业务收入占比约2.57%，公司股票\n面临被实施退市风险警示的风险\n。\n骏成科技\n：公司为夯实研发中心、\n数据中心\n基础设施，与供应商Z签订GPU卡采购合同，\n合同总金额暂定7.65亿元，采购9000张GPU卡\n。\n光启技术\n：公司全资子公司光启尖端于2026年11月13日与某客户签署《采购框架合同》，\n将提供超材料结构件产品，含税金额17.9亿元\n，占公司2025年度经审计主营业务收入的87.52%。",
+              "合同履行期限最晚至2028年6月，预计对公司2027年及2028年上半年经营业绩产生积极影响。\n捷捷微电\n：公司全资子公司\n捷捷微电\n（南通）科技有限公司拟建设“车规级高功率\n半导体\n器件芯片（研发、试验）生产线建设项目”，\n总投资15亿元\n。\n一鸣食品\n：公司拟以简易程序\n向特定对象发行股票募资不超过2.2亿元\n，扣除相关发行费用后用于新型植乳基营养膳食食品生产线建设项目。\n大位科技\n：\n11月16日，在三季报业绩会上，\n大位科技\n董事长肖健介绍，张北榕泰\n云计算"
+            ],
+            "sector_code": "801740.SI",
+            "sector_name": "国防军工",
+            "horizon": "medium_term"
+          },
+          {
+            "direction": "unknown",
+            "confidence": 0.92,
+            "reason": "华康洁净预中标9405.64万元医疗专项施工项目，增加公司订单可见度但尚未披露合同落地；单一项目不足以判断建筑装饰行业需求。",
+            "evidence": [
+              "数据中心\n是公司当前的核心自建项目，\n一、二、三期合计规划产能168MW，各期梯度推进\n。\n科伦药业\n：公司及控股子公司共计4个品种\n（3个药品新增纳入、1个新增2项适应症）纳入国家医保目录\n。上述药品2025年度合计销售额为5.21亿元，2026年1—6月合计销售额为5.43亿元，分别约占同期公司营业收入的2.82%、6.15%。\n华康洁净\n：公司预中标河北工程大学附属\n医院\n复兴院区二期工程医疗专项工程施工项目，\n中标金额9405.64万元\n。"
+            ],
+            "sector_code": "801720.SI",
+            "sector_name": "建筑装饰",
+            "horizon": "medium_term"
+          }
+        ],
+        "uncertainties": [
+          "AI加速器出货、资本开支、HBM及电力需求均为研究机构预测，NAND后续价格也存在分歧，实际订单与利润可能偏离。",
+          "储能方案、具身模型开源、股票募资、GPU采购、框架合同和预中标分别处于政策、计划或前期合同阶段，实施与利润兑现时间不确定。",
+          "商品单日涨跌及国际、国内基准分化不代表持续盈利；退市提示附有条件且多属个案，不能外推行业或六大指数。"
+        ],
+        "usage": {
+          "total_tokens": 32280,
+          "prompt_tokens": 4675,
+          "completion_tokens": 27605
+        },
+        "status": "ready",
+        "model": "MiniMax-M3.1-Flash",
+        "prompt_version": "fulltext-sw31-impact-v2-refs",
+        "input_hash": "3efc043f98f7c202c13c2fa736e411c75ee435e52e3295b99d4b13de8fafdfa3",
+        "input_scope": "entire_extracted_article_body",
+        "input_characters": 5470,
+        "scored_at": "2026-11-17T19:57:42.524233+08:00"
+      }
     },
     {
       "id": "529dff662e5228011ef7",
@@ -1360403,7 +1361608,7 @@
   ],
   "schema_version": 1,
   "data_mode": "live",
-  "generated_at": "2026-11-17T19:49:19.479077+08:00",
+  "generated_at": "2026-11-17T19:58:08.437142+08:00",
   "market_session": {
     "phase": "post_close",
     "label": "已收盘",
@@ -1856766,7 +1857971,7 @@
     }
   ],
   "sentiment_summary": {
-    "as_of": "2026-11-17T19:49:19.479077+08:00",
+    "as_of": "2026-11-17T19:58:08.437142+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
@@ -1856792,7 +1857997,7 @@
     },
     "english_model_id": "ProsusAI/finbert",
     "english_model_revision": "0bc2ac10dda6929bcb1f77ccc43c7ec5c424f031",
-    "model_cache_used_count": 2,
+    "model_cache_used_count": 1,
     "model_used": true,
     "model_deferred_count": 0,
     "model_revision": "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
@@ -1856801,11 +1858006,11 @@
     "model_error": null,
     "fallback_method": "financial-tone-rules-v2",
     "labels": {
-      "positive": 0,
-      "negative": 4,
-      "mixed": 0,
+      "positive": 1,
+      "negative": 2,
+      "mixed": 9,
       "neutral": 0,
-      "unknown": 33
+      "unknown": 25
     }
   },
   "equity_collection": {
@@ -1856827,7 +1858032,7 @@
   },
   "fund_state": {
     "version": 2,
-    "last_run_at": "2026-11-17T19:49:18+08:00",
+    "last_run_at": "2026-11-17T19:58:07+08:00",
     "requests_this_run": 0,
     "status": "pending",
     "cache": {
@@ -1859877,7 +1861082,7 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。"
   },
   "equity_forecast": {
-    "as_of": "2026-11-17T19:49:19.479077+08:00",
+    "as_of": "2026-11-17T19:58:08.437142+08:00",
     "target_date": "2026-11-18",
     "target_kind": "next_open",
     "reference_date": "2026-11-17",
@@ -1859885,7 +1861090,7 @@
     "status": "baseline",
     "model_version": "shared-equity-ohlcv-v1",
     "market": {
-      "as_of": "2026-11-17T19:49:19.479077+08:00",
+      "as_of": "2026-11-17T19:58:08.437142+08:00",
       "target_date": "2026-11-18",
       "target_kind": "next_open",
       "reference_date": "2026-11-17",
@@ -1932776,7 +1933981,7 @@
     "status": "partial",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T19:49:19.479077+08:00",
+    "issued_at": "2026-11-17T19:58:08.437142+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-18",
     "target": "next_close_return_pct",
@@ -1933943,9 +1935148,9 @@
   "news_archive_summary": {
     "date": "2026-11-17",
     "new_versions": 0,
-    "archived_versions": 188,
-    "collection_runs": 20,
-    "last_collection": "2026-11-17T19:49:19.479077+08:00",
+    "archived_versions": 189,
+    "collection_runs": 22,
+    "last_collection": "2026-11-17T19:58:08.437142+08:00",
     "schedule": "每天北京时间09:00—16:00，每30分钟；GitHub任务可能延迟",
     "path": "data/news_archive/20261117.json.gz"
   },
@@ -1946724,22 +1947929,22 @@
     "reused": 26,
     "complete": 26,
     "total": 75,
-    "as_of": "2026-11-17T19:44:34.844644+08:00",
+    "as_of": "2026-11-17T19:54:14.729177+08:00",
     "status": "cache_only"
   },
   "minimax_summary": {
     "model": "MiniMax-M3.1-Flash",
     "prompt_version": "fulltext-sw31-impact-v2-refs",
     "inferred": 1,
-    "attempted": 3,
-    "reused": 12,
-    "ready": 13,
-    "pending_bodies": 13,
+    "attempted": 1,
+    "reused": 13,
+    "ready": 14,
+    "pending_bodies": 12,
     "key_configured": true,
     "status": "partial",
     "last_error": null,
     "cooldown_until": null,
-    "as_of": "2026-11-17T19:48:47.278773+08:00"
+    "as_of": "2026-11-17T19:57:42.540080+08:00"
   },
   "minimax_api_check": null,
   "primary_minutes_state": {
