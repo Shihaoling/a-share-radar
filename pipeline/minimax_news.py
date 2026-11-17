@@ -51,15 +51,24 @@ def validate_analysis(value, body):
     if not isinstance(summary, str) or not 5 <= len(summary) <= 200: raise ValueError('invalid_summary')
     if value.get('tone') not in LABELS: raise ValueError('invalid_tone')
     if value.get('fact_status') not in {'reported_fact', 'proposal', 'opinion', 'rumor', 'uncertain'}: raise ValueError('invalid_fact_status')
+    nonspace = [m.start() for m in re.finditer(r'\S', body)]
+    normalized_body = ''.join(body[i] for i in nonspace)
+    def grounded_quote(quote):
+        if not isinstance(quote, str) or not 1 <= len(quote) <= 320: raise ValueError('ungrounded_evidence')
+        normalized_quote = re.sub(r'\s+', '', quote)
+        position = normalized_body.find(normalized_quote) if normalized_quote else -1
+        if position < 0: raise ValueError('ungrounded_evidence')
+        return body[nonspace[position]:nonspace[position+len(normalized_quote)-1]+1]
     def effect(row):
         if not isinstance(row, dict) or row.get('direction') not in LABELS: raise ValueError('invalid_direction')
         confidence = row.get('confidence')
         if type(confidence) not in (int, float) or not math.isfinite(confidence) or not 0 <= confidence <= 1: raise ValueError('invalid_confidence')
         reason = row.get('reason'); evidence = row.get('evidence')
         if not isinstance(reason, str) or not 1 <= len(reason) <= 400: raise ValueError('invalid_reason')
-        if not isinstance(evidence, list) or len(evidence) > 3 or any(not isinstance(e, str) or not 1 <= len(e) <= 160 or e not in body for e in evidence): raise ValueError('ungrounded_evidence')
+        if not isinstance(evidence, list) or len(evidence) > 3: raise ValueError('ungrounded_evidence')
+        evidence = [grounded_quote(e) for e in evidence]
         if row['direction'] != 'unknown' and not evidence: raise ValueError('missing_evidence')
-        return {k: row[k] for k in ('direction', 'confidence', 'reason', 'evidence')}
+        return {**{k: row[k] for k in ('direction', 'confidence', 'reason')}, 'evidence': evidence}
     impacts = value.get('sector_impacts')
     if not isinstance(impacts, list) or len(impacts) > 31: raise ValueError('invalid_sectors')
     seen = set(); output = []
@@ -125,7 +134,11 @@ def infer_article(article, config, key):
         raise ModelFailure('http_'+str(e.code)+suffix, 86400 if e.code in (401,403) else 3600) from None
     except ModelFailure: raise
     except (urllib.error.URLError, TimeoutError, OSError): raise ModelFailure('transport_error') from None
-    except (ValueError, KeyError, IndexError, TypeError): raise ModelFailure('invalid_analysis', 86400) from None
+    except ValueError as e:
+        allowed = {'invalid_analysis','invalid_summary','invalid_tone','invalid_fact_status','invalid_direction','invalid_confidence','invalid_reason','ungrounded_evidence','missing_evidence','invalid_sectors','invalid_sector_identity','invalid_horizon','invalid_uncertainties'}
+        reason = e.args[0] if e.args and e.args[0] in allowed else 'invalid_json'
+        raise ModelFailure('invalid_analysis_'+reason, 86400) from None
+    except (KeyError, IndexError, TypeError): raise ModelFailure('invalid_analysis', 86400) from None
     except Exception: raise ModelFailure('invalid_or_unavailable_response') from None
 
 
@@ -169,7 +182,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
                 cache['articles'][cache_key] = row; n['llm_analysis'] = deepcopy(row)
                 cache.pop('last_error', None)
             except ModelFailure as e:
-                if e.code in ('input_over_budget', 'invalid_analysis', 'incomplete_response'):
+                if e.code.startswith('invalid_analysis') or e.code in ('input_over_budget', 'incomplete_response'):
                     cache['failures'][cache_key] = {'error_code': e.code, 'retry_after': (now+timedelta(seconds=e.retry)).isoformat()}
                     n['llm_status'] = 'analysis_unavailable'
                     continue
@@ -182,9 +195,10 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
         else: n['llm_status'] = 'missing_key' if not key and enabled else 'temporarily_unavailable' if cache.get('cooldown_until', '') > now.isoformat() else 'deferred'
     path.write_text(json.dumps(cache, ensure_ascii=False, indent=2)+'\n')
     ready = sum(n.get('llm_status') == 'ready' for n in result.get('news', []))
-    status = ('partial' if ready else 'error') if error else ('partial' if ready else 'cooldown') if cache.get('cooldown_until', '') > now.isoformat() else 'ready' if ready else 'pending' if key else 'missing_key'
+    pending = sum(n.get('full_text_status') == 'complete' and n.get('llm_status') != 'ready' for n in result.get('news', []))
+    status = ('partial' if ready else 'error') if error else ('partial' if ready else 'cooldown') if cache.get('cooldown_until', '') > now.isoformat() else 'partial' if ready and pending else 'ready' if ready else 'pending' if key else 'missing_key'
     result['minimax_summary'] = {'model': model, 'prompt_version': PROMPT_VERSION, 'inferred': successful, 'attempted': count, 'reused': reused,
-        'ready': ready, 'key_configured': bool(key),
+        'ready': ready, 'pending_bodies': pending, 'key_configured': bool(key),
         'status': status, 'last_error': error or cache.get('last_error'),
-        'cooldown_until': cache.get('cooldown_until'), 'as_of': now.isoformat()}
+        'cooldown_until': cache.get('cooldown_until'), 'as_of': shanghai_now().isoformat()}
     return result

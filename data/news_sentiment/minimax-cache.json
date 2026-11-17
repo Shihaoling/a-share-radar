@@ -349,27 +349,7 @@
       "scored_at": "2026-11-17T19:10:07.202681+08:00"
     }
   },
-  "failures": {
-    "587130af3c1833e4a1903f08c48d64311f33e356644230a038039dd7b297c127": {
-      "error_code": "invalid_analysis",
-      "retry_after": "2026-11-18T19:00:15.618899+08:00"
-    },
-    "3362589ffa38f0f7dfb737a001291254efc938ecc7fec64bdb8c7e29d843942e": {
-      "error_code": "invalid_analysis",
-      "retry_after": "2026-11-18T19:00:15.618899+08:00"
-    },
-    "eba45ba43082784d72afffa8ccea88be3ebc3e10983eb86ec072c9337e6b138e": {
-      "error_code": "invalid_analysis",
-      "retry_after": "2026-11-18T19:00:15.618899+08:00"
-    },
-    "ff3cb882b1fb39423b6d3cef340e19f31472f076beda12311d74b8270fe1b8bd": {
-      "error_code": "invalid_analysis",
-      "retry_after": "2026-11-18T19:00:15.618899+08:00"
-    },
-    "fdc75b54d2b3c7225442f03ef4cd50f2a8c52444955076862ba97d48e65e1865": {
-      "error_code": "invalid_analysis",
-      "retry_after": "2026-11-18T19:00:15.618899+08:00"
-    }
-  },
-  "credential_refresh": "2026-11-17-subscription-key"
+  "failures": {},
+  "credential_refresh": "2026-11-17-subscription-key",
+  "validation_refresh": "literal-whitespace-v2"
 }

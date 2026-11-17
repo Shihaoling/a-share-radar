@@ -42,6 +42,13 @@ class FullTextTests(unittest.TestCase):
             self.assertEqual(next(iter(saved['articles'].values()))['full_text'],text)
             view=publish_view({'news':[n]},Path(d)/'view.json');self.assertNotIn('full_text',view['news'][0])
 
+    def test_quote_layout_whitespace_is_normalized_without_allowing_paraphrase(self):
+        a=analysis();split_body=BODY.replace('航空公司燃油成本上升','航空公司\n燃油成本\n上升')
+        result=validate_analysis(a,split_body)
+        self.assertIn('航空公司\n燃油成本\n上升',result['sector_impacts'][1]['evidence'])
+        a['sector_impacts'][1]['evidence']=['航空公司燃油成本下降']
+        with self.assertRaises(ValueError):validate_analysis(a,split_body)
+
     def test_challenge_and_paywall_are_not_article_bodies(self):
         for html in ('<article>安全验证'+BODY+'</article>', '<div class="paywall">订阅</div><article>'+BODY+'</article>'):
             with self.assertRaises(Exception):extract_article(html.encode())

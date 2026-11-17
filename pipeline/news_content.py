@@ -126,7 +126,7 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
                 'respect_robots': True, 'max_retries': 0, 'min_request_interval_seconds': 4,
                 'request_budget_seconds': 100, 'max_http_requests': 36, 'max_response_bytes': 4000000, 'timeout_seconds': 10}
     gate = gate or ArticleGate(gate_cfg)
-    enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True)
+    enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
     attempted = 0; hosts = {}; reused = 0
     for n in sorted(result.get('news', []), key=lambda x: x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
         url = n.get('url') or n.get('original_url'); key = text_hash(str(url or n.get('id')))
