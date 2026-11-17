@@ -59,3 +59,23 @@ class DataServiceTests(unittest.TestCase):
   d={'primary_minutes_state':{'service_endpoint':ENDPOINT,'endpoints':{'sw_mins':{'cooldown_until':(NOW+timedelta(hours=1)).isoformat()}}},'news':[]}
   out=fetch_data(d,{'network_enabled':False,'primary_provider':'stock_api'},NOW)
   self.assertEqual(out['primary_minutes_state'],d['primary_minutes_state'])
+
+class ServiceInventoryTests(unittest.TestCase):
+ def test_capability_inventory_is_bounded_and_resumes_without_duplicate_requests(self):
+  from pipeline.service_rollout import run
+  class Client:
+   def __init__(self):self.calls=[]
+   def request(self,api,params):
+    self.calls.append(api)
+    return [{'ts_code':params.get('ts_code'),'trade_date':params.get('trade_date'),'end_date':params.get('period'),'date':params.get('date'),'month':params.get('m'),'quarter':params.get('q'),'nav_date':params.get('nav_date')}]
+  c=Client()
+  with TemporaryDirectory() as d:
+   first=run(d,NOW,c);self.assertEqual(len(c.calls),6)
+   second=run(d,NOW,c);self.assertEqual(len(c.calls),12)
+   self.assertEqual(len(c.calls),len(set(c.calls)));self.assertEqual(second['cursor'],12)
+ def test_mismatched_old_secret_is_not_sent_to_new_service(self):
+  from pipeline.service_rollout import run
+  with TemporaryDirectory() as d,patch.dict(os.environ,{'STOCK_API_TOKEN':'old-private-fixture','RADAR_EXPECTED_STOCK_KEY_SHA256':'0'*64}),patch('pipeline.service_rollout._Client') as client:
+   result=run(d,NOW)
+   self.assertEqual(result['status'],'needs_token_update');client.assert_not_called()
+   self.assertNotIn('old-private-fixture',Path(d,'web/data/data-service-capabilities.json').read_text())

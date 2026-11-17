@@ -62,6 +62,18 @@ def run(root=None,now=None,client=None):
     if not report.get('migration_completed') and report.get('next_allowed_after','')<=now.isoformat() and production and os.environ.get('GITHUB_ACTIONS')=='true':
         from .run import run as refresh
         refresh(stock_api_only=True)
+        from .primary_minutes import collect_primary_minutes
+        from .publish import publish_view
+        cfg=load(root/'config/settings.json',{});cfg['network_enabled']=True
+        snapshot=load(root/'web/data/dashboard.json',{})
+        # Complete one initial day's backfill in at most four bounded batches.
+        # Each failure retains its endpoint cooldown; no-progress ends the loop.
+        for _ in range(3):
+            before=len(snapshot.get('primary_minutes_state',{}).get('completed',{}))
+            snapshot=collect_primary_minutes(snapshot,cfg,shanghai_now())
+            atomic_json(root/'web/data/dashboard.json',snapshot);publish_view(snapshot,root/'web/data/view.json')
+            if len(snapshot.get('primary_minutes_state',{}).get('completed',{}))<=before:break
+        report['minute_entities_completed']=len(snapshot.get('primary_minutes_state',{}).get('completed',{}))
         report['migration_completed']=shanghai_now().isoformat();atomic_json(path,report)
     print(json.dumps({'service':ENDPOINT,'status':report['status'],'tested':len(report['results']),'pending':report['pending_apis']},ensure_ascii=False))
     return report

@@ -24,7 +24,7 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
     client = client or _Client(token, {'max_requests': 12, 'budget_seconds': 180, 'min_interval_seconds': 6,'timeout_seconds':30}, now)
     day = now.date().isoformat(); attempted = 0
     state['completed'] = {k:v for k,v in state['completed'].items() if k[:10] >= (now-timedelta(days=7)).date().isoformat()}
-    for group, api in (('sectors', 'sw_mins'), ('market', 'idx_mins')):
+    for group, api in (('market', 'idx_mins'), ('sectors', 'sw_mins')):
         endpoint = state['endpoints'].setdefault(api, {})
         if endpoint.get('cooldown_until', '') > now.isoformat(): continue
         for entity in result.get(group, []):
@@ -46,8 +46,11 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
                 prior = [p for p in bucket.get('points', []) if not (p.get('provider') == 'stock_api' and str(p.get('timestamp', '')).startswith(day))]
                 bucket['points'] = prior + points
                 state['completed'][key] = {'available_at': now.isoformat(), 'count': len(points)}
-                endpoint.update(status='success', last_success=now.isoformat()); endpoint.pop('cooldown_until', None)
+                endpoint.update(status='success', last_success=now.isoformat())
+                for field in ('cooldown_until','error_code','provider_code','provider_reason'):endpoint.pop(field,None)
             except _Failure as e:
+                if e.code=='budget_exhausted':
+                    endpoint['status']='deferred';break
                 endpoint.update(status='unavailable', error_code=e.code, last_attempt=now.isoformat(),
                     provider_code=e.provider_code, provider_reason=e.provider_reason,
                     cooldown_until=(now+timedelta(seconds=max(1800,e.retry_seconds))).isoformat())
