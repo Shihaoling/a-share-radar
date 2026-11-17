@@ -551,7 +551,10 @@
         "input_hash": "bcf947723145d87c8ca59d326c9376d5ebaec7d8858833e0e154fafec87ee677",
         "prompt_version": "daily-news-digest-v3"
       },
-      "next_update": "2026-11-18T03:02:00.971176+08:00"
+      "next_update": "2026-11-18T03:02:00.971176+08:00",
+      "attempt_version": "daily-news-digest-v3",
+      "error_code": "input_over_budget",
+      "retry_after": "2026-11-19T03:24:23.021141+08:00"
     }
   }
 }
