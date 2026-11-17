@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T20:02:29.295147+08:00",
+  "generated_at": "2026-11-17T20:35:03.528400+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -8,7 +8,7 @@
     "target_kind": "next_open",
     "is_trading_day": true
   },
-  "requests_this_run": 4,
+  "requests_this_run": 7,
   "target_trade_date": "2026-11-17",
   "cooldown_until": null,
   "endpoints": {
@@ -16,22 +16,22 @@
       "status": "cooldown",
       "error_code": "api_denied",
       "last_success": null,
-      "last_attempt": "2026-11-16T19:29:43+08:00",
-      "next_retry": "2026-11-17T19:29:43+08:00"
+      "last_attempt": "2026-11-17T20:22:46+08:00",
+      "next_retry": "2026-11-18T20:22:46+08:00"
     },
     "rt_sw_k": {
       "status": "cooldown",
       "error_code": "api_denied",
       "last_success": null,
-      "last_attempt": "2026-11-16T19:29:43+08:00",
-      "next_retry": "2026-11-17T19:29:43+08:00"
+      "last_attempt": "2026-11-17T20:22:46+08:00",
+      "next_retry": "2026-11-18T20:22:46+08:00"
     },
     "news": {
       "status": "cooldown",
       "error_code": "api_denied",
       "last_success": null,
-      "last_attempt": "2026-11-16T19:29:56+08:00",
-      "next_retry": "2026-11-17T19:29:56+08:00"
+      "last_attempt": "2026-11-17T20:22:46+08:00",
+      "next_retry": "2026-11-18T20:22:46+08:00"
     },
     "index_classify": {
       "status": "success",
@@ -43,8 +43,8 @@
     "sw_daily": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": "2026-11-17T19:01:00+08:00"
     },
     "daily_basic": {
@@ -64,8 +64,8 @@
     "index_member_all": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null
     },
     "trade_cal": {
@@ -90,8 +90,8 @@
       "id": "fed",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -99,8 +99,8 @@
       "id": "ecb",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -108,8 +108,8 @@
       "id": "eia",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -117,8 +117,8 @@
       "id": "bbc_business",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -126,8 +126,8 @@
       "id": "federal_register",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -136,16 +136,16 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-17T18:28:42.418015+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
-      "next_retry": "2026-11-17T19:01:00+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
+      "next_retry": "2026-11-17T20:37:46+08:00",
       "requests_this_run": null
     },
     {
       "id": "eastmoney_breakfast",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
-      "last_attempt": "2026-11-17T18:46:00+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
+      "last_attempt": "2026-11-17T20:22:46+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -252,15 +252,15 @@
       "id": "stock_api",
       "status": "stale",
       "error_code": null,
-      "last_success": "2026-11-17T18:47:07.544939+08:00",
+      "last_success": "2026-11-17T20:24:10.122327+08:00",
       "last_attempt": null,
       "next_retry": null,
-      "requests_this_run": 4
+      "requests_this_run": 7
     },
     {
       "id": "funds",
-      "status": "pending",
-      "error_code": "offline",
+      "status": "success",
+      "error_code": null,
       "last_success": null,
       "last_attempt": null,
       "next_retry": null,
@@ -571,14 +571,14 @@
       "id": "801010.SI",
       "name": "农林牧渔",
       "taxonomy": "SW2021",
-      "quote": 2569.13,
-      "quote_date": "2026-11-16",
+      "quote": 2542.15,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 126,
       "membership_complete": true,
       "stock_count": 10,
@@ -590,9 +590,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 88.12,
+        "vendor_pe": 87.2,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -603,14 +603,14 @@
       "id": "801030.SI",
       "name": "基础化工",
       "taxonomy": "SW2021",
-      "quote": 3584.79,
-      "quote_date": "2026-11-16",
+      "quote": 3579.54,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 465,
       "membership_complete": true,
       "stock_count": 10,
@@ -622,9 +622,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 21.42,
+        "vendor_pe": 21.39,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -635,14 +635,14 @@
       "id": "801040.SI",
       "name": "钢铁",
       "taxonomy": "SW2021",
-      "quote": 1938.7,
-      "quote_date": "2026-11-16",
+      "quote": 1931.23,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 50,
       "membership_complete": true,
       "stock_count": 10,
@@ -654,9 +654,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 34.17,
+        "vendor_pe": 34.04,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -667,14 +667,14 @@
       "id": "801050.SI",
       "name": "有色金属",
       "taxonomy": "SW2021",
-      "quote": 6150.85,
-      "quote_date": "2026-11-16",
+      "quote": 6150.03,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 160,
       "membership_complete": true,
       "stock_count": 10,
@@ -688,7 +688,7 @@
       "pe": {
         "vendor_pe": 12.54,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "negative",
       "emotion_n": 1,
@@ -699,14 +699,14 @@
       "id": "801080.SI",
       "name": "电子",
       "taxonomy": "SW2021",
-      "quote": 6050.41,
-      "quote_date": "2026-11-16",
+      "quote": 6040.56,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 530,
       "membership_complete": true,
       "stock_count": 10,
@@ -718,9 +718,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 35.75,
+        "vendor_pe": 35.69,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -731,14 +731,14 @@
       "id": "801110.SI",
       "name": "家用电器",
       "taxonomy": "SW2021",
-      "quote": 8736.7,
-      "quote_date": "2026-11-16",
+      "quote": 8808.17,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 109,
       "membership_complete": true,
       "stock_count": 10,
@@ -750,9 +750,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 15.84,
+        "vendor_pe": 15.97,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -763,14 +763,14 @@
       "id": "801120.SI",
       "name": "食品饮料",
       "taxonomy": "SW2021",
-      "quote": 14843.55,
-      "quote_date": "2026-11-16",
+      "quote": 14887.88,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 129,
       "membership_complete": true,
       "stock_count": 10,
@@ -782,9 +782,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 23.03,
+        "vendor_pe": 23.1,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -795,14 +795,14 @@
       "id": "801130.SI",
       "name": "纺织服饰",
       "taxonomy": "SW2021",
-      "quote": 1453.35,
-      "quote_date": "2026-11-16",
+      "quote": 1438.66,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 119,
       "membership_complete": true,
       "stock_count": 10,
@@ -814,9 +814,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 24.39,
+        "vendor_pe": 24.15,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -827,14 +827,14 @@
       "id": "801140.SI",
       "name": "轻工制造",
       "taxonomy": "SW2021",
-      "quote": 1871.57,
-      "quote_date": "2026-11-16",
+      "quote": 1852.74,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 172,
       "membership_complete": true,
       "stock_count": 10,
@@ -846,9 +846,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 33.08,
+        "vendor_pe": 32.77,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -859,14 +859,14 @@
       "id": "801150.SI",
       "name": "医药生物",
       "taxonomy": "SW2021",
-      "quote": 7338.93,
-      "quote_date": "2026-11-16",
+      "quote": 7292.04,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 530,
       "membership_complete": true,
       "stock_count": 10,
@@ -878,9 +878,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 29.34,
+        "vendor_pe": 29.15,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -891,14 +891,14 @@
       "id": "801160.SI",
       "name": "公用事业",
       "taxonomy": "SW2021",
-      "quote": 2429.0,
-      "quote_date": "2026-11-16",
+      "quote": 2425.43,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 142,
       "membership_complete": true,
       "stock_count": 10,
@@ -910,9 +910,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 24.87,
+        "vendor_pe": 24.84,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -923,14 +923,14 @@
       "id": "801170.SI",
       "name": "交通运输",
       "taxonomy": "SW2021",
-      "quote": 2072.15,
-      "quote_date": "2026-11-16",
+      "quote": 2069.35,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 143,
       "membership_complete": false,
       "stock_count": 10,
@@ -942,9 +942,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 15.92,
+        "vendor_pe": 15.9,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -955,14 +955,14 @@
       "id": "801180.SI",
       "name": "房地产",
       "taxonomy": "SW2021",
-      "quote": 1675.11,
-      "quote_date": "2026-11-16",
+      "quote": 1657.96,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 115,
       "membership_complete": true,
       "stock_count": 10,
@@ -974,9 +974,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 11.07,
+        "vendor_pe": 10.95,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -987,14 +987,14 @@
       "id": "801200.SI",
       "name": "商贸零售",
       "taxonomy": "SW2021",
-      "quote": 1682.5,
-      "quote_date": "2026-11-16",
+      "quote": 1660.71,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 117,
       "membership_complete": true,
       "stock_count": 10,
@@ -1006,9 +1006,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 31.31,
+        "vendor_pe": 30.9,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1019,14 +1019,14 @@
       "id": "801210.SI",
       "name": "社会服务",
       "taxonomy": "SW2021",
-      "quote": 6760.14,
-      "quote_date": "2026-11-16",
+      "quote": 6685.19,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 95,
       "membership_complete": true,
       "stock_count": 10,
@@ -1038,9 +1038,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 39.9,
+        "vendor_pe": 39.46,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1051,14 +1051,14 @@
       "id": "801230.SI",
       "name": "综合",
       "taxonomy": "SW2021",
-      "quote": 3263.42,
-      "quote_date": "2026-11-16",
+      "quote": 3227.35,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 40,
       "membership_complete": true,
       "stock_count": 10,
@@ -1070,9 +1070,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 63.34,
+        "vendor_pe": 62.64,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1083,14 +1083,14 @@
       "id": "801710.SI",
       "name": "建筑材料",
       "taxonomy": "SW2021",
-      "quote": 4713.69,
-      "quote_date": "2026-11-16",
+      "quote": 4683.02,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 80,
       "membership_complete": true,
       "stock_count": 10,
@@ -1102,9 +1102,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 29.32,
+        "vendor_pe": 29.13,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -1115,14 +1115,14 @@
       "id": "801720.SI",
       "name": "建筑装饰",
       "taxonomy": "SW2021",
-      "quote": 1737.11,
-      "quote_date": "2026-11-16",
+      "quote": 1726.41,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 170,
       "membership_complete": true,
       "stock_count": 10,
@@ -1134,9 +1134,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 14.5,
+        "vendor_pe": 14.41,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1147,14 +1147,14 @@
       "id": "801730.SI",
       "name": "电力设备",
       "taxonomy": "SW2021",
-      "quote": 7083.02,
-      "quote_date": "2026-11-16",
+      "quote": 6996.53,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 434,
       "membership_complete": true,
       "stock_count": 10,
@@ -1166,9 +1166,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 23.71,
+        "vendor_pe": 23.42,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -1179,14 +1179,14 @@
       "id": "801740.SI",
       "name": "国防军工",
       "taxonomy": "SW2021",
-      "quote": 1429.22,
-      "quote_date": "2026-11-16",
+      "quote": 1421.77,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 149,
       "membership_complete": true,
       "stock_count": 10,
@@ -1198,9 +1198,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 50.51,
+        "vendor_pe": 50.24,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1211,14 +1211,14 @@
       "id": "801750.SI",
       "name": "计算机",
       "taxonomy": "SW2021",
-      "quote": 3861.35,
-      "quote_date": "2026-11-16",
+      "quote": 3829.49,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 381,
       "membership_complete": true,
       "stock_count": 10,
@@ -1230,9 +1230,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 54.02,
+        "vendor_pe": 53.58,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 3,
@@ -1243,14 +1243,14 @@
       "id": "801760.SI",
       "name": "传媒",
       "taxonomy": "SW2021",
-      "quote": 688.51,
-      "quote_date": "2026-11-16",
+      "quote": 656.03,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 153,
       "membership_complete": true,
       "stock_count": 10,
@@ -1262,9 +1262,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 37.86,
+        "vendor_pe": 36.07,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1275,14 +1275,14 @@
       "id": "801770.SI",
       "name": "通信",
       "taxonomy": "SW2021",
-      "quote": 4257.84,
-      "quote_date": "2026-11-16",
+      "quote": 4161.31,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 144,
       "membership_complete": true,
       "stock_count": 10,
@@ -1294,9 +1294,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 26.82,
+        "vendor_pe": 26.19,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1307,14 +1307,14 @@
       "id": "801780.SI",
       "name": "银行",
       "taxonomy": "SW2021",
-      "quote": 4510.48,
-      "quote_date": "2026-11-16",
+      "quote": 4524.36,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 42,
       "membership_complete": true,
       "stock_count": 10,
@@ -1326,9 +1326,9 @@
         "complete": true
       },
       "pe": {
-        "vendor_pe": 6.87,
+        "vendor_pe": 6.89,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "negative",
       "emotion_n": 1,
@@ -1339,14 +1339,14 @@
       "id": "801790.SI",
       "name": "非银金融",
       "taxonomy": "SW2021",
-      "quote": 1637.45,
-      "quote_date": "2026-11-16",
+      "quote": 1637.95,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 93,
       "membership_complete": true,
       "stock_count": 10,
@@ -1360,7 +1360,7 @@
       "pe": {
         "vendor_pe": 11.24,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "positive",
       "emotion_n": 1,
@@ -1371,14 +1371,14 @@
       "id": "801880.SI",
       "name": "汽车",
       "taxonomy": "SW2021",
-      "quote": 5793.47,
-      "quote_date": "2026-11-16",
+      "quote": 5694.28,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 337,
       "membership_complete": true,
       "stock_count": 10,
@@ -1390,9 +1390,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 24.91,
+        "vendor_pe": 24.49,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -1403,14 +1403,14 @@
       "id": "801890.SI",
       "name": "机械设备",
       "taxonomy": "SW2021",
-      "quote": 1736.93,
-      "quote_date": "2026-11-16",
+      "quote": 1701.41,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 633,
       "membership_complete": true,
       "stock_count": 10,
@@ -1422,9 +1422,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 33.64,
+        "vendor_pe": 32.97,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1435,14 +1435,14 @@
       "id": "801950.SI",
       "name": "煤炭",
       "taxonomy": "SW2021",
-      "quote": 3287.66,
-      "quote_date": "2026-11-16",
+      "quote": 3248.83,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 36,
       "membership_complete": true,
       "stock_count": 10,
@@ -1454,9 +1454,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 16.59,
+        "vendor_pe": 16.39,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1467,14 +1467,14 @@
       "id": "801960.SI",
       "name": "石油石化",
       "taxonomy": "SW2021",
-      "quote": 2599.39,
-      "quote_date": "2026-11-16",
+      "quote": 2586.27,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 54,
       "membership_complete": true,
       "stock_count": 10,
@@ -1486,9 +1486,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 13.88,
+        "vendor_pe": 13.81,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
       "emotion_n": 1,
@@ -1499,14 +1499,14 @@
       "id": "801970.SI",
       "name": "环保",
       "taxonomy": "SW2021",
-      "quote": 1612.57,
-      "quote_date": "2026-11-16",
+      "quote": 1596.15,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 141,
       "membership_complete": true,
       "stock_count": 10,
@@ -1518,9 +1518,9 @@
         "complete": false
       },
       "pe": {
-        "vendor_pe": 21.81,
+        "vendor_pe": 21.58,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1531,14 +1531,14 @@
       "id": "801980.SI",
       "name": "美容护理",
       "taxonomy": "SW2021",
-      "quote": 3145.32,
-      "quote_date": "2026-11-16",
+      "quote": 3131.47,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "not_comparable",
       "live_quote": null,
-      "bars": 209,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 210,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": 32,
       "membership_complete": true,
       "stock_count": 10,
@@ -1550,9 +1550,9 @@
         "complete": true
       },
       "pe": {
-        "vendor_pe": 26.63,
+        "vendor_pe": 26.51,
         "vendor_pe_ttm": null,
-        "vendor_valuation_date": "2026-11-16"
+        "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
       "emotion_n": 0,
@@ -1572,7 +1572,7 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-17T20:02:29.295147+08:00",
+    "as_of": "2026-11-17T20:35:01.874313+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
@@ -1590,7 +1590,7 @@
     "model_requested": false,
     "model_loaded": false,
     "model_id": "yiyanghkust/finbert-tone-chinese",
-    "reuse_only": true,
+    "reuse_only": false,
     "model_inference_count": 0,
     "model_language_counts": {
       "chinese": 0,
@@ -1615,7 +1615,7 @@
     }
   },
   "fund_summary": {
-    "status": "pending",
+    "status": "success",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
@@ -1623,9 +1623,9 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-17T20:02:28+08:00",
+      "last_run_at": "2026-11-17T20:23:52+08:00",
       "requests_this_run": 0,
-      "status": "pending",
+      "status": "success",
       "endpoints": {},
       "cache_summary": {
         "etf_basic": {
@@ -1648,20 +1648,20 @@
   },
   "daily_forecast_summary": {
     "schema_version": "daily-index-sector-close-v3",
-    "status": "partial",
+    "status": "ready",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T20:02:29.295147+08:00",
+    "issued_at": "2026-11-17T20:35:03.528400+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-18",
     "target": "next_close_return_pct",
     "unit": "percentage_points",
     "mae_target": 0.1,
     "market_count": 6,
-    "sector_count": 0,
+    "sector_count": 31,
     "forward_evaluation": {
-      "settled_rows": 6,
-      "mae_pct": 0.5190475511132367,
+      "settled_rows": 37,
+      "mae_pct": 0.9688182663865705,
       "note": "仅对实际留存后成熟的标签结算，不混入历史回溯分数"
     },
     "evaluation": {
@@ -1681,7 +1681,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-17T20:02:29.295147+08:00",
+    "as_of": "2026-11-17T20:35:03.528400+08:00",
     "target_date": "2026-11-18",
     "target_kind": "next_open",
     "reference_date": "2026-11-17",
