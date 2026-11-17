@@ -1,36 +1,36 @@
 {
   "request_id": "eastmoney-103-20261118",
-  "runs": 2,
+  "runs": 3,
   "status": "in_progress",
   "total": 103,
-  "body_complete": 7,
-  "publication_verified": 7,
+  "body_complete": 12,
+  "publication_verified": 12,
   "publication_unconfirmed": 0,
-  "model_complete": 7,
-  "last_run_at": "2026-11-18T00:57:45.539187+08:00",
-  "next_allowed_after": "2026-11-18T01:13:50.066603+08:00",
+  "model_complete": 12,
+  "last_run_at": "2026-11-18T01:31:24.141061+08:00",
+  "next_allowed_after": "2026-11-18T01:42:23.606090+08:00",
   "content": {
     "attempted": 8,
-    "reused": 1,
-    "complete": 7,
+    "reused": 7,
+    "complete": 12,
     "total": 103,
-    "as_of": "2026-11-18T00:48:50.066603+08:00",
+    "as_of": "2026-11-18T01:17:23.606090+08:00",
     "status": "ready"
   },
   "model": {
     "model": "MiniMax-M3.1-Flash",
     "prompt_version": "fulltext-sw31-impact-v2-refs",
-    "inferred": 6,
-    "attempted": 6,
-    "reused": 1,
-    "ready": 7,
+    "inferred": 5,
+    "attempted": 5,
+    "reused": 7,
+    "ready": 12,
     "pending_bodies": 0,
     "key_configured": true,
     "status": "ready",
     "last_error": null,
     "cooldown_until": "2026-11-17T21:56:11.116226+08:00",
-    "as_of": "2026-11-18T00:55:16.937874+08:00"
+    "as_of": "2026-11-18T01:28:31.439552+08:00"
   },
   "schedule_version": "half-hour-v2",
-  "started_at": "2026-11-18T00:48:50.066603+08:00"
+  "started_at": "2026-11-18T01:17:23.606090+08:00"
 }
