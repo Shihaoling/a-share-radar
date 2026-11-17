@@ -1,0 +1,25 @@
+{
+  "completed_at": "2026-11-17T18:23:39.227289+08:00",
+  "request_id": "fulltext-minimax-v1",
+  "content": {
+    "attempted": 12,
+    "reused": 0,
+    "complete": 9,
+    "total": 75,
+    "as_of": "2026-11-17T18:22:44.879746+08:00",
+    "status": "ready"
+  },
+  "model": {
+    "model": "MiniMax-M3.1-Flash",
+    "prompt_version": "fulltext-sw31-impact-v1",
+    "inferred": 0,
+    "reused": 0,
+    "ready": 0,
+    "key_configured": false,
+    "status": "missing_key",
+    "last_error": null,
+    "cooldown_until": null,
+    "as_of": "2026-11-17T18:23:35.737627+08:00"
+  },
+  "api_check": null
+}
