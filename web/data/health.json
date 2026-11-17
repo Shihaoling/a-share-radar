@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T18:29:27.526767+08:00",
+  "generated_at": "2026-11-17T18:32:51.410609+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -259,8 +259,8 @@
     },
     {
       "id": "funds",
-      "status": "success",
-      "error_code": null,
+      "status": "pending",
+      "error_code": "offline",
       "last_success": null,
       "last_attempt": null,
       "next_retry": null,
@@ -1572,7 +1572,7 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-17T18:29:25.215399+08:00",
+    "as_of": "2026-11-17T18:32:51.410609+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
@@ -1590,7 +1590,7 @@
     "model_requested": false,
     "model_loaded": false,
     "model_id": "yiyanghkust/finbert-tone-chinese",
-    "reuse_only": false,
+    "reuse_only": true,
     "model_inference_count": 0,
     "model_language_counts": {
       "chinese": 0,
@@ -1615,7 +1615,7 @@
     }
   },
   "fund_summary": {
-    "status": "success",
+    "status": "pending",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
@@ -1623,9 +1623,9 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-17T18:28:35+08:00",
+      "last_run_at": "2026-11-17T18:32:50+08:00",
       "requests_this_run": 0,
-      "status": "success",
+      "status": "pending",
       "endpoints": {},
       "cache_summary": {
         "etf_basic": {
@@ -1651,7 +1651,7 @@
     "status": "partial",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T18:29:27.526767+08:00",
+    "issued_at": "2026-11-17T18:32:51.410609+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-18",
     "target": "next_close_return_pct",
@@ -1681,7 +1681,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-17T18:29:27.526767+08:00",
+    "as_of": "2026-11-17T18:32:51.410609+08:00",
     "target_date": "2026-11-18",
     "target_kind": "next_open",
     "reference_date": "2026-11-17",
