@@ -34,27 +34,18 @@
   },
   "2026-11-17": {
     "date": "2026-11-17",
-    "evaluated_at": "2026-11-17T15:19:51.578790+08:00",
+    "evaluated_at": "2026-11-17T15:43:03.882577+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 267,
-    "settled_count": 6,
-    "pending_count": 37,
+    "settled_count": 8,
+    "pending_count": 35,
     "abstained_count": 37,
-    "direction_accuracy": 0.16666666666666666,
-    "mae_pct": 0.5392368303568453,
-    "baseline_mae_pct": 0.5507481540500218,
-    "skill_pct": 2.09012478907572,
+    "direction_accuracy": 0.375,
+    "mae_pct": 0.40529939835548023,
+    "baseline_mae_pct": 0.4139328911253626,
+    "skill_pct": 2.0857228200470868,
     "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
     "by_sector": [
-      {
-        "sector_id": "sz399006",
-        "name": "创业板指",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8642124147297148,
-        "baseline_mae_pct": 0.8642124147297148,
-        "skill_pct": 0.0
-      },
       {
         "sector_id": "sh000300",
         "name": "沪深300",
@@ -65,21 +56,39 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000905",
-        "name": "中证500",
+        "sector_id": "sz399006",
+        "name": "创业板指",
         "count": 1,
         "direction_accuracy": 0.0,
-        "mae_pct": 0.7144925074353492,
-        "baseline_mae_pct": 0.7144925074353492,
+        "mae_pct": 0.8642124147297148,
+        "baseline_mae_pct": 0.8642124147297148,
         "skill_pct": 0.0
       },
       {
         "sector_id": "sh000688",
         "name": "科创50",
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.055504594979594035,
+        "baseline_mae_pct": 0.055504594979594035,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "sh000905",
+        "name": "中证500",
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.35850872300374204,
+        "baseline_mae_pct": 0.35850872300374204,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "sz399001",
+        "name": "深证成指",
         "count": 1,
         "direction_accuracy": 0.0,
-        "mae_pct": 0.10655992382855306,
-        "baseline_mae_pct": 0.10655992382855306,
+        "mae_pct": 0.8007686325253838,
+        "baseline_mae_pct": 0.8007686325253838,
         "skill_pct": 0.0
       },
       {
@@ -90,15 +99,6 @@
         "mae_pct": 0.4000360846387031,
         "baseline_mae_pct": 0.469104026797762,
         "skill_pct": 14.723374393210042
-      },
-      {
-        "sector_id": "sz399001",
-        "name": "深证成指",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8007686325253838,
-        "baseline_mae_pct": 0.8007686325253838,
-        "skill_pct": 0.0
       }
     ],
     "by_task": [
@@ -109,6 +109,14 @@
         "mae_pct": 0.5392368303568453,
         "baseline_mae_pct": 0.5507481540500218,
         "skill_pct": 2.09012478907572
+      },
+      {
+        "target_kind": "today_close",
+        "count": 2,
+        "direction_accuracy": 1.0,
+        "mae_pct": 0.003487102351384941,
+        "baseline_mae_pct": 0.003487102351384941,
+        "skill_pct": 0.0
       }
     ],
     "sentiment": {

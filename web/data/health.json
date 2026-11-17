@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T15:19:51.578790+08:00",
+  "generated_at": "2026-11-17T15:43:03.882577+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -43,29 +43,29 @@
     "sw_daily": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
-      "next_retry": "2026-11-17T15:33:31+08:00"
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
+      "next_retry": "2026-11-17T15:56:41+08:00"
     },
     "daily_basic": {
       "status": "cooldown",
       "error_code": "invalid_payload",
       "last_success": "2026-11-16T18:13:41.944498+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
-      "next_retry": "2026-11-17T15:33:31+08:00"
+      "last_attempt": "2026-11-17T15:41:41+08:00",
+      "next_retry": "2026-11-17T15:56:41+08:00"
     },
     "index_daily": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null
     },
     "index_member_all": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null
     }
   },
@@ -83,8 +83,8 @@
       "id": "fed",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -92,8 +92,8 @@
       "id": "ecb",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -101,8 +101,8 @@
       "id": "eia",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -110,8 +110,8 @@
       "id": "bbc_business",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -119,8 +119,8 @@
       "id": "federal_register",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -129,16 +129,16 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-17T14:26:50.161462+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
-      "next_retry": "2026-11-17T15:33:31+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
+      "next_retry": "2026-11-17T15:56:41+08:00",
       "requests_this_run": null
     },
     {
       "id": "eastmoney_breakfast",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
-      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
+      "last_attempt": "2026-11-17T15:41:41+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -227,7 +227,7 @@
       "id": "tencent_intraday",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:38+08:00",
+      "last_success": "2026-11-17T15:42:47+08:00",
       "last_attempt": null,
       "next_retry": null,
       "requests_this_run": null
@@ -237,24 +237,24 @@
       "status": "error",
       "error_code": null,
       "last_success": null,
-      "last_attempt": "2026-11-17T15:19:44+08:00",
-      "next_retry": "2026-11-17T15:34:44+08:00",
+      "last_attempt": "2026-11-17T15:42:53+08:00",
+      "next_retry": "2026-11-17T15:57:53+08:00",
       "requests_this_run": null
     },
     {
       "id": "stock_api",
       "status": "stale",
       "error_code": null,
-      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_success": "2026-11-17T15:43:03.882577+08:00",
       "last_attempt": null,
       "next_retry": null,
       "requests_this_run": 7
     },
     {
       "id": "funds",
-      "status": "partial",
-      "error_code": "invalid_payload",
-      "last_success": null,
+      "status": "success",
+      "error_code": null,
+      "last_success": "2026-11-17T15:42:45+08:00",
       "last_attempt": null,
       "next_retry": null,
       "requests_this_run": null
@@ -346,7 +346,7 @@
       "data_quality": "single_source",
       "live_quote": {
         "price": 3584.58,
-        "quote_timestamp": "2026-11-17T15:19:00+08:00",
+        "quote_timestamp": "2026-11-17T15:42:27+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -383,7 +383,7 @@
       "data_quality": "single_source",
       "live_quote": {
         "price": 10638.52,
-        "quote_timestamp": "2026-11-17T15:18:45+08:00",
+        "quote_timestamp": "2026-11-17T15:41:45+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -420,7 +420,7 @@
       "data_quality": "single_source",
       "live_quote": {
         "price": 2292.2,
-        "quote_timestamp": "2026-11-17T15:19:00+08:00",
+        "quote_timestamp": "2026-11-17T15:42:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -457,7 +457,7 @@
       "data_quality": "single_source",
       "live_quote": {
         "price": 3976.46,
-        "quote_timestamp": "2026-11-17T15:19:00+08:00",
+        "quote_timestamp": "2026-11-17T15:42:09+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -488,19 +488,19 @@
       "id": "sh000688",
       "name": "科创50",
       "taxonomy": null,
-      "quote": 1213.6833,
-      "quote_date": "2026-11-16",
+      "quote": 1221.186,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
         "price": 1221.19,
-        "quote_timestamp": "2026-11-17T15:19:00+08:00",
+        "quote_timestamp": "2026-11-17T15:42:09+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
-      "bars": 666,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 667,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": null,
       "membership_complete": null,
       "stock_count": 0,
@@ -525,19 +525,19 @@
       "id": "sh000905",
       "name": "中证500",
       "taxonomy": null,
-      "quote": 6297.1829,
-      "quote_date": "2026-11-16",
+      "quote": 6283.011,
+      "quote_date": "2026-11-17",
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
         "price": 6283.01,
-        "quote_timestamp": "2026-11-17T15:19:00+08:00",
+        "quote_timestamp": "2026-11-17T15:42:09+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
-      "bars": 666,
-      "primary_bars": 209,
-      "latest_bar_date": "2026-11-16",
+      "bars": 667,
+      "primary_bars": 210,
+      "latest_bar_date": "2026-11-17",
       "constituents": null,
       "membership_complete": null,
       "stock_count": 0,
@@ -1565,7 +1565,7 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-17T15:19:51.578790+08:00",
+    "as_of": "2026-11-17T15:43:03.882577+08:00",
     "version": "sw2021-news-tone-v3",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
@@ -1602,7 +1602,7 @@
     }
   },
   "fund_summary": {
-    "status": "partial",
+    "status": "success",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
@@ -1610,16 +1610,16 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-17T15:19:37+08:00",
+      "last_run_at": "2026-11-17T15:42:45+08:00",
       "requests_this_run": 1,
-      "status": "partial",
+      "status": "success",
       "endpoints": {
         "fund_daily": {
-          "status": "cooldown",
-          "error_code": "invalid_payload",
-          "last_success": null,
-          "last_attempt": "2026-11-17T15:19:37+08:00",
-          "next_retry": "2026-11-17T15:34:37+08:00"
+          "status": "success",
+          "error_code": null,
+          "last_success": "2026-11-17T15:42:45+08:00",
+          "last_attempt": "2026-11-17T15:42:45+08:00",
+          "next_retry": null
         }
       },
       "cache_summary": {
@@ -1629,8 +1629,8 @@
           "cached_count": 116
         },
         "fund_daily": {
-          "fetched_at": "2026-11-16T20:56:44+08:00",
-          "target_date": "2026-11-16",
+          "fetched_at": "2026-11-17T15:42:45+08:00",
+          "target_date": "2026-11-17",
           "cached_count": 116
         },
         "etf_share_size": {
@@ -1643,20 +1643,20 @@
   },
   "daily_forecast_summary": {
     "schema_version": "daily-index-sector-close-v3",
-    "status": "ready",
+    "status": "partial",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T15:19:51.578790+08:00",
+    "issued_at": "2026-11-17T15:43:03.882577+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
-    "target_date": "2026-11-17",
+    "target_date": "2026-11-18",
     "target": "next_close_return_pct",
     "unit": "percentage_points",
     "mae_target": 0.1,
-    "market_count": 6,
-    "sector_count": 31,
+    "market_count": 2,
+    "sector_count": 0,
     "forward_evaluation": {
-      "settled_rows": 0,
-      "mae_pct": null,
+      "settled_rows": 2,
+      "mae_pct": 0.4216137599609149,
       "note": "仅对实际留存后成熟的标签结算，不混入历史回溯分数"
     },
     "evaluation": {
@@ -1676,7 +1676,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-17T15:19:51.578790+08:00",
+    "as_of": "2026-11-17T15:43:03.882577+08:00",
     "target_date": "2026-11-18",
     "target_kind": "next_open",
     "reference_date": "2026-11-17",
