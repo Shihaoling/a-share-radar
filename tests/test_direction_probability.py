@@ -79,6 +79,33 @@ class ProbabilityTests(unittest.TestCase):
             result=update_direction_probabilities(fixture(),path,datetime.fromisoformat('2026-11-17T16:00:00+08:00'))['direction_probability']
             self.assertEqual(result['sectors'],[]);self.assertEqual(len(result['stale_entities']),2);self.assertEqual(result['today_close_status'],'not_fitted')
 
+    def test_lagged_labels_are_target_daily_direction_not_two_day_cumulative(self):
+        d=fixture();normal=probability_table(d);delayed=probability_table(d,lead_sessions=2)
+        original={r['feature_date']:r for r in normal['sectors']}
+        for r in delayed['sectors']:
+            following=original.get(r['decision_date'])
+            if following and 'direction' in following:
+                self.assertEqual(r['direction'],following['direction']);self.assertEqual(r['label_date'],following['label_date'])
+                self.assertEqual(r['x'][:-len(NEWS_NAMES)],original[r['feature_date']]['x'][:-len(NEWS_NAMES)])
+
+    def test_online_fallback_forecasts_tomorrow_without_inventing_today_close(self):
+        with TemporaryDirectory() as folder:
+            path=Path(folder)/'bundle.json';self.save(path,make_bundle());b=make_bundle();b['prediction_lead_sessions']=2;b['model_id']='lagged-test';self.save(path.with_name('bundle-lag2.json'),b)
+            result=update_direction_probabilities(fixture(),path,NOW)['direction_probability']
+            self.assertEqual(result['status'],'ready');r=result['sectors'][0]
+            self.assertEqual(r['target_date'],'2026-11-18');self.assertEqual(r['input_price_date'],'2026-11-16');self.assertEqual(r['reference_date'],'2026-11-17');self.assertIsNone(r['reference_close']);self.assertEqual(result['lagged_model']['used_entities'],2)
+
+    def test_lagged_settlement_uses_target_previous_close_not_input_price(self):
+        with TemporaryDirectory() as folder:
+            path=Path(folder)/'bundle.json';self.save(path,make_bundle());b=make_bundle();b['prediction_lead_sessions']=2;b['model_id']='lagged-test';self.save(path.with_name('bundle-lag2.json'),b)
+            first=update_direction_probabilities(fixture(),path,NOW)
+            for g in ('market','sectors'):
+                for e in first[g]:
+                    e['history'] += [{'date':'2026-11-17','open':92.,'close':90.,'high':93.,'low':89.,'complete':True},{'date':'2026-11-18','open':94.,'close':95.,'high':96.,'low':93.,'complete':True}]
+            result=update_direction_probabilities(first,path,datetime.fromisoformat('2026-11-18T16:00:00+08:00'),previous=first)
+            old=next(r for r in result['direction_probability']['ledger'] if r['id']=='801780.SI' and r['model_id']=='lagged-test')
+            self.assertEqual(old['actual_direction'],1);self.assertEqual(old['actual_reference_close'],90.);self.assertIsNone(old['reference_close'])
+
     def test_date_block_metrics_do_not_treat_sectors_as_independent_days(self):
         rows=[{'id':'a','label_date':'2026-11-12','direction':1},{'id':'b','label_date':'2026-11-12','direction':-1},{'id':'a','label_date':'2026-11-13','direction':1}]
         p=[.8,.8,.8];m=evaluate(rows,p)

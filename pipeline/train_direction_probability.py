@@ -131,12 +131,12 @@ def paired_brier_interval(rows,p,base):
             'ci95':[float(x) for x in np.quantile(means,[.025,.975])],'independent_dates':n}
 
 
-def run(source,output,model_output,threads=4,through=None):
+def run(source,output,model_output,threads=4,through=None,lead_sessions=1):
     start=time.monotonic();out=Path(output);out.mkdir(parents=True,exist_ok=True)
     if (out/'study-plan.json').exists():raise ValueError('Experiment already exists; preserve locked results')
-    raw=Path(source).read_bytes();d=json.loads(raw);table=probability_table(d,through=through)
+    raw=Path(source).read_bytes();d=json.loads(raw);table=probability_table(d,through=through,lead_sessions=lead_sessions)
     plan={'schema_version':SCHEMA,'started_at':datetime.now(timezone.utc).isoformat(),'source_sha256':hashlib.sha256(raw).hexdigest(),
-        'target':'next session close > / < / = current close; classify up conditional on nonflat, empirical flat rate',
+        'target':'target day close > / < / = previous trading day close; classify up conditional on nonflat, empirical flat rate','prediction_lead_sessions':lead_sessions,'price_feature_delay_sessions':lead_sessions-1,
         'selection_metric':'equal-date Brier; ties log loss; compare entity-shrunk training frequency',
         'calibration':'Sigmoid candidates: reserve last20 mature dates, purge earlier fit before first calibration feature date; no post-calibration base refit. None candidates: fit all mature training dates.',
         'validation':'3 consecutive 15-date development blocks, then one predeclared final20 historical dates',
@@ -206,7 +206,7 @@ def run(source,output,model_output,threads=4,through=None):
         write(out/'holdout-predictions.json',predictions)
     trained=datetime.now(timezone.utc).isoformat();stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     bundle={'schema_version':SCHEMA,'model_id':'direction-'+out.name+'-'+stamp,'trained_at':trained,
-        'training_cutoff':max(v['through'] for v in plan['training_cutoffs'].values()),'target':'next_close_direction',
+        'training_cutoff':max(v['through'] for v in plan['training_cutoffs'].values()),'target':'next_close_direction','prediction_lead_sessions':lead_sessions,
         'feature_names':table['feature_names'],'entity_ids':table['entity_ids'],'models':{'market':assets['market'],'sector':assets['sectors']},
         'priors':{'market':priors['market'],'sector':priors['sectors']},'flat_rates':flat_rates,
         'selection':selection,'evaluation':{'market':evaluations['market'],'sector':evaluations['sectors']},

@@ -45,7 +45,8 @@ def run(root=None,now=None):
         from .train_direction_probability import run as train
         out=folder/'studies'/('cloud-'+now.strftime('%Y%m%dT%H%M%S'))
         report=train(path,out,folder/'models/bundle.json',threads=2,through=cutoff)
-        state={'status':'trained','request_id':request.get('request_id'),'training_cutoff':cutoff,'trained_at':shanghai_now().isoformat(),
+        lag_report=train(path,out.with_name(out.name+'-lag2'),folder/'models/bundle-lag2.json',threads=2,through=cutoff,lead_sessions=2)
+        state={'status':'trained','lagged_model_id':lag_report['model_id'],'lagged_report_path':str(out.with_name(out.name+'-lag2').relative_to(root)/'training-report.json'),'request_id':request.get('request_id'),'training_cutoff':cutoff,'trained_at':shanghai_now().isoformat(),
             'model_id':report['model_id'],'report_path':str(out.relative_to(root)/'training-report.json'),
             'runtime':'GitHub Actions CPU' if os.environ.get('GITHUB_ACTIONS')=='true' else 'local_validation_cpu','source_sha256':report['plan']['source_sha256'],'news_training':report['plan']['sentiment_training'],
             'evaluation_status':'historical_reference_not_new_forward_accuracy'}

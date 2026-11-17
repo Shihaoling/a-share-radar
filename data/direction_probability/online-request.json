@@ -1,4 +1,4 @@
 {
-  "request_id": "cloud-direction-20261117",
-  "reason": "用户要求电脑关闭后全部继续在线运行"
+  "request_id": "cloud-direction-lag2-20261117",
+  "reason": "线上训练常规及滞后行情方向分类器，保障盘中和行业日线延迟时的下一交易日概率"
 }
