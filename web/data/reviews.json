@@ -34,9 +34,9 @@
   },
   "2026-11-17": {
     "date": "2026-11-17",
-    "evaluated_at": "2026-11-17T11:10:34.748333+08:00",
+    "evaluated_at": "2026-11-17T11:20:17.391469+08:00",
     "timezone": "Asia/Shanghai",
-    "issued_count": 141,
+    "issued_count": 147,
     "settled_count": 6,
     "pending_count": 37,
     "abstained_count": 31,
@@ -47,15 +47,6 @@
     "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
     "by_sector": [
       {
-        "sector_id": "sz399006",
-        "name": "创业板指",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8642124147297148,
-        "baseline_mae_pct": 0.8642124147297148,
-        "skill_pct": 0.0
-      },
-      {
         "sector_id": "sh000300",
         "name": "沪深300",
         "count": 1,
@@ -65,12 +56,12 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000905",
-        "name": "中证500",
+        "sector_id": "sz399006",
+        "name": "创业板指",
         "count": 1,
         "direction_accuracy": 0.0,
-        "mae_pct": 0.7144925074353492,
-        "baseline_mae_pct": 0.7144925074353492,
+        "mae_pct": 0.8642124147297148,
+        "baseline_mae_pct": 0.8642124147297148,
         "skill_pct": 0.0
       },
       {
@@ -83,13 +74,13 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000001",
-        "name": "上证指数",
+        "sector_id": "sh000905",
+        "name": "中证500",
         "count": 1,
-        "direction_accuracy": 1.0,
-        "mae_pct": 0.4000360846387031,
-        "baseline_mae_pct": 0.469104026797762,
-        "skill_pct": 14.723374393210042
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.7144925074353492,
+        "baseline_mae_pct": 0.7144925074353492,
+        "skill_pct": 0.0
       },
       {
         "sector_id": "sz399001",
@@ -99,6 +90,15 @@
         "mae_pct": 0.8007686325253838,
         "baseline_mae_pct": 0.8007686325253838,
         "skill_pct": 0.0
+      },
+      {
+        "sector_id": "sh000001",
+        "name": "上证指数",
+        "count": 1,
+        "direction_accuracy": 1.0,
+        "mae_pct": 0.4000360846387031,
+        "baseline_mae_pct": 0.469104026797762,
+        "skill_pct": 14.723374393210042
       }
     ],
     "by_task": [
