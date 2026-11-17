@@ -5,7 +5,7 @@ from pathlib import Path
 ENDPOINT='http://tus.sxdata.top/tu_share/'
 REGULAR_APIS=frozenset({'trade_cal','daily','daily_basic','index_daily','index_classify','sw_daily','index_member_all','index_basic','income','income_vip','balancesheet','balancesheet_vip','cashflow','cashflow_vip','fina_indicator','forecast','express','moneyflow','moneyflow_ind_ths','fund_basic','fund_nav','fund_daily','etf_basic','etf_share_size','cn_cpi','cn_gdp','cyq_perf'})
 
-def base_token(token):return token.removeprefix('backup15000_')
+def base_token(token):return token.strip().removeprefix('backup15000_').strip()
 def credential_matches(token):
     expected=os.environ.get('RADAR_EXPECTED_STOCK_KEY_SHA256')
     return not expected or hmac.compare_digest(hashlib.sha256(base_token(token).encode()).hexdigest(),expected)

@@ -19,7 +19,7 @@ class DataServiceTests(unittest.TestCase):
   self.assertEqual(token_for_api(key,'idx_mins'),key)
   self.assertEqual(token_for_api('backup15000_'+key,'news'),key)
   with patch.dict(os.environ,{'RADAR_EXPECTED_STOCK_KEY_SHA256':hashlib.sha256(key.encode()).hexdigest()}):
-   self.assertTrue(credential_matches(key));self.assertFalse(credential_matches('old-key'))
+   self.assertTrue(credential_matches(key));self.assertTrue(credential_matches(' \n'+key+'\n'));self.assertFalse(credential_matches('old-key'))
    with patch('pipeline.stock_api.urllib.request.build_opener') as opener:
     with self.assertRaises(_Failure):_Client('old-key',{},NOW)
     opener.assert_not_called()
@@ -47,8 +47,9 @@ class DataServiceTests(unittest.TestCase):
         {'id':'covered','published_at':'2026-11-17T10:00:00+08:00'},
         {'id':'gap','published_at':'2026-11-17T12:30:00+08:00'}]
   state={'records':[{}],'coverage_start':'2026-11-17T00:00:00+08:00','coverage_end':'2026-11-17T12:00:00+08:00','fetched_at':NOW.isoformat()}
-  d={'stock_api_state':{'news':state},'news':rows}
+  d={'stock_api_state':{'news':state},'news':rows,'news_digest':{'summary':'旧备用来源综述','article_ids':['covered']}}
   apply_primary_news_policy(d,NOW)
+  self.assertNotIn('summary',d['news_digest'])
   self.assertEqual([n['primary_shadowed'] for n in rows],[False,True,False])
   self.assertEqual({n['id'] for n in digest_inputs(rows,'2026-11-17')},{'p','gap'})
   with TemporaryDirectory() as t:
@@ -79,3 +80,22 @@ class ServiceInventoryTests(unittest.TestCase):
    result=run(d,NOW)
    self.assertEqual(result['status'],'needs_token_update');client.assert_not_called()
    self.assertNotIn('old-private-fixture',Path(d,'web/data/data-service-capabilities.json').read_text())
+
+class MinuteCompensationTests(unittest.TestCase):
+ def test_only_one_sixty_second_compensation_per_endpoint_per_day(self):
+  from pipeline.primary_minutes import collect_primary_minutes
+  class Client:
+   def __init__(self):self.count=0
+   def remaining(self):return 500
+   def request(self,api,params):
+    self.count+=1
+    if self.count!=2:raise _Failure('rate_limited',60)
+    return [{'ts_code':params['ts_code'],'trade_time':NOW.date().isoformat()+' '+t,'close':100+i} for i,t in enumerate(['13:00:00','15:00:00'])]
+  d={'market':[{'id':'sh000001'}]};c=Client()
+  with patch('pipeline.primary_minutes.time.sleep') as sleep:
+   first=collect_primary_minutes(d,{'network_enabled':True},NOW.replace(hour=22),c)
+   self.assertEqual(c.count,2);sleep.assert_called_once_with(60)
+   self.assertEqual(len(first['primary_minutes_state']['completed']),1)
+   first['market'].append({'id':'sh000300'})
+   again=collect_primary_minutes(first,{'network_enabled':True},NOW.replace(hour=22),c)
+   self.assertEqual(c.count,3);sleep.assert_called_once_with(60)

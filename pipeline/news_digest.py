@@ -51,6 +51,8 @@ def enrich_digest(dashboard,config=None,now=None,root=None,infer=None):
     body=json.dumps(rows,ensure_ascii=False,sort_keys=True);model=config.get('minimax',{}).get('model',DEFAULT_MODEL)
     fingerprint=text_hash(json.dumps([VERSION,model,body],ensure_ascii=False));old=cache['days'].get(day,{})
     output=deepcopy(old.get('result') or {})
+    current_ids={r['id'] for r in rows}
+    if not set(output.get('article_ids',[]))<=current_ids:output={}
     status='ready' if old.get('input_hash')==fingerprint and output else 'pending'
     key=os.environ.get('MINIMAX_API_KEY','')
     eligible=rows and status!='ready' and key and config.get('network_enabled') and cfg.get('enabled',True) and old.get('retry_after','')<=now.isoformat() and old.get('next_update','')<=now.isoformat()

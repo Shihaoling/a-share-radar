@@ -2,6 +2,7 @@
 from copy import deepcopy
 from datetime import datetime, timedelta
 import os
+import time
 from .calendar import shanghai_now, is_trading_day, SHANGHAI
 from .stock_api import _Client, _Failure, _index_code, FIELDS, _instant, ENDPOINT,credential_matches
 
@@ -12,7 +13,7 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
     now = shanghai_now(now); result = deepcopy(dashboard); cfg = (config or {}).get('primary_minutes', {})
     state = result.setdefault('primary_minutes_state', {'endpoints': {}, 'completed': {}})
     if state.get('service_endpoint')!=ENDPOINT:
-        state['endpoints']={};state['completed']={}
+        state['endpoints']={};state['completed']={};state.pop('compensation_at',None)
     state['service_endpoint']=ENDPOINT
     state.setdefault('endpoints', {}); state.setdefault('completed', {})
     # Official SW minute data is updated 19:00–20:00. Never poll it intraday.
@@ -35,7 +36,14 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
             if attempted >= int(cfg.get('max_requests', 12)): break
             try:
                 attempted += 1
-                rows = client.request(api, {'ts_code': code, 'freq': '5min', 'start_date': day+' 09:30:00', 'end_date': day+' 15:00:00'})
+                params={'ts_code':code,'freq':'5min','start_date':day+' 09:30:00','end_date':day+' 15:00:00','limit':60}
+                try:rows=client.request(api,params)
+                except _Failure as first:
+                    wait=max(60,first.retry_seconds)
+                    if first.code not in ('rate_limited','transport_error') or state.get('compensation_at',{}).get(api,'').startswith(day) or wait>65 or not hasattr(client,'remaining') or client.remaining()<=wait+10:raise
+                    state.setdefault('compensation_at',{})[api]=shanghai_now().isoformat()
+                    time.sleep(wait)
+                    rows=client.request(api,params)
                 points = minute_points(rows, code, day, now)
                 if len(points) < 2:
                     endpoint.update(status='pending', last_attempt=now.isoformat(), cooldown_until=(now+timedelta(minutes=30)).isoformat()); break

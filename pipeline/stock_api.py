@@ -696,7 +696,7 @@ def _clean_text(value, token, limit=200):
         return ""
     if not isinstance(value, str):
         raise _Failure("invalid_text")
-    value = value.replace(token, "[redacted]") if token else value
+    value = value.replace(token.strip().removeprefix("backup15000_"), "[redacted]") if token and token.strip().removeprefix("backup15000_") else value
     return re.sub(r"\s+", " ", re.sub(r"<[^>]*>", " ", value)).strip()[:limit]
 
 
