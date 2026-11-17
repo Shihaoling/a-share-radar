@@ -1,13 +1,14 @@
 {
-  "completed_at": "2026-11-17T23:23:07.932455+08:00",
+  "completed_at": "2026-11-17T23:31:42.820114+08:00",
   "request_id": "news-library-digest-v1",
   "primary_source_version": "sxdata-runtime-v2",
+  "digest_prompt_version": "daily-news-digest-v3",
   "content": {
     "attempted": 0,
     "reused": 329,
     "complete": 334,
     "total": 471,
-    "as_of": "2026-11-17T23:19:37.489146+08:00",
+    "as_of": "2026-11-17T23:29:02.667652+08:00",
     "status": "cache_only"
   },
   "model": {
@@ -22,7 +23,7 @@
     "status": "partial",
     "last_error": "transport_error",
     "cooldown_until": "2026-11-17T21:56:11.116226+08:00",
-    "as_of": "2026-11-17T23:19:39.252951+08:00"
+    "as_of": "2026-11-17T23:29:04.433214+08:00"
   },
   "api_check": null
 }
