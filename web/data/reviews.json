@@ -34,7 +34,7 @@
   },
   "2026-11-17": {
     "date": "2026-11-17",
-    "evaluated_at": "2026-11-17T20:51:07.487518+08:00",
+    "evaluated_at": "2026-11-17T20:54:18.784177+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 267,
     "settled_count": 43,
@@ -47,15 +47,6 @@
     "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
     "by_sector": [
       {
-        "sector_id": "sh000300",
-        "name": "沪深300",
-        "count": 2,
-        "direction_accuracy": 0.5,
-        "mae_pct": 0.22270446267007582,
-        "baseline_mae_pct": 0.22270446267007582,
-        "skill_pct": 0.0
-      },
-      {
         "sector_id": "sz399006",
         "name": "创业板指",
         "count": 2,
@@ -65,12 +56,12 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000688",
-        "name": "科创50",
+        "sector_id": "sh000300",
+        "name": "沪深300",
         "count": 2,
         "direction_accuracy": 0.5,
-        "mae_pct": 0.055504594979594035,
-        "baseline_mae_pct": 0.055504594979594035,
+        "mae_pct": 0.22270446267007582,
+        "baseline_mae_pct": 0.22270446267007582,
         "skill_pct": 0.0
       },
       {
@@ -83,12 +74,12 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sz399001",
-        "name": "深证成指",
+        "sector_id": "sh000688",
+        "name": "科创50",
         "count": 2,
         "direction_accuracy": 0.5,
-        "mae_pct": 0.4432988714834829,
-        "baseline_mae_pct": 0.4432988714834829,
+        "mae_pct": 0.055504594979594035,
+        "baseline_mae_pct": 0.055504594979594035,
         "skill_pct": 0.0
       },
       {
@@ -101,255 +92,30 @@
         "skill_pct": 11.63851231900026
       },
       {
-        "sector_id": "801980.SI",
-        "name": "美容护理",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.2804166189767754,
-        "baseline_mae_pct": 0.2804166189767754,
+        "sector_id": "sz399001",
+        "name": "深证成指",
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.4432988714834829,
+        "baseline_mae_pct": 0.4432988714834829,
         "skill_pct": 0.0
       },
       {
-        "sector_id": "801970.SI",
-        "name": "环保",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.9816628115368542,
-        "baseline_mae_pct": 0.9816628115368542,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801960.SI",
-        "name": "石油石化",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 1.6276895733229657,
-        "baseline_mae_pct": 1.6276895733229657,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801950.SI",
-        "name": "煤炭",
+        "sector_id": "801010.SI",
+        "name": "农林牧渔",
         "count": 1,
         "direction_accuracy": 1.0,
-        "mae_pct": 0.08344517512992211,
-        "baseline_mae_pct": 0.4589890682126452,
-        "skill_pct": 81.81979029372813
+        "mae_pct": 0.5057913078602345,
+        "baseline_mae_pct": 0.7029617029889468,
+        "skill_pct": 28.048525871374896
       },
       {
-        "sector_id": "801890.SI",
-        "name": "机械设备",
+        "sector_id": "801030.SI",
+        "name": "基础化工",
         "count": 1,
         "direction_accuracy": 0.0,
-        "mae_pct": 0.8860460697898032,
-        "baseline_mae_pct": 0.8860460697898032,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801880.SI",
-        "name": "汽车",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.61880013187261,
-        "baseline_mae_pct": 0.61880013187261,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801790.SI",
-        "name": "非银金融",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.21924333567437948,
-        "baseline_mae_pct": 0.21924333567437948,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801780.SI",
-        "name": "银行",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.007094588602540863,
-        "baseline_mae_pct": 0.007094588602540863,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801770.SI",
-        "name": "通信",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 1.4305375495556438,
-        "baseline_mae_pct": 1.4305375495556438,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801760.SI",
-        "name": "传媒",
-        "count": 1,
-        "direction_accuracy": 1.0,
-        "mae_pct": 1.3816427342708546,
-        "baseline_mae_pct": 1.5584377859435672,
-        "skill_pct": 11.34437661017509
-      },
-      {
-        "sector_id": "801750.SI",
-        "name": "计算机",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.6489958175249555,
-        "baseline_mae_pct": 0.6489958175249555,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801740.SI",
-        "name": "国防军工",
-        "count": 1,
-        "direction_accuracy": 1.0,
-        "mae_pct": 0.30190236057730413,
-        "baseline_mae_pct": 0.37922783056493214,
-        "skill_pct": 20.390241368213136
-      },
-      {
-        "sector_id": "801730.SI",
-        "name": "电力设备",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.6156978238096245,
-        "baseline_mae_pct": 0.6156978238096245,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801720.SI",
-        "name": "建筑装饰",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.4530513323853902,
-        "baseline_mae_pct": 0.4530513323853902,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801710.SI",
-        "name": "建筑材料",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8154969885588503,
-        "baseline_mae_pct": 0.8154969885588503,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801230.SI",
-        "name": "综合",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.18814617793602162,
-        "baseline_mae_pct": 0.18814617793602162,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801210.SI",
-        "name": "社会服务",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.6133009079693608,
-        "baseline_mae_pct": 0.6133009079693608,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801200.SI",
-        "name": "商贸零售",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.4606240713224352,
-        "baseline_mae_pct": 0.4606240713224352,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801180.SI",
-        "name": "房地产",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.6132218020046278,
-        "baseline_mae_pct": 0.6107061625803545,
-        "skill_pct": -0.4119230455517764
-      },
-      {
-        "sector_id": "801170.SI",
-        "name": "交通运输",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.04005501532224898,
-        "baseline_mae_pct": 0.04005501532224898,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801160.SI",
-        "name": "公用事业",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.27459860024702243,
-        "baseline_mae_pct": 0.27459860024702243,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801150.SI",
-        "name": "医药生物",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.42622017106036525,
-        "baseline_mae_pct": 0.42622017106036525,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801140.SI",
-        "name": "轻工制造",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.46859054163082003,
-        "baseline_mae_pct": 0.46859054163082003,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801130.SI",
-        "name": "纺织服饰",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.6206350844600417,
-        "baseline_mae_pct": 0.6206350844600417,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801120.SI",
-        "name": "食品饮料",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.042510046451171846,
-        "baseline_mae_pct": 0.042510046451171846,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801110.SI",
-        "name": "家用电器",
-        "count": 1,
-        "direction_accuracy": 1.0,
-        "mae_pct": 0.08863874491007406,
-        "baseline_mae_pct": 0.3784037451211697,
-        "skill_pct": 76.57561637459725
-      },
-      {
-        "sector_id": "801080.SI",
-        "name": "电子",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8202749896287997,
-        "baseline_mae_pct": 0.8202749896287997,
-        "skill_pct": 0.0
-      },
-      {
-        "sector_id": "801050.SI",
-        "name": "有色金属",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 1.020997097962073,
-        "baseline_mae_pct": 1.020997097962073,
+        "mae_pct": 0.5283433618147759,
+        "baseline_mae_pct": 0.5283433618147759,
         "skill_pct": 0.0
       },
       {
@@ -362,22 +128,256 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "801030.SI",
-        "name": "基础化工",
+        "sector_id": "801050.SI",
+        "name": "有色金属",
         "count": 1,
         "direction_accuracy": 0.0,
-        "mae_pct": 0.5283433618147759,
-        "baseline_mae_pct": 0.5283433618147759,
+        "mae_pct": 1.020997097962073,
+        "baseline_mae_pct": 1.020997097962073,
         "skill_pct": 0.0
       },
       {
-        "sector_id": "801010.SI",
-        "name": "农林牧渔",
+        "sector_id": "801080.SI",
+        "name": "电子",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.8202749896287997,
+        "baseline_mae_pct": 0.8202749896287997,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801110.SI",
+        "name": "家用电器",
         "count": 1,
         "direction_accuracy": 1.0,
-        "mae_pct": 0.5057913078602345,
-        "baseline_mae_pct": 0.7029617029889468,
-        "skill_pct": 28.048525871374896
+        "mae_pct": 0.08863874491007406,
+        "baseline_mae_pct": 0.3784037451211697,
+        "skill_pct": 76.57561637459725
+      },
+      {
+        "sector_id": "801120.SI",
+        "name": "食品饮料",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.042510046451171846,
+        "baseline_mae_pct": 0.042510046451171846,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801130.SI",
+        "name": "纺织服饰",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.6206350844600417,
+        "baseline_mae_pct": 0.6206350844600417,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801140.SI",
+        "name": "轻工制造",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.46859054163082003,
+        "baseline_mae_pct": 0.46859054163082003,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801150.SI",
+        "name": "医药生物",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.42622017106036525,
+        "baseline_mae_pct": 0.42622017106036525,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801160.SI",
+        "name": "公用事业",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.27459860024702243,
+        "baseline_mae_pct": 0.27459860024702243,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801170.SI",
+        "name": "交通运输",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.04005501532224898,
+        "baseline_mae_pct": 0.04005501532224898,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801180.SI",
+        "name": "房地产",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.6132218020046278,
+        "baseline_mae_pct": 0.6107061625803545,
+        "skill_pct": -0.4119230455517764
+      },
+      {
+        "sector_id": "801200.SI",
+        "name": "商贸零售",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.4606240713224352,
+        "baseline_mae_pct": 0.4606240713224352,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801210.SI",
+        "name": "社会服务",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.6133009079693608,
+        "baseline_mae_pct": 0.6133009079693608,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801230.SI",
+        "name": "综合",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.18814617793602162,
+        "baseline_mae_pct": 0.18814617793602162,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801710.SI",
+        "name": "建筑材料",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.8154969885588503,
+        "baseline_mae_pct": 0.8154969885588503,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801720.SI",
+        "name": "建筑装饰",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.4530513323853902,
+        "baseline_mae_pct": 0.4530513323853902,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801730.SI",
+        "name": "电力设备",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.6156978238096245,
+        "baseline_mae_pct": 0.6156978238096245,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801740.SI",
+        "name": "国防军工",
+        "count": 1,
+        "direction_accuracy": 1.0,
+        "mae_pct": 0.30190236057730413,
+        "baseline_mae_pct": 0.37922783056493214,
+        "skill_pct": 20.390241368213136
+      },
+      {
+        "sector_id": "801750.SI",
+        "name": "计算机",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.6489958175249555,
+        "baseline_mae_pct": 0.6489958175249555,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801760.SI",
+        "name": "传媒",
+        "count": 1,
+        "direction_accuracy": 1.0,
+        "mae_pct": 1.3816427342708546,
+        "baseline_mae_pct": 1.5584377859435672,
+        "skill_pct": 11.34437661017509
+      },
+      {
+        "sector_id": "801770.SI",
+        "name": "通信",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 1.4305375495556438,
+        "baseline_mae_pct": 1.4305375495556438,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801780.SI",
+        "name": "银行",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.007094588602540863,
+        "baseline_mae_pct": 0.007094588602540863,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801790.SI",
+        "name": "非银金融",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.21924333567437948,
+        "baseline_mae_pct": 0.21924333567437948,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801880.SI",
+        "name": "汽车",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.61880013187261,
+        "baseline_mae_pct": 0.61880013187261,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801890.SI",
+        "name": "机械设备",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.8860460697898032,
+        "baseline_mae_pct": 0.8860460697898032,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801950.SI",
+        "name": "煤炭",
+        "count": 1,
+        "direction_accuracy": 1.0,
+        "mae_pct": 0.08344517512992211,
+        "baseline_mae_pct": 0.4589890682126452,
+        "skill_pct": 81.81979029372813
+      },
+      {
+        "sector_id": "801960.SI",
+        "name": "石油石化",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 1.6276895733229657,
+        "baseline_mae_pct": 1.6276895733229657,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801970.SI",
+        "name": "环保",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.9816628115368542,
+        "baseline_mae_pct": 0.9816628115368542,
+        "skill_pct": 0.0
+      },
+      {
+        "sector_id": "801980.SI",
+        "name": "美容护理",
+        "count": 1,
+        "direction_accuracy": 0.0,
+        "mae_pct": 0.2804166189767754,
+        "baseline_mae_pct": 0.2804166189767754,
+        "skill_pct": 0.0
       }
     ],
     "by_task": [
