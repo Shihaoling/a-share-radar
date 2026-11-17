@@ -129,6 +129,7 @@ def publish_view(dashboard, output_path):
             content={'id':source.get('id'),'title':source.get('title'),'source':source.get('source'),'source_url':source.get('url'),
                 'fetched_at':source.get('full_text_fetched_at'),'full_text':body,'characters':len(body),'status':'complete'}
             article_path.write_text(json.dumps(content,ensure_ascii=False,allow_nan=False)+'\n')
+        public.pop('content',None);public.pop('text',None)
         public['article_text_url']='./data/articles/'+key+'.json'
         public['article_text_characters']=len(body)
     view["news"]=[n for n in view.get("news",[]) if not n.get("primary_shadowed")]

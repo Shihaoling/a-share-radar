@@ -38,8 +38,9 @@ def run(root=None,now=None,client=None):
         atomic_json(path,report);print(json.dumps({'service':ENDPOINT,'status':'needs_token_update'}));return report
     report['credential_match']=True
     if report.get('next_allowed_after','')>now.isoformat():return report
+    refresh_version=load(root/'config/settings.json',{}).get('stock_api',{}).get('refresh_version')
     # A source-only refresh keeps already published news/model outputs and does not invoke MiniMax.
-    if not report.get('migration_completed') and production and os.environ.get('GITHUB_ACTIONS')=='true':
+    if (not report.get('migration_completed') or report.get('primary_refresh_version')!=refresh_version) and production and os.environ.get('GITHUB_ACTIONS')=='true':
         from .run import run as refresh
         refresh(stock_api_only=True)
         from .primary_minutes import collect_primary_minutes
@@ -54,6 +55,7 @@ def run(root=None,now=None,client=None):
             atomic_json(root/'web/data/dashboard.json',snapshot);publish_view(snapshot,root/'web/data/view.json')
             if len(snapshot.get('primary_minutes_state',{}).get('completed',{}))<=before:break
         report['minute_entities_completed']=len(snapshot.get('primary_minutes_state',{}).get('completed',{}))
+        report['primary_refresh_version']=refresh_version
         report['migration_completed']=shanghai_now().isoformat();atomic_json(path,report)
 
     rows=plan(now);start=report.get('cursor',0)

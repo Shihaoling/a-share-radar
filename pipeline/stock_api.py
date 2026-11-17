@@ -246,7 +246,7 @@ class _Client:
             raise
         except (TimeoutError, urllib.error.URLError, OSError):
             failed(api,60)
-            raise _Failure("transport_error", 900) from None
+            raise _Failure("transport_error", 60) from None
         except Exception:
             # Never stringify an exception, request, URL, response body or message.
             raise _Failure("invalid_payload", 900) from None
@@ -1101,10 +1101,17 @@ def enrich_with_stock_api(data, config=None, now=None):
     stamp = now.isoformat(timespec="seconds")
     old = result.get("stock_api_state", {})
     state = {key: copy.deepcopy(old[key]) for key in ("calendar", "classification", "daily_basic", "members", "member_attempts", "endpoints",
-             "index_requests", "index_cursor", "sw_history_requests", "sw_history_cursor", "member_cursor", "cooldown_until", "news", "realtime") if key in old}
+             "index_requests", "index_cursor", "sw_history_requests", "sw_history_cursor", "member_cursor", "cooldown_until", "news", "realtime", "refresh_version", "service_endpoint") if key in old}
     if old.get('service_endpoint') and old['service_endpoint']!=ENDPOINT or not old.get('service_endpoint') and cfg.get('provider_migration'):
         state['endpoints']={};state.pop('cooldown_until',None)
         state['member_attempts']={};state['index_requests']={};state['sw_history_requests']={}
+    if cfg.get('refresh_version') and state.get('refresh_version')!=cfg['refresh_version']:
+        for api,entry in state.get('endpoints',{}).items():
+            attempted_at=_instant(entry.get('last_attempt'))
+            if entry.get('error_code')=='transport_error' and attempted_at and (now-attempted_at).total_seconds()>=60:
+                if state.get('cooldown_until')==entry.get('cooldown_until'):state.pop('cooldown_until',None)
+                entry.pop('cooldown_until',None)
+        state['refresh_version']=cfg['refresh_version']
     state['service_endpoint']=ENDPOINT
     state.update(version=2, primary=True, last_run_at=stamp, requests_this_run=0)
     result["stock_api_state"] = state

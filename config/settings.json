@@ -14,7 +14,11 @@
     "endpoint": "http://tus.sxdata.top/tu_share/",
     "provider_migration": true,
     "reuse_legacy_capabilities": false,
-    "realtime_enabled": false
+    "realtime_enabled": false,
+    "timeout_seconds": 30,
+    "budget_seconds": 180,
+    "transport_retry_seconds": 60,
+    "refresh_version": "sxdata-runtime-v2"
   },
   "sentiment": {
     "enabled": true,
