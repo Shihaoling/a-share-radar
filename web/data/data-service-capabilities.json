@@ -229,15 +229,44 @@
       "error_code": "rate_limited",
       "provider_code": 429,
       "provider_reason": "rate_limited"
+    },
+    {
+      "api": "fund_nav",
+      "params": {
+        "ts_code": "510300.SH",
+        "nav_date": "20261117"
+      },
+      "channel": "backup15000",
+      "status": "success",
+      "row_count": 1,
+      "query_match": true,
+      "fields": [
+        "ts_code",
+        "ann_date",
+        "nav_date",
+        "unit_nav",
+        "accum_nav"
+      ]
+    },
+    {
+      "api": "cn_cpi",
+      "params": {
+        "m": "202412"
+      },
+      "channel": "backup15000",
+      "status": "unavailable",
+      "error_code": "rate_limited",
+      "provider_code": 429,
+      "provider_reason": "rate_limited"
     }
   ],
-  "cursor": 13,
+  "cursor": 15,
   "status": "partial",
-  "checked_at": "2026-11-18T00:21:00.486643+08:00",
+  "checked_at": "2026-11-18T00:30:44.228615+08:00",
   "credential_match": true,
-  "next_allowed_after": "2026-11-18T00:22:00.486597+08:00",
+  "next_allowed_after": "2026-11-18T00:31:44.228578+08:00",
   "planned_apis": 23,
-  "pending_apis": 10,
+  "pending_apis": 8,
   "minute_entities_completed": 4,
   "migration_completed": "2026-11-17T23:13:52.005804+08:00",
   "deferred_api": "news",
