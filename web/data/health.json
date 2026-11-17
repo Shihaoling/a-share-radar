@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T23:32:03.700579+08:00",
+  "generated_at": "2026-11-18T00:21:24.553316+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -295,10 +295,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 22,
-      "emotion_scored_n": 13,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "sz399001",
@@ -332,10 +332,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 22,
-      "emotion_scored_n": 13,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "sz399006",
@@ -369,10 +369,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 32,
-      "emotion_scored_n": 20,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "sh000300",
@@ -406,10 +406,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 25,
-      "emotion_scored_n": 14,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "sh000688",
@@ -443,10 +443,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 30,
-      "emotion_scored_n": 17,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "sh000905",
@@ -480,10 +480,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": null
       },
-      "emotion_label": "mixed",
-      "emotion_n": 22,
-      "emotion_scored_n": 13,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     }
   ],
   "sectors": [
@@ -514,10 +514,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "negative",
-      "emotion_n": 9,
-      "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801030.SI",
@@ -546,10 +546,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 13,
-      "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801040.SI",
@@ -579,9 +579,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
-      "emotion_n": 1,
+      "emotion_n": 0,
       "emotion_scored_n": 0,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801050.SI",
@@ -610,10 +610,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 14,
-      "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801080.SI",
@@ -642,10 +642,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 70,
-      "emotion_scored_n": 33,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801110.SI",
@@ -674,10 +674,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 21,
-      "emotion_scored_n": 12,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801120.SI",
@@ -706,10 +706,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "negative",
-      "emotion_n": 4,
-      "emotion_scored_n": 1,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801130.SI",
@@ -738,10 +738,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 6,
-      "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801140.SI",
@@ -771,9 +771,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
-      "emotion_n": 2,
+      "emotion_n": 0,
       "emotion_scored_n": 0,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801150.SI",
@@ -802,10 +802,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 10,
-      "emotion_scored_n": 6,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801160.SI",
@@ -834,10 +834,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 11,
-      "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801170.SI",
@@ -866,10 +866,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 11,
-      "emotion_scored_n": 6,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801180.SI",
@@ -899,9 +899,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
-      "emotion_n": 7,
+      "emotion_n": 0,
       "emotion_scored_n": 0,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801200.SI",
@@ -930,10 +930,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 13,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801210.SI",
@@ -962,10 +962,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "positive",
-      "emotion_n": 3,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801230.SI",
@@ -994,10 +994,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 3,
-      "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801710.SI",
@@ -1026,10 +1026,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 5,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801720.SI",
@@ -1058,10 +1058,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 11,
-      "emotion_scored_n": 4,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801730.SI",
@@ -1090,10 +1090,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 24,
-      "emotion_scored_n": 7,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801740.SI",
@@ -1122,10 +1122,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "positive",
-      "emotion_n": 5,
-      "emotion_scored_n": 1,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801750.SI",
@@ -1154,10 +1154,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 48,
-      "emotion_scored_n": 27,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801760.SI",
@@ -1186,10 +1186,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 20,
-      "emotion_scored_n": 10,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801770.SI",
@@ -1218,10 +1218,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 23,
-      "emotion_scored_n": 9,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801780.SI",
@@ -1250,10 +1250,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 22,
-      "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801790.SI",
@@ -1282,10 +1282,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 30,
-      "emotion_scored_n": 19,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801880.SI",
@@ -1314,10 +1314,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 10,
-      "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801890.SI",
@@ -1346,10 +1346,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 26,
-      "emotion_scored_n": 8,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801950.SI",
@@ -1378,10 +1378,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 4,
-      "emotion_scored_n": 4,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801960.SI",
@@ -1410,10 +1410,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 6,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801970.SI",
@@ -1442,10 +1442,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 7,
-      "emotion_scored_n": 6,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_label": "unknown",
+      "emotion_n": 0,
+      "emotion_scored_n": 0,
+      "emotion_method": "no_coverage"
     },
     {
       "id": "801980.SI",
@@ -1475,9 +1475,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "unknown",
-      "emotion_n": 1,
+      "emotion_n": 0,
       "emotion_scored_n": 0,
-      "emotion_method": "financial-tone-rules-v2"
+      "emotion_method": "no_coverage"
     }
   ],
   "prediction_status_counts": {
@@ -1492,20 +1492,20 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-17T23:32:03.700579+08:00",
+    "as_of": "2026-11-18T00:21:24.553316+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
     "window_policy_version": "published-and-observed-v1",
     "stock_api_news_merged_count": 0,
     "stock_api_news_duplicate_count": 297,
-    "news_count": 471,
-    "eligible_count": 292,
-    "unique_news_count": 292,
+    "news_count": 475,
+    "eligible_count": 0,
+    "unique_news_count": 0,
     "duplicate_count": 0,
-    "excluded_count": 179,
-    "rumors_excluded": 1,
-    "old_publications_excluded": 69,
+    "excluded_count": 475,
+    "rumors_excluded": 0,
+    "old_publications_excluded": 366,
     "unknown_publication_time_excluded": 104,
     "model_requested": false,
     "model_loaded": false,
@@ -1527,11 +1527,11 @@
     "model_error": null,
     "fallback_method": "financial-tone-rules-v2",
     "labels": {
-      "positive": 2,
-      "negative": 2,
-      "mixed": 29,
+      "positive": 0,
+      "negative": 0,
+      "mixed": 0,
       "neutral": 0,
-      "unknown": 4
+      "unknown": 37
     }
   },
   "fund_summary": {
@@ -1543,7 +1543,7 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-17T23:32:02+08:00",
+      "last_run_at": "2026-11-18T00:21:23+08:00",
       "requests_this_run": 0,
       "status": "pending",
       "endpoints": {},
@@ -1571,7 +1571,7 @@
     "status": "ready",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T23:32:03.700579+08:00",
+    "issued_at": "2026-11-18T00:21:24.553316+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-18",
     "target": "next_close_return_pct",
@@ -1601,7 +1601,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-17T23:32:03.700579+08:00",
+    "as_of": "2026-11-18T00:21:24.553316+08:00",
     "target_date": "2026-11-18",
     "target_kind": "next_open",
     "reference_date": "2026-11-17",
@@ -1651,6 +1651,6 @@
       "trained_at": "2026-11-16T21:26:31.237710+08:00"
     }
   },
-  "news_count": 471,
+  "news_count": 475,
   "ledger_count": 334
 }
