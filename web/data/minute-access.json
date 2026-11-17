@@ -1,0 +1,37 @@
+{
+  "request_id": "historical-minutes-doc-check-v1",
+  "checked_at": "2026-11-17T21:50:22.865550+08:00",
+  "service": "https://t.xiaodefa.top/",
+  "historical_trade_date": "2026-11-16",
+  "results": [
+    {
+      "api": "sw_mins",
+      "kind": "historical_minutes",
+      "params": {
+        "ts_code": "801003.SI",
+        "freq": "5min",
+        "start_date": "2026-11-16 09:00:00",
+        "end_date": "2026-11-16 19:00:00"
+      },
+      "status": "unavailable",
+      "error_code": "authorization_denied",
+      "provider_code": 2002,
+      "provider_reason": "authorization_denied"
+    },
+    {
+      "api": "idx_mins",
+      "kind": "historical_minutes",
+      "params": {
+        "ts_code": "000001.SH",
+        "freq": "5min",
+        "start_date": "2026-11-16 09:00:00",
+        "end_date": "2026-11-16 19:00:00"
+      },
+      "status": "unavailable",
+      "error_code": "provider_error",
+      "provider_code": 403,
+      "provider_reason": "provider_error"
+    }
+  ],
+  "automatic_retries": 0
+}
