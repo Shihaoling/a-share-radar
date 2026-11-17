@@ -15,6 +15,9 @@ from zoneinfo import ZoneInfo
 from pipeline.equity_data import collect_equity_history
 from pipeline.equity_model import update_equity_predictions
 from pipeline.daily_forecast import update_daily_forecasts
+from pipeline.direction_probability import update_direction_probabilities
+from pipeline.sentiment import aggregate_entity_sentiment
+from pipeline.news_archive import archive_news
 from pipeline.funds import enrich_funds
 from pipeline.publish import publish_view, health_summary
 from pipeline.run import atomic_json, load
@@ -70,6 +73,9 @@ def refresh(days=180, max_requests=180, offline=False, train_pilot=False,
     # the uploaded daily index/sector bundle here without fitting or fetching.
     dashboard = update_daily_forecasts(
         dashboard, ROOT / 'data/daily_forecast/models', now=now, previous=dashboard)
+    dashboard = aggregate_entity_sentiment(dashboard, now=now, config={'sentiment': {**settings.get('sentiment',{}), 'reuse_only': True}})
+    dashboard['news_archive_summary'] = archive_news(dashboard, now, root=ROOT/'data/news_archive')
+    dashboard = update_direction_probabilities(dashboard, now=now, previous=dashboard)
     dashboard['generated_at'] = now.isoformat()
     atomic_json(dashboard_path, dashboard)
     publish_view(dashboard, ROOT / 'web/data/view.json')

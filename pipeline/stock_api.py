@@ -1372,7 +1372,7 @@ def enrich_with_stock_api(data, config=None, now=None):
             records = _news_records(rows, now, stamp, token)
             state["news"] = {"records": records, "fetched_at": stamp, "possibly_truncated": len(rows) >= 1500}
         attempt("news", {"src": "cls", "start_date": (now - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M:%S"),
-                          "end_date": now.strftime("%Y-%m-%d %H:%M:%S")}, save_news, ttl=3600)
+                          "end_date": now.strftime("%Y-%m-%d %H:%M:%S")}, save_news, ttl=_bounded(cfg.get("news_cache_seconds"), 1800, 900, 3600))
     if state.get("news", {}).get("records"):
         result["stock_api_news"] = copy.deepcopy(state["news"]["records"])
     history_requests = state.setdefault("sw_history_requests", {})

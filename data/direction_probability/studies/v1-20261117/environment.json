@@ -1,0 +1,9 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.13.13 (v3.13.13:01104ce1beb, Apr  7 2026, 14:43:30) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "numpy": "2.4.4",
+  "sklearn": "1.8.0",
+  "lightgbm": "4.6.0",
+  "estimator_fit_wrapper_calls": 82,
+  "note": "Includes empirical prior fits; sigmoid calibrators are additional estimator fits."
+}

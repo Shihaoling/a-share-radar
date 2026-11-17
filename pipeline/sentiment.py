@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 import re
+from pathlib import Path
 import unicodedata
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -23,6 +24,10 @@ WINDOW_POLICY_VERSION = "published-and-observed-v1"
 MODEL_ID = "yiyanghkust/finbert-tone-chinese"
 MODEL_REVISION = "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d"
 MODEL_LICENSE = "Apache-2.0"
+ENGLISH_MODEL_ID = "ProsusAI/finbert"
+ENGLISH_MODEL_REVISION = "0bc2ac10dda6929bcb1f77ccc43c7ec5c424f031"
+ENGLISH_MODEL_LICENSE = "CC-BY-NC-SA-4.0"
+ARTICLE_CACHE = Path(__file__).resolve().parents[1]/"data/news_sentiment/cache.json"
 MODEL_URL = f"https://huggingface.co/{MODEL_ID}/tree/{MODEL_REVISION}"
 
 # Fixed SW2021 L1 taxonomy, not mutable Eastmoney board names. Multiple industry
@@ -280,6 +285,61 @@ def _finbert_scores(items, config):
     return scores
 
 
+@lru_cache(maxsize=2)
+def _load_english_model(cache_dir, local_files_only):
+    import torch
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+    options={"revision":ENGLISH_MODEL_REVISION,"token":False,"trust_remote_code":False,"local_files_only":local_files_only}
+    if cache_dir:options["cache_dir"]=cache_dir
+    tokenizer=AutoTokenizer.from_pretrained(ENGLISH_MODEL_ID,**options)
+    model=AutoModelForSequenceClassification.from_pretrained(ENGLISH_MODEL_ID,use_safetensors=True,**options).to("cpu").eval()
+    labels={int(k):str(v).lower() for k,v in model.config.id2label.items()}
+    if set(labels.values())!={"positive","negative","neutral"}:raise ValueError("Unverified English label map")
+    return torch,tokenizer,model,labels
+
+
+def _english_finbert_scores(items,config):
+    torch,tokenizer,model,labels=_load_english_model(config.get("model_cache_dir"),bool(config.get("model_local_files_only",False)))
+    torch.set_num_threads(max(1,min(8,int(config.get("torch_threads",4)))))
+    result={};batch_size=max(1,min(8,int(config.get("model_batch_size",4))))
+    for start in range(0,len(items),batch_size):
+        batch=items[start:start+batch_size]
+        encoded=tokenizer([_body(n)[2] for n in batch],padding=True,truncation=True,max_length=512,return_tensors="pt")
+        with torch.inference_mode():values=model(**encoded).logits.softmax(-1).cpu().tolist()
+        for n,v in zip(batch,values):
+            named={labels[i]:p for i,p in enumerate(v)};label=max(named,key=named.get);confidence=named[label]
+            if confidence<float(config.get("min_model_confidence",.45)):label="unknown"
+            result[n["id"]]={"label":label,"score":named["positive"]-named["negative"] if label!="unknown" else None,
+                "confidence":confidence,"confidence_kind":"model_softmax_uncalibrated","method":"finbert_english_cpu",
+                "model_version":ENGLISH_MODEL_ID+"@"+ENGLISH_MODEL_REVISION,
+                "evidence":{"model_probabilities":named,"input_excerpt":_body(n)[2][:320],"token_limit":512},
+                "note":"英文金融文本情绪分类；文本置信不等于A股涨跌概率。模型许可CC-BY-NC-SA-4.0。"}
+    return result
+
+
+def _model_identity(method):
+    if method=="finbert_chinese_cpu":return MODEL_ID,MODEL_REVISION,MODEL_LICENSE
+    if method=="finbert_english_cpu":return ENGLISH_MODEL_ID,ENGLISH_MODEL_REVISION,ENGLISH_MODEL_LICENSE
+    return None,None,None
+
+
+def _is_chinese(news):
+    return len(re.findall(r"[\u3400-\u9fff]",_body(news)[2]))>=8
+
+
+def _restore_article_cache(news,now):
+    # A precomputed local run is usable only from its actual scoring timestamp.
+    try:cache=json.loads(ARTICLE_CACHE.read_text(encoding="utf-8"))
+    except (OSError,ValueError):return
+    row=cache.get("articles",{}).get(news.get("id"))
+    if not row or row.get("input_hash")!=_hash(_body(news)[2]):return
+    at=_timestamp(row.get("scored_at"))
+    if at is None or at>now:return
+    score=row.get("scoring",{});identity,revision,_=_model_identity(score.get("method"))
+    if identity and score.get("model_version")==identity+"@"+revision:
+        _score_article(news,score,at)
+
+
 def _sw_code(entity):
     for key in ("index_code", "sw_code", "code", "id"):
         match = re.search(r"(?<!\d)(801\d{3})(?!\d)", str(entity.get(key) or ""))
@@ -346,20 +406,19 @@ def _source_weight(news):
 
 
 def _score_article(news, scoring, now):
+    identity,revision,license=_model_identity(scoring["method"])
     news.update(sentiment=scoring["label"], sentiment_score=scoring["score"], sentiment_method=scoring["method"],
                 sentiment_confidence=scoring["confidence"], sentiment_confidence_kind=scoring["confidence_kind"],
                 sentiment_evidence=scoring["evidence"], sentiment_note=scoring["note"],
-                sentiment_model={"version": scoring["model_version"], "model_id": MODEL_ID if scoring["method"] == "finbert_chinese_cpu" else None,
-                                 "revision": MODEL_REVISION if scoring["method"] == "finbert_chinese_cpu" else None,
-                                 "license": MODEL_LICENSE if scoring["method"] == "finbert_chinese_cpu" else None},
-                sentiment_scored_at=now.isoformat(), sentiment_input_hash=_hash(_body(news)[2]))
+                sentiment_model={"version":scoring["model_version"],"model_id":identity,"revision":revision,"license":license},
+                sentiment_scored_at=now.isoformat(),sentiment_input_hash=_hash(_body(news)[2]))
 
 
 def aggregate_entity_sentiment(dashboard, now=None, config=None):
     """Deep copy, classify news, associate SW31/indices and append PIT snapshots.
 
     enable_model=False by default; true activates pinned CPU FinBERT, falling
-    back visibly on dependency/download/inference errors. English remains rules.
+    back visibly on dependency/download/inference errors. English uses pinned FinBERT.
     New snapshots are available only at this execution's now, never backdated
     to an article's publication date. No coverage is unknown, never neutral.
     """
@@ -370,13 +429,14 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
     now = shanghai_now(now)
     stock_api_added, stock_api_duplicates = _merge_stock_api_news(result, now)
     window_hours = max(1, float(config.get("window_hours", 72)))
-    window_start = now - timedelta(hours=window_hours)
+    window_start = now.replace(hour=0,minute=0,second=0,microsecond=0) if config.get("current_day_only",False) else now - timedelta(hours=window_hours)
     include_rumors = bool(config.get("include_rumors", False))
     enabled = bool(config.get("enable_model", config.get("model_enabled", False)))
     reuse_only = bool(config.get("reuse_only", config.get("cache_only", False)))
     allow_model_load = enabled and not reuse_only
     news_items = result.setdefault("news", [])
     eligible, excluded, model_items = [], [], []
+    model_errors=[];inferred_count=0;language_counts={"chinese":0,"english":0}
     for news in news_items:
         title, summary, body = _body(news)
         news.setdefault("id", "news-" + _hash([news.get("source"), news.get("url"), title, summary]))
@@ -426,30 +486,34 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
                                   "method": "unavailable", "model_version": PIPELINE_VERSION, "evidence": {},
                                   "note": "消息尚未在本预测时点可知，未使用"}, now)
         else:
+            _restore_article_cache(news,now)
             cached_model = news.get("sentiment_model") or {}
+            expected_revision=MODEL_REVISION if _is_chinese(news) else ENGLISH_MODEL_REVISION
             cached_time = _timestamp(news.get("sentiment_scored_at"))
-            cache_ok = (cached_model.get("revision") == MODEL_REVISION and news.get("sentiment_input_hash") == _hash(body)
-                        and cached_time is not None and cached_time <= now and news.get("sentiment_method") == "finbert_chinese_cpu")
+            cache_ok = (cached_model.get("revision") == expected_revision and news.get("sentiment_input_hash") == _hash(body)
+                        and cached_time is not None and cached_time <= now and news.get("sentiment_method") in ("finbert_chinese_cpu","finbert_english_cpu"))
             if not cache_ok:
                 _score_article(news, _rules_sentiment(news), now)
-                if allow_model_load and reason is None and len(re.findall(r"[\u3400-\u9fff]", body)) >= 8:
+                if allow_model_load and reason != "future_information" and (_is_chinese(news) or config.get("english_enabled",True) and len(re.findall(r"[A-Za-z]",body))>=12):
                     model_items.append(news)
         (eligible if reason is None else excluded).append(news)
     model_error, model_loaded = None, False
-    model_cache_used = sum(n.get("sentiment_method") == "finbert_chinese_cpu" for n in eligible)
+    model_cache_used = sum(n.get("sentiment_method") in ("finbert_chinese_cpu","finbert_english_cpu") for n in eligible)
     model_items.sort(key=lambda item: item.get("first_seen_at") or "", reverse=True)
     max_model_articles = max(0, int(config.get("max_model_articles", 120)))
     model_deferred = max(0, len(model_items) - max_model_articles)
     model_items = model_items[:max_model_articles]
     if model_items:
-        try:
-            model_scores = _finbert_scores(model_items, config)
-            for news in model_items:
-                _score_article(news, model_scores[news["id"]], now)
-            model_loaded = True
-        except Exception as exc:
-            # Error text is deliberately bounded; model loaders may include paths.
-            model_error = type(exc).__name__ + ": 中文模型未可用，已使用明确标识的双语金融规则"
+        for language,fn in (("chinese",_finbert_scores),("english",_english_finbert_scores)):
+            batch=[n for n in model_items if _is_chinese(n)==(language=="chinese")]
+            if not batch:continue
+            try:
+                model_scores=fn(batch,config)
+                for news in batch:_score_article(news,model_scores[news["id"]],now)
+                model_loaded=True;inferred_count+=len(batch);language_counts[language]+=len(batch)
+            except Exception as exc:
+                model_errors.append(language+":"+type(exc).__name__)
+        model_error=", ".join(model_errors) or None
     clusters = {}
     for news in eligible:
         clusters.setdefault(_dedup_key(news), []).append(news)
@@ -534,7 +598,8 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
                                    "old_publications_excluded": sum(n.get("sentiment_exclusion_reason") == "published_outside_window" for n in excluded),
                                    "unknown_publication_time_excluded": sum(n.get("sentiment_exclusion_reason") == "unknown_publication_time" for n in excluded),
                                    "model_requested": enabled, "model_loaded": model_loaded, "model_id": MODEL_ID,
-                                   "reuse_only": reuse_only, "model_inference_count": len(model_items) if model_error is None else 0,
+                                   "reuse_only": reuse_only, "model_inference_count": inferred_count, "model_language_counts":language_counts,
+                                   "english_model_id":ENGLISH_MODEL_ID,"english_model_revision":ENGLISH_MODEL_REVISION,
                                    "model_cache_used_count": model_cache_used, "model_used": model_loaded or model_cache_used > 0,
                                    "model_deferred_count": model_deferred,
                                    "model_revision": MODEL_REVISION, "model_license": MODEL_LICENSE, "model_source": MODEL_URL,

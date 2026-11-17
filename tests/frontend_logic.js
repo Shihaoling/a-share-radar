@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -177,5 +177,13 @@ function runFrontendChecks(source) {
     ok(node.events.pointermove);ok(node.events.pointerleave);ok(node.events.keydown);eq(node.attrs.tabindex,'0');
     node.events.focus();const output=text(node);ok(output.includes('101.00'));ok(output.includes('2026-11-13'));
   });
+  check('direction probability comes from a classifier rather than a return sign',()=>{
+    const f={status:'ready',target:'next_close_direction'};eq(api.probabilityValue(f,{up_probability:.62,predicted_return_pct:-3}),.62);eq(api.probabilityValue(f,{predicted_return_pct:3}),null);eq(api.probabilityValue({...f,status:'error'},{up_probability:.9}),null);
+  });
+  check('classifier page displays probability, real validation and sentiment readiness',()=>{
+    const f={status:'partial',target:'next_close_direction',model_id:'trained-classifier',market:[{id:'idx',name:'测试指数',target_date:'2026-11-18',reference_date:'2026-11-17',up_probability:.62,down_probability:.38}],sectors:[],evaluation:{},sentiment_training:{enabled:false,mature_dates_with_news:0,required_dates:30}};
+    const output=text(api.probabilityPanel({...d,direction_probability:f}));ok(output.includes('62.0%'));ok(output.includes('38.0%'));ok(output.includes('0 / 30'));ok(output.includes('不由涨跌幅正负转换'));ok(output.includes('频率基线'));
+  });
+  check('malformed direction forecast cannot bypass snapshot array checks',()=>{let bad=false;try{api.validateSnapshot({...d,direction_probability:{market:{}}});}catch{bad=true;}ok(bad);});
   return {passed, failures};
 }

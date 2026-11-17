@@ -9,12 +9,17 @@
     "primary": true,
     "max_requests": 12,
     "min_interval_seconds": 3,
-    "max_index_calls": 6
+    "max_index_calls": 6,
+    "news_cache_seconds": 1800
   },
   "sentiment": {
     "enabled": true,
     "model_enabled": true,
-    "max_model_articles": 120
+    "max_model_articles": 120,
+    "english_enabled": true,
+    "torch_threads": 4,
+    "model_batch_size": 4,
+    "current_day_only": true
   },
   "fallback": {
     "verify_secondary": false,
@@ -30,7 +35,7 @@
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",
   "repository_url": "https://github.com/Shihaoling/a-share-radar",
-  "notes": "云端仅采集、推断和核验；模型在本机训练调优后上传。浏览器偏好不改变本文件。",
+  "notes": "网站采集、资讯情绪、概率分类器训练与推断均在线上运行；旧神经模型训练开关保持关闭。",
   "min_train": 120,
   "holdout_size": 20,
   "funds": {
@@ -47,5 +52,11 @@
     "retrain_days": 7,
     "enable_training": false
   },
-  "training_enabled": false
+  "training_enabled": false,
+  "direction_probability": {
+    "online_training_enabled": true,
+    "threads": 2,
+    "update_interval_minutes": 30,
+    "sentiment_min_mature_dates": 30
+  }
 }

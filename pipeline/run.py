@@ -16,11 +16,13 @@ from pipeline.intraday import collect_intraday
 from pipeline.metrics import compute_metrics
 from pipeline.stock_api import enrich_with_stock_api
 from pipeline.sentiment import aggregate_entity_sentiment
+from pipeline.news_archive import archive_news
 from pipeline.publish import publish_view
 from pipeline.funds import enrich_funds
 from pipeline.equity_data import collect_equity_history
 from pipeline.equity_model import update_equity_predictions
 from pipeline.daily_forecast import update_daily_forecasts
+from pipeline.direction_probability import update_direction_probabilities
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -81,7 +83,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         # Tushare goes first, then fill news/history fields it could not supply.
         if config.get('primary_provider') == 'stock_api':
             records = data.get('stock_api_news', [])
-            fresh_primary_news = any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 3600 for r in records)
+            fresh_primary_news = any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 1800 for r in records)
             secondary = fetch_data(data, {**config, 'secondary_news_allowed': not fresh_primary_news}, now)
             primary_sources = [s for s in data.get('sources', []) if s.get('provider') == 'stock_api' or s.get('type') == 'intraday']
             data.update(secondary)
@@ -125,11 +127,14 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     dashboard = compute_metrics(dashboard, config)
     sentiment_config = {**config, 'sentiment': {**config.get('sentiment', {}), 'model_enabled': False, 'reuse_only': True}} if quotes_only or offline else config
     dashboard = aggregate_entity_sentiment(dashboard, now=now, config=sentiment_config)
+    if not quotes_only:
+        dashboard['news_archive_summary'] = archive_news(dashboard, now, root=equity_root.parent/'news_archive')
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
     dashboard = update_equity_predictions(dashboard, equity_root, equity_root / 'models', now,
         {**config, 'equity': {**config.get('equity', {}), 'reuse_only': quotes_only}})
     # Locally trained index/sector bundles are portable JSON; this call only infers.
     dashboard = update_daily_forecasts(dashboard, ROOT / 'data/daily_forecast/models', now, previous=previous)
+    dashboard = update_direction_probabilities(dashboard, now=now, previous=previous)
     dashboard['daily_review'] = daily_review(dashboard, now)
     dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
     # Entity histories are canonical; avoid publishing the same bars twice.

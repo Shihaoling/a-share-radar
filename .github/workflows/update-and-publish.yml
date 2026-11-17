@@ -24,12 +24,13 @@ on:
         options: ['0', '8']
         default: '0'
   schedule:
-    # UTC: 09:07/09:37–15:37 Shanghai; off the busy top of the hour.
+    # UTC: every day 09:00/09:30–15:30, plus 16:00 Shanghai.
     # GitHub scheduling is best effort, never a real-time market feed.
-    - cron: '7,37 1-7 * * 1-5'
+    - cron: '0,30 1-7 * * *'
+    - cron: '0 8 * * *'
     # Combined with full refreshes: approximately five-minute snapshot cadence.
     # Pipeline skips holidays, pre-open, lunch and after-close quote-only runs.
-    - cron: '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+    - cron: '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5'
     # Capture vendor industry closes released later than exchange close, 18:17 Shanghai.
     - cron: '17 10 * * 1-5'
     # Evening world news and weekend updates, Shanghai 21:17.
@@ -68,21 +69,36 @@ jobs:
           from pathlib import Path
           from datetime import datetime, timezone
           root = Path('data/equity')
-          quote = os.environ.get('QUOTE_ONLY') == 'true' or os.environ.get('SCHEDULE') == '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+          quote = os.environ.get('QUOTE_ONLY') == 'true' or os.environ.get('SCHEDULE') == '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5'
           eligible = (root / 'bootstrap-request.json').exists() and not (root / 'bootstrap-complete.json').exists() and not quote and os.environ.get('PROBE_GROUP', '') in ('', 'none')
           state = json.loads((root / 'state.json').read_text()) if (root / 'state.json').exists() else {}
           until = datetime.fromisoformat(state['cooldown_until']) if state.get('cooldown_until') else None
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'run_bootstrap={str(eligible).lower()}\n')
           PY
+      - name: Check one-time bilingual sentiment request
+        id: sentiment_gate
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          request=Path('data/news_sentiment/reclassify-request.json')
+          report=Path('data/news_sentiment/inference-report.json')
+          old=json.loads(report.read_text()) if report.exists() else {}
+          required=json.loads(request.read_text()) if request.exists() else {}
+          ready=all(old.get('models',{}).get(k,{}).get('revision')==v for k,v in required.get('revisions',{}).items()) and bool(old.get('completed_at'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:
+              out.write('run='+str(bool(required) and not ready).lower()+'\n')
+          PY
       - name: Cache Chinese finance sentiment model
-        if: github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5')
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: finbert-chinese-e91b1a3-python312
+          key: finbert-bilingual-e91b1a3-0bc2ac1-python312
+          restore-keys: finbert-chinese-e91b1a3-python312
       - name: Install CPU sentiment inference
-        if: github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5'
+        if: steps.sentiment_gate.outputs.run == 'true' || (github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5')
         run: |
           python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
           python -m pip install -r requirements-sentiment.txt
@@ -135,7 +151,7 @@ jobs:
             python -m pipeline.run --bootstrap-rounds 8
           elif [ "$STOCK_API_ONLY" = "true" ]; then
             python -m pipeline.run --stock-api-only
-          elif [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '2,12,17,22,27,32,42,47,52,57 1-7 * * 1-5' ]; then
+          elif [ "$QUOTES_ONLY" = "true" ] || [ "$SCHEDULE" = '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5' ]; then
             python -m pipeline.run --quotes-only
           else
             python -m pipeline.run
@@ -143,6 +159,27 @@ jobs:
       - name: Collect Eastmoney rendered tables with bounded pagination
         if: github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.stock_api_only != true
         run: python -m pipeline.page_quotes --once
+      - name: Refresh primary daily inputs for the new classifier once
+        if: steps.sentiment_gate.outputs.run == 'true' && github.event_name == 'push'
+        env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_ALLOW_TRAINING: 'false'
+        run: python -m pipeline.run --stock-api-only
+      - name: Score archived Chinese and English news once
+        if: steps.sentiment_gate.outputs.run == 'true'
+        run: python scripts/score-news.py
+      - name: Install online probability classifier dependencies
+        if: github.event_name == 'push' || (inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5' && (!inputs.probe_group || inputs.probe_group == 'none'))
+        run: python -m pip install -r requirements-direction-training.txt
+      - name: Train online classifier only for newly completed data
+        if: github.event_name == 'push' || (inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5' && (!inputs.probe_group || inputs.probe_group == 'none'))
+        env:
+          RADAR_ALLOW_DIRECTION_TRAINING: 'true'
+          RADAR_ALLOW_TRAINING: 'false'
+          MPLCONFIGDIR: /tmp/radar-matplotlib
+          OPENBLAS_NUM_THREADS: '2'
+          OMP_NUM_THREADS: '2'
+        run: python -m pipeline.online_direction_update
       - name: Refresh cached inference without training
         if: github.event_name == 'push' && hashFiles('data/equity/bootstrap-complete.json') != ''
         env:
@@ -170,6 +207,9 @@ jobs:
           if [ -f web/data/page-quotes.json ]; then git add web/data/page-quotes.json; fi
           if [ -f web/data/tushare-capabilities.json ]; then git add web/data/tushare-capabilities.json; fi
           if [ -d data/equity ]; then git add data/equity; fi
+          if [ -d data/news_sentiment ]; then git add data/news_sentiment; fi
+          if [ -d data/news_archive ]; then git add data/news_archive; fi
+          if [ -d data/direction_probability ]; then git add data/direction_probability; fi
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh observations and daily review [skip ci]'
             git pull --rebase origin main

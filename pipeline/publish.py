@@ -76,7 +76,11 @@ def _clean(value):
     for key, item in value.items():
         if key in _PRIVATE_KEYS:
             continue
-        if key == "stock_api_state":
+        if key == "direction_probability" and isinstance(item,dict):
+            result[key]=_clean({k:v for k,v in item.items() if k!="ledger"})
+            result[key]["ledger_row_count"]=len(item.get("ledger",[]))
+            result[key]["ledger"]=[]
+        elif key == "stock_api_state":
             result[key] = _public_state(item)
         elif key == "fund_state":
             result[key] = _public_module_state(item)
