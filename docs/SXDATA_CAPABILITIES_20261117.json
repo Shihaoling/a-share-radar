@@ -1,0 +1,298 @@
+{
+  "checked_at": "2026-11-17T22:15:19+08:00",
+  "endpoint": "http://tus.sxdata.top/tu_share/",
+  "execution": "local_bounded_sample",
+  "results": [
+    {
+      "api": "trade_cal",
+      "channel": "main",
+      "params": {
+        "exchange": "SSE",
+        "start_date": "20261116",
+        "end_date": "20261117"
+      },
+      "fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 2
+    },
+    {
+      "api": "daily",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "trade_date": "20261116"
+      },
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "index_daily",
+      "channel": "backup",
+      "params": {
+        "ts_code": "000001.SH",
+        "trade_date": "20261116"
+      },
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "sw_daily",
+      "channel": "backup",
+      "params": {
+        "ts_code": "801780.SI",
+        "trade_date": "20261116"
+      },
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "name",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "stk_mins",
+      "channel": "main",
+      "params": {
+        "ts_code": "600519.SH",
+        "freq": "5min",
+        "start_date": "2026-11-16 09:00:00",
+        "end_date": "2026-11-16 19:00:00"
+      },
+      "fields": [
+        "ts_code",
+        "trade_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 3
+    },
+    {
+      "api": "idx_mins",
+      "channel": "main",
+      "params": {
+        "ts_code": "000001.SH",
+        "freq": "5min",
+        "start_date": "2026-11-16 09:00:00",
+        "end_date": "2026-11-16 19:00:00"
+      },
+      "fields": [
+        "ts_code",
+        "trade_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 3
+    },
+    {
+      "api": "sw_mins",
+      "channel": "main",
+      "params": {
+        "ts_code": "801780.SI",
+        "freq": "5min",
+        "start_date": "2026-11-16 09:00:00",
+        "end_date": "2026-11-16 19:00:00"
+      },
+      "fields": [
+        "ts_code",
+        "trade_time",
+        "open",
+        "high",
+        "low",
+        "close",
+        "vol",
+        "amount"
+      ],
+      "status": "unavailable",
+      "error_code": "transport_error",
+      "provider_reason": "timeout"
+    },
+    {
+      "api": "news",
+      "channel": "main",
+      "params": {
+        "src": "cls",
+        "start_date": "2026-11-17 09:00:00",
+        "end_date": "2026-11-17 10:00:00"
+      },
+      "fields": [
+        "datetime",
+        "title",
+        "content"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 3
+    },
+    {
+      "api": "major_news",
+      "channel": "main",
+      "params": {
+        "start_date": "2026-11-17 00:00:00",
+        "end_date": "2026-11-17 23:00:00"
+      },
+      "fields": [
+        "title",
+        "content",
+        "pub_time",
+        "src"
+      ],
+      "status": "unavailable",
+      "error_code": "rate_limited",
+      "provider_code": 429
+    },
+    {
+      "api": "cctv_news",
+      "channel": "main",
+      "params": {
+        "date": "20261116"
+      },
+      "fields": [
+        "date",
+        "title",
+        "content"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 3
+    },
+    {
+      "api": "income",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "period": "20251231"
+      },
+      "fields": [
+        "ts_code",
+        "ann_date",
+        "end_date",
+        "revenue",
+        "n_income_attr_p"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "balancesheet",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "period": "20251231"
+      },
+      "fields": [
+        "ts_code",
+        "ann_date",
+        "end_date",
+        "total_assets",
+        "total_liab",
+        "total_hldr_eqy_exc_min_int"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "cashflow",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "period": "20251231"
+      },
+      "fields": [
+        "ts_code",
+        "ann_date",
+        "end_date",
+        "n_cashflow_act"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    },
+    {
+      "api": "fina_indicator",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "period": "20251231"
+      },
+      "fields": [
+        "ts_code",
+        "ann_date",
+        "end_date",
+        "eps",
+        "roe",
+        "netprofit_yoy"
+      ],
+      "status": "unavailable",
+      "error_code": "rate_limited",
+      "provider_code": 429
+    },
+    {
+      "api": "moneyflow",
+      "channel": "backup",
+      "params": {
+        "ts_code": "600519.SH",
+        "trade_date": "20261116"
+      },
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "net_mf_amount"
+      ],
+      "status": "success",
+      "provider_code": 0,
+      "row_count": 1
+    }
+  ],
+  "automatic_retries": 0,
+  "note": "探测器对业务码429分类不完整，发现后已停止并修正；未重试失败接口。"
+}

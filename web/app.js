@@ -214,7 +214,7 @@ function newsTextCard(n){
    const body=await response.json();if(body.status!=='complete'||body.id!==n.id||typeof body.full_text!=='string')throw Error('invalid');
    articleTextCache.set(n.article_text_url,body.full_text);content.textContent=body.full_text;
   }catch{content.textContent='正文暂时加载失败，可稍后重新展开，或查看原文链接。';}finally{loading=false;}
- }},h('summary',{},'查看完整正文',h('span',{},`${n.article_text_characters||0} 字符`)),content,h('p',{class:'inline-note'},'公开原文提取 · ',dateText(n.full_text_fetched_at),' · ',link('查看来源',n.url)));
+ }},h('summary',{},'查看完整正文',h('span',{},`${n.article_text_characters||0} 字符`)),content,h('p',{class:'inline-note'},n.full_text_method==='provider_news_text'?'接口提供的原始资讯文本 · ':'公开原文提取 · ',dateText(n.full_text_fetched_at),' · ',link('查看来源',n.url)));
  return box;
 }
 function newsDigestCard(d){

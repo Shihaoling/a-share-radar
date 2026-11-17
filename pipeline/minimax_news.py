@@ -190,6 +190,8 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
     for n in sorted(result.get('news', []), key=lambda x:x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
         # Sources without a retrievable body stay explicitly pending; a title or
         # feed abstract must never masquerade as an analysis of the full article.
+        if n.get('primary_shadowed'):
+            n['llm_status']='secondary_not_needed';continue
         if n.get('full_text_status') != 'complete' or not n.get('full_text'):
             n['llm_status'] = 'awaiting_full_text'; continue
         h = text_hash(n['full_text']); cache_key = text_hash(json.dumps([h, n.get('title'), model, PROMPT_VERSION], ensure_ascii=False))

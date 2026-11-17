@@ -110,7 +110,7 @@ class CapabilityProbeTests(unittest.TestCase):
             self.assertGreaterEqual(later[0] - earlier[0], 3.0 - 1e-9)
         for _, request in requests:
             self.assertEqual(request['params']['limit'], 3)
-            self.assertEqual(request['token'], SECRET)
+            self.assertEqual(request['token'], __import__('pipeline.data_service',fromlist=['token_for_api']).token_for_api(SECRET,request['api_name']))
             if request['api_name'] in probe.NEWS_APIS:
                 self.assertNotIn('content', request['fields'].split(','))
                 self.assertNotIn('title', request['fields'].split(','))

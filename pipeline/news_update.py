@@ -8,7 +8,11 @@ from .sentiment import aggregate_entity_sentiment, _merge_stock_api_news
 
 
 def enrich_news(dashboard, config, root=None):
+    from .primary_news import enrich_primary_news
+    dashboard=enrich_primary_news(dashboard,config)
     _merge_stock_api_news(dashboard, shanghai_now())
+    from .source_policy import apply_primary_news_policy
+    dashboard=apply_primary_news_policy(dashboard)
     dashboard = enrich_full_text(dashboard, config, root=Path(root)/'news_content' if root else None)
     dashboard = enrich_minimax(dashboard, config, root=Path(root)/'news_sentiment' if root else None)
     dashboard = aggregate_entity_sentiment(dashboard, now=shanghai_now(), config=config)

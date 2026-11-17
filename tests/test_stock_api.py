@@ -14,7 +14,7 @@ from pipeline.stock_api import _Failure, _NoRedirect, enrich_with_stock_api as c
 
 NOW = datetime.fromisoformat('2026-11-16T19:00:00+08:00')
 SECRET = 'synthetic-test-secret-do-not-persist'
-ENDPOINT = 'https://t.xiaodefa.top/'
+ENDPOINT = 'http://tus.sxdata.top/tu_share/'
 LIVE_NOW = NOW.replace(hour=14, minute=0)
 
 
@@ -262,7 +262,7 @@ class StockApiTests(unittest.TestCase):
             self.assertEqual(request.get_method(), 'POST')
         for payload in provider.requests:
             self.assertEqual(set(payload), {'api_name', 'token', 'params', 'fields'})
-            self.assertEqual(payload['token'], SECRET)
+            self.assertEqual(payload['token'], 'backup15000_'+SECRET)
         self.assertGreaterEqual(len(sleep.call_args_list), opener.open.call_count - 1)
         self.assertTrue(all(call.args[0] >= 2.9 for call in sleep.call_args_list))
         self.assert_safe(result)
@@ -624,7 +624,7 @@ class PrimaryStockApiTests(unittest.TestCase):
                               'results': [{'api': api, 'error_code': 'api_denied'}
                                           for api in ('rt_idx_k', 'rt_sw_k', 'news')]}}
         with fake_provider(primary=True, capability_seed=probe) as (provider, _, _):
-            result = collect_stock_api(canonical_seed(), now=NOW)
+            result = collect_stock_api(canonical_seed(), {"stock_api":{"reuse_legacy_capabilities":True}}, now=NOW)
         requested = {request['api_name'] for request in provider.requests}
         self.assertTrue(requested.isdisjoint({'rt_idx_k', 'rt_sw_k', 'news'}))
         self.assertIn('sw_daily', requested)

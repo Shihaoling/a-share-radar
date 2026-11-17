@@ -147,7 +147,7 @@ def _merge_stock_api_news(result, now):
 
     def publication_day(item):
         stamp = _timestamp(item.get("published_at") or item.get("datetime"))
-        return stamp.date().isoformat() if stamp else None
+        return stamp.date().isoformat() if stamp else item.get("published_date")
 
     def merge_key(item):
         title = re.sub(r"[^a-z0-9\u3400-\u9fff]", "", unicodedata.normalize("NFKC", _body(item)[0]).lower())
@@ -183,6 +183,11 @@ def _merge_stock_api_news(result, now):
         key, day, url = merge_key(item), publication_day(item), _canonical_url(item.get("url"))
         title_duplicate = key in titles and (day in titles[key] or day is None or None in titles[key])
         if item["id"] in known_ids or (url and url in known_urls) or title_duplicate:
+            if raw.get('provider')=='stock_api' and raw.get('full_text'):
+                target=next((n for n in existing if n.get('id')==item['id'] or merge_key(n)==key and publication_day(n)==day),None)
+                if target is not None:
+                    for field in ('full_text','full_text_hash','full_text_status','full_text_method','full_text_fetched_at','full_text_scope'):
+                        if field in raw:target[field]=raw[field]
             duplicates += 1
             continue
         existing.append(item)
@@ -462,7 +467,9 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
             first_seen = now
             news["first_seen_at"] = now.isoformat()
             news["first_seen_basis"] = "first_observed_by_sentiment_pipeline"
-        if first_seen is None:
+        if news.get("primary_shadowed"):
+            reason="primary_source_available"
+        elif first_seen is None:
             reason = "invalid_first_seen_at"
         elif first_seen > now or (published and published > now):
             reason = "future_information"

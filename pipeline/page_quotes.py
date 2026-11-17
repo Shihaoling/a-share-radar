@@ -113,6 +113,17 @@ class Collector:
             return old
         if not collection_open(now) and not inspect_closed:
             return old  # Keep the last trading day's genuine timestamps.
+        # Collect this fallback only while the matching primary family has gaps.
+        primary_complete_kinds=set()
+        try:
+            dashboard=load(ROOT/'web/data/dashboard.json')
+            current=now.date().isoformat();entities=dashboard.get('market',[])+dashboard.get('sectors',[])
+            covered=dashboard.get('primary_minutes_state',{}).get('completed',{})
+            for group,kind in [('market','index'),('sectors','sector')]:
+                group_entities=dashboard.get(group,[])
+                if group_entities and all(current+':'+str(e.get('index_code') or (e.get('id','')[2:]+('.SH' if e.get('id','').startswith('sh') else '.SZ'))) in covered for e in group_entities):primary_complete_kinds.add(kind)
+            if len(primary_complete_kinds)==2:return old
+        except (TypeError,ValueError):pass
         # Use the OS trust store on desktop platforms; certificate checks stay on.
         if sys.platform in ('darwin', 'win32'):
             import truststore
@@ -130,6 +141,7 @@ class Collector:
                 context = browser.new_context(user_agent=UA, locale='zh-CN', service_workers='block')
                 try:
                     for kind, url in URLS.items():
+                        if kind in primary_complete_kinds:continue
                         page = None
                         try:
                             gate.permitted(url)

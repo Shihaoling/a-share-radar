@@ -8,6 +8,7 @@ archived. Vendor ratios never enter the parent-attributable financial aggregates
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 import os
@@ -22,7 +23,7 @@ from pathlib import Path
 
 from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous_trading_day, shanghai_now
 
-ENDPOINT = "https://t.xiaodefa.top/"
+from .data_service import ENDPOINT,token_for_api,credential_matches,gate_delay,sent,failed
 MAX_BYTES = 4 * 1024 * 1024
 MIN_HISTORY_BARS = 181
 ROW_PARSER_VERSION = 2
@@ -103,8 +104,8 @@ def _endpoint(cfg):
     if not isinstance(value, str) or value != ENDPOINT:
         raise _Failure("invalid_endpoint")
     parsed = urllib.parse.urlsplit(value)
-    if (value != ENDPOINT or parsed.scheme != "https" or parsed.netloc != "t.xiaodefa.top"
-            or parsed.path != "/" or parsed.query or parsed.fragment):
+    if (value != ENDPOINT or parsed.scheme != "http" or parsed.netloc != "tus.sxdata.top"
+            or parsed.path != "/tu_share/" or parsed.query or parsed.fragment):
         raise _Failure("invalid_endpoint")
     return ENDPOINT
 
@@ -157,6 +158,7 @@ def _rows(payload, api):
         raise _Failure("invalid_payload")
     code = payload["code"]
     if code != 0:
+        if _provider_reason(payload)=="rate_limited": raise _Failure("rate_limited",60,provider_code=code,provider_reason="rate_limited")
         raise _Failure("api_denied", 86400 if code in (-2001, -2002, 2002, 2003, 401, 403) else 3600,
                        provider_code=code, provider_reason=_provider_reason(payload))
     data = payload.get("data")
@@ -175,13 +177,14 @@ def _rows(payload, api):
 
 class _Client:
     def __init__(self, token, cfg, now):
+        if not credential_matches(token): raise _Failure("credential_mismatch",3600)
         self._token = token
         self.url = _endpoint(cfg)
         self.now = now
         self.max_requests = int(_bounded(cfg.get("max_requests"), 12, 0, 12))
-        self.interval = _bounded(cfg.get("min_interval_seconds"), 3, 3, 50)
-        self.budget = _bounded(cfg.get("budget_seconds", cfg.get("request_budget_seconds")), 50, 0, 50)
-        self.timeout = _bounded(cfg.get("timeout_seconds"), 10, .1, 15)
+        self.interval = _bounded(cfg.get("min_interval_seconds"), 6, 3, 50)
+        self.budget = _bounded(cfg.get("budget_seconds", cfg.get("request_budget_seconds")), 50, 0, 180)
+        self.timeout = _bounded(cfg.get("timeout_seconds"), 10, .1, 30)
         self.started = time.monotonic()
         self.last = None
         self.count = 0
@@ -201,7 +204,8 @@ class _Client:
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        body = json.dumps({"api_name": api, "token": self._token, "params": params,
+        _service_before(api,self.remaining())
+        body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
                            "fields": FIELDS[api]}, separators=(",", ":")).encode("utf-8")
         request = urllib.request.Request(self.url, data=body, method="POST", headers={
             "Content-Type": "application/json", "Accept": "application/json",
@@ -230,20 +234,30 @@ class _Client:
             return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
         except urllib.error.HTTPError as exc:
             if exc.code == 429:
+                failed(api,_retry_after(exc.headers,self.now),host=True)
                 raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
             if exc.code in (401, 403):
                 raise _Failure("authorization_denied", 86400) from None
             if 300 <= exc.code < 400:
                 raise _Failure("redirect_blocked", 3600) from None
             raise _Failure("http_error", 3600) from None
-        except _Failure:
+        except _Failure as failure:
+            failed(api,max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
             raise
         except (TimeoutError, urllib.error.URLError, OSError):
+            failed(api,60)
             raise _Failure("transport_error", 900) from None
         except Exception:
             # Never stringify an exception, request, URL, response body or message.
             raise _Failure("invalid_payload", 900) from None
 
+
+def _service_before(api,remaining):
+    cooldown,gap=gate_delay(api)
+    if cooldown>0:raise _Failure('rate_limited',max(60,cooldown))
+    if gap>=remaining:raise _Failure('budget_exhausted')
+    if gap:time.sleep(gap)
+    sent()
 
 def _closed_day(now):
     if is_trading_day(now.date()) is True and now.time().replace(tzinfo=None) >= clock(18, 30):
@@ -1038,17 +1052,21 @@ def _news_records(rows, now, stamp, token):
         when = _instant(row["datetime"])
         if not when or when > now or (now - when).total_seconds() > 86400 * 7:
             continue
-        channels = row["channels"]
+        channels = row.get("channels", "")
         if isinstance(channels, list) and all(isinstance(value, str) for value in channels):
             channels = ",".join(channels)
-        title, content = _clean_text(row["title"], token, 500), _clean_text(row["content"], token, 5000)
+        title, content = _clean_text(row["title"], token, 500), _clean_text(row["content"], token, 4000000)
         if not title and not content:
             continue
         records.append({"datetime": when.isoformat(timespec="seconds"), "published_at": when.isoformat(timespec="seconds"),
                         "title": title, "content": content, "channels": _clean_text(channels, token, 500),
                         "provider": "stock_api", "upstream_provider": "unknown", "source": "cls", "source_name": "财联社快讯",
-                        "fetched_at": stamp, "url": None})
-    return sorted(records, key=lambda row: row["published_at"], reverse=True)[:300]
+                        "fetched_at": stamp, "url": None,
+                        "full_text":content,"full_text_status":"complete" if content else "deferred",
+                        "full_text_hash":hashlib.sha256(content.encode()).hexdigest(),
+                        "full_text_method":"provider_news_text","full_text_fetched_at":stamp,
+                        "full_text_scope":"服务返回的完整快讯文本，不等于外部报道全文"})
+    return sorted(records, key=lambda row: row["published_at"], reverse=True)
 
 
 def _capability_seed():
@@ -1084,6 +1102,10 @@ def enrich_with_stock_api(data, config=None, now=None):
     old = result.get("stock_api_state", {})
     state = {key: copy.deepcopy(old[key]) for key in ("calendar", "classification", "daily_basic", "members", "member_attempts", "endpoints",
              "index_requests", "index_cursor", "sw_history_requests", "sw_history_cursor", "member_cursor", "cooldown_until", "news", "realtime") if key in old}
+    if old.get('service_endpoint') and old['service_endpoint']!=ENDPOINT or not old.get('service_endpoint') and cfg.get('provider_migration'):
+        state['endpoints']={};state.pop('cooldown_until',None)
+        state['member_attempts']={};state['index_requests']={};state['sw_history_requests']={}
+    state['service_endpoint']=ENDPOINT
     state.update(version=2, primary=True, last_run_at=stamp, requests_this_run=0)
     result["stock_api_state"] = state
     states = {row["id"]: row for row in result.setdefault("sources", []) if isinstance(row, dict) and "id" in row}
@@ -1113,7 +1135,7 @@ def enrich_with_stock_api(data, config=None, now=None):
         source.update(status="error", error_code=exc.code, message="行情服务地址无效，未发起请求")
         return result
     endpoints = state.setdefault("endpoints", {})
-    for group in _capability_seed().values():
+    for group in (_capability_seed().values() if cfg.get("reuse_legacy_capabilities",False) else []):
         if not isinstance(group, dict):
             continue
         checked = _instant(group.get("checked_at"))
@@ -1168,7 +1190,7 @@ def enrich_with_stock_api(data, config=None, now=None):
                               snapshot_target_date=params.get("trade_date"), cooldown_until=None)
                 status.setdefault("snapshot_cooldowns", {})[params.get("trade_date")] = retry
             else:
-                status.update(status="cooldown" if delay else "pending", error_code=exc.code, cooldown_until=retry)
+                status.update(status="cooldown" if delay else "pending", error_code=exc.code, cooldown_until=retry,provider_code=exc.provider_code,provider_reason=exc.provider_reason)
             if exc.code in ("rate_limited", "redirect_blocked", "transport_error"):
                 state["cooldown_until"] = retry
                 source["retry_after"] = retry
@@ -1226,7 +1248,7 @@ def enrich_with_stock_api(data, config=None, now=None):
     for item in index_map.values():
         item["primary_provider"] = "stock_api"
     # A source timestamp is required even when the payload is obtained after close.
-    if is_trading_day(now.date()) is True:
+    if is_trading_day(now.date()) is True and cfg.get("realtime_enabled",True):
         realtime = state.setdefault("realtime", {})
         for api, items in (("rt_idx_k", index_map), ("rt_sw_k", sector_map)):
             if not items:
@@ -1368,11 +1390,21 @@ def enrich_with_stock_api(data, config=None, now=None):
             _attach_members(sector, members[sector["id"]])
     _apply_primary_basic(sectors, basic, cutoff)
     if cfg.get("news_enabled", True):
+        midnight=now.replace(hour=0,minute=0,second=0,microsecond=0)
+        prior_news=state.get('news',{})
+        prior_end=_instant(prior_news.get('coverage_end'))
+        news_start=max(midnight,prior_end-timedelta(minutes=30)) if prior_end and prior_end.date()==now.date() else midnight
         def save_news(rows):
             records = _news_records(rows, now, stamp, token)
-            state["news"] = {"records": records, "fetched_at": stamp, "possibly_truncated": len(rows) >= 1500}
-        attempt("news", {"src": "cls", "start_date": (now - timedelta(hours=2)).strftime("%Y-%m-%d %H:%M:%S"),
-                          "end_date": now.strftime("%Y-%m-%d %H:%M:%S")}, save_news, ttl=_bounded(cfg.get("news_cache_seconds"), 1800, 900, 3600))
+            collected={(r.get('datetime'),r.get('title'),r.get('source')):r for r in prior_news.get('records',[])}
+            collected.update({(r.get('datetime'),r.get('title'),r.get('source')):r for r in records})
+            effective_start=min((_instant(r['published_at']) for r in records),default=news_start) if len(rows)>=1500 else news_start
+            prior_start=_instant(prior_news.get('coverage_start'))
+            if prior_start and prior_end and prior_end>=effective_start and prior_start.date()==now.date():effective_start=min(prior_start,effective_start)
+            state["news"] = {"records":list(collected.values()), "fetched_at": stamp, "possibly_truncated": len(rows) >= 1500,
+                "coverage_start":effective_start.isoformat(),"coverage_end":now.isoformat() if records else (prior_end or news_start).isoformat(),"latest_count":len(records)}
+        attempt("news", {"src": "cls", "start_date": news_start.strftime("%Y-%m-%d %H:%M:%S"),
+                          "end_date": now.strftime("%Y-%m-%d %H:%M:%S"),'limit':1500}, save_news, ttl=_bounded(cfg.get("news_cache_seconds"), 1800, 900, 3600))
     if state.get("news", {}).get("records"):
         result["stock_api_news"] = copy.deepcopy(state["news"]["records"])
     history_requests = state.setdefault("sw_history_requests", {})

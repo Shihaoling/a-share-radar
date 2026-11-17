@@ -22,7 +22,7 @@ import urllib.request
 from zoneinfo import ZoneInfo
 
 from pipeline.stock_api import (
-    ENDPOINT, _Failure, _NoRedirect, _provider_reason, _reject_constant,
+    ENDPOINT, _service_before, token_for_api, credential_matches, failed, _Failure, _NoRedirect, _provider_reason, _reject_constant,
     _retry_after, _stock_code,
 )
 
@@ -111,6 +111,7 @@ def _parse_payload(payload, day):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload", 900)
     if payload["code"] != 0:
+        if _provider_reason(payload)=="rate_limited":raise _Failure("rate_limited",60,provider_code=429,provider_reason="rate_limited")
         reason = _provider_reason(payload)
         if payload['code'] in (401, 403) and reason == 'provider_error':
             reason = 'authorization_denied'
@@ -246,7 +247,9 @@ class DailyClient:
                 raise _Failure("budget_exhausted")
             if delay:
                 time.sleep(delay)
-        body = json.dumps({"api_name": "daily", "token": self._token,
+        if not credential_matches(self._token):raise _Failure("credential_mismatch",3600)
+        _service_before("daily",self.remaining())
+        body = json.dumps({"api_name": "daily", "token": token_for_api(self._token,"daily"),
                            "params": {"trade_date": day.replace("-", ""), "limit": ROW_LIMIT},
                            "fields": FIELDS}, separators=(",", ":")).encode()
         request = urllib.request.Request(ENDPOINT, data=body, method="POST", headers={
@@ -276,13 +279,15 @@ class DailyClient:
             return _parse_payload(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), day)
         except urllib.error.HTTPError as exc:
             if exc.code == 429:
+                failed("daily",_retry_after(exc.headers,self.now),host=True)
                 raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
             if exc.code in (401, 403):
                 raise _Failure("authorization_denied", 86400) from None
             if 300 <= exc.code < 400:
                 raise _Failure("redirect_blocked", 86400) from None
             raise _Failure("http_error", 3600) from None
-        except _Failure:
+        except _Failure as failure:
+            failed("daily",max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
             raise
         except (TimeoutError, urllib.error.URLError, OSError):
             raise _Failure("transport_error", 900) from None
@@ -344,6 +349,9 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
     state = _read_json(state_path, {})
     if not isinstance(state, dict):
         state = {}
+    if state.get("service_endpoint") and state["service_endpoint"]!=ENDPOINT or not state.get("service_endpoint") and config.get("stock_api",{}).get("provider_migration"):
+        for key in ("cooldown_until","error_code","provider_code","provider_reason"):state.pop(key,None)
+    state["service_endpoint"]=ENDPOINT
     days = max(1, min(int(cfg.get("history_days", 180)), 1500))
     target_dates = trading_dates(dashboard, now, days)
     summary = {"status": "pending", "source": "stock_api", "endpoint": "daily",
@@ -395,17 +403,17 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
                 # At most ONE extra request in the entire bounded batch. Never
                 # retry authentication, permission or explicit frequency errors.
                 retryable = transient.code == 'transport_error' or transient.provider_reason == 'provider_error'
-                if not retryable or transient_retries >= 1 or client.count >= client.max_requests or client.remaining() <= 30:
+                if not retryable or transient_retries >= 1 or client.count >= client.max_requests or client.remaining() <= 60:
                     raise
                 transient_retries += 1
                 if cfg.get('progress', False):
                     print(json.dumps({'equity_retry_date': day, 'reason': transient.code,
                                       'provider_code': transient.provider_code, 'wait_seconds': 30}), flush=True)
-                time.sleep(30)
+                time.sleep(60)
                 rows, quality, complete = client.request(day)
             fetched_at = _now().isoformat()
             batch = {"schema_version": 1, "trade_date": day, "fetched_at": fetched_at,
-                     "complete": complete, "source": "stock_api", "upstream_provider": "unknown",
+                     "complete": complete, "source": "stock_api", "service_endpoint":ENDPOINT, "upstream_provider": "unknown",
                      "row_count": len(rows), "quality": quality,
                      "reference_note": REFERENCE_NOTE, "rows": rows}
             _atomic_json(directory / "daily" / (day.replace("-", "") + ".json.gz"), batch, compressed=True)
@@ -416,7 +424,7 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
             summary["missing_days"] -= 1
             summary["partial_data_days"] += int(quality.get("status") == "accepted_partial")
             summary["excluded_rows"] += quality.get("rejected_count", 0) + quality.get("filtered_count", 0)
-            state = {"last_success": fetched_at, "last_trade_date": day,
+            state = {"service_endpoint":ENDPOINT,"last_success": fetched_at, "last_trade_date": day,
                      "cooldown_until": None, "error_code": None}
         except _Failure as failure:
             summary["error_code"] = failure.code

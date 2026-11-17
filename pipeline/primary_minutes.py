@@ -3,7 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 import os
 from .calendar import shanghai_now, is_trading_day, SHANGHAI
-from .stock_api import _Client, _Failure, _index_code, FIELDS, _instant
+from .stock_api import _Client, _Failure, _index_code, FIELDS, _instant, ENDPOINT,credential_matches
 
 FIELDS.update({name: 'ts_code,trade_time,open,close,high,low,vol,amount' for name in ('sw_mins', 'idx_mins')})
 
@@ -11,13 +11,17 @@ FIELDS.update({name: 'ts_code,trade_time,open,close,high,low,vol,amount' for nam
 def collect_primary_minutes(dashboard, config=None, now=None, client=None):
     now = shanghai_now(now); result = deepcopy(dashboard); cfg = (config or {}).get('primary_minutes', {})
     state = result.setdefault('primary_minutes_state', {'endpoints': {}, 'completed': {}})
+    if state.get('service_endpoint')!=ENDPOINT:
+        state['endpoints']={};state['completed']={}
+    state['service_endpoint']=ENDPOINT
     state.setdefault('endpoints', {}); state.setdefault('completed', {})
     # Official SW minute data is updated 19:00–20:00. Never poll it intraday.
     if not (config or {}).get('network_enabled') or not cfg.get('enabled', True) or is_trading_day(now.date()) is not True or now.hour < 20:
         return result
     token = os.environ.get('STOCK_API_TOKEN', '')
-    if not token and client is None: return result
-    client = client or _Client(token, {'max_requests': 12, 'budget_seconds': 50, 'min_interval_seconds': 3}, now)
+    if (not token or not credential_matches(token)) and client is None:
+        state['status']='credentials_pending';return result
+    client = client or _Client(token, {'max_requests': 12, 'budget_seconds': 180, 'min_interval_seconds': 6,'timeout_seconds':30}, now)
     day = now.date().isoformat(); attempted = 0
     state['completed'] = {k:v for k,v in state['completed'].items() if k[:10] >= (now-timedelta(days=7)).date().isoformat()}
     for group, api in (('sectors', 'sw_mins'), ('market', 'idx_mins')):

@@ -109,10 +109,19 @@ jobs:
         run: python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.8.0
       - name: Verify time, leakage and review invariants
         run: python -m unittest discover -s tests -v
+      - name: Verify new primary service and inventory supported data
+        if: inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5'
+        env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_EXPECTED_STOCK_KEY_SHA256: 097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
+          RADAR_SERVICE_GATE_FILE: ${{ runner.temp }}/sxdata-rate-gate.json
+        run: python -m pipeline.service_rollout
       - name: Fill initial all-share history
         if: steps.equity_gate.outputs.run_bootstrap == 'true'
         env:
           STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_EXPECTED_STOCK_KEY_SHA256: 097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
+          RADAR_SERVICE_GATE_FILE: ${{ runner.temp }}/sxdata-rate-gate.json
           RADAR_ALLOW_TRAINING: 'false'
         run: python -m pipeline.equity_update --bootstrap-if-needed --days 180 --max-requests 180
       - name: Verify real Chinese finance model inference
@@ -140,6 +149,8 @@ jobs:
         if: github.event_name != 'push'
         env:
           STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_EXPECTED_STOCK_KEY_SHA256: 097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
+          RADAR_SERVICE_GATE_FILE: ${{ runner.temp }}/sxdata-rate-gate.json
           RADAR_ALLOW_TRAINING: 'false'
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           STOCK_API_ONLY: ${{ inputs.stock_api_only }}
@@ -166,16 +177,13 @@ jobs:
         if: steps.sentiment_gate.outputs.run == 'true' && github.event_name == 'push'
         env:
           STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_EXPECTED_STOCK_KEY_SHA256: 097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
+          RADAR_SERVICE_GATE_FILE: ${{ runner.temp }}/sxdata-rate-gate.json
           RADAR_ALLOW_TRAINING: 'false'
         run: python -m pipeline.run --stock-api-only
       - name: Score archived Chinese and English news once
         if: steps.sentiment_gate.outputs.run == 'true'
         run: python scripts/score-news.py
-      - name: Verify historical minute endpoints once against documented examples
-        if: github.event_name == 'push'
-        env:
-          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
-        run: python -m pipeline.minute_check
       - name: Enrich full article text and MiniMax summaries once after rollout
         if: github.event_name == 'push'
         env:
@@ -230,6 +238,7 @@ jobs:
           if [ -d data/equity ]; then git add data/equity; fi
           if [ -d data/news_sentiment ]; then git add data/news_sentiment; fi
           if [ -d data/news_archive ]; then git add data/news_archive; fi
+          if [ -f web/data/data-service-capabilities.json ]; then git add web/data/data-service-capabilities.json; fi
           if [ -f web/data/minute-access.json ]; then git add web/data/minute-access.json; fi
           if [ -d web/data/articles ]; then git add web/data/articles; fi
           if [ -d data/news_content ]; then git add data/news_content; fi

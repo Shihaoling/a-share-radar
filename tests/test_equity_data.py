@@ -43,7 +43,7 @@ class Response:
     status = 200
     headers = {}
 
-    def __init__(self, value, url="https://t.xiaodefa.top/"):
+    def __init__(self, value, url="http://tus.sxdata.top/tu_share/"):
         self.body = json.dumps(value).encode()
         self.url = url
 
@@ -143,7 +143,7 @@ class EquityDataTests(unittest.TestCase):
             client.request("2026-11-16")
             request = mocked.call_args.args[0]
             sent = json.loads(request.data)
-            self.assertEqual(request.full_url, "https://t.xiaodefa.top/")
+            self.assertEqual(request.full_url, "http://tus.sxdata.top/tu_share/")
             self.assertEqual(sent["params"], {"trade_date": "20261116", "limit": 6000})
             self.assertEqual(sent["api_name"], "daily")
             with self.assertRaises(_Failure) as failure:
@@ -213,7 +213,7 @@ class EquityDataTests(unittest.TestCase):
             result = collect_equity_history(dashboard(), {}, NOW, max_requests=10, output_dir=temporary)
         self.assertEqual(len(attempts), 2)
         self.assertEqual(attempts[0], attempts[1])
-        sleep.assert_called_once_with(30)
+        sleep.assert_called_once_with(60)
         self.assertEqual(result['provider_code'], -1)
         self.assertEqual(result['status'], 'unavailable')
 

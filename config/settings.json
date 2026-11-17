@@ -8,9 +8,13 @@
     "enabled": true,
     "primary": true,
     "max_requests": 12,
-    "min_interval_seconds": 3,
+    "min_interval_seconds": 6,
     "max_index_calls": 6,
-    "news_cache_seconds": 1800
+    "news_cache_seconds": 1800,
+    "endpoint": "http://tus.sxdata.top/tu_share/",
+    "provider_migration": true,
+    "reuse_legacy_capabilities": false,
+    "realtime_enabled": false
   },
   "sentiment": {
     "enabled": true,
@@ -41,7 +45,7 @@
   "funds": {
     "enabled": true,
     "max_requests": 4,
-    "min_interval_seconds": 3
+    "min_interval_seconds": 6
   },
   "equity": {
     "enabled": true,
@@ -80,5 +84,5 @@
     "enabled": true,
     "minimum_interval_minutes": 30
   },
-  "news_supplement_enabled": true
+  "news_supplement_enabled": false
 }

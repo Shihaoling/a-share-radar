@@ -83,7 +83,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         # Tushare goes first, then fill news/history fields it could not supply.
         if config.get('primary_provider') == 'stock_api':
             records = data.get('stock_api_news', [])
-            fresh_primary_news = any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 1800 for r in records)
+            fresh_primary_news = data.get('stock_api_state',{}).get('news',{}).get('latest_count',1)>0 and any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 1800 for r in records)
             secondary = fetch_data(data, {**config, 'secondary_news_allowed': not fresh_primary_news or config.get('news_supplement_enabled',False)}, now)
             primary_sources = [s for s in data.get('sources', []) if s.get('provider') == 'stock_api' or s.get('type') == 'intraday']
             data.update(secondary)
@@ -109,7 +109,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     now = datetime.now(ZoneInfo('Asia/Shanghai'))
     # Use batch completion as a conservative upper bound for newly available data.
     starts = {started_at.isoformat(), started_at.isoformat(timespec='seconds')}
-    time_fields = {'as_of','first_seen_at','fetched_at','available_at','inference_completed_at','last_success','history_updated_at','constituents_updated_at','observed_at'}
+    time_fields = {'as_of','first_seen_at','fetched_at','available_at','inference_completed_at','last_success','history_updated_at','constituents_updated_at','observed_at','full_text_fetched_at'}
     def fix_availability(value):
         if isinstance(value, dict):
             for key, item in value.items():
@@ -128,6 +128,8 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
                    '板块指数与总市值分开展示；主题重叠，市值不可相加。']}
     dashboard = validate_prices(dashboard, now=now)
     dashboard = compute_metrics(dashboard, config)
+    from .source_policy import apply_primary_news_policy
+    dashboard=apply_primary_news_policy(dashboard,now)
     sentiment_config = {**config, 'sentiment': {**config.get('sentiment', {}), 'model_enabled': False, 'reuse_only': True}} if quotes_only or offline else config
     if not quotes_only and not stock_api_only and not offline and config.get('minimax', {}).get('enabled'):
         from pipeline.news_update import enrich_news

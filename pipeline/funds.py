@@ -18,7 +18,7 @@ from datetime import time as clock, timedelta
 from pathlib import Path
 
 from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
-from pipeline.stock_api import (ENDPOINT, MAX_BYTES, _Client as _BaseClient, _Failure,
+from pipeline.stock_api import (_service_before, token_for_api, failed, ENDPOINT, MAX_BYTES, _Client as _BaseClient, _Failure,
     _bounded, _date, _instant, _provider_reason, _reject_constant, _retry_after)
 
 FIELDS = {
@@ -70,6 +70,7 @@ def _rows(payload, api):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload", 900)
     if payload["code"] != 0:
+        if _provider_reason(payload)=="rate_limited":raise _Failure("rate_limited",60,provider_reason="rate_limited")
         reason = _provider_reason(payload)
         if payload["code"] in (401, 403):
             reason = "authorization_denied"
@@ -108,7 +109,8 @@ class _Client(_BaseClient):
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        body = json.dumps({"api_name": api, "token": self._token, "params": params,
+        _service_before(api,self.remaining())
+        body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
                            "fields": FIELDS[api]}, separators=(",", ":")).encode()
         request = urllib.request.Request(self.url, data=body, method="POST", headers={
             "Content-Type": "application/json", "Accept": "application/json",
@@ -137,11 +139,13 @@ class _Client(_BaseClient):
             return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
         except urllib.error.HTTPError as exc:
             if exc.code == 429:
+                failed(api,_retry_after(exc.headers,self.now),host=True)
                 raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
             if exc.code in (401, 403):
                 raise _Failure("authorization_denied", 86400) from None
             raise _Failure("redirect_blocked" if 300 <= exc.code < 400 else "http_error", 3600) from None
-        except _Failure:
+        except _Failure as failure:
+            failed(api,max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
             raise
         except (TimeoutError, urllib.error.URLError, OSError):
             raise _Failure("transport_error", 900) from None
@@ -312,7 +316,8 @@ def enrich_funds(dashboard, config=None, now=None):
     token = os.environ.get("STOCK_API_TOKEN", "").strip()
     stamp = now.isoformat(timespec="seconds")
     old = result.get("fund_state", {})
-    state = {"version": 2, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
+    if old.get("service_endpoint")!=ENDPOINT: old={**old,"endpoints":{}}
+    state = {"service_endpoint":ENDPOINT,"version": 2, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
     for api in FIELDS:
         cached = old.get("cache", {}).get(api, {})
         if old.get('version', 2) < 2:

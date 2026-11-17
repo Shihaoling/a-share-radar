@@ -100,7 +100,7 @@ class FundTests(unittest.TestCase):
         self.assertEqual(len(calls), 3)
         self.assertEqual(result["fund_state"]["requests_this_run"], 3)
         self.assertEqual(len(sleep.call_args_list), 2)
-        self.assertTrue(all(2.9 < args.args[0] <= 3 for args in sleep.call_args_list))
+        self.assertTrue(all(5.9 < args.args[0] <= 6 for args in sleep.call_args_list))
         fund = result["sectors"][0]["funds"][0]
         self.assertEqual(fund["price"], 1.2)
         self.assertEqual(fund["price_date"], "2026-11-16")

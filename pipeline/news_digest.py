@@ -31,6 +31,7 @@ def validate_digest(value,ids):
 def digest_inputs(news,day):
     rows=[]
     for n in news:
+        if n.get('primary_shadowed'):continue
         stamp=n.get('published_at') or n.get('first_seen_at') or ''
         if stamp[:10]!=day or not n.get('id'):continue
         a=n.get('llm_analysis') or {};ready=a.get('status')=='ready'

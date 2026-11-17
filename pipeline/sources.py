@@ -458,7 +458,7 @@ def fetch_data(previous=None, config=None, now=None):
             news.append(item)
     history = copy.deepcopy(previous.get("history", {}))
     result = {"market": market, "sectors": sectors, "news": news, "sources": list(states.values()), "history": history, "official_portals": cfg.get("official_portals", [])}
-    for key in ("archived_sectors", "taxonomy", "sentiment_state", "news_digest"):
+    for key in ("archived_sectors", "taxonomy", "sentiment_state", "news_digest", "primary_minutes_state", "primary_news_state"):
         if key in previous:
             result[key] = copy.deepcopy(previous[key])
     for item in sectors:

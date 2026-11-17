@@ -130,6 +130,9 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
     enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
     attempted = 0; hosts = {}; reused = 0
     for n in sorted(result.get('news', []), key=lambda x: x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
+        if n.get('primary_shadowed'):continue
+        if n.get('provider')=='stock_api' and n.get('full_text_method')=='provider_news_text' and n.get('full_text_status')=='complete' and n.get('full_text'):
+            reused+=1;continue
         url = n.get('url') or n.get('original_url')
         parsed = urlsplit(str(url or ''))
         if parsed.scheme == 'http' and parsed.hostname == 'finance.eastmoney.com':

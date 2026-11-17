@@ -131,6 +131,7 @@ def publish_view(dashboard, output_path):
             article_path.write_text(json.dumps(content,ensure_ascii=False,allow_nan=False)+'\n')
         public['article_text_url']='./data/articles/'+key+'.json'
         public['article_text_characters']=len(body)
+    view["news"]=[n for n in view.get("news",[]) if not n.get("primary_shadowed")]
     payload = json.dumps(view, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n"
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
