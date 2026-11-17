@@ -34,43 +34,34 @@
   },
   "2026-11-17": {
     "date": "2026-11-17",
-    "evaluated_at": "2026-11-17T15:43:03.882577+08:00",
+    "evaluated_at": "2026-11-17T17:21:56.175586+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 267,
-    "settled_count": 8,
-    "pending_count": 35,
+    "settled_count": 12,
+    "pending_count": 31,
     "abstained_count": 37,
-    "direction_accuracy": 0.375,
-    "mae_pct": 0.40529939835548023,
-    "baseline_mae_pct": 0.4139328911253626,
-    "skill_pct": 2.0857228200470868,
+    "direction_accuracy": 0.5833333333333334,
+    "mae_pct": 0.3064808815298639,
+    "baseline_mae_pct": 0.3122365433764522,
+    "skill_pct": 1.8433658611346049,
     "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
     "by_sector": [
       {
-        "sector_id": "sh000300",
-        "name": "沪深300",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.34935141898336797,
-        "baseline_mae_pct": 0.34935141898336797,
-        "skill_pct": 0.0
-      },
-      {
         "sector_id": "sz399006",
         "name": "创业板指",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8642124147297148,
-        "baseline_mae_pct": 0.8642124147297148,
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.49668108450275916,
+        "baseline_mae_pct": 0.49668108450275916,
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000688",
-        "name": "科创50",
+        "sector_id": "sh000300",
+        "name": "沪深300",
         "count": 2,
         "direction_accuracy": 0.5,
-        "mae_pct": 0.055504594979594035,
-        "baseline_mae_pct": 0.055504594979594035,
+        "mae_pct": 0.22270446267007582,
+        "baseline_mae_pct": 0.22270446267007582,
         "skill_pct": 0.0
       },
       {
@@ -83,22 +74,31 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sz399001",
-        "name": "深证成指",
-        "count": 1,
-        "direction_accuracy": 0.0,
-        "mae_pct": 0.8007686325253838,
-        "baseline_mae_pct": 0.8007686325253838,
+        "sector_id": "sh000688",
+        "name": "科创50",
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.055504594979594035,
+        "baseline_mae_pct": 0.055504594979594035,
         "skill_pct": 0.0
       },
       {
         "sector_id": "sh000001",
         "name": "上证指数",
-        "count": 1,
+        "count": 2,
         "direction_accuracy": 1.0,
-        "mae_pct": 0.4000360846387031,
-        "baseline_mae_pct": 0.469104026797762,
-        "skill_pct": 14.723374393210042
+        "mae_pct": 0.2621875525395296,
+        "baseline_mae_pct": 0.296721523619059,
+        "skill_pct": 11.63851231900026
+      },
+      {
+        "sector_id": "sz399001",
+        "name": "深证成指",
+        "count": 2,
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.4432988714834829,
+        "baseline_mae_pct": 0.4432988714834829,
+        "skill_pct": 0.0
       }
     ],
     "by_task": [
@@ -112,27 +112,27 @@
       },
       {
         "target_kind": "today_close",
-        "count": 2,
+        "count": 6,
         "direction_accuracy": 1.0,
-        "mae_pct": 0.003487102351384941,
-        "baseline_mae_pct": 0.003487102351384941,
+        "mae_pct": 0.07372493270288254,
+        "baseline_mae_pct": 0.07372493270288254,
         "skill_pct": 0.0
       }
     ],
     "sentiment": {
       "positive": 0,
-      "negative": 1,
-      "neutral": 0,
-      "uncertain": 3,
+      "negative": 3,
+      "neutral": 1,
+      "uncertain": 0,
       "labels": {
-        "unknown": 3,
-        "negative": 1
+        "negative": 3,
+        "neutral": 1
       },
       "excluded_count": 0,
       "rumor_count": 0,
       "alignment_count": 0,
       "alignment_rate": null,
-      "method": "financial-tone-rules-v2+finbert_chinese_cpu",
+      "method": "finbert_chinese_cpu+finbert_english_cpu",
       "label_accuracy": null,
       "note": "仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。"
     }

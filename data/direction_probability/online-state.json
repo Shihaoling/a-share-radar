@@ -1,0 +1,22 @@
+{
+  "status": "trained",
+  "request_id": "cloud-direction-20261117",
+  "training_cutoff": "2026-11-16",
+  "trained_at": "2026-11-17T17:23:41.056292+08:00",
+  "model_id": "direction-cloud-20261117T172320-20261117T092340Z",
+  "report_path": "data/direction_probability/studies/cloud-20261117T172320/training-report.json",
+  "runtime": "GitHub Actions CPU",
+  "source_sha256": "9b2b83d1611229330e013df38bbb5e0a226045e60a96f664af9ff6fe8d28e310",
+  "news_training": {
+    "enabled": false,
+    "mature_dates_with_news": 0,
+    "group_mature_dates": {
+      "market": 0,
+      "sectors": 0
+    },
+    "required_dates": 30,
+    "status": "insufficient_point_in_time_history",
+    "news_backfilled": false
+  },
+  "evaluation_status": "historical_reference_not_new_forward_accuracy"
+}
