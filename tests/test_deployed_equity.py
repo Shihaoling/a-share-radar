@@ -84,7 +84,7 @@ class DeployedEquityTests(unittest.TestCase):
         self.assertNotIn('checkpoint', saved['models']['gru'])
         with patch('pipeline.train_equity.load_neural_bundle', return_value=self.bundle) as loader:
             loaded = deployed.load_deployed_model(self.destination)
-        loader.assert_called_once_with(self.destination / 'gru.pt', device='cpu')
+        loader.assert_called_once_with((self.destination / 'gru.pt').resolve(), device='cpu')
         self.assertTrue(loaded['model_id'].startswith('gru-'))
 
     def test_hash_tamper_fails_before_torch_loading(self):

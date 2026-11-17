@@ -8,7 +8,8 @@
     "enabled": true,
     "primary": true,
     "max_requests": 12,
-    "min_interval_seconds": 3
+    "min_interval_seconds": 3,
+    "max_index_calls": 6
   },
   "sentiment": {
     "enabled": true,
@@ -16,14 +17,15 @@
     "max_model_articles": 120
   },
   "fallback": {
-    "verify_secondary": true,
+    "verify_secondary": false,
     "max_secondary_verifications": 1
   },
   "intraday": {
     "enabled": true,
     "cache_seconds": 60,
     "max_points": 2000,
-    "max_constituent_stocks": 20
+    "max_constituent_stocks": 20,
+    "source_mode": "rendered_page"
   },
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",

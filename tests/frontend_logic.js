@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -144,5 +144,38 @@ function runFrontendChecks(source) {
   check('daily close is primary and stocks are auxiliary on the forecast page',()=>{api.state.data={...d,daily_forecast:closeForecast};api.state.page='forecast';api.render();const output=text(root);ok(output.indexOf('下一交易日收盘')<output.indexOf('个股辅助研究'));ok(output.includes('尚未达到 0.1 个百分点目标'));api.state.data=d;});
   check('daily industry detail retains a missing forecast instead of zero',()=>{const output=text(api.dailySectorPanel(d.sectors[0],{...d,daily_forecast:closeForecast}));ok(output.includes('待生成'));ok(!output.includes('+0.00%'));});
   check('daily forecast array shapes are validated before rendering',()=>{let error;try{api.validateSnapshot({...d,daily_forecast:{market:{}}});}catch(err){error=err;}ok(error?.message.includes('daily_forecast.market'));});
+  check('zero baseline is not presented as an unchanged-price directional forecast',()=>{
+    const output=text(api.dailyIndexCard(closeForecast,{name:'上证指数',model_family:'incumbent_v3_zero',predicted_return_pct:0,predicted_close:3000}));
+    ok(output.includes('暂无方向信号'));ok(!output.includes('0.00%'));ok(!output.includes('3,000.00 点'));
+  });
+  check('page observation is a labeled fallback without replacing a current Tushare close',()=>{
+    const page={price:3200,change_pct:2,observed_at:'2026-11-16T15:55:00+08:00',timestamp_quality:'page_observed'};
+    let q=api.displayQuote({...daily('2026-11-13',3000),page_quote:page},now);
+    eq(q.price,3200);ok(q.label.includes('网页观测'));ok(!q.trusted);
+    q=api.displayQuote({...daily('2026-11-16',3110),page_quote:page},now);eq(q.price,3110);eq(q.provider,'stock_api');
+  });
+  check('a fresh primary Tushare timestamp stays ahead of a page observation',()=>{
+    const q=api.displayQuote({...live('14:59:00',3110),page_quote:{price:3200,observed_at:'2026-11-16T15:01:00+08:00',timestamp_quality:'page_observed'}},now);
+    eq(q.price,3110);eq(q.provider,'stock_api');
+  });
+  check('page sampling and SW taxonomy stay separate, including matching names',()=>{
+    api.state.pageQuotes={schema_version:1,market:[],sectors:[{id:'em:BK0475',name:'银行',taxonomy:'EASTMONEY'}],intraday:{}};
+    api.state.page='sectors';api.state.taxonomy='eastmoney';let result=api.normalizeDashboard(d);eq(result.sectors[0].id,'em:BK0475');
+    api.state.taxonomy='sw';result=api.normalizeDashboard(d);eq(result.sectors[0].id,'801010.SI');api.state.pageQuotes=null;
+  });
+  check('observed-page ticks keep observed time and exclude missing observation clocks',()=>{
+    const rows=api.intradayFor({intraday:{x:{points:[{price:1,observed_at:'2026-11-16T10:00:00+08:00',timestamp_quality:'page_observed'},{price:2,observed_at:'2026-11-16T10:05:00+08:00',timestamp_quality:'page_observed'},{price:3,observed_at:'2026-11-16T10:10:00+08:00',timestamp_quality:'retrieved_only'}]}}},{id:'x'});
+    eq(rows.length,2);eq(rows[1].timestamp,'2026-11-16T10:05:00+08:00');
+  });
+  check('pending sector forecasts keep their original target day instead of disappearing',()=>{
+    const day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date());
+    const output=text(api.awaitingForecasts({daily_forecast:{sectors:[],market:[],ledger:[{id:'bank',name:'银行',target_date:day,predicted_return_pct:.35,model_family:'ridge'}]}}));
+    ok(output.includes(day));ok(output.includes('+0.35%'));ok(output.includes('待收盘数据'));
+  });
+  check('noncompact charts expose both pointer and keyboard crosshair controls',()=>{
+    const node=api.chart([{date:'2026-11-12',close:100},{date:'2026-11-13',close:101}],{metric:'index'});
+    ok(node.events.pointermove);ok(node.events.pointerleave);ok(node.events.keydown);eq(node.attrs.tabindex,'0');
+    node.events.focus();const output=text(node);ok(output.includes('101.00'));ok(output.includes('2026-11-13'));
+  });
   return {passed, failures};
 }

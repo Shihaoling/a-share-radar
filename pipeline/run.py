@@ -63,7 +63,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     if (quotes_only or stock_api_only) and previous:
         data = deepcopy(previous)
     else:
-        daily_config = {**config, 'network_enabled': False} if quotes_only or stock_api_only else config
+        daily_config = {**config, 'network_enabled': False} if quotes_only or stock_api_only or config.get('primary_provider') == 'stock_api' else config
         data = fetch_data(previous, daily_config, now)
         data['price_observations'] = previous.get('price_observations', [])
         for key in ('intraday', 'intraday_state'):
@@ -78,11 +78,20 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         api_config = {**config, 'stock_api': {**config.get('stock_api', {}), 'quotes_only': quotes_only}}
         data = enrich_with_stock_api(data, api_config, now)
     if not quotes_only and not stock_api_only:
+        # Tushare goes first, then fill news/history fields it could not supply.
+        if config.get('primary_provider') == 'stock_api':
+            records = data.get('stock_api_news', [])
+            fresh_primary_news = any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 3600 for r in records)
+            secondary = fetch_data(data, {**config, 'secondary_news_allowed': not fresh_primary_news}, now)
+            primary_sources = [s for s in data.get('sources', []) if s.get('provider') == 'stock_api' or s.get('type') == 'intraday']
+            data.update(secondary)
+            known = {s['id'] for s in data.get('sources', [])}
+            data['sources'].extend(s for s in primary_sources if s['id'] not in known)
         data = enrich_with_fallback(data, config, now)
     started_at = now
     quote_clock = datetime.now(ZoneInfo('Asia/Shanghai'))
     # Recompute cached quote freshness even when this mode forbids quote HTTP.
-    quote_config = {**config, 'network_enabled': False} if stock_api_only else config
+    quote_config = {**config, 'network_enabled': False} if stock_api_only or config.get('intraday', {}).get('source_mode') == 'rendered_page' else config
     data = collect_intraday(data, quote_config, quote_clock)
     # Daily bulk jobs have their own small budgets and persistent caches. Never
     # request daily equity/fund data from the five-minute quote-only workflow.

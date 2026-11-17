@@ -1,0 +1,3 @@
+# Browser rendering, DOM tables only; not an Eastmoney API client.
+playwright>=1.58,<2
+truststore>=0.10,<1

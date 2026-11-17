@@ -2,7 +2,7 @@ name: Update research and publish
 on:
   push:
     branches: [main]
-    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json', 'web/data/view.json', 'web/data/health.json', 'data/equity/daily/**', 'data/equity/forecasts/**', 'data/equity/state.json', 'data/equity/bootstrap-complete.json']
+    paths-ignore: ['web/data/dashboard.json', 'web/data/reviews.json', 'web/data/tushare-capabilities.json', 'web/data/view.json', 'web/data/health.json', 'web/data/page-quotes.json', 'data/equity/daily/**', 'data/equity/forecasts/**', 'data/equity/state.json', 'data/equity/bootstrap-complete.json']
   workflow_dispatch:
     inputs:
       quotes_only:
@@ -113,6 +113,11 @@ jobs:
               print(key, value['label'], value['score'], value['method'])
           print('CPU_MODEL_SMOKE_OK')
           PY
+      - name: Install rendered-page collector
+        if: github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.stock_api_only != true
+        run: |
+          python -m pip install -r requirements-crawler.txt
+          python -m playwright install --with-deps chromium
       - name: Update snapshots and evaluate predictions
         if: github.event_name != 'push'
         env:
@@ -135,6 +140,9 @@ jobs:
           else
             python -m pipeline.run
           fi
+      - name: Collect Eastmoney rendered tables with bounded pagination
+        if: github.event_name != 'push' && (!inputs.probe_group || inputs.probe_group == 'none') && inputs.stock_api_only != true
+        run: python -m pipeline.page_quotes --once
       - name: Refresh cached inference without training
         if: github.event_name == 'push' && hashFiles('data/equity/bootstrap-complete.json') != ''
         env:
@@ -159,6 +167,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add web/data/dashboard.json web/data/reviews.json web/data/view.json web/data/health.json
+          if [ -f web/data/page-quotes.json ]; then git add web/data/page-quotes.json; fi
           if [ -f web/data/tushare-capabilities.json ]; then git add web/data/tushare-capabilities.json; fi
           if [ -d data/equity ]; then git add data/equity; fi
           if ! git diff --cached --quiet; then

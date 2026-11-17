@@ -626,6 +626,9 @@ def fetch_data(previous=None, config=None, now=None):
     old_news = {n["id"]: n for n in news}
     for spec in cfg["feeds"]:
         sid = spec["id"]
+        if not cfg.get("secondary_news_allowed", True):
+            states[sid].update(message="Tushare已提供本时段资讯，本轮未请求备用来源")
+            continue
         if not spec.get("enabled", True):
             states[sid].update(status="pending", message="配置中已停用")
             continue
