@@ -129,7 +129,13 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
     enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
     attempted = 0; hosts = {}; reused = 0
     for n in sorted(result.get('news', []), key=lambda x: x.get('published_at') or x.get('first_seen_at') or '', reverse=True):
-        url = n.get('url') or n.get('original_url'); key = text_hash(str(url or n.get('id')))
+        url = n.get('url') or n.get('original_url')
+        parsed = urlsplit(str(url or ''))
+        if parsed.scheme == 'http' and parsed.hostname == 'finance.eastmoney.com':
+            n.setdefault('original_url', url)
+            url = 'https' + str(url)[4:]
+            n['url'] = url
+        key = text_hash(str(url or n.get('id')))
         row = state['articles'].get(key, {})
         if row.get('url') != url:
             row = {}

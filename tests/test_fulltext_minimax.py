@@ -53,6 +53,17 @@ class FullTextTests(unittest.TestCase):
         for html in ('<article>安全验证'+BODY+'</article>', '<div class="paywall">订阅</div><article>'+BODY+'</article>'):
             with self.assertRaises(Exception):extract_article(html.encode())
 
+    def test_legacy_eastmoney_http_links_are_upgraded_before_collection(self):
+        class Gate:
+            def __init__(self): self.urls=[]
+            def get(self,url): self.urls.append(url); return ('<article>'+BODY+'</article>').encode(),{}
+        gate=Gate();data={'news':[{'id':'a','url':'http://finance.eastmoney.com/a/test.html'}]}
+        with TemporaryDirectory() as d:
+            result=enrich_full_text(data,{'network_enabled':True},NOW,d,gate)
+            self.assertEqual(gate.urls,['https://finance.eastmoney.com/a/test.html'])
+            self.assertEqual(result['news'][0]['original_url'],'http://finance.eastmoney.com/a/test.html')
+            self.assertEqual(result['news'][0]['full_text_status'],'complete')
+
     def test_cached_body_never_requests_source_twice_and_host_failures_cool(self):
         class Gate:
             def __init__(self):self.calls=[]

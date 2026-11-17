@@ -47,7 +47,7 @@ def main():
     now = shanghai_now(); d['generated_at'] = now.isoformat()
     d['news_archive_summary'] = archive_news(d, now)
     atomic_json(path, d); publish_view(d, ROOT/'web/data/view.json')
-    report = {'completed_at': now.isoformat(), 'request_id': 'fulltext-minimax-validation-v3',
+    report = {'completed_at': now.isoformat(), 'request_id': 'fulltext-minimax-domestic-v4',
               'content': d.get('news_content_summary'), 'model': d.get('minimax_summary'), 'api_check': probe}
     atomic_json(ROOT/'data/news_sentiment/fulltext-report.json', report)
     print(json.dumps(report, ensure_ascii=False))
