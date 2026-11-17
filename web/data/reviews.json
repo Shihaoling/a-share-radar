@@ -34,7 +34,7 @@
   },
   "2026-11-17": {
     "date": "2026-11-17",
-    "evaluated_at": "2026-11-17T17:21:56.175586+08:00",
+    "evaluated_at": "2026-11-17T18:29:27.526767+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 267,
     "settled_count": 12,
@@ -47,15 +47,6 @@
     "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
     "by_sector": [
       {
-        "sector_id": "sz399006",
-        "name": "创业板指",
-        "count": 2,
-        "direction_accuracy": 0.5,
-        "mae_pct": 0.49668108450275916,
-        "baseline_mae_pct": 0.49668108450275916,
-        "skill_pct": 0.0
-      },
-      {
         "sector_id": "sh000300",
         "name": "沪深300",
         "count": 2,
@@ -65,12 +56,12 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000905",
-        "name": "中证500",
+        "sector_id": "sz399006",
+        "name": "创业板指",
         "count": 2,
         "direction_accuracy": 0.5,
-        "mae_pct": 0.35850872300374204,
-        "baseline_mae_pct": 0.35850872300374204,
+        "mae_pct": 0.49668108450275916,
+        "baseline_mae_pct": 0.49668108450275916,
         "skill_pct": 0.0
       },
       {
@@ -83,13 +74,13 @@
         "skill_pct": 0.0
       },
       {
-        "sector_id": "sh000001",
-        "name": "上证指数",
+        "sector_id": "sh000905",
+        "name": "中证500",
         "count": 2,
-        "direction_accuracy": 1.0,
-        "mae_pct": 0.2621875525395296,
-        "baseline_mae_pct": 0.296721523619059,
-        "skill_pct": 11.63851231900026
+        "direction_accuracy": 0.5,
+        "mae_pct": 0.35850872300374204,
+        "baseline_mae_pct": 0.35850872300374204,
+        "skill_pct": 0.0
       },
       {
         "sector_id": "sz399001",
@@ -99,6 +90,15 @@
         "mae_pct": 0.4432988714834829,
         "baseline_mae_pct": 0.4432988714834829,
         "skill_pct": 0.0
+      },
+      {
+        "sector_id": "sh000001",
+        "name": "上证指数",
+        "count": 2,
+        "direction_accuracy": 1.0,
+        "mae_pct": 0.2621875525395296,
+        "baseline_mae_pct": 0.296721523619059,
+        "skill_pct": 11.63851231900026
       }
     ],
     "by_task": [
