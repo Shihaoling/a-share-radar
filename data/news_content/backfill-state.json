@@ -1,20 +1,20 @@
 {
   "request_id": "eastmoney-103-20261118",
-  "runs": 12,
+  "runs": 13,
   "status": "in_progress",
   "total": 103,
-  "body_complete": 58,
-  "publication_verified": 58,
+  "body_complete": 65,
+  "publication_verified": 65,
   "publication_unconfirmed": 0,
-  "model_complete": 57,
-  "last_run_at": "2026-11-18T05:57:18.153426+08:00",
-  "next_allowed_after": "2026-11-18T06:12:31.415483+08:00",
+  "model_complete": 64,
+  "last_run_at": "2026-11-18T06:25:58.853132+08:00",
+  "next_allowed_after": "2026-11-18T06:41:41.212630+08:00",
   "content": {
     "attempted": 8,
-    "reused": 51,
-    "complete": 58,
+    "reused": 58,
+    "complete": 65,
     "total": 103,
-    "as_of": "2026-11-18T05:47:31.415483+08:00",
+    "as_of": "2026-11-18T06:16:41.212630+08:00",
     "status": "ready"
   },
   "model": {
@@ -22,15 +22,15 @@
     "prompt_version": "fulltext-sw31-impact-v2-refs",
     "inferred": 7,
     "attempted": 7,
-    "reused": 50,
-    "ready": 57,
+    "reused": 57,
+    "ready": 64,
     "pending_bodies": 1,
     "key_configured": true,
     "status": "partial",
     "last_error": null,
     "cooldown_until": "2026-11-18T04:16:41.758558+08:00",
-    "as_of": "2026-11-18T05:57:14.873426+08:00"
+    "as_of": "2026-11-18T06:25:56.965238+08:00"
   },
   "schedule_version": "half-hour-v2",
-  "started_at": "2026-11-18T05:47:31.415483+08:00"
+  "started_at": "2026-11-18T06:16:41.212630+08:00"
 }
