@@ -100,6 +100,7 @@ class MiniMaxTests(unittest.TestCase):
             def open(self, request, **kwargs): requests.append(json.loads(request.data)); return Response()
         with patch('pipeline.minimax_news.urllib.request.build_opener',return_value=Opener()):
             result = infer_article({'full_text':body},{},'fake-key')
+            self.assertEqual(requests[0]['max_completion_tokens'],32768)
             sent = json.loads(requests[0]['messages'][1]['content'])
             self.assertEqual(''.join(s['text'] for s in sent['article_segments']), body)
             self.assertEqual(result['sector_impacts'][0]['evidence'], [spans['E0001']])
@@ -116,6 +117,15 @@ class MiniMaxTests(unittest.TestCase):
             result=enrich_minimax({'news':[n]},{'network_enabled':True},NOW,d,lambda *args:self.fail('verified cached result must be reused'))
             self.assertEqual(result['minimax_summary']['reused'],1)
             self.assertEqual(result['news'][0]['llm_analysis']['prompt_version'],version)
+
+    def test_focused_cloud_check_only_infers_the_selected_article(self):
+        rows=[{'id':str(i),'title':title,'full_text':BODY,'full_text_status':'complete'} for i,title in enumerate(['其他文章','财经早餐'])]
+        calls=[]
+        def infer(n,*args): calls.append(n['title']); return analysis()
+        with TemporaryDirectory() as d,patch.dict('os.environ',{'MINIMAX_API_KEY':'fake'}),patch('pipeline.minimax_news.shanghai_now',return_value=NOW):
+            result=enrich_minimax({'news':rows},{'network_enabled':True,'minimax':{'article_title_filter':'财经早餐','max_articles_per_run':1}},NOW,d,infer)
+            self.assertEqual(calls,['财经早餐'])
+            self.assertEqual(result['minimax_summary']['ready'],1)
 
     def test_api_error_diagnostics_never_retain_raw_messages_or_credentials(self):
         class Opener:

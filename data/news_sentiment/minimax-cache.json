@@ -707,12 +707,16 @@
     "5697f003187809eb722213b5e4035923221db8c3282b64f9e00762ade2ee9969": {
       "error_code": "invalid_analysis_invalid_sector_identity",
       "retry_after": "2026-11-18T19:44:35.900738+08:00"
-    },
-    "1db9171cb1fef9d3db5928078769ca2b7a3ea47780e7d522d6eb019b8d98f4ba": {
-      "error_code": "incomplete_response",
-      "retry_after": "2026-11-17T20:14:35.900738+08:00"
     }
   },
   "credential_refresh": "2026-11-17-subscription-key",
-  "validation_refresh": "literal-whitespace-v2"
+  "validation_refresh": "literal-whitespace-v2",
+  "bounded_rechecks": [
+    {
+      "article_hash": "1db9171cb1fef9d3db5928078769ca2b7a3ea47780e7d522d6eb019b8d98f4ba",
+      "reason": "completion_budget_12000_to_32768",
+      "request_id": "fulltext-minimax-domestic-v6",
+      "source_ref": "91fb6191a5d014a754037f2d48433ca9b828a887"
+    }
+  ]
 }

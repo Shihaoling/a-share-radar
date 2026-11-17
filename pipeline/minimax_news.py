@@ -123,14 +123,14 @@ def infer_article(article, config, key):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
     spans = evidence_segments(body)
-    payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': 'max', 'max_completion_tokens': 12000,
+    payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': 'max', 'max_completion_tokens': 32768,
         'messages': [{'role': 'system', 'content': system_prompt()}, {'role': 'user', 'content': json.dumps({
             'title': article.get('title'), 'source': article.get('source'), 'published_at': article.get('published_at'),
             'input_scope': 'entire_extracted_article_body', 'article_segments': [{'id': ref, 'text': text} for ref, text in spans.items()]}, ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}, method='POST')
     try:
-        with urllib.request.build_opener(_NoRedirect()).open(request, timeout=150) as response:
+        with urllib.request.build_opener(_NoRedirect()).open(request, timeout=240) as response:
             raw = response.read(2000001)
             if len(raw) > 2000000: raise ModelFailure('response_over_budget')
         result = json.loads(raw)
@@ -208,7 +208,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
             n['llm_status'] = 'analysis_unavailable'; continue
         if row and _timestamp(row.get('scored_at')) and _timestamp(row['scored_at']) <= now:
             n['llm_analysis'] = deepcopy(row); reused += 1
-        elif enabled and key and cache.get('cooldown_until', '') <= now.isoformat() and count < int(cfg.get('max_articles_per_run', 16)) and time.monotonic()-started < float(cfg.get('budget_seconds', 600)):
+        elif enabled and key and (not cfg.get('article_title_filter') or cfg['article_title_filter'] in n.get('title', '')) and cache.get('cooldown_until', '') <= now.isoformat() and count < int(cfg.get('max_articles_per_run', 16)) and time.monotonic()-started < float(cfg.get('budget_seconds', 600)):
             try:
                 count += 1
                 analysis = (infer or infer_article)(n, cfg, key)
