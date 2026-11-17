@@ -171,6 +171,11 @@ jobs:
       - name: Score archived Chinese and English news once
         if: steps.sentiment_gate.outputs.run == 'true'
         run: python scripts/score-news.py
+      - name: Verify historical minute endpoints once against documented examples
+        if: github.event_name == 'push'
+        env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+        run: python -m pipeline.minute_check
       - name: Enrich full article text and MiniMax summaries once after rollout
         if: github.event_name == 'push'
         env:
@@ -225,6 +230,7 @@ jobs:
           if [ -d data/equity ]; then git add data/equity; fi
           if [ -d data/news_sentiment ]; then git add data/news_sentiment; fi
           if [ -d data/news_archive ]; then git add data/news_archive; fi
+          if [ -f web/data/minute-access.json ]; then git add web/data/minute-access.json; fi
           if [ -d web/data/articles ]; then git add web/data/articles; fi
           if [ -d data/news_content ]; then git add data/news_content; fi
           if [ -d data/direction_probability ]; then git add data/direction_probability; fi

@@ -45,7 +45,10 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
                 endpoint.update(status='success', last_success=now.isoformat()); endpoint.pop('cooldown_until', None)
             except _Failure as e:
                 endpoint.update(status='unavailable', error_code=e.code, last_attempt=now.isoformat(),
-                    cooldown_until=(now+timedelta(seconds=max(1800,e.retry_seconds))).isoformat()); break
+                    provider_code=e.provider_code, provider_reason=e.provider_reason,
+                    cooldown_until=(now+timedelta(seconds=max(1800,e.retry_seconds))).isoformat())
+                if e.code=='api_denied': endpoint['error_code']=e.provider_reason or 'provider_error'
+                break
     state.update(last_run_at=now.isoformat(), requests_this_run=attempted,
         note='申万日线18:30；申万历史分钟19:00—20:00更新，20点后按实际权限分批补齐，原始观察点保留。')
     return result

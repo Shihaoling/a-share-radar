@@ -177,7 +177,7 @@ function trendPanel(d,sec){
  const requested=state.metric==='intraday',fallback=requested&&!ticks.length,metric=fallback?'index':state.metric;
  const intraday=metric==='intraday',hist=intraday?ticks:metric==='cap'?item.market_cap_history:item.history;
  return panel(`${item.name||'市场'} · 走势`,intraday?'今日走势 · 实际采样点':metric==='cap'?'总市值快照 · 人民币':`日线截至 ${item.history?.at(-1)?.date||'待更新'}`,
-  h('div',{},fallback?h('p',{class:'chart-data-note'},isCanonicalSector(item)?(d.primary_minutes_state?.endpoints?.sw_mins?.error_code==='api_denied'?'当前 Tushare 服务未开放申万分钟权限，暂显示日线；可切换东财盘中参考查看网页采样。':'申万分时尚未取得，先显示日线；分钟数据可用后自动切换。'):'暂无分时采样，先显示已有日线。'):null,
+  h('div',{},fallback?h('p',{class:'chart-data-note'},isCanonicalSector(item)?(['permission_denied','authorization_denied','points_insufficient'].includes(d.primary_minutes_state?.endpoints?.sw_mins?.error_code)?'当前 Tushare 服务未开放申万分钟权限，暂显示日线；可切换东财盘中参考查看网页采样。':'尚未取得申万历史分钟数据，暂显示日线；服务错误正在核验，可切换东财盘中参考查看独立网页采样。'):'暂无分时采样，先显示已有日线。'):null,
    h('div',{class:'chart-body'},h('div',{class:'chart-meta'},h('strong',{},metric==='cap'?amount(item.market_cap):intraday?num(ticks.at(-1)?.price):num(mainQuote.price)),h('span',{},item.name||'上证指数')),chart(hist,{metric,range:intraday?null:state.range})),
    !intraday&&metric!=='cap'?quoteCaption(mainQuote):null,intraday?tickNote(ticks):null,
    h('div',{class:'chart-footer'},h('span',{class:'legend'},h('i',{}),item.name||'上证指数'),h('span',{},intraday?'悬停查看时间与点位':'悬停查看日期与点位'))),
