@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-17T14:59:06.282904+08:00",
+  "generated_at": "2026-11-17T15:19:51.578790+08:00",
   "status": "ready",
   "market_session": {
-    "phase": "closing_auction",
-    "label": "收盘集合竞价",
-    "target_date": "2026-11-17",
-    "target_kind": "today_close",
+    "phase": "post_close",
+    "label": "已收盘",
+    "target_date": "2026-11-18",
+    "target_kind": "next_open",
     "is_trading_day": true
   },
-  "requests_this_run": 0,
-  "target_trade_date": null,
+  "requests_this_run": 7,
+  "target_trade_date": "2026-11-17",
   "cooldown_until": null,
   "endpoints": {
     "rt_idx_k": {
@@ -43,29 +43,29 @@
     "sw_daily": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
-      "next_retry": "2026-11-16T18:42:34+08:00"
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "next_retry": "2026-11-17T15:33:31+08:00"
     },
     "daily_basic": {
-      "status": "success",
-      "error_code": null,
+      "status": "cooldown",
+      "error_code": "invalid_payload",
       "last_success": "2026-11-16T18:13:41.944498+08:00",
-      "last_attempt": "2026-11-16T18:13:24+08:00",
-      "next_retry": null
+      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "next_retry": "2026-11-17T15:33:31+08:00"
     },
     "index_daily": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-16T18:03:01.236332+08:00",
-      "last_attempt": "2026-11-16T18:01:34+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null
     },
     "index_member_all": {
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null
     }
   },
@@ -83,8 +83,8 @@
       "id": "fed",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -92,8 +92,8 @@
       "id": "ecb",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -101,8 +101,8 @@
       "id": "eia",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -110,8 +110,8 @@
       "id": "bbc_business",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -119,8 +119,8 @@
       "id": "federal_register",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -129,16 +129,16 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-17T14:26:50.161462+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
-      "next_retry": "2026-11-17T15:01:03+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
+      "next_retry": "2026-11-17T15:33:31+08:00",
       "requests_this_run": null
     },
     {
       "id": "eastmoney_breakfast",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
-      "last_attempt": "2026-11-17T14:46:03+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
+      "last_attempt": "2026-11-17T15:18:31+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -227,7 +227,7 @@
       "id": "tencent_intraday",
       "status": "success",
       "error_code": null,
-      "last_success": "2026-11-17T14:59:05+08:00",
+      "last_success": "2026-11-17T15:19:38+08:00",
       "last_attempt": null,
       "next_retry": null,
       "requests_this_run": null
@@ -237,23 +237,23 @@
       "status": "error",
       "error_code": null,
       "last_success": null,
-      "last_attempt": "2026-11-17T14:59:04+08:00",
-      "next_retry": "2026-11-17T15:14:04+08:00",
+      "last_attempt": "2026-11-17T15:19:44+08:00",
+      "next_retry": "2026-11-17T15:34:44+08:00",
       "requests_this_run": null
     },
     {
       "id": "stock_api",
-      "status": "success",
+      "status": "stale",
       "error_code": null,
-      "last_success": "2026-11-17T14:47:04.172879+08:00",
+      "last_success": "2026-11-17T15:19:51.578790+08:00",
       "last_attempt": null,
       "next_retry": null,
-      "requests_this_run": 0
+      "requests_this_run": 7
     },
     {
       "id": "funds",
-      "status": "pending",
-      "error_code": "offline",
+      "status": "partial",
+      "error_code": "invalid_payload",
       "last_success": null,
       "last_attempt": null,
       "next_retry": null,
@@ -345,8 +345,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 3580.1,
-        "quote_timestamp": "2026-11-17T14:59:00+08:00",
+        "price": 3584.58,
+        "quote_timestamp": "2026-11-17T15:19:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -382,8 +382,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 10647.7,
-        "quote_timestamp": "2026-11-17T14:58:45+08:00",
+        "price": 10638.52,
+        "quote_timestamp": "2026-11-17T15:18:45+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -419,8 +419,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 2295.2,
-        "quote_timestamp": "2026-11-17T14:59:00+08:00",
+        "price": 2292.2,
+        "quote_timestamp": "2026-11-17T15:19:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -456,8 +456,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 3972.64,
-        "quote_timestamp": "2026-11-17T14:59:00+08:00",
+        "price": 3976.46,
+        "quote_timestamp": "2026-11-17T15:19:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -493,8 +493,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 1221.24,
-        "quote_timestamp": "2026-11-17T14:59:00+08:00",
+        "price": 1221.19,
+        "quote_timestamp": "2026-11-17T15:19:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -530,8 +530,8 @@
       "provider": "stock_api",
       "data_quality": "single_source",
       "live_quote": {
-        "price": 6283.17,
-        "quote_timestamp": "2026-11-17T14:59:00+08:00",
+        "price": 6283.01,
+        "quote_timestamp": "2026-11-17T15:19:00+08:00",
         "provider": "tencent",
         "timestamp_quality": "source_reported"
       },
@@ -576,10 +576,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 114,
+        "matched_count": 0,
         "membership_count": 126,
-        "ratio": 0.9047619047619048,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -608,10 +608,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 451,
+        "matched_count": 0,
         "membership_count": 465,
-        "ratio": 0.9698924731182795,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -640,10 +640,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 44,
+        "matched_count": 0,
         "membership_count": 50,
-        "ratio": 0.88,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -672,10 +672,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 147,
+        "matched_count": 0,
         "membership_count": 160,
-        "ratio": 0.91875,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -704,10 +704,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 519,
+        "matched_count": 0,
         "membership_count": 530,
-        "ratio": 0.9792452830188679,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -736,10 +736,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 103,
+        "matched_count": 0,
         "membership_count": 109,
-        "ratio": 0.944954128440367,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -768,10 +768,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 127,
+        "matched_count": 0,
         "membership_count": 129,
-        "ratio": 0.9844961240310077,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -800,10 +800,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 107,
+        "matched_count": 0,
         "membership_count": 119,
-        "ratio": 0.8991596638655462,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -832,10 +832,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 168,
+        "matched_count": 0,
         "membership_count": 172,
-        "ratio": 0.9767441860465116,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -864,10 +864,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 508,
+        "matched_count": 0,
         "membership_count": 530,
-        "ratio": 0.9584905660377359,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -896,10 +896,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 139,
+        "matched_count": 0,
         "membership_count": 142,
-        "ratio": 0.9788732394366197,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -928,10 +928,10 @@
       "membership_complete": false,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 128,
+        "matched_count": 0,
         "membership_count": 143,
-        "ratio": 0.8951048951048951,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -960,10 +960,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 95,
+        "matched_count": 0,
         "membership_count": 115,
-        "ratio": 0.8260869565217391,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -992,10 +992,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 99,
+        "matched_count": 0,
         "membership_count": 117,
-        "ratio": 0.8461538461538461,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1024,10 +1024,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 86,
+        "matched_count": 0,
         "membership_count": 95,
-        "ratio": 0.9052631578947369,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1056,10 +1056,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 20,
+        "matched_count": 0,
         "membership_count": 40,
-        "ratio": 0.5,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1088,10 +1088,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 76,
+        "matched_count": 0,
         "membership_count": 80,
-        "ratio": 0.95,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1120,10 +1120,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 155,
+        "matched_count": 0,
         "membership_count": 170,
-        "ratio": 0.9117647058823529,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1152,10 +1152,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 418,
+        "matched_count": 0,
         "membership_count": 434,
-        "ratio": 0.9631336405529954,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1184,10 +1184,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 141,
+        "matched_count": 0,
         "membership_count": 149,
-        "ratio": 0.9463087248322147,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1216,10 +1216,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 357,
+        "matched_count": 0,
         "membership_count": 381,
-        "ratio": 0.937007874015748,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1228,7 +1228,7 @@
         "vendor_valuation_date": "2026-11-16"
       },
       "emotion_label": "negative",
-      "emotion_n": 2,
+      "emotion_n": 3,
       "emotion_scored_n": 1,
       "emotion_method": "financial-tone-rules-v2+finbert_chinese_cpu"
     },
@@ -1248,10 +1248,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 131,
+        "matched_count": 0,
         "membership_count": 153,
-        "ratio": 0.8562091503267973,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1280,10 +1280,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 128,
+        "matched_count": 0,
         "membership_count": 144,
-        "ratio": 0.8888888888888888,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1312,11 +1312,11 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 42,
+        "matched_count": 0,
         "membership_count": 42,
-        "ratio": 1.0,
-        "trade_date": "2026-11-16",
-        "complete": true
+        "ratio": 0,
+        "trade_date": "2026-11-17",
+        "complete": false
       },
       "pe": {
         "vendor_pe": 6.87,
@@ -1344,10 +1344,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 77,
+        "matched_count": 0,
         "membership_count": 93,
-        "ratio": 0.8279569892473119,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1376,10 +1376,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 326,
+        "matched_count": 0,
         "membership_count": 337,
-        "ratio": 0.9673590504451038,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1408,10 +1408,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 619,
+        "matched_count": 0,
         "membership_count": 633,
-        "ratio": 0.9778830963665087,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1440,10 +1440,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 33,
+        "matched_count": 0,
         "membership_count": 36,
-        "ratio": 0.9166666666666666,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1472,10 +1472,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 48,
+        "matched_count": 0,
         "membership_count": 54,
-        "ratio": 0.8888888888888888,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1504,10 +1504,10 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 134,
+        "matched_count": 0,
         "membership_count": 141,
-        "ratio": 0.950354609929078,
-        "trade_date": "2026-11-16",
+        "ratio": 0,
+        "trade_date": "2026-11-17",
         "complete": false
       },
       "pe": {
@@ -1536,11 +1536,11 @@
       "membership_complete": true,
       "stock_count": 10,
       "valuation_coverage": {
-        "matched_count": 32,
+        "matched_count": 0,
         "membership_count": 32,
-        "ratio": 1.0,
-        "trade_date": "2026-11-16",
-        "complete": true
+        "ratio": 0,
+        "trade_date": "2026-11-17",
+        "complete": false
       },
       "pe": {
         "vendor_pe": 26.63,
@@ -1554,11 +1554,10 @@
     }
   ],
   "prediction_status_counts": {
-    "ready": 6,
-    "pending": 31
+    "pending": 37
   },
   "models": {
-    "status": "active",
+    "status": "waiting",
     "champion": "per-target chronological baseline/ridge/hgb",
     "challenger": "disabled",
     "news_features": "collecting",
@@ -1566,27 +1565,27 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-17T14:59:06.282904+08:00",
+    "as_of": "2026-11-17T15:19:51.578790+08:00",
     "version": "sw2021-news-tone-v3",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
     "window_policy_version": "published-and-observed-v1",
     "stock_api_news_merged_count": 0,
     "stock_api_news_duplicate_count": 0,
-    "news_count": 74,
-    "eligible_count": 12,
-    "unique_news_count": 12,
+    "news_count": 75,
+    "eligible_count": 13,
+    "unique_news_count": 13,
     "duplicate_count": 0,
     "excluded_count": 62,
     "rumors_excluded": 0,
     "old_publications_excluded": 61,
     "unknown_publication_time_excluded": 1,
-    "model_requested": false,
-    "model_loaded": false,
+    "model_requested": true,
+    "model_loaded": true,
     "model_id": "yiyanghkust/finbert-tone-chinese",
-    "reuse_only": true,
-    "model_inference_count": 0,
-    "model_cache_used_count": 1,
+    "reuse_only": false,
+    "model_inference_count": 1,
+    "model_cache_used_count": 0,
     "model_used": true,
     "model_deferred_count": 0,
     "model_revision": "e91b1a3af10e1e8c9c03429d3cd7d5e9a1c8000d",
@@ -1603,18 +1602,26 @@
     }
   },
   "fund_summary": {
-    "status": "pending",
+    "status": "partial",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
-    "requests_this_run": 0,
+    "requests_this_run": 1,
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-17T14:58:57+08:00",
-      "requests_this_run": 0,
-      "status": "pending",
-      "endpoints": {},
+      "last_run_at": "2026-11-17T15:19:37+08:00",
+      "requests_this_run": 1,
+      "status": "partial",
+      "endpoints": {
+        "fund_daily": {
+          "status": "cooldown",
+          "error_code": "invalid_payload",
+          "last_success": null,
+          "last_attempt": "2026-11-17T15:19:37+08:00",
+          "next_retry": "2026-11-17T15:34:37+08:00"
+        }
+      },
       "cache_summary": {
         "etf_basic": {
           "fetched_at": "2026-11-16T20:56:44+08:00",
@@ -1639,7 +1646,7 @@
     "status": "ready",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-17T14:59:06.282904+08:00",
+    "issued_at": "2026-11-17T15:19:51.578790+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-17",
     "target": "next_close_return_pct",
@@ -1669,18 +1676,21 @@
     }
   },
   "equity_summary": {
-    "status": "expired",
-    "as_of": "2026-11-17T14:59:06.282904+08:00",
-    "target_date": "2026-11-17",
-    "target_kind": "today_close",
-    "reference_date": "2026-11-16",
-    "model": "unavailable",
-    "note": "上次日线预测已过期；行情刷新不重训模型，等待下一次完整研究更新。",
+    "as_of": "2026-11-17T15:19:51.578790+08:00",
+    "target_date": "2026-11-18",
+    "target_kind": "next_open",
+    "reference_date": "2026-11-17",
+    "model": "zero_return",
+    "status": "pending",
+    "model_version": "shared-equity-ohlcv-v1",
+    "note": "先逐股预测，再按可得流通市值汇总；当前分类/上市股票池可能含幸存偏差，不声称历史全市场无偏回测。",
     "coverage": {
       "universe_count": 5572,
       "predicted_count": 0,
-      "weight_coverage": null,
-      "count_coverage": 0
+      "known_weight_count": 5572,
+      "weight_coverage": 0.0,
+      "count_coverage": 0.0,
+      "weights_complete": true
     },
     "collection": {
       "status": "ready",
@@ -1698,7 +1708,9 @@
       "universe_basis": "observed_daily_A_shares; historical_membership_not_verified",
       "missing_days": 0
     },
-    "stock_status_counts": {},
+    "stock_status_counts": {
+      "pending": 5572
+    },
     "evaluation": {
       "settled_count": 0,
       "mae_pct": null,
@@ -1713,6 +1725,6 @@
       "trained_at": "2026-11-16T21:26:31.237710+08:00"
     }
   },
-  "news_count": 74,
+  "news_count": 75,
   "ledger_count": 334
 }
