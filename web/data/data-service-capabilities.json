@@ -88,15 +88,28 @@
       "error_code": "rate_limited",
       "provider_code": 429,
       "provider_reason": "rate_limited"
+    },
+    {
+      "api": "income",
+      "params": {
+        "ts_code": "600519.SH",
+        "period": "20241231",
+        "report_type": "1"
+      },
+      "channel": "backup15000",
+      "status": "unavailable",
+      "error_code": "rate_limited",
+      "provider_code": 429,
+      "provider_reason": "rate_limited"
     }
   ],
-  "cursor": 5,
+  "cursor": 6,
   "status": "partial",
-  "checked_at": "2026-11-17T23:13:52.535758+08:00",
+  "checked_at": "2026-11-17T23:19:34.261819+08:00",
   "credential_match": true,
-  "next_allowed_after": "2026-11-17T23:14:52.535728+08:00",
+  "next_allowed_after": "2026-11-17T23:20:34.261789+08:00",
   "planned_apis": 23,
-  "pending_apis": 18,
+  "pending_apis": 17,
   "minute_entities_completed": 4,
   "migration_completed": "2026-11-17T23:13:52.005804+08:00",
   "deferred_api": "news",

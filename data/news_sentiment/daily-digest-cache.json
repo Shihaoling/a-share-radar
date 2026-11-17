@@ -241,7 +241,9 @@
         "input_hash": "6ca8d64937a6ed5e5cac37545bff8c06ef60e4e63604468f4c10e759aab03e7e",
         "prompt_version": "daily-news-digest-v1"
       },
-      "next_update": "2026-11-17T22:05:02.162452+08:00"
+      "next_update": "2026-11-17T22:05:02.162452+08:00",
+      "error_code": "invalid_analysis_ungrounded_evidence",
+      "retry_after": "2026-11-18T23:20:33.252400+08:00"
     }
   }
 }
