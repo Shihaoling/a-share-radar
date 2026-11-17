@@ -76,17 +76,31 @@
         "error_code": "rate_limited",
         "provider_code": 429,
         "provider_reason": "rate_limited"
+      },
+      {
+        "api": "news",
+        "params": {
+          "src": "cls",
+          "start_date": "2026-11-17 09:00:00",
+          "end_date": "2026-11-17 10:00:00"
+        },
+        "channel": "main",
+        "status": "unavailable",
+        "error_code": "rate_limited",
+        "provider_code": 429,
+        "provider_reason": "rate_limited"
       }
     ],
-    "cursor": 4,
+    "cursor": 5,
     "status": "partial",
-    "checked_at": "2026-11-17T23:02:46.815813+08:00",
+    "checked_at": "2026-11-17T23:13:52.535758+08:00",
     "credential_match": true,
-    "next_allowed_after": "2026-11-17T23:03:46.815794+08:00",
+    "next_allowed_after": "2026-11-17T23:14:52.535728+08:00",
     "planned_apis": 23,
-    "pending_apis": 19,
+    "pending_apis": 18,
     "minute_entities_completed": 4,
-    "migration_completed": "2026-11-17T23:02:46.811239+08:00",
-    "deferred_api": "news"
+    "migration_completed": "2026-11-17T23:13:52.005804+08:00",
+    "deferred_api": "news",
+    "primary_refresh_version": "sxdata-runtime-v2"
   }
 }
