@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -185,5 +185,19 @@ function runFrontendChecks(source) {
     const output=text(api.probabilityPanel({...d,direction_probability:f}));ok(output.includes('62.0%'));ok(output.includes('38.0%'));ok(output.includes('0 / 30'));ok(output.includes('不由涨跌幅正负转换'));ok(output.includes('频率基线'));
   });
   check('malformed direction forecast cannot bypass snapshot array checks',()=>{let bad=false;try{api.validateSnapshot({...d,direction_probability:{market:{}}});}catch{bad=true;}ok(bad);});
+  check('full-text summary is the first article block and evidence stays folded',()=>{
+    const n={title:'原油上涨',llm_analysis:{status:'ready',summary:'原油涨价利好开采业务，并增加航空燃油成本。',sector_impacts:[{sector_name:'石油石化',direction:'positive',reason:'收入改善',evidence:['原文依据']}],uncertainties:[]}};
+    const node=api.newsItem(n,d);eq(node.children[0].className,'news-ai-summary');const out=text(node);ok(out.includes('全文提要'));ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));
+    eq(api.newsSummaryCard({summary:'只有摘要'}),null);
+  });
+  check('overview sector selection updates its trend without navigation',()=>{
+    const sector={id:'801780.SI',name:'银行',history:[{date:'2026-11-17',close:100}]};api.state.page='overview';api.state.data={...d,sectors:[sector]};api.state.overviewSelected=null;
+    const tiles=api.heatmap({...d,sectors:[sector]});tiles.children[0].events.click();eq(api.state.page,'overview');eq(api.state.overviewSelected,'801780.SI');eq(api.overviewEntity({...d,sectors:[sector]}).id,'801780.SI');ok(text(api.trendPanel({...d,sectors:[sector]})).includes('银行 · 走势'));api.state.overviewSelected=null;
+  });
+  check('official minutes replace only the same identity and date',()=>{
+    const entity={id:'801780.SI',index_code:'801780.SI'},minute=(price,code='801780.SI')=>({price,timestamp:'2026-11-17T14:00:00+08:00',provider:'stock_api',kind:'historical_minute',source_code:code});
+    const x={intraday:{'801780.SI':{points:[{price:99,timestamp:'2026-11-17T13:00:00+08:00',provider:'eastmoney_page'},minute(100),{...minute(101),timestamp:'2026-11-17T15:00:00+08:00'}]}}};
+    eq(api.intradayFor(x,entity).length,2);eq(api.intradayFor(x,entity)[0].price,100);
+  });
   return {passed, failures};
 }

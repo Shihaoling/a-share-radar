@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def news_features(entity, cutoff):
     eligible=[]
     for r in entity.get('sentiment_history', []):
-        if r.get('window_policy_version') != 'published-and-observed-v1':
+        if r.get('signal_kind') != 'industry_impact_v1' or r.get('window_policy_version') != 'published-and-observed-v1':
             continue
         try:
             at=datetime.fromisoformat(r['available_at'])

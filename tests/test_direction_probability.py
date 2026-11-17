@@ -35,7 +35,7 @@ class ProbabilityTests(unittest.TestCase):
         b=deepcopy(b);b['sha256']=digest(b);Path(path).write_text(json.dumps(b));return b
 
     def test_news_requires_actual_availability_and_verified_window(self):
-        item={'score':.7,'scored_article_count':3,'source_count':2,'available_at':'2026-11-17T14:01:00+08:00','window_policy_version':'published-and-observed-v1'}
+        item={'score':.7,'scored_article_count':3,'source_count':2,'available_at':'2026-11-17T14:01:00+08:00','window_policy_version':'published-and-observed-v1','signal_kind':'industry_impact_v1'}
         e={'sentiment_history':[item]};self.assertEqual(news_features(e,NOW)[-1],1)
         item['available_at']='2026-11-17T13:00:00+08:00';self.assertEqual(news_features(e,NOW)[0],.7)
         item.pop('window_policy_version');self.assertEqual(news_features(e,NOW)[-1],1)

@@ -14,7 +14,7 @@
   },
   "sentiment": {
     "enabled": true,
-    "model_enabled": true,
+    "model_enabled": false,
     "max_model_articles": 120,
     "english_enabled": true,
     "torch_threads": 4,
@@ -58,5 +58,22 @@
     "threads": 2,
     "update_interval_minutes": 30,
     "sentiment_min_mature_dates": 30
+  },
+  "news_content": {
+    "enabled": true,
+    "max_articles_per_run": 20,
+    "max_articles_per_host": 3
+  },
+  "minimax": {
+    "enabled": true,
+    "model": "MiniMax-M3.1-Flash",
+    "reasoning_effort": "max",
+    "max_articles_per_run": 16,
+    "budget_seconds": 600,
+    "max_input_characters": 250000
+  },
+  "primary_minutes": {
+    "enabled": true,
+    "max_requests": 12
   }
 }

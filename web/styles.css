@@ -90,3 +90,11 @@
 .probability-evaluation h4{margin:3px 0}.probability-evaluation p{margin:6px 0}.probability-metrics{display:flex;gap:15px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
 @media(max-width:1100px){.probability-index-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.probability-index-grid{grid-template-columns:1fr}.probability-body{padding:16px}.probability-table td{padding:12px 7px}.probability-table .numeric{font-size:14px}.probability-card .probability-pair strong{font-size:31px}.forecast-digest .leader-row{flex-wrap:wrap}}
+
+/* Full-text conclusions lead each article, with grounded detail on demand. */
+.news-ai-summary{background:linear-gradient(120deg,#eef4fb,#f8fafc);border:1px solid #dce6f2;border-left:3px solid #36618e;border-radius:10px;padding:15px 17px;margin-bottom:15px}
+.news-ai-label{display:flex;align-items:center;gap:7px;color:#3c5c7e;font-size:11px;font-weight:650;letter-spacing:.06em}
+.news-ai-label>span:last-child{margin-left:auto;font-size:10px;font-weight:500;letter-spacing:0;color:#7e8da1}.ai-dot{height:5px;width:5px;border-radius:50%;background:#527ca9}
+.news-ai-lead{font-size:15px;line-height:1.75;color:#243b53;font-weight:550;margin:9px 0}.news-ai-impacts{display:flex;gap:6px;flex-wrap:wrap}
+.news-impact-details{margin-top:11px;border-top:1px solid #dce6f2;padding-top:9px;font-size:12px}.news-impact-details>summary{cursor:pointer;color:#58718d}.news-impact-row{margin-top:12px}.news-impact-row p{line-height:1.7;margin:5px 0}.news-impact-row blockquote{border-left:2px solid #bacbdd;padding-left:10px;margin:6px 0;color:#6a7b8d;line-height:1.7}
+.chart-data-note{margin:10px 20px 0;color:#6e7e90;font-size:12px;line-height:1.7}.overview-taxonomy{padding:12px 16px 0}.heat-tile.selected-sector{outline:2px solid #314c70;outline-offset:2px;box-shadow:0 0 0 4px #fff}

@@ -92,6 +92,9 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         data = enrich_with_fallback(data, config, now)
     started_at = now
     quote_clock = datetime.now(ZoneInfo('Asia/Shanghai'))
+    if not quotes_only and not offline:
+        from pipeline.primary_minutes import collect_primary_minutes
+        data = collect_primary_minutes(data, config, quote_clock)
     # Recompute cached quote freshness even when this mode forbids quote HTTP.
     quote_config = {**config, 'network_enabled': False} if stock_api_only or config.get('intraday', {}).get('source_mode') == 'rendered_page' else config
     data = collect_intraday(data, quote_config, quote_clock)
@@ -126,7 +129,13 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     dashboard = validate_prices(dashboard, now=now)
     dashboard = compute_metrics(dashboard, config)
     sentiment_config = {**config, 'sentiment': {**config.get('sentiment', {}), 'model_enabled': False, 'reuse_only': True}} if quotes_only or offline else config
-    dashboard = aggregate_entity_sentiment(dashboard, now=now, config=sentiment_config)
+    if not quotes_only and not stock_api_only and not offline and config.get('minimax', {}).get('enabled'):
+        from pipeline.news_update import enrich_news
+        dashboard = enrich_news(dashboard, config, root=equity_root.parent)
+        now = datetime.now(ZoneInfo('Asia/Shanghai'))
+        dashboard['generated_at'] = now.isoformat()
+    else:
+        dashboard = aggregate_entity_sentiment(dashboard, now=now, config=sentiment_config)
     if not quotes_only:
         dashboard['news_archive_summary'] = archive_news(dashboard, now, root=equity_root.parent/'news_archive')
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))

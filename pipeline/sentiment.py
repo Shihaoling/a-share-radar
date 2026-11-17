@@ -18,7 +18,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from .calendar import shanghai_now
 
 RULE_VERSION = "financial-tone-rules-v2"
-PIPELINE_VERSION = "sw2021-news-tone-v3"
+PIPELINE_VERSION = "sw2021-news-impact-v4"
 TAXONOMY_VERSION = "SW2021-L1-official-contract-v2"
 WINDOW_POLICY_VERSION = "published-and-observed-v1"
 MODEL_ID = "yiyanghkust/finbert-tone-chinese"
@@ -359,6 +359,18 @@ def _sw_code(entity):
 def _association(entity, news, is_market):
     body = _body(news)[2]
     evidence = []
+    a = news.get('llm_analysis') or {}
+    if a.get('status') == 'ready':
+        if is_market:
+            impact = a.get('market_effect', {})
+        else:
+            code = _sw_code(entity)
+            impact = next((x for x in a.get('sector_impacts', []) if x.get('sector_code') == str(code)+'.SI'), {})
+        if impact and impact.get('direction') != 'unknown':
+            return [{'method': 'minimax_full_text_impact', 'weight': 1.0, 'direction': impact['direction'],
+                     'score': {'positive': 1., 'negative': -1., 'neutral': 0., 'mixed': 0.}.get(impact['direction']),
+                     'confidence': impact.get('confidence'), 'reason': impact.get('reason'), 'evidence': impact.get('evidence', [])}]
+        return []
     if is_market:
         macro = [word for word in MACRO_TERMS if _contains(body, word)]
         explicit = [word for word in [entity.get("name"), *entity.get("aliases", [])] if word and len(word) >= 3 and _contains(body, word)]
@@ -486,6 +498,26 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
                                   "method": "unavailable", "model_version": PIPELINE_VERSION, "evidence": {},
                                   "note": "消息尚未在本预测时点可知，未使用"}, now)
         else:
+            from .minimax_news import valid_cached_analysis, SCORES
+            llm = valid_cached_analysis(news, now)
+            if llm:
+                _score_article(news, {'label': llm['tone'], 'score': SCORES[llm['tone']], 'confidence': None,
+                    'confidence_kind': 'llm_evidence_self_assessment', 'method': 'minimax_full_text',
+                    'model_version': llm['model']+'@'+llm['prompt_version'],
+                    'evidence': {'sector_impacts': llm['sector_impacts'], 'market_effect': llm['market_effect']},
+                    'note': '全文语气；各行业的经营影响分别判断，自评确定度不代表股价概率。'}, _timestamp(llm['scored_at']))
+                news['sentiment_model']['model_id'] = llm['model']
+                news['sentiment_model']['revision'] = llm['prompt_version']
+                news['sentiment_input_hash'] = llm['input_hash']
+                if llm.get('fact_status') == 'rumor' and not include_rumors:
+                    news['sentiment_eligible'] = False
+                    news['sentiment_exclusion_reason'] = 'llm_identified_rumor'
+                    excluded.append(news)
+                else:
+                    (eligible if reason is None else excluded).append(news)
+                continue
+            # A stale/future model result must not affect associations.
+            news.pop('llm_analysis', None)
             _restore_article_cache(news,now)
             cached_model = news.get("sentiment_model") or {}
             expected_revision=MODEL_REVISION if _is_chinese(news) else ENGLISH_MODEL_REVISION
@@ -544,7 +576,7 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
                              "url": news.get("url") or None, "source": news.get("source") or news.get("source_id") or "未知来源",
                              "published_at": news.get("published_at") or news.get("datetime"), "first_seen_at": news["first_seen_at"],
                              "publication_time_status": news["sentiment_publication_time_status"],
-                             "label": news["sentiment"], "score": news["sentiment_score"], "confidence": news.get("sentiment_confidence"),
+                             "label": associations[0].get('direction', news['sentiment']), "score": associations[0].get('score', news['sentiment_score']), "confidence": associations[0].get('confidence', news.get('sentiment_confidence')),
                              "method": news["sentiment_method"], "model_version": news["sentiment_model"]["version"],
                              "input_hash": news.get("sentiment_input_hash"),
                              "credibility": news.get("credibility", "unverified"), "associations": associations,
@@ -574,11 +606,13 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
                      "window_start": window_start.isoformat(), "window_hours": window_hours,
                      "article_count": len(evidence), "scored_article_count": len(scored),
                      "source_count": len({e["source"] for e in evidence}), "evidence": evidence,
-                     "note": "新闻语气与证据汇总，不是涨跌预测；行业关联不代表因果方向。未知不作中性。"}
+                     "note": "依据全文分别判断行业经营影响。无全文时仅保留标明方法的语气参考；分值不是股价上涨概率。"}
         sentiment["feature_hash"] = _hash({"entity": entity.get("id"), "date": sentiment["date"], "version": PIPELINE_VERSION,
                                            "evidence": [{k: e[k] for k in ("news_id", "score", "method", "model_version", "input_hash", "associations", "aggregation_weight")} for e in evidence]})
         snapshot = {key: sentiment[key] for key in ("date", "as_of", "available_at", "window_start", "score", "label", "article_count",
                                                     "scored_article_count", "source_count", "confidence", "method", "model_version", "feature_hash")}
+        sentiment['signal_kind'] = 'industry_impact_v1' if methods and all(m == 'minimax_full_text' for m in methods) else 'legacy_tone'
+        snapshot['signal_kind'] = sentiment['signal_kind']
         snapshot["news_ids"] = [e["news_id"] for e in evidence]
         snapshot["pipeline_version"] = PIPELINE_VERSION
         snapshot["taxonomy_version"] = TAXONOMY_VERSION
