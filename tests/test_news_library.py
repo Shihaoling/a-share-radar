@@ -35,11 +35,13 @@ class NewsLibraryTests(unittest.TestCase):
   with self.assertRaises(ValueError):validate_digest(bad,{r['id'] for r in rows})
   calls=[]
   def infer(article,cfg,key,**kwargs):
-   calls.append(article);return kwargs['validator'](value)
+   calls.append(article);return kwargs['validator']({**value,'positives':[{'text':'待落地的政策支持','article_ids':[article['digest_articles'][0]['id']]}]})
   with TemporaryDirectory() as d,patch.dict('os.environ',{'MINIMAX_API_KEY':'fake'}),patch('pipeline.news_digest.shanghai_now',return_value=NOW):
    one=enrich_digest({'news':news},{'network_enabled':True},NOW,d,infer)
    two=enrich_digest({'news':news},{'network_enabled':True},NOW,d,infer)
    self.assertEqual(len(calls),1);self.assertEqual(two['news_digest']['article_count'],70)
+   self.assertEqual(two['news_digest']['positives'][0]['article_ids'],['0'])
+   self.assertEqual(calls[0]['digest_articles'][0]['id'],'N0001')
    self.assertNotIn('fake',Path(d,'daily-digest-cache.json').read_text())
 
  def test_digest_receives_complete_provider_body_without_per_article_analysis(self):

@@ -132,7 +132,7 @@ def publish_view(dashboard, output_path):
         public.pop('content',None);public.pop('text',None)
         public['article_text_url']='./data/articles/'+key+'.json'
         public['article_text_characters']=len(body)
-    view["news"]=[n for n in view.get("news",[]) if not n.get("primary_shadowed")]
+    view["news"]=sorted((n for n in view.get("news",[]) if not n.get("primary_shadowed")), key=lambda n:(bool(n.get("published_at")), str(n.get("published_at") or n.get("first_seen_at") or "")), reverse=True)
     payload = json.dumps(view, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n"
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)

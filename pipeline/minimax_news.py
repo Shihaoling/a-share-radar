@@ -123,10 +123,12 @@ def infer_article(article, config, key, *, prompt=None, validator=None):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
     spans = evidence_segments(body)
+    user_input = {'title':article.get('title'),'source':article.get('source'),'published_at':article.get('published_at'),
+        'input_scope':'entire_extracted_article_body','article_segments':[{'id':ref,'text':text} for ref,text in spans.items()]}
+    if validator is not None and prompt and isinstance(article.get('digest_articles'),list):
+        user_input={'title':article.get('title'),'input_scope':'complete_collected_news_items','articles':article['digest_articles']}
     payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': 'max', 'max_completion_tokens': 32768,
-        'messages': [{'role': 'system', 'content': prompt or system_prompt()}, {'role': 'user', 'content': json.dumps({
-            'title': article.get('title'), 'source': article.get('source'), 'published_at': article.get('published_at'),
-            'input_scope': 'entire_extracted_article_body', 'article_segments': [{'id': ref, 'text': text} for ref, text in spans.items()]}, ensure_ascii=False)}]}
+        'messages': [{'role': 'system', 'content': prompt or system_prompt()}, {'role': 'user', 'content': json.dumps(user_input,ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}, method='POST')
     try:

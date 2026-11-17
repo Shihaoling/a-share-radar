@@ -84,6 +84,21 @@ class FullTextTests(unittest.TestCase):
 
 
 class MiniMaxTests(unittest.TestCase):
+    def test_digest_payload_preserves_article_boundaries_and_short_ids(self):
+        articles=[{'id':'N0001','summary':BODY},{'id':'N0002','summary':'最后一条来源全文'}]
+        requests=[]
+        class Response:
+            def __enter__(self):return self
+            def __exit__(self,*args):pass
+            def read(self,*args):return json.dumps({'choices':[{'finish_reason':'stop','message':{'content':'{"summary":"来源文本完整保留"}'}}]}).encode()
+        class Opener:
+            def open(self,request,**kwargs):requests.append(json.loads(request.data));return Response()
+        with patch('pipeline.minimax_news.urllib.request.build_opener',return_value=Opener()):
+            infer_article({'full_text':json.dumps(articles),'digest_articles':articles},{},'fake',prompt='综合全文',validator=lambda value:value)
+        sent=json.loads(requests[0]['messages'][1]['content'])
+        self.assertEqual(sent['articles'],articles)
+        self.assertNotIn('article_segments',sent)
+
     def test_reference_payload_is_lossless_and_only_source_ids_become_quotes(self):
         body = BODY + '\n末段：不能忽略的否定条件。\n'
         spans = evidence_segments(body)

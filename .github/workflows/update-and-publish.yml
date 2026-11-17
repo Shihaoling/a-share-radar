@@ -199,7 +199,8 @@ jobs:
           else:
               cfg=json.loads(Path('config/settings.json').read_text())
               d=json.loads(Path('web/data/dashboard.json').read_text())
-              if d.get('stock_api_state',{}).get('news',{}).get('records') and old.get('primary_source_version')!=cfg.get('stock_api',{}).get('refresh_version'):
+              from pipeline.news_digest import VERSION
+              if d.get('stock_api_state',{}).get('news',{}).get('records') and (old.get('primary_source_version')!=cfg.get('stock_api',{}).get('refresh_version') or old.get('digest_prompt_version')!=VERSION):
                   subprocess.run(['python','-m','pipeline.news_update','--reuse-body-cache','--model-limit','0','--model-budget-seconds','0'],check=True)
           PY
       - name: Install online probability classifier dependencies
