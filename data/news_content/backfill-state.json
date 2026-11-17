@@ -1,0 +1,34 @@
+{
+  "request_id": "eastmoney-103-20261118",
+  "runs": 1,
+  "status": "in_progress",
+  "total": 103,
+  "body_complete": 1,
+  "publication_verified": 0,
+  "publication_unconfirmed": 1,
+  "model_complete": 1,
+  "last_run_at": "2026-11-18T00:19:00.217161+08:00",
+  "next_allowed_after": "2026-11-18T00:49:00.217166+08:00",
+  "content": {
+    "attempted": 2,
+    "reused": 0,
+    "complete": 1,
+    "total": 103,
+    "as_of": "2026-11-18T00:15:45.989153+08:00",
+    "status": "ready"
+  },
+  "model": {
+    "model": "MiniMax-M3.1-Flash",
+    "prompt_version": "fulltext-sw31-impact-v2-refs",
+    "inferred": 1,
+    "attempted": 1,
+    "reused": 0,
+    "ready": 1,
+    "pending_bodies": 0,
+    "key_configured": true,
+    "status": "ready",
+    "last_error": null,
+    "cooldown_until": "2026-11-17T21:56:11.116226+08:00",
+    "as_of": "2026-11-18T00:17:38.358162+08:00"
+  }
+}
