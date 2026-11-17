@@ -222,7 +222,7 @@ function newsDigestCard(d){
  const section=(title,key,cls)=>h('details',{class:'digest-column'},h('summary',{class:cls},`${title} · ${(a[key]||[]).length} 项`),(a[key]||[]).length?(a[key]||[]).map(row=>h('div',{class:'digest-point'},h('p',{},row.text),h('details',{},h('summary',{},`${row.article_ids?.length||0} 条资讯依据`),(row.article_ids||[]).map(id=>{const n=d.news.find(x=>x.id===id);return n?h('p',{},link(n.title,n.url)):null;})))):h('p',{class:'inline-note'},'暂无充分依据'));
  return h('section',{class:'panel news-digest'},h('div',{class:'digest-heading'},h('div',{},h('span',{class:'news-ai-label'},'MiniMax · 综合解读'),h('h3',{},'当日资讯总览')),h('span',{class:'panel-subtitle'},a.generated_at?dateText(a.generated_at):'等待生成')),
  ready?h('p',{class:'digest-lead'},a.summary):h('p',{class:'digest-lead'},'正在汇总当日收录资讯，生成主要事件、利好与风险解读。'),
- h('p',{class:'inline-note'},ready?`本次覆盖 ${a.article_count||0} 条当日资讯，其中 ${a.fulltext_analysis_count||0} 条已完成全文分析；其余仅参考来源标题或摘要。`:`当日已收录 ${a.current_article_count||0} 条资讯。`,a.status==='updating'?' 新资讯正在补入，当前显示上一版解读。':a.status==='temporarily_unavailable'?' 模型暂时不可用，稍后自动重试。':''),
+ h('p',{class:'inline-note'},ready?`本次覆盖 ${a.article_count||0} 条当日资讯，其中 ${a.fulltext_analysis_count||0} 条使用单篇全文分析，${a.fulltext_source_count||0} 条使用来源完整文本；其余参考标题或摘要。`:`当日已收录 ${a.current_article_count||0} 条资讯。`,a.status==='updating'?' 新资讯正在补入，当前显示上一版解读。':a.status==='temporarily_unavailable'?' 模型暂时不可用，稍后自动重试。':''),
  ready?h('div',{class:'digest-columns'},section('重点利好','positives','up'),section('主要风险','risks','down')):null,
  ready&&(a.watch||[]).length?h('details',{class:'digest-watch'},h('summary',{},'后续观察与不确定性'),(a.watch||[]).map(row=>h('p',{},row.text))):null);
 }

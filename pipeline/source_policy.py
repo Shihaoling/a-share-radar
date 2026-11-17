@@ -10,7 +10,7 @@ def apply_primary_news_policy(dashboard,now=None):
     now=shanghai_now(now);state=dashboard.get('stock_api_state',{}).get('news',{})
     start,end=instant(state.get('coverage_start')),instant(state.get('coverage_end'))
     fetched=instant(state.get('fetched_at'))
-    covered=bool(start and end and fetched and 0<=(now-fetched).total_seconds()<=3600 and state.get('records'))
+    covered=bool(start and end and fetched and fetched<=now and start<=end<=now and state.get('records'))
     hidden=0
     for n in dashboard.get('news',[]):
         at=instant(n.get('published_at'))

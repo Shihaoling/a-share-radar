@@ -41,3 +41,9 @@ class NewsLibraryTests(unittest.TestCase):
    two=enrich_digest({'news':news},{'network_enabled':True},NOW,d,infer)
    self.assertEqual(len(calls),1);self.assertEqual(two['news_digest']['article_count'],70)
    self.assertNotIn('fake',Path(d,'daily-digest-cache.json').read_text())
+
+ def test_digest_receives_complete_provider_body_without_per_article_analysis(self):
+  text='来源完整文本'*1000+'结尾事实'
+  rows=digest_inputs([{'id':'primary','published_at':NOW.isoformat(),'summary':'短摘要','full_text':text,'full_text_status':'complete'}],'2026-11-17')
+  self.assertEqual(rows[0]['basis'],'source_full_text')
+  self.assertEqual(rows[0]['summary'],text)

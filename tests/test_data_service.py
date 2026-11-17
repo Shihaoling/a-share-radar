@@ -54,6 +54,8 @@ class DataServiceTests(unittest.TestCase):
   self.assertEqual({n['id'] for n in digest_inputs(rows,'2026-11-17')},{'p','gap'})
   with TemporaryDirectory() as t:
    view=publish_view(d,Path(t)/'view.json');self.assertEqual({n['id'] for n in view['news']},{'p','gap'})
+  apply_primary_news_policy(d,NOW+timedelta(hours=2))
+  self.assertTrue(rows[1]['primary_shadowed'])
   state['records']=[];apply_primary_news_policy(d,NOW)
   self.assertFalse(any(n['primary_shadowed'] for n in rows))
  def test_minute_cooldown_survives_normal_source_refresh(self):

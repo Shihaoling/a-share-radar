@@ -196,6 +196,11 @@ jobs:
           old=json.loads(p.read_text()) if p.exists() else {}
           if old.get('request_id') != 'news-library-digest-v1' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
               subprocess.run(['python','-m','pipeline.news_update','--reuse-body-cache','--discover','--model-limit','0','--model-budget-seconds','0'],check=True)
+          else:
+              cfg=json.loads(Path('config/settings.json').read_text())
+              d=json.loads(Path('web/data/dashboard.json').read_text())
+              if d.get('stock_api_state',{}).get('news',{}).get('records') and old.get('primary_source_version')!=cfg.get('stock_api',{}).get('refresh_version'):
+                  subprocess.run(['python','-m','pipeline.news_update','--reuse-body-cache','--model-limit','0','--model-budget-seconds','0'],check=True)
           PY
       - name: Install online probability classifier dependencies
         if: github.event_name == 'push' || (inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5' && (!inputs.probe_group || inputs.probe_group == 'none'))
