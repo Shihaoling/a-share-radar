@@ -93,6 +93,18 @@ class MiniMaxTests(unittest.TestCase):
             self.assertEqual(calls,[BODY]);self.assertEqual(two['minimax_summary']['reused'],1)
             self.assertEqual(one['news'][0]['llm_analysis']['model'],DEFAULT_MODEL)
 
+    def test_invalid_article_does_not_starve_the_rest_of_the_queue(self):
+        data={'news':[{'id':str(i),'title':str(i),'full_text':BODY,'full_text_status':'complete'} for i in range(2)]}
+        def infer(n,*args):
+            if n['id']=='0':raise ModelFailure('invalid_analysis',86400)
+            return analysis()
+        with TemporaryDirectory() as d,patch.dict('os.environ',{'MINIMAX_API_KEY':'fake'}),patch('pipeline.minimax_news.shanghai_now',return_value=NOW):
+            result=enrich_minimax(data,{'network_enabled':True},NOW,d,infer)
+            self.assertEqual(result['minimax_summary']['ready'],1)
+            self.assertIsNone(result['minimax_summary']['cooldown_until'])
+            cached=json.loads((Path(d)/'minimax-cache.json').read_text())
+            self.assertEqual(len(cached['failures']),1)
+
     def test_sector_directions_are_opposite_and_unrelated_indices_are_not_scored(self):
         a={**analysis(),'status':'ready','model':DEFAULT_MODEL,'prompt_version':PROMPT_VERSION,'input_hash':text_hash(BODY),'scored_at':NOW.isoformat()}
         n={'id':'a','title':'原油价格上涨','full_text':BODY,'full_text_status':'complete','llm_analysis':a,'published_at':NOW.isoformat(),'first_seen_at':NOW.isoformat()}

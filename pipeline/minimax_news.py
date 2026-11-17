@@ -96,7 +96,8 @@ def infer_article(article, config, key):
             raw = response.read(2000001)
             if len(raw) > 2000000: raise ModelFailure('response_over_budget')
         result = json.loads(raw)
-        if result.get('base_resp', {}).get('status_code', 0) != 0: raise ModelFailure('provider_rejected', 3600)
+        status = result.get('base_resp', {}).get('status_code', 0)
+        if status != 0: raise ModelFailure('provider_code_'+str(status) if type(status) is int and abs(status)<1000000 else 'provider_rejected', 3600)
         choice = result['choices'][0]
         if choice.get('finish_reason') != 'stop': raise ModelFailure('incomplete_response')
         content = choice['message']['content']
@@ -107,8 +108,24 @@ def infer_article(article, config, key):
         analysis['usage'] = {k: v for k, v in result.get('usage', {}).items() if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int}
         return analysis
     except urllib.error.HTTPError as e:
-        raise ModelFailure('http_'+str(e.code), 86400 if e.code in (401,403) else 3600) from None
+        suffix = ''
+        try:
+            # Inspect only a bounded error payload and emit a fixed category or
+            # numeric provider code. Never persist raw provider messages.
+            failure = json.loads(e.read(16384))
+            provider = failure.get('base_resp', {}).get('status_code')
+            if type(provider) is int and abs(provider) < 1000000:
+                suffix = '_provider_'+str(provider)
+            text = json.dumps(failure, ensure_ascii=False).lower()
+            if any(term in text for term in ('余额不足', 'insufficient balance', 'insufficient credit', 'insufficient_balance')):
+                suffix += '_insufficient_balance'
+            elif any(term in text for term in ('套餐', 'subscription', 'plan limit', 'quota')):
+                suffix += '_plan_or_quota'
+        except Exception: pass
+        raise ModelFailure('http_'+str(e.code)+suffix, 86400 if e.code in (401,403) else 3600) from None
     except ModelFailure: raise
+    except (urllib.error.URLError, TimeoutError, OSError): raise ModelFailure('transport_error') from None
+    except (ValueError, KeyError, IndexError, TypeError): raise ModelFailure('invalid_analysis', 86400) from None
     except Exception: raise ModelFailure('invalid_or_unavailable_response') from None
 
 
@@ -124,6 +141,7 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
     root.mkdir(parents=True, exist_ok=True); path = root/'minimax-cache.json'
     try: cache = json.loads(path.read_text())
     except (ValueError, OSError): cache = {'articles': {}}
+    cache.setdefault('failures', {})
     key = os.environ.get('MINIMAX_API_KEY', ''); model = cfg.get('model', DEFAULT_MODEL)
     enabled = config.get('network_enabled', False) and cfg.get('enabled', True)
     count = 0; successful = 0; reused = 0; started = time.monotonic(); error = None
@@ -135,6 +153,9 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
         h = text_hash(n['full_text']); cache_key = text_hash(json.dumps([h, n.get('title'), model, PROMPT_VERSION], ensure_ascii=False))
         n.pop('llm_analysis', None)
         row = cache['articles'].get(cache_key)
+        failure = cache['failures'].get(cache_key, {})
+        if failure.get('retry_after', '') > now.isoformat():
+            n['llm_status'] = 'analysis_unavailable'; continue
         if row and _timestamp(row.get('scored_at')) and _timestamp(row['scored_at']) <= now:
             n['llm_analysis'] = deepcopy(row); reused += 1
         elif enabled and key and cache.get('cooldown_until', '') <= now.isoformat() and count < int(cfg.get('max_articles_per_run', 16)) and time.monotonic()-started < float(cfg.get('budget_seconds', 600)):
@@ -148,6 +169,10 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
                 cache['articles'][cache_key] = row; n['llm_analysis'] = deepcopy(row)
                 cache.pop('last_error', None)
             except ModelFailure as e:
+                if e.code in ('input_over_budget', 'invalid_analysis', 'incomplete_response'):
+                    cache['failures'][cache_key] = {'error_code': e.code, 'retry_after': (now+timedelta(seconds=e.retry)).isoformat()}
+                    n['llm_status'] = 'analysis_unavailable'
+                    continue
                 error = e.code; cache['last_error'] = error
                 cache['cooldown_until'] = (now+timedelta(seconds=e.retry)).isoformat()
                 n['llm_status'] = 'temporarily_unavailable'
