@@ -148,7 +148,7 @@ class _Gate:
         if delay > 0:
             if elapsed + delay > float(self.cfg.get("request_budget_seconds", 100)):
                 raise SourceUnavailable("本轮时间预算不足")
-            time.sleep(min(delay, 10))
+            time.sleep(delay)
         self.count += 1
         self.last[domain] = time.monotonic()
         return domain

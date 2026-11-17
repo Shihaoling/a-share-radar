@@ -42,7 +42,7 @@ def digest_inputs(news,day):
     return sorted(rows,key=lambda r:r['id'])
 
 def enrich_digest(dashboard,config=None,now=None,root=None,infer=None):
-    config=config or {};now=shanghai_now(now);day=now.date().isoformat();result=deepcopy(dashboard)
+    config=config or {};now=shanghai_now(now);day=config.get('news_digest',{}).get('target_date') or now.date().isoformat();result=deepcopy(dashboard)
     rows=digest_inputs(result.get('news',[]),day);cfg=config.get('news_digest',{})
     root=Path(root) if root else Path(__file__).resolve().parents[1]/'data/news_sentiment';root.mkdir(parents=True,exist_ok=True)
     path=root/'daily-digest-cache.json'

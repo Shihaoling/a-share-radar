@@ -1,0 +1,78 @@
+name: Complete requested news and one-minute history
+on:
+  push:
+    branches: [main]
+    paths: ['data/news_content/backfill-request.json', 'pipeline/news_backfill.py', '.github/workflows/complete-news.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '12,42 * * * *'
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: research-publish
+  cancel-in-progress: false
+jobs:
+  complete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main, fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: python -m pip install -r requirements.txt
+      - name: Verify collection and source rules
+        run: python -m unittest discover -s tests -q
+      - name: Backfill actual one-minute history after publication
+        env:
+          STOCK_API_TOKEN: ${{ secrets.STOCK_API_TOKEN }}
+          RADAR_EXPECTED_STOCK_KEY_SHA256: 097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
+          RADAR_SERVICE_GATE_FILE: ${{ runner.temp }}/sxdata-rate-gate.json
+        run: |
+          python - <<'PY'
+          from pipeline.run import load,atomic_json
+          from pipeline.calendar import shanghai_now,previous_trading_day,is_trading_day
+          from pipeline.primary_minutes import collect_primary_minutes
+          from pipeline.publish import publish_view
+          from pathlib import Path
+          now=shanghai_now()
+          if now.hour>=20 or now.hour<9:
+              day=now.date() if now.hour>=20 and is_trading_day(now.date()) else previous_trading_day(now.date())
+              p=Path('web/data/dashboard.json');d=load(p,{})
+              d=collect_primary_minutes(d,{'network_enabled':True,'primary_minutes':{'frequency':'1min','target_date':day.isoformat(),'max_requests':8}},now)
+              atomic_json(p,d);publish_view(d,'web/data/view.json')
+              print('ONE_MINUTE_COVERAGE',d.get('primary_minutes_state',{}))
+          PY
+      - name: Complete one bounded article batch
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+        run: python -m pipeline.news_backfill
+      - name: Publish updated observations
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add web/data data/news_content data/news_sentiment data/news_archive
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: complete requested articles and minute history [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages-news-${{ github.run_id }}-${{ github.run_attempt }}
+          path: web
+  deploy:
+    needs: complete
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish completed articles
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-news-${{ github.run_id }}-${{ github.run_attempt }}

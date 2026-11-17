@@ -13,17 +13,24 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
     now = shanghai_now(now); result = deepcopy(dashboard); cfg = (config or {}).get('primary_minutes', {})
     state = result.setdefault('primary_minutes_state', {'endpoints': {}, 'completed': {}})
     if state.get('service_endpoint')!=ENDPOINT:
-        state['endpoints']={};state['completed']={};state.pop('compensation_at',None)
+        state['endpoints']={};state['completed']={};state.pop('compensation_at',None);state.pop('compensation_for',None)
     state['service_endpoint']=ENDPOINT
     state.setdefault('endpoints', {}); state.setdefault('completed', {})
+    frequency=cfg.get('frequency','1min')
+    target=cfg.get('target_date')
+    day=target or now.date().isoformat()
+    try:target_day=datetime.fromisoformat(day).date()
+    except (ValueError,TypeError):return result
+    ready_at=datetime.combine(target_day,datetime.min.time(),SHANGHAI)+timedelta(hours=20)
     # Official SW minute data is updated 19:00–20:00. Never poll it intraday.
-    if not (config or {}).get('network_enabled') or not cfg.get('enabled', True) or is_trading_day(now.date()) is not True or now.hour < 20:
+    if not (config or {}).get('network_enabled') or not cfg.get('enabled', True) or is_trading_day(target_day) is not True or now<ready_at or frequency not in ('1min','5min'):
         return result
     token = os.environ.get('STOCK_API_TOKEN', '')
     if (not token or not credential_matches(token)) and client is None:
         state['status']='credentials_pending';return result
-    client = client or _Client(token, {'max_requests': 12, 'budget_seconds': 180, 'min_interval_seconds': 6,'timeout_seconds':30}, now)
-    day = now.date().isoformat(); attempted = 0
+    require_complete=cfg.get('require_complete_session',client is None)
+    client = client or _Client(token, {'max_requests': 12, 'budget_seconds': 180, 'min_interval_seconds': 20,'timeout_seconds':30}, now)
+    attempted = 0
     state['completed'] = {k:v for k,v in state['completed'].items() if k[:10] >= (now-timedelta(days=7)).date().isoformat()}
     for group, api in (('market', 'idx_mins'), ('sectors', 'sw_mins')):
         endpoint = state['endpoints'].setdefault(api, {})
@@ -32,20 +39,23 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
             code = entity.get('index_code') if group == 'sectors' else _index_code(entity)
             if not code or group == 'sectors' and (entity.get('taxonomy') != 'SW2021' or not str(code).endswith('.SI')): continue
             key = day+':'+code
-            if state['completed'].get(key): continue
+            if state['completed'].get(key,{}).get('frequency')==frequency: continue
             if attempted >= int(cfg.get('max_requests', 12)): break
             try:
                 attempted += 1
-                params={'ts_code':code,'freq':'5min','start_date':day+' 09:30:00','end_date':day+' 15:00:00','limit':60}
+                params={'ts_code':code,'freq':frequency,'start_date':day+' 09:30:00','end_date':day+' 15:00:00','limit':300 if frequency=='1min' else 60}
                 try:rows=client.request(api,params)
                 except _Failure as first:
                     wait=max(60,first.retry_seconds)
-                    if first.code not in ('rate_limited','transport_error') or state.get('compensation_at',{}).get(api,'').startswith(day) or wait>65 or not hasattr(client,'remaining') or client.remaining()<=wait+10:raise
+                    if first.code not in ('rate_limited','transport_error') or state.get('compensation_for',{}).get(api)==day or state.get('compensation_at',{}).get(api,'').startswith(day) or wait>65 or not hasattr(client,'remaining') or client.remaining()<=wait+10:raise
                     state.setdefault('compensation_at',{})[api]=shanghai_now().isoformat()
+                    state.setdefault('compensation_for',{})[api]=day
                     time.sleep(wait)
                     rows=client.request(api,params)
-                points = minute_points(rows, code, day, now)
-                if len(points) < 2:
+                points = minute_points(rows, code, day, now,frequency)
+                coverage=minute_coverage(points,day) if frequency=='1min' else {'complete':len(points)>=48}
+                if len(points) < 2 or require_complete and not coverage['complete']:
+                    endpoint['partial_coverage']={'code':code,'date':day,'frequency':frequency,'count':len(points),**coverage}
                     endpoint.update(status='pending', last_attempt=now.isoformat(), cooldown_until=(now+timedelta(minutes=30)).isoformat()); break
                 bucket = result.setdefault('intraday', {}).setdefault(entity['id'], {'points': []})
                 if isinstance(bucket, list): bucket = {'points': bucket}; result['intraday'][entity['id']] = bucket
@@ -53,7 +63,7 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
                 # minutes only for the same code/day, and never joins taxonomies.
                 prior = [p for p in bucket.get('points', []) if not (p.get('provider') == 'stock_api' and str(p.get('timestamp', '')).startswith(day))]
                 bucket['points'] = prior + points
-                state['completed'][key] = {'available_at': now.isoformat(), 'count': len(points)}
+                state['completed'][key] = {'available_at': now.isoformat(), 'count': len(points),'frequency':frequency,'coverage':coverage}
                 endpoint.update(status='success', last_success=now.isoformat())
                 for field in ('cooldown_until','error_code','provider_code','provider_reason'):endpoint.pop(field,None)
             except _Failure as e:
@@ -69,7 +79,14 @@ def collect_primary_minutes(dashboard, config=None, now=None, client=None):
     return result
 
 
-def minute_points(rows, code, day, now):
+def minute_coverage(points,day):
+    times={p['timestamp'][11:16] for p in points}
+    close={f'{minute//60:02d}:{minute%60:02d}' for start,end in ((571,691),(781,901)) for minute in range(start,end)}
+    opened={f'{minute//60:02d}:{minute%60:02d}' for start,end in ((570,690),(780,900)) for minute in range(start,end)}
+    return {'complete':close<=times or opened<=times,'expected_minutes':240,'missing_close_minutes':len(close-times),'missing_open_minutes':len(opened-times)}
+
+
+def minute_points(rows, code, day, now,frequency='5min'):
     import math
     points = {}
     for r in rows:
@@ -80,5 +97,5 @@ def minute_points(rows, code, day, now):
         if not ('09:30' <= hhmm <= '11:30' or '13:00' <= hhmm <= '15:00'): continue
         points[stamp.isoformat()] = {'timestamp': stamp.isoformat(), 'quote_timestamp': stamp.isoformat(), 'price': float(price),
             'provider': 'stock_api', 'timestamp_quality': 'exchange_timestamp', 'available_at': now.isoformat(),
-            'source_code': code, 'frequency': '5min', 'kind': 'historical_minute'}
+            'source_code': code, 'frequency': frequency, 'kind': 'historical_minute'}
     return [points[k] for k in sorted(points)]

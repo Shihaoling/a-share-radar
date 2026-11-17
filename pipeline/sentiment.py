@@ -182,9 +182,11 @@ def _merge_stock_api_news(result, now):
             item["first_seen_basis"] = "stock_api_fetched_at" if fetched else "first_observed_by_sentiment_pipeline"
         key, day, url = merge_key(item), publication_day(item), _canonical_url(item.get("url"))
         title_duplicate = key in titles and (day in titles[key] or day is None or None in titles[key])
+        if raw.get('provider')=='stock_api':
+            title_duplicate=any(n.get('provider')=='stock_api' and merge_key(n)==key and publication_day(n)==day for n in existing)
         if item["id"] in known_ids or (url and url in known_urls) or title_duplicate:
             if raw.get('provider')=='stock_api' and raw.get('full_text'):
-                target=next((n for n in existing if n.get('id')==item['id'] or merge_key(n)==key and publication_day(n)==day),None)
+                target=next((n for n in existing if n.get('id')==item['id']),None) or next((n for n in existing if n.get('provider')=='stock_api' and merge_key(n)==key and publication_day(n)==day),None)
                 if target is not None:
                     for field in ('full_text','full_text_hash','full_text_status','full_text_method','full_text_fetched_at','full_text_scope'):
                         if field in raw:target[field]=raw[field]
@@ -445,6 +447,8 @@ def aggregate_entity_sentiment(dashboard, now=None, config=None):
         config = config["sentiment"]
     now = shanghai_now(now)
     stock_api_added, stock_api_duplicates = _merge_stock_api_news(result, now)
+    from .news_trust import apply_source_whitelist
+    apply_source_whitelist(result)
     window_hours = max(1, float(config.get("window_hours", 72)))
     window_start = now.replace(hour=0,minute=0,second=0,microsecond=0) if config.get("current_day_only",False) else now - timedelta(hours=window_hours)
     include_rumors = bool(config.get("include_rumors", False))

@@ -1,6 +1,6 @@
 """Incremental public article HTML collection; no quote/news API and no bypass."""
 from copy import deepcopy
-from datetime import timedelta
+from datetime import datetime, timedelta
 from hashlib import sha256
 import ipaddress
 import json
@@ -116,6 +116,44 @@ def extract_article(raw, headers=None):
     raise SourceUnavailable('article_body_not_found')
 
 
+def publication_metadata(raw, url, now=None):
+    """Only publisher-labelled dates count; URL dates and article prose do not."""
+    now=shanghai_now(now);soup=BeautifulSoup(raw,'html.parser');candidates=[]
+    for selector,attr in [('meta[property="article:published_time"]','content'),('meta[name="pubdate"]','content'),('meta[name="publishdate"]','content'),('meta[itemprop="datePublished"]','content'),('time[datetime]','datetime')]:
+        candidates.extend((selector,n.get(attr,'')) for n in soup.select(selector))
+    for script in soup.select('script[type="application/ld+json"]'):
+        try: queue=json.loads(script.string or script.get_text())
+        except (ValueError,TypeError):continue
+        queue=queue if isinstance(queue,list) else [queue]
+        while queue:
+            item=queue.pop(0)
+            if not isinstance(item,dict):continue
+            if isinstance(item.get('@graph'),list):queue.extend(item['@graph'])
+            if item.get('datePublished'):candidates.append(('jsonld:datePublished',str(item['datePublished'])))
+    for selector in ['#pubtime','.publish-time','.pubtime','.time','[itemprop="datePublished"]']:
+        candidates.extend((selector,n.get_text(' ',strip=True)) for n in soup.select(selector))
+    valid=[]
+    for method,value in candidates:
+        value=str(value).strip()
+        try: at=datetime.fromisoformat(value.replace('Z','+00:00')) if ':' in value else None
+        except ValueError:at=None
+        if at is None:
+            m=re.search(r'(20\d{2})[-/年](\d{1,2})[-/月](\d{1,2})日?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?',value)
+            if m:
+                try:at=datetime(*[int(x or 0) for x in m.groups()])
+                except ValueError:pass
+        if at is not None:
+            at=shanghai_now(at)
+            if at<=now and at.year>=2000:valid.append((at,method,value[:160]))
+    receipt={'status':'unknown','source_url':url,'checked_at':now.isoformat()}
+    if not valid:return {'publication_verification':receipt}
+    if max(v[0] for v in valid)-min(v[0] for v in valid)>timedelta(minutes=5):
+        receipt['status']='conflict';return {'publication_verification':receipt}
+    at,method,value=valid[0]
+    receipt.update(status='verified',method=method,source_value=value)
+    return {'published_at':at.isoformat(),'published_at_verified_at':now.isoformat(),'publication_verification':receipt}
+
+
 def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
     now = shanghai_now(now); cfg = (config or {}).get('news_content', {})
     result = deepcopy(dashboard)
@@ -124,8 +162,8 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
     try: state = json.loads(path.read_text())
     except (OSError, ValueError): state = {'articles': {}, 'hosts': {}}
     gate_cfg = {'user_agent': 'AshareRadar/1.0 (+https://shihaoling.github.io/a-share-radar/)',
-                'respect_robots': True, 'max_retries': 0, 'min_request_interval_seconds': 4,
-                'request_budget_seconds': 180, 'max_http_requests': 64, 'max_response_bytes': 4000000, 'timeout_seconds': 10}
+                'respect_robots': True, 'max_retries': 0, 'min_request_interval_seconds': max(4,float(cfg.get('request_interval_seconds',20))),
+                'request_budget_seconds': 240, 'max_http_requests': 64, 'max_response_bytes': 4000000, 'timeout_seconds': 15}
     gate = gate or ArticleGate(gate_cfg)
     enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
     attempted = 0; hosts = {}; reused = 0
@@ -143,7 +181,8 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
         row = state['articles'].get(key, {})
         if row.get('url') != url:
             row = {}
-        if row.get('status') == 'complete':
+        metadata_pending=cfg.get('verify_publication_times') and not row.get('publication_verification')
+        if row.get('status') == 'complete' and not metadata_pending:
             reused += 1
         elif enabled and url and attempted < int(cfg.get('max_articles_per_run', 20)):
             host = urlsplit(str(url)).hostname or ''
@@ -157,6 +196,7 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
                 row = {'url': url, 'status': 'complete', 'full_text': text, 'text_hash': text_hash(text),
                        'fetched_at': shanghai_now().isoformat(), 'extraction_method': method, 'collector_version': VERSION,
                        'resolved_url': headers.get('Article-Final-URL', url)}
+                row.update(publication_metadata(raw,row['resolved_url']))
             except Exception as e:
                 # Fixed error code only. Never retain a request/response/exception
                 # string that could contain credentials or entire source pages.
@@ -175,6 +215,8 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
         if row.get('status') == 'complete':
             n.update(full_text=row['full_text'], full_text_hash=row['text_hash'], full_text_fetched_at=row['fetched_at'],
                      full_text_method=row['extraction_method'])
+            for field in ('published_at','published_at_verified_at','publication_verification'):
+                if row.get(field):n[field]=deepcopy(row[field])
         elif row:
             n['full_text_reason'] = row.get('reason')
     path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n')

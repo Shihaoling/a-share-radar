@@ -17,9 +17,9 @@ def archive_news(dashboard,now=None,root=None):
     added=0;scored=0
     for n in dashboard.get('news',[]):
         if not n.get('id'):continue
-        version=digest({'id':n['id'],'input_hash':n.get('sentiment_input_hash'),'model':n.get('sentiment_model'),'score':n.get('sentiment_score'),'label':n.get('sentiment'),'full_text_hash':n.get('full_text_hash'),'llm':n.get('llm_analysis')})
+        version=digest({'id':n['id'],'published_at':n.get('published_at'),'publication_verification':n.get('publication_verification'),'source_verified':n.get('source_verified'),'input_hash':n.get('sentiment_input_hash'),'model':n.get('sentiment_model'),'score':n.get('sentiment_score'),'label':n.get('sentiment'),'full_text_hash':n.get('full_text_hash'),'llm':n.get('llm_analysis')})
         if version in archive['articles']:continue
-        record={k:n.get(k) for k in ('id','title','source','source_id','url','published_at','first_seen_at','sector_ids','market_ids','sentiment','sentiment_score','sentiment_method','sentiment_model','sentiment_input_hash','sentiment_scored_at','sentiment_eligible','sentiment_exclusion_reason','full_text','full_text_hash','full_text_status','full_text_fetched_at','full_text_method','llm_analysis','llm_status')}
+        record={k:n.get(k) for k in ('id','title','source','source_id','url','published_at','first_seen_at','sector_ids','market_ids','sentiment','sentiment_score','sentiment_method','sentiment_model','sentiment_input_hash','sentiment_scored_at','sentiment_eligible','sentiment_exclusion_reason','full_text','full_text_hash','full_text_status','full_text_fetched_at','full_text_method','publication_verification','published_at_verified_at','source_verified','source_verification_basis','llm_analysis','llm_status')}
         record.update(summary=str(n.get('summary') or n.get('content') or '')[:1000],archived_at=now.isoformat(),version=version)
         archive['articles'][version]=record;added+=1
         scored+=record.get('sentiment') in ('positive','negative','neutral','mixed')
