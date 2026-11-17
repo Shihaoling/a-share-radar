@@ -179,10 +179,12 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
         if n.get('llm_analysis', {}).get('status') == 'ready':
             n['llm_status'] = 'ready'; n['analysis_method'] = 'minimax_full_text'
             n['sector_ids'] = [s['sector_code'] for s in n['llm_analysis']['sector_impacts']]
-        else: n.setdefault('llm_status', 'missing_key' if not key and enabled else 'deferred')
+        else: n['llm_status'] = 'missing_key' if not key and enabled else 'temporarily_unavailable' if cache.get('cooldown_until', '') > now.isoformat() else 'deferred'
     path.write_text(json.dumps(cache, ensure_ascii=False, indent=2)+'\n')
+    ready = sum(n.get('llm_status') == 'ready' for n in result.get('news', []))
+    status = ('partial' if ready else 'error') if error else ('partial' if ready else 'cooldown') if cache.get('cooldown_until', '') > now.isoformat() else 'ready' if ready else 'pending' if key else 'missing_key'
     result['minimax_summary'] = {'model': model, 'prompt_version': PROMPT_VERSION, 'inferred': successful, 'attempted': count, 'reused': reused,
-        'ready': sum(n.get('llm_status') == 'ready' for n in result.get('news', [])), 'key_configured': bool(key),
-        'status': 'error' if error else 'ready' if key else 'missing_key', 'last_error': error or cache.get('last_error'),
+        'ready': ready, 'key_configured': bool(key),
+        'status': status, 'last_error': error or cache.get('last_error'),
         'cooldown_until': cache.get('cooldown_until'), 'as_of': now.isoformat()}
     return result

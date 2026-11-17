@@ -2,13 +2,15 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 import gzip
 import json
+import io
+import urllib.error
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
 from pipeline.news_content import extract_article, enrich_full_text, text_hash
-from pipeline.minimax_news import validate_analysis, enrich_minimax, PROMPT_VERSION, DEFAULT_MODEL, ModelFailure, system_prompt
+from pipeline.minimax_news import validate_analysis, enrich_minimax, PROMPT_VERSION, DEFAULT_MODEL, ModelFailure, system_prompt, infer_article
 from pipeline.news_archive import archive_news
 from pipeline.sentiment import aggregate_entity_sentiment
 from pipeline.publish import publish_view
@@ -64,6 +66,17 @@ class FullTextTests(unittest.TestCase):
 
 
 class MiniMaxTests(unittest.TestCase):
+    def test_api_error_diagnostics_never_retain_raw_messages_or_credentials(self):
+        class Opener:
+            def open(self,*args,**kwargs):
+                raw=json.dumps({'base_resp':{'status_code':1008,'status_msg':'insufficient balance; sensitive-provider-detail'}}).encode()
+                raise urllib.error.HTTPError('https://api.minimax.cn/v1/chat/completions',402,'payment',{},io.BytesIO(raw))
+        with patch('pipeline.minimax_news.urllib.request.build_opener',return_value=Opener()):
+            with self.assertRaises(ModelFailure) as error:infer_article({'full_text':BODY},{},'fake-key')
+        self.assertEqual(error.exception.code,'http_402_provider_1008_insufficient_balance')
+        self.assertNotIn('sensitive',str(error.exception))
+        self.assertNotIn('fake-key',str(error.exception))
+
     def test_schema_rejects_hallucinated_quotes_and_wrong_industry(self):
         self.assertEqual(len(validate_analysis(analysis(),BODY)['sector_impacts']),2)
         for field,value in [('evidence',['原文没有这句话']),('sector_name','银行'),('confidence',True)]:

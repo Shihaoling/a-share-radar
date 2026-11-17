@@ -181,7 +181,7 @@ jobs:
           from pathlib import Path
           p=Path('data/news_sentiment/fulltext-report.json')
           old=json.loads(p.read_text()) if p.exists() else {}
-          if old.get('request_id') != 'fulltext-minimax-v1' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
+          if old.get('request_id') != 'fulltext-minimax-subscription-v2' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
               subprocess.run(['python','-m','pipeline.news_update'],check=True)
           PY
       - name: Install online probability classifier dependencies
