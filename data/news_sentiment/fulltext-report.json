@@ -1,27 +1,27 @@
 {
-  "completed_at": "2026-11-17T19:57:43.744003+08:00",
-  "request_id": "fulltext-minimax-domestic-v6",
+  "completed_at": "2026-11-17T21:36:55.292222+08:00",
+  "request_id": "news-library-digest-v1",
   "content": {
     "attempted": 0,
-    "reused": 26,
-    "complete": 26,
-    "total": 75,
-    "as_of": "2026-11-17T19:54:14.729177+08:00",
+    "reused": 41,
+    "complete": 41,
+    "total": 178,
+    "as_of": "2026-11-17T21:34:59.750084+08:00",
     "status": "cache_only"
   },
   "model": {
     "model": "MiniMax-M3.1-Flash",
     "prompt_version": "fulltext-sw31-impact-v2-refs",
-    "inferred": 1,
-    "attempted": 1,
-    "reused": 13,
-    "ready": 14,
-    "pending_bodies": 12,
+    "inferred": 0,
+    "attempted": 0,
+    "reused": 22,
+    "ready": 22,
+    "pending_bodies": 19,
     "key_configured": true,
     "status": "partial",
-    "last_error": null,
-    "cooldown_until": null,
-    "as_of": "2026-11-17T19:57:42.540080+08:00"
+    "last_error": "transport_error",
+    "cooldown_until": "2026-11-17T21:56:11.116226+08:00",
+    "as_of": "2026-11-17T21:35:01.049904+08:00"
   },
   "api_check": null
 }
