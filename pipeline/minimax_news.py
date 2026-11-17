@@ -15,7 +15,8 @@ from .news_content import text_hash
 from .sentiment import SW2021, _timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
-PROMPT_VERSION = 'fulltext-sw31-impact-v1'
+PROMPT_VERSION = 'fulltext-sw31-impact-v2-refs'
+PREVIOUS_PROMPT_VERSIONS = ('fulltext-sw31-impact-v1',)
 DEFAULT_MODEL = 'MiniMax-M3.1-Flash'
 ENDPOINT = 'https://api.minimax.cn/v1/chat/completions'
 LABELS = {'positive', 'negative', 'neutral', 'mixed', 'unknown'}
@@ -30,7 +31,7 @@ def system_prompt():
 2. 区分文章语气tone与产业经营影响。逐个判断受到影响的申万2021一级行业，不要把“被提到”当作利好。
 3. 分清受益方和受损方，如油价上涨可能利好上游而增加运输成本；单家公司事件不能无依据推广到全行业。
 4. 区分已发生事实、计划、预测、评论、传言；保留否定、政策条件、时间和不确定性。没有证据填unknown，不凑齐行业。
-5. 每个判断提供原文中逐字连续的短引文evidence（1~3条，每条不超过100字符）和简洁的因果传导reason（不超过160字符）。
+5. 正文以article_segments完整提供，按顺序拼接text即为全文，没有删减。每个判断的evidence只能选择其中1~3个片段id（如E0001），禁止自行复制、改写、翻译、拼接引文；程序会还原原文。提供简洁的因果传导reason（不超过160字符）。
 6. 判断经营影响，不预测股票涨跌幅，不输出股价上涨概率。confidence只是自评证据确定度，不是股价概率。
 7. 只有明确宏观传导时才填写market_effect，否则direction=unknown，不能将行业影响泛化到六大指数。
 8. 允许同一文章对不同行业方向相反，行业内部受益受损并存用mixed，并写明细分领域；每行业最多一项。
@@ -40,9 +41,36 @@ def system_prompt():
 {"summary":"中文摘要","tone":"positive|negative|neutral|mixed|unknown",
 "fact_status":"reported_fact|proposal|opinion|rumor|uncertain",
 "market_effect":{"direction":"positive|negative|neutral|mixed|unknown","confidence":0.0,"reason":"依据或为何不确定","evidence":[]},
-"sector_impacts":[{"sector_code":"801780.SI","sector_name":"银行","direction":"positive|negative|neutral|mixed|unknown","confidence":0.0,"horizon":"today|next_session|medium_term|uncertain","reason":"事实→成本/需求/盈利/风险传导及限制","evidence":["逐字原文"]}],
+"sector_impacts":[{"sector_code":"801780.SI","sector_name":"银行","direction":"positive|negative|neutral|mixed|unknown","confidence":0.0,"horizon":"today|next_session|medium_term|uncertain","reason":"事实→成本/需求/盈利/风险传导及限制","evidence":["E0001"]}],
 "uncertainties":["最多3条关键限制"]}
 不要捏造原文未提供的数字、时间、主体或因果。不要使用外部知识补写事件事实。'''
+
+
+def evidence_segments(body):
+    """Lossless, bounded source spans; model chooses IDs rather than rewriting quotes."""
+    spans = {}; start = 0
+    while start < len(body):
+        end = min(start + 240, len(body))
+        if end < len(body):
+            stops = [body.rfind(mark, start + 80, end) for mark in ('。', '！', '？', '\n', '. ', '! ', '? ')]
+            boundary = max(stops)
+            if boundary >= start + 80: end = boundary + 1
+        spans[f'E{len(spans)+1:04d}'] = body[start:end]
+        start = end
+    return spans
+
+
+def resolve_evidence_references(value, spans):
+    if not isinstance(value, dict): raise ValueError('invalid_analysis')
+    output = deepcopy(value)
+    rows = [output.get('market_effect')] + (output.get('sector_impacts') if isinstance(output.get('sector_impacts'), list) else [])
+    for row in rows:
+        if not isinstance(row, dict): continue
+        refs = row.get('evidence')
+        if not isinstance(refs, list) or len(refs) > 3: raise ValueError('ungrounded_evidence')
+        if any(not isinstance(ref, str) or ref not in spans for ref in refs): raise ValueError('ungrounded_evidence')
+        row['evidence'] = [spans[ref] for ref in refs]
+    return output
 
 
 def validate_analysis(value, body):
@@ -94,10 +122,11 @@ class ModelFailure(Exception):
 def infer_article(article, config, key):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
+    spans = evidence_segments(body)
     payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': 'max', 'max_completion_tokens': 12000,
         'messages': [{'role': 'system', 'content': system_prompt()}, {'role': 'user', 'content': json.dumps({
             'title': article.get('title'), 'source': article.get('source'), 'published_at': article.get('published_at'),
-            'input_scope': 'entire_extracted_article_body', 'article_text': body}, ensure_ascii=False)}]}
+            'input_scope': 'entire_extracted_article_body', 'article_segments': [{'id': ref, 'text': text} for ref, text in spans.items()]}, ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}, method='POST')
     try:
@@ -113,7 +142,7 @@ def infer_article(article, config, key):
         # Do not persist reasoning_content, raw replies or error bodies.
         content = re.sub(r'<think>.*?</think>', '', content, flags=re.S).strip()
         if content.startswith('```'): content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content)
-        analysis = validate_analysis(json.loads(content), body)
+        analysis = validate_analysis(resolve_evidence_references(json.loads(content), spans), body)
         analysis['usage'] = {k: v for k, v in result.get('usage', {}).items() if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int}
         return analysis
     except urllib.error.HTTPError as e:
@@ -145,7 +174,7 @@ def infer_article(article, config, key):
 def valid_cached_analysis(article, now):
     a = article.get('llm_analysis') or {}
     stamp = _timestamp(a.get('scored_at'))
-    return a if a.get('status') == 'ready' and a.get('prompt_version') == PROMPT_VERSION and a.get('input_hash') == text_hash(str(article.get('full_text') or '')) and stamp and stamp <= now else None
+    return a if a.get('status') == 'ready' and a.get('prompt_version') in (PROMPT_VERSION, *PREVIOUS_PROMPT_VERSIONS) and a.get('input_hash') == text_hash(str(article.get('full_text') or '')) and stamp and stamp <= now else None
 
 
 def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
@@ -166,6 +195,14 @@ def enrich_minimax(dashboard, config=None, now=None, root=None, infer=None):
         h = text_hash(n['full_text']); cache_key = text_hash(json.dumps([h, n.get('title'), model, PROMPT_VERSION], ensure_ascii=False))
         n.pop('llm_analysis', None)
         row = cache['articles'].get(cache_key)
+        if row is None:
+            for version in PREVIOUS_PROMPT_VERSIONS:
+                previous_key = text_hash(json.dumps([h, n.get('title'), model, version], ensure_ascii=False))
+                previous = cache['articles'].get(previous_key)
+                if previous and previous.get('input_hash') == h and previous.get('prompt_version') == version and previous.get('model') == model:
+                    try: validate_analysis(previous, n['full_text'])
+                    except ValueError: continue
+                    row = previous; break
         failure = cache['failures'].get(cache_key, {})
         if failure.get('retry_after', '') > now.isoformat():
             n['llm_status'] = 'analysis_unavailable'; continue

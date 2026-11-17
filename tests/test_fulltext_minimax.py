@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from pipeline.news_content import extract_article, enrich_full_text, text_hash
-from pipeline.minimax_news import validate_analysis, enrich_minimax, PROMPT_VERSION, DEFAULT_MODEL, ModelFailure, system_prompt, infer_article
+from pipeline.minimax_news import validate_analysis, enrich_minimax, PROMPT_VERSION, DEFAULT_MODEL, ModelFailure, system_prompt, infer_article, evidence_segments
 from pipeline.news_archive import archive_news
 from pipeline.sentiment import aggregate_entity_sentiment
 from pipeline.publish import publish_view
@@ -84,6 +84,39 @@ class FullTextTests(unittest.TestCase):
 
 
 class MiniMaxTests(unittest.TestCase):
+    def test_reference_payload_is_lossless_and_only_source_ids_become_quotes(self):
+        body = BODY + '\n末段：不能忽略的否定条件。\n'
+        spans = evidence_segments(body)
+        self.assertEqual(''.join(spans.values()), body)
+        self.assertTrue(all(len(s) <= 240 for s in spans.values()))
+        answer = analysis()
+        for row in answer['sector_impacts']: row['evidence'] = ['E0001']
+        requests = []
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def read(self, *args): return json.dumps({'choices':[{'finish_reason':'stop','message':{'content':json.dumps(answer,ensure_ascii=False)}}]}).encode()
+        class Opener:
+            def open(self, request, **kwargs): requests.append(json.loads(request.data)); return Response()
+        with patch('pipeline.minimax_news.urllib.request.build_opener',return_value=Opener()):
+            result = infer_article({'full_text':body},{},'fake-key')
+            sent = json.loads(requests[0]['messages'][1]['content'])
+            self.assertEqual(''.join(s['text'] for s in sent['article_segments']), body)
+            self.assertEqual(result['sector_impacts'][0]['evidence'], [spans['E0001']])
+            answer['sector_impacts'][0]['evidence'] = ['E9999']
+            with self.assertRaises(ModelFailure): infer_article({'full_text':body},{},'fake-key')
+
+    def test_verified_previous_prompt_cache_is_reused_without_an_api_call(self):
+        version='fulltext-sw31-impact-v1'
+        n={'id':'a','title':'原油影响','full_text':BODY,'full_text_status':'complete'}
+        key=text_hash(json.dumps([text_hash(BODY),n['title'],DEFAULT_MODEL,version],ensure_ascii=False))
+        row={**analysis(),'status':'ready','model':DEFAULT_MODEL,'prompt_version':version,'input_hash':text_hash(BODY),'scored_at':NOW.isoformat()}
+        with TemporaryDirectory() as d,patch.dict('os.environ',{'MINIMAX_API_KEY':'fake'}):
+            Path(d,'minimax-cache.json').write_text(json.dumps({'articles':{key:row}}))
+            result=enrich_minimax({'news':[n]},{'network_enabled':True},NOW,d,lambda *args:self.fail('verified cached result must be reused'))
+            self.assertEqual(result['minimax_summary']['reused'],1)
+            self.assertEqual(result['news'][0]['llm_analysis']['prompt_version'],version)
+
     def test_api_error_diagnostics_never_retain_raw_messages_or_credentials(self):
         class Opener:
             def open(self,*args,**kwargs):
