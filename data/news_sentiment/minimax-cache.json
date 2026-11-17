@@ -347,9 +347,182 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 550,
       "scored_at": "2026-11-17T19:10:07.202681+08:00"
+    },
+    "587130af3c1833e4a1903f08c48d64311f33e356644230a038039dd7b297c127": {
+      "summary": "英伟达董事会明确无意在内部调查期间恢复黄仁勋；美国政府同时要求多国企业为取得最先进芯片申请出口许可。领导层动荡与先进AI芯片、第三方数据中心合规限制叠加，相关算力业务承压，高管回归及合同流失前景仍不确定。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "报道仅明确英伟达个股市值在数日内被蒸发数百亿英镑且周一早盘股价下跌；未提供对六大指数、流动性或宏观需求的传导，不能据此判定整体市场方向。",
+        "evidence": [
+          "Hundreds of billions of pounds have been wiped off the firm's stock market value in recent days",
+          "Its share price was down in early Monday trading."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.92,
+          "reason": "美国进一步限制中国取得AI芯片，并对指定国家最先进芯片及第三国远程计算设置许可和防规避审查，相关芯片厂商销售及合规空间收窄；英伟达领导层风险不能外推至全部电子企业。",
+          "evidence": [
+            "will further restrict China's access to AI chips from firms like Nvidia",
+            "to apply for export licences for the most advanced chips",
+            "remote computing arrangements involving data centers in third countries"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.75,
+          "reason": "指定国家海外数据中心取得最先进芯片需申请许可，远程计算安排亦受防规避审查，相关AI算力运营面临芯片取得受限和合规负担；影响限于相关海外数据中心及算力服务，不覆盖一般软件或IT服务。",
+          "evidence": [
+            "new restrictions on chip exports to overseas data centres",
+            "to apply for export licences for the most advanced chips",
+            "remote computing arrangements involving data centers in third countries"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "英伟达董事会称无意复任黄仁勋；《金融时报》称其与亲信讨论可能回归，是否最终回归及继任安排未定。",
+        "Musk关于至少部分关键交易将流失的说法属于个人判断，未获英伟达或合同证据证实。",
+        "出口规则为临时规则，文章未交代许可证审批标准、执行期限和既有订单处理；相关间谍及芯片转运说法仍在调查。"
+      ],
+      "usage": {
+        "total_tokens": 10244,
+        "prompt_tokens": 2770,
+        "completion_tokens": 7474
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "98db1319029f15c3223e5b88acabcc22abaee8c42df28be08789eed316a275a9",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 8590,
+      "scored_at": "2026-11-17T19:19:13.923204+08:00"
+    },
+    "ff3cb882b1fb39423b6d3cef340e19f31472f076beda12311d74b8270fe1b8bd": {
+      "summary": "Skims因148美元美容日历内容物遭批评而向全部客户退款，显示高定价与低实用性正引发消费者反弹；美容日历仍约占圣诞日历销量15%，但高匹配度与低性价比组合的经营影响可能分化。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "报道聚焦英国美容日历消费反馈及单一品牌退款，未提供上市公司收入、盈利或整体需求变化，无法推定宏观市场影响。",
+        "evidence": [
+          "This week, Kim Kardashian's beauty brand\noffered all of its customers refunds",
+          "around 15% of all advent calendars sold are beauty ones"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.76,
+          "reason": "美容日历若定价偏高、内容与偏好不匹配，会增加退款及促销压力并损害品牌信任；但香水组合可凭低单价和试用价值维持购买，故细分影响分化，Skims个案不足以代表全行业。",
+          "evidence": [
+            "This week, Kim Kardashian's beauty brand\noffered all of its customers refunds",
+            "around 15% of all advent calendars sold are beauty ones",
+            "They are pricey and often only have a few things that I actually want to try or are trending products"
+          ],
+          "sector_code": "801980.SI",
+          "sector_name": "美容护理",
+          "horizon": "today"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.61,
+          "reason": "限量提示与网红营销可拉动美容日历旺季销售，但内容争议后的退款及性价比顾虑可能削弱组合转化并增加清货压力；仅适用于相关零售场景，整体零售影响未知。",
+          "evidence": [
+            "High-profile brands will warn that their calendars risk running out, which may boost early demand",
+            "around 15% of all advent calendars sold are beauty ones",
+            "offered all of its customers refunds"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "未披露Skims退款规模、渠道分担、销量或利润影响，不能外推美容护理全行业。",
+        "报道聚焦英国消费案例，未提供申万美容护理或商贸零售公司的收入占比与经营数据，跨市场映射有限。",
+        "消费者偏好及单个日历案例不能确认复购、价格弹性、库存或利润变化。"
+      ],
+      "usage": {
+        "total_tokens": 6792,
+        "prompt_tokens": 2183,
+        "completion_tokens": 4609
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "ae863efdc308ba9b5c42f5480a7aa3eecdfabf093d2d72a80a18a9c98386a0f8",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 5440,
+      "scored_at": "2026-11-17T19:22:20.926100+08:00"
+    },
+    "fdc75b54d2b3c7225442f03ef4cd50f2a8c52444955076862ba97d48e65e1865": {
+      "summary": "Anthropic拟于11月19日在纳斯达克上市，发行价70—78美元，拟募资最高640亿美元；上半年营收增至162亿美元，税前亏损扩大至807亿美元。融资与需求预期提振AI软件关注，但亏损、回报及安全风险令产业情绪分化。",
+      "tone": "mixed",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.86,
+        "reason": "报道明确提及纳指因美国AI发展与数据中心建设可能放缓而下跌，但未说明风险已传导至中国六大指数；海外公司IPO不能代表A股整体。",
+        "evidence": [
+          "the Nasdaq fell sharply on concerns a Democrat-led Congress could slow development of AI",
+          "wider fears over the billions of dollars being spent on AI and whether it will pay off."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.82,
+          "reason": "Anthropic营收大增与IPO计划显示AI大模型、软件商业化及资本关注上升；但巨额亏损、AI投入回报疑虑和安全风险并存。证据仅覆盖该公司及海外市场，不能外推申万计算机全行业。",
+          "evidence": [
+            "Anthropic's revenues jumped to $16.2bn from $1.1bn in the same period last year.",
+            "However, its pre-tax loss jumped to $80.7bn from $12.9bn.",
+            "wider fears over the billions of dollars being spent on AI and whether it will pay off."
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "上市、发行价、募资额及估值均属于尚未完成的公司计划，最终结果可能变化。",
+        "营收与亏损数据仅涉及Anthropic，不能据此判断申万计算机行业整体需求或盈利。",
+        "文章未提供中国六大指数、A股公司订单或政策落地证据，美国AI监管路径仍不确定。"
+      ],
+      "usage": {
+        "total_tokens": 10364,
+        "prompt_tokens": 1763,
+        "completion_tokens": 8601
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v1",
+      "input_hash": "da9dc66eab447f815d5012e32c504bb918b6790ac438d7ec5917915a5b6b3839",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3535,
+      "scored_at": "2026-11-17T19:23:30.239015+08:00"
     }
   },
-  "failures": {},
+  "failures": {
+    "3362589ffa38f0f7dfb737a001291254efc938ecc7fec64bdb8c7e29d843942e": {
+      "error_code": "invalid_analysis_ungrounded_evidence",
+      "retry_after": "2026-11-18T19:18:24.543112+08:00"
+    },
+    "eba45ba43082784d72afffa8ccea88be3ebc3e10983eb86ec072c9337e6b138e": {
+      "error_code": "invalid_analysis_ungrounded_evidence",
+      "retry_after": "2026-11-18T19:18:24.543112+08:00"
+    }
+  },
   "credential_refresh": "2026-11-17-subscription-key",
   "validation_refresh": "literal-whitespace-v2"
 }
