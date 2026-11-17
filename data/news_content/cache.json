@@ -441,10 +441,15 @@
       "collector_version": "article-html-v1",
       "resolved_url": "https://finance.eastmoney.com/a/202611173933128336.html",
       "publication_verification": {
-        "status": "unknown",
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
         "source_url": "https://finance.eastmoney.com/a/202611173933128336.html",
-        "checked_at": "2026-11-18T00:16:18.922193+08:00"
-      }
+        "checked_at": "2026-11-18T00:27:32.061154+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月17日 21:13"
+      },
+      "published_at": "2026-11-17T21:13:00+08:00",
+      "published_at_verified_at": "2026-11-18T00:27:32.061154+08:00"
     },
     "1074a2b9097eb87f5584a6089f905e772087d9a389fb7f69a0ccf8ccd4b70912": {
       "url": "https://finance.eastmoney.com/a/202609173877521513.html",

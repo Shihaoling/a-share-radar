@@ -1370661,7 +1370661,7 @@
       "source": "东方财富财经要闻",
       "source_id": "eastmoney_finance",
       "url": "https://finance.eastmoney.com/a/202611173933128336.html",
-      "published_at": null,
+      "published_at": "2026-11-17T21:13:00+08:00",
       "first_seen_at": "2026-11-17T21:34:54+08:00",
       "fetched_at": "2026-11-17T21:34:54+08:00",
       "credibility": "trusted",
@@ -1370820,9 +1370820,12 @@
       "full_text_fetched_at": "2026-11-18T00:16:18.922167+08:00",
       "full_text_method": "html:#ContentBody",
       "publication_verification": {
-        "status": "unknown",
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
         "source_url": "https://finance.eastmoney.com/a/202611173933128336.html",
-        "checked_at": "2026-11-18T00:16:18.922193+08:00"
+        "checked_at": "2026-11-18T00:27:32.061154+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月17日 21:13"
       },
       "llm_analysis": {
         "summary": "受访者认为A股核心资产已处底部；沪深300前三季度归母净利同比增约14%，市净率约1.33倍且股权风险溢价处近十年约80%分位。新兴制造和出口增长提供支撑，但房地产贡献率下降，结论仍属个人观点。",
@@ -1370938,7 +1370941,8 @@
         "input_scope": "entire_extracted_article_body",
         "input_characters": 1661,
         "scored_at": "2026-11-18T00:17:38.356095+08:00"
-      }
+      },
+      "published_at_verified_at": "2026-11-18T00:27:32.061154+08:00"
     },
     {
       "id": "5d757f14bd679db7ef35",
@@ -1395912,7 +1395916,7 @@
   ],
   "schema_version": 1,
   "data_mode": "live",
-  "generated_at": "2026-11-18T00:21:24.553316+08:00",
+  "generated_at": "2026-11-18T00:29:14.649066+08:00",
   "market_session": {
     "phase": "post_close",
     "label": "已收盘",
@@ -1986863,10 +1986867,10 @@
   },
   "news_archive_summary": {
     "date": "2026-11-18",
-    "new_versions": 0,
-    "archived_versions": 475,
-    "collection_runs": 2,
-    "last_collection": "2026-11-18T00:21:24.553316+08:00",
+    "new_versions": 1,
+    "archived_versions": 476,
+    "collection_runs": 3,
+    "last_collection": "2026-11-18T00:29:14.649066+08:00",
     "schedule": "每天北京时间09:00—16:00，每30分钟；GitHub任务可能延迟",
     "path": "data/news_archive/20261118.json.gz"
   },
@@ -2005879,8 +2005883,8 @@
         "count": 48
       }
     },
-    "last_run_at": "2026-11-18T00:15:22.456153+08:00",
-    "requests_this_run": 2,
+    "last_run_at": "2026-11-18T00:29:11.163492+08:00",
+    "requests_this_run": 0,
     "note": "申万日线18:30；申万历史分钟19:00—20:00更新，20点后按实际权限分批补齐，原始观察点保留。",
     "service_endpoint": "http://tus.sxdata.top/tu_share/",
     "compensation_at": {
@@ -2012916,11 +2012920,11 @@
     "status": "in_progress",
     "total": 103,
     "body_complete": 1,
-    "publication_verified": 0,
-    "publication_unconfirmed": 1,
+    "publication_verified": 1,
+    "publication_unconfirmed": 0,
     "model_complete": 1,
     "last_run_at": "2026-11-18T00:19:00.217161+08:00",
-    "next_allowed_after": "2026-11-18T00:49:00.217166+08:00",
+    "next_allowed_after": "2026-11-18T00:40:45.989153+08:00",
     "content": {
       "attempted": 2,
       "reused": 0,
