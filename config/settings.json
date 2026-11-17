@@ -61,8 +61,8 @@
   },
   "news_content": {
     "enabled": true,
-    "max_articles_per_run": 20,
-    "max_articles_per_host": 3
+    "max_articles_per_run": 40,
+    "max_articles_per_host": 6
   },
   "minimax": {
     "enabled": true,
@@ -75,5 +75,10 @@
   "primary_minutes": {
     "enabled": true,
     "max_requests": 12
-  }
+  },
+  "news_digest": {
+    "enabled": true,
+    "minimum_interval_minutes": 30
+  },
+  "news_supplement_enabled": true
 }

@@ -119,12 +119,12 @@ class ModelFailure(Exception):
     def __init__(self, code, retry=1800): self.code=code; self.retry=retry; super().__init__(code)
 
 
-def infer_article(article, config, key):
+def infer_article(article, config, key, *, prompt=None, validator=None):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
     spans = evidence_segments(body)
     payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': 'max', 'max_completion_tokens': 32768,
-        'messages': [{'role': 'system', 'content': system_prompt()}, {'role': 'user', 'content': json.dumps({
+        'messages': [{'role': 'system', 'content': prompt or system_prompt()}, {'role': 'user', 'content': json.dumps({
             'title': article.get('title'), 'source': article.get('source'), 'published_at': article.get('published_at'),
             'input_scope': 'entire_extracted_article_body', 'article_segments': [{'id': ref, 'text': text} for ref, text in spans.items()]}, ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
@@ -142,7 +142,7 @@ def infer_article(article, config, key):
         # Do not persist reasoning_content, raw replies or error bodies.
         content = re.sub(r'<think>.*?</think>', '', content, flags=re.S).strip()
         if content.startswith('```'): content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content)
-        analysis = validate_analysis(resolve_evidence_references(json.loads(content), spans), body)
+        analysis = validator(json.loads(content)) if validator else validate_analysis(resolve_evidence_references(json.loads(content), spans), body)
         analysis['usage'] = {k: v for k, v in result.get('usage', {}).items() if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int}
         return analysis
     except urllib.error.HTTPError as e:

@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from hashlib import sha256
 
 
 _PRIVATE_KEYS = {
@@ -118,6 +119,18 @@ def publish_view(dashboard, output_path):
     if isinstance(metadata, dict) and metadata.get("data_checks") == view.get("data_checks"):
         metadata.pop("data_checks", None)
     view["publication"] = {"kind": "browser_view", "daily_history_limit": 252, "training_state_included": False}
+    article_dir=Path(output_path).parent/'articles'
+    for source, public in zip(dashboard.get('news',[]),view.get('news',[])):
+        if source.get('full_text_status')!='complete' or not source.get('full_text'): continue
+        body=source['full_text'];key=sha256((str(source.get('id'))+'\n'+body).encode()).hexdigest()
+        article_dir.mkdir(parents=True,exist_ok=True)
+        article_path=article_dir/(key+'.json')
+        if not article_path.exists():
+            content={'id':source.get('id'),'title':source.get('title'),'source':source.get('source'),'source_url':source.get('url'),
+                'fetched_at':source.get('full_text_fetched_at'),'full_text':body,'characters':len(body),'status':'complete'}
+            article_path.write_text(json.dumps(content,ensure_ascii=False,allow_nan=False)+'\n')
+        public['article_text_url']='./data/articles/'+key+'.json'
+        public['article_text_characters']=len(body)
     payload = json.dumps(view, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n"
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)

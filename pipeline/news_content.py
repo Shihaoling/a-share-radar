@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import socket
+import time
 from urllib.parse import urlsplit, urljoin
 import urllib.request
 
@@ -124,7 +125,7 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
     except (OSError, ValueError): state = {'articles': {}, 'hosts': {}}
     gate_cfg = {'user_agent': 'AshareRadar/1.0 (+https://shihaoling.github.io/a-share-radar/)',
                 'respect_robots': True, 'max_retries': 0, 'min_request_interval_seconds': 4,
-                'request_budget_seconds': 100, 'max_http_requests': 36, 'max_response_bytes': 4000000, 'timeout_seconds': 10}
+                'request_budget_seconds': 180, 'max_http_requests': 64, 'max_response_bytes': 4000000, 'timeout_seconds': 10}
     gate = gate or ArticleGate(gate_cfg)
     enabled = (config or {}).get('network_enabled', False) and cfg.get('enabled', True) and not cfg.get('reuse_only', False)
     attempted = 0; hosts = {}; reused = 0
@@ -156,6 +157,9 @@ def enrich_full_text(dashboard, config=None, now=None, root=None, gate=None):
             except Exception as e:
                 # Fixed error code only. Never retain a request/response/exception
                 # string that could contain credentials or entire source pages.
+                if hasattr(gate, 'started') and (time.monotonic()-gate.started >= gate_cfg['request_budget_seconds'] or gate.count >= gate_cfg['max_http_requests']):
+                    n['full_text_status']='deferred'
+                    break
                 retry = max(1800, int(getattr(e, 'retry_seconds', 86400)))
                 reason = str(e) if type(e) is SourceUnavailable else type(e).__name__
                 allowed = {'article_body_not_found', 'access_challenge', 'restricted_article', 'redirect_not_followed', 'multipage_article_requires_review', 'non_public_address', 'invalid_public_url', 'response_too_large'}

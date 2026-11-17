@@ -351,6 +351,7 @@ def _contains(text, word):
 def _news_item(raw, spec, sectors, config, now, old_by_id):
     title = _text(raw.get("title"), 280)
     url = str(raw.get("url") or "")
+    if url.startswith("http://finance.eastmoney.com/"): url="https"+url[4:]
     if not title or urllib.parse.urlparse(url).scheme not in ("https", "http"):
         return None
     host = (urllib.parse.urlparse(url).hostname or "").lower()
@@ -364,13 +365,17 @@ def _news_item(raw, spec, sectors, config, now, old_by_id):
     sector_ids = [s["id"] for s in sectors if any(_contains(body, word) for word in s.get("keywords", []) if word)]
     relevance = _a_share_relevance(title, _text(raw.get("summary"), 1200), sector_ids, sectors)
     if not relevance:
-        return None
+        if not config.get('retain_all_discovered_news', False): return None
+        relevance = {'market_scope':'unclassified','market_ids':[], 'relevance_note':'已收录，A股关联待全文分析', 'relevance_method':'pending_full_text','relevance_verified':False}
     pos = sorted({word for word in POSITIVE if _contains(title, word)})
     neg = sorted({word for word in NEGATIVE if _contains(title, word)})
     score = len(pos) - len(neg)
     sentiment = "positive" if score > 0 else "negative" if score < 0 else "neutral" if pos or neg else "uncertain"
     nid = hashlib.sha256(url.split("#")[0].encode()).hexdigest()[:20]
     previous = old_by_id.get(nid, {})
+    if not previous:
+        previous=next((n for n in old_by_id.values() if str(n.get('url','')).replace('http://finance.eastmoney.com/','https://finance.eastmoney.com/')==url),{})
+        if previous: nid=previous['id']
     published = _iso(raw.get("published_at")) if raw.get("published_at") else None
     # Lexical matches are topic associations, never a claim of return causality.
     return {"id": nid, "title": title, "source": raw.get("source") or spec["name"], "source_id": spec["id"], "url": url, "published_at": published, "first_seen_at": previous.get("first_seen_at") or now.isoformat(timespec="seconds"), "fetched_at": now.isoformat(timespec="seconds"), "credibility": credibility, "category": spec.get("category", "全球产业"), "sector_ids": sector_ids, "summary": _text(raw.get("summary"), 240), "impact": "uncertain", "transmission": [], "analysis_method": "keyword_rules", "verification": "unverified", "sentiment": sentiment, "sentiment_score": score, "sentiment_method": "lexicon_rules", "sentiment_evidence": {"positive": pos, "negative": neg}, "sentiment_note": "标题词典语气，不代表对A股涨跌的判断；无命中为未知。", "include_in_sentiment": not rumor, "topic_note": "板块关联来自关键词匹配，未验证因果和收益方向", **relevance}
@@ -448,12 +453,12 @@ def fetch_data(previous=None, config=None, now=None):
     news = []
     for item in copy.deepcopy(previous.get("news", [])):
         relevance = _a_share_relevance(item.get("title", ""), item.get("summary", ""), item.get("sector_ids", []), sectors)
-        if relevance or primary_stock_api:
+        if relevance or primary_stock_api or cfg.get('retain_all_discovered_news', False):
             item.update(relevance or {})
             news.append(item)
     history = copy.deepcopy(previous.get("history", {}))
     result = {"market": market, "sectors": sectors, "news": news, "sources": list(states.values()), "history": history, "official_portals": cfg.get("official_portals", [])}
-    for key in ("archived_sectors", "taxonomy", "sentiment_state"):
+    for key in ("archived_sectors", "taxonomy", "sentiment_state", "news_digest"):
         if key in previous:
             result[key] = copy.deepcopy(previous[key])
     for item in sectors:
@@ -638,6 +643,10 @@ def fetch_data(previous=None, config=None, now=None):
             if spec["type"] == "akshare_news":
                 rows = _records(ak_call(["stock_news_cjzc_em"]))
                 raw_news = [{"title": r.get("标题"), "url": r.get("链接"), "summary": r.get("摘要"), "published_at": r.get("发布时间")} for r in rows]
+            elif spec["type"] == "html_news":
+                from .news_discovery import parse_news_links
+                body, _ = gate.get(spec['url'])
+                raw_news = parse_news_links(body, spec['url'])
             elif spec["type"] == "rss":
                 body, _ = gate.get(spec["url"])
                 raw_news = _parse_rss(body)
@@ -661,16 +670,16 @@ def fetch_data(previous=None, config=None, now=None):
             else:
                 raise SourceUnavailable("未知来源适配器类型")
             added = 0
-            for raw in raw_news[:int(cfg["max_news_per_source"])]:
+            for raw in raw_news:
                 item = _news_item(raw, spec, sectors, cfg, now, old_news)
                 if item:
                     if raw.get("gdelt_seen_at"):
                         item["source_seen_at"] = raw["gdelt_seen_at"]
-                    old_news[item["id"]] = item
+                    old_news[item["id"]] = {**old_news.get(item["id"], {}), **item}
                     added += 1
-            success(sid, f"本轮保留 {added} 条A股相关线索；过滤无关联内容，保留原文与时间")
+            success(sid, f"本轮收录来源列表 {added} 条；按URL去重，关联待全文判断")
         except Exception as exc:
             failure(sid, exc)
-    result["news"] = sorted(old_news.values(), key=lambda n: (bool(n.get("published_at")), n.get("published_at") or n.get("first_seen_at") or ""), reverse=True)[:int(cfg["max_news"])]
+    result["news"] = sorted(old_news.values(), key=lambda n: (bool(n.get("published_at")), n.get("published_at") or n.get("first_seen_at") or ""), reverse=True)
     result["collection"] = {"http_requests": market_gate.count + news_gate.count, "market_http_requests": market_gate.count, "news_http_requests": news_gate.count, "akshare_calls": ak_calls, "budget": cfg["max_http_requests"], "budget_seconds": {"market": market_cfg["request_budget_seconds"], "news": news_cfg["request_budget_seconds"]}, "started_at": stamp, "note": "所有匹配板块均参与历史/成分轮转；新闻保留独立请求预算，仅展示A股相关研究线索"}
     return result

@@ -9,8 +9,8 @@
   "max_constituent_calls": 2,
   "history_days": 1000,
   "max_history_rows": 900,
-  "max_news": 150,
-  "max_news_per_source": 25,
+  "max_news": 0,
+  "max_news_per_source": 250,
   "max_response_bytes": 4000000,
   "min_request_interval_seconds": 2,
   "request_budget_seconds": 180,
@@ -59,6 +59,15 @@
     ]
   },
   "feeds": [
+    {
+      "id": "eastmoney_finance",
+      "name": "东方财富财经要闻",
+      "type": "html_news",
+      "url": "https://finance.eastmoney.com/",
+      "credibility": "trusted",
+      "category": "国内财经",
+      "enabled": true
+    },
     {
       "id": "fed",
       "name": "美联储",
@@ -119,7 +128,7 @@
     {
       "id": "eastmoney_breakfast",
       "name": "东方财富财经早餐",
-      "type": "akshare_news",
+      "type": "html_news",
       "url": "https://stock.eastmoney.com/a/czpnc.html",
       "credibility": "trusted",
       "category": "国内财经",
@@ -218,5 +227,6 @@
   "research_scope": "研究主体为中国A股。海外新闻只保留与A股行业、能源、供应链或宏观利率/汇率相关线索，关键词关联不代表影响方向已证实。",
   "request_jitter_seconds": 0.8,
   "history_overlap_days": 7,
-  "request_policy_note": "使用稳定、诚实的AshareRadar User-Agent，不轮换身份或代理；同域最小间隔外增加0–0.8秒随机抖动。请求次数与时长是本系统工程预算，不代表已知所有上游官方配额。尊重robots、403/429和Retry-After。支持日期范围的接口按缓存最后日期前7日增量请求，保留全部已存历史。"
+  "request_policy_note": "使用稳定、诚实的AshareRadar User-Agent，不轮换身份或代理；同域最小间隔外增加0–0.8秒随机抖动。请求次数与时长是本系统工程预算，不代表已知所有上游官方配额。尊重robots、403/429和Retry-After。支持日期范围的接口按缓存最后日期前7日增量请求，保留全部已存历史。",
+  "retain_all_discovered_news": true
 }

@@ -181,8 +181,8 @@ jobs:
           from pathlib import Path
           p=Path('data/news_sentiment/fulltext-report.json')
           old=json.loads(p.read_text()) if p.exists() else {}
-          if old.get('request_id') != 'fulltext-minimax-domestic-v6' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
-              subprocess.run(['python','-m','pipeline.news_update','--reuse-body-cache','--model-limit','1','--model-budget-seconds','180','--article-title','东方财富财经早餐 11月17日'],check=True)
+          if old.get('request_id') != 'news-library-digest-v1' or (not old.get('model', {}).get('key_configured') and bool(os.environ.get('MINIMAX_API_KEY'))):
+              subprocess.run(['python','-m','pipeline.news_update','--reuse-body-cache','--discover','--model-limit','0','--model-budget-seconds','0'],check=True)
           PY
       - name: Install online probability classifier dependencies
         if: github.event_name == 'push' || (inputs.quotes_only != true && github.event.schedule != '5,10,15,20,25,35,40,45,50,55 1-7 * * 1-5' && (!inputs.probe_group || inputs.probe_group == 'none'))
@@ -225,6 +225,7 @@ jobs:
           if [ -d data/equity ]; then git add data/equity; fi
           if [ -d data/news_sentiment ]; then git add data/news_sentiment; fi
           if [ -d data/news_archive ]; then git add data/news_archive; fi
+          if [ -d web/data/articles ]; then git add web/data/articles; fi
           if [ -d data/news_content ]; then git add data/news_content; fi
           if [ -d data/direction_probability ]; then git add data/direction_probability; fi
           if ! git diff --cached --quiet; then

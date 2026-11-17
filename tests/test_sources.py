@@ -48,7 +48,7 @@ class SourceTests(unittest.TestCase):
           <item><title>Unconfirmed semiconductor expansion rumor</title><link>https://example.test/rumor</link></item>
         </channel></rss>'''
         with patch.object(_Gate, 'get', return_value=(rss, {})), patch('pipeline.sources.urllib.request.urlopen', side_effect=AssertionError('unexpected network')):
-            data = fetch_data({}, {'akshare': {'enabled': False}, 'feeds': [feed]}, NOW)
+            data = fetch_data({}, {'akshare': {'enabled': False}, 'feeds': [feed], 'retain_all_discovered_news':False}, NOW)
         by_url = {n['url']: n for n in data['news']}
         self.assertNotIn('https://example.test/sports', by_url)
         self.assertEqual(len(by_url), 3)

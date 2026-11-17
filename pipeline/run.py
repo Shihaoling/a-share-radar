@@ -84,7 +84,7 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
         if config.get('primary_provider') == 'stock_api':
             records = data.get('stock_api_news', [])
             fresh_primary_news = any(r.get('fetched_at') and (now - datetime.fromisoformat(r['fetched_at'])).total_seconds() < 1800 for r in records)
-            secondary = fetch_data(data, {**config, 'secondary_news_allowed': not fresh_primary_news}, now)
+            secondary = fetch_data(data, {**config, 'secondary_news_allowed': not fresh_primary_news or config.get('news_supplement_enabled',False)}, now)
             primary_sources = [s for s in data.get('sources', []) if s.get('provider') == 'stock_api' or s.get('type') == 'intraday']
             data.update(secondary)
             known = {s['id'] for s in data.get('sources', [])}

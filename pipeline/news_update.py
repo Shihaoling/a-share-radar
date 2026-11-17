@@ -11,7 +11,9 @@ def enrich_news(dashboard, config, root=None):
     _merge_stock_api_news(dashboard, shanghai_now())
     dashboard = enrich_full_text(dashboard, config, root=Path(root)/'news_content' if root else None)
     dashboard = enrich_minimax(dashboard, config, root=Path(root)/'news_sentiment' if root else None)
-    return aggregate_entity_sentiment(dashboard, now=shanghai_now(), config=config)
+    dashboard = aggregate_entity_sentiment(dashboard, now=shanghai_now(), config=config)
+    from .news_digest import enrich_digest
+    return enrich_digest(dashboard, config, root=Path(root)/'news_sentiment' if root else None)
 
 
 def main():
@@ -21,6 +23,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--reuse-body-cache', action='store_true')
+    parser.add_argument('--discover', action='store_true')
     parser.add_argument('--model-limit', type=int)
     parser.add_argument('--article-title')
     parser.add_argument('--model-budget-seconds', type=int)
@@ -31,7 +34,13 @@ def main():
     if args.model_limit is not None: cfg['minimax']['max_articles_per_run'] = max(0,min(16,args.model_limit))
     if args.model_budget_seconds is not None: cfg['minimax']['budget_seconds'] = max(0,min(600,args.model_budget_seconds))
     path = ROOT/'web/data/dashboard.json'
-    d = enrich_news(load(path, {}), cfg)
+    d = load(path, {})
+    if args.discover:
+        from .sources import fetch_data
+        discovered = fetch_data(d, {**cfg, 'akshare':{'enabled':False}, 'max_history_calls':0, 'max_constituent_calls':0}, shanghai_now())
+        d['news'] = discovered.get('news', d.get('news',[]))
+        d['sources'] = discovered.get('sources',d.get('sources',[]))
+    d = enrich_news(d, cfg)
     # A small labelled synthetic case checks API availability only when there is
     # no fetched article to exercise the call. Never add this case to live news.
     probe = None
@@ -49,7 +58,7 @@ def main():
     now = shanghai_now(); d['generated_at'] = now.isoformat()
     d['news_archive_summary'] = archive_news(d, now)
     atomic_json(path, d); publish_view(d, ROOT/'web/data/view.json')
-    report = {'completed_at': now.isoformat(), 'request_id': 'fulltext-minimax-domestic-v6',
+    report = {'completed_at': now.isoformat(), 'request_id': 'news-library-digest-v1',
               'content': d.get('news_content_summary'), 'model': d.get('minimax_summary'), 'api_check': probe}
     atomic_json(ROOT/'data/news_sentiment/fulltext-report.json', report)
     print(json.dumps(report, ensure_ascii=False))
