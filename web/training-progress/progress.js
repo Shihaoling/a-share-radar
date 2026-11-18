@@ -28,7 +28,12 @@ function detail(day, receiving) {
     ? `原始 ${fmt(day.returned)} 条 · 同文不同时间 ${fmt((day.occurrences||0)-(day.collected||0))} 条 · 同一秒重复 ${fmt(day.same_time_copies)} 条`
     : day.returned!=null ? `原始 ${fmt(day.returned)} 条 · 时间戳复核中`
     : day.updated ? '采集窗口待核实' : '待发起采集';
-  get('detail').textContent = `${day.day} · ${counts} · 收录 ${fmt(day.collected)} 条 · 已标注 ${fmt(day.labelled)} 条${day.incomplete_windows ? ' · 有未核实窗口' : ''}`;
+  const labels = [
+    day.label_first_pending ? `${fmt(day.label_first_pending)} 条待首次标注` : '',
+    day.label_retry_pending ? `${fmt(day.label_retry_pending)} 条待重试` : '',
+    day.label_review_pending ? `${fmt(day.label_review_pending)} 条待复核` : '',
+  ].filter(Boolean).map(text => ` · ${text}`).join('');
+  get('detail').textContent = `${day.day} · ${counts} · 收录 ${fmt(day.collected)} 条 · 已标注 ${fmt(day.labelled)} 条${labels}${day.incomplete_windows ? ' · 有未核实窗口' : ''}`;
 }
 
 function show(data) {
