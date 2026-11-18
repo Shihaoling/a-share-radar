@@ -7830,6 +7830,766 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 386,
       "scored_at": "2026-11-18T09:21:20.853397+08:00"
+    },
+    "5f786f9a3c3f19216737937c3e213d9c5840f9b6d3caaa62d8c96ddb6c0206ae": {
+      "summary": "英伟达2027财年第三季度营收、盈利均超预期并给出强劲指引，但这是黄仁勋突然卸任CEO后的首份财报，董事会明确无意让其复任，经营景气与管理层不确定性并存。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅涉及英伟达财报及CEO安排，未提供向宏观需求或六大指数传导的明确证据。",
+        "evidence": [
+          "财联社11月18日电，美东时间周二盘后，英伟达披露2027财年第三季度财报，公司营收、盈利双双超出市场预期，同时给出强劲业绩指引。这也是英伟达联合创始人黄仁勋上周突然卸任CEO之后，这家芯片巨头发布的首份财报。在英伟达财报会一开场，英伟达董事会主席哈维·琼斯已经明确表示，董事会无意让黄仁勋回归CEO岗位。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.84,
+          "reason": "已实现的营收盈利超预期及公司前瞻指引传递芯片需求景气信号；CEO突辞且不复任增加治理与执行风险，但属单家公司事件，不能外推全行业。",
+          "evidence": [
+            "财联社11月18日电，美东时间周二盘后，英伟达披露2027财年第三季度财报，公司营收、盈利双双超出市场预期，同时给出强劲业绩指引。这也是英伟达联合创始人黄仁勋上周突然卸任CEO之后，这家芯片巨头发布的首份财报。在英伟达财报会一开场，英伟达董事会主席哈维·琼斯已经明确表示，董事会无意让黄仁勋回归CEO岗位。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "强劲业绩指引属于前瞻信息，实际兑现存在不确定性。",
+        "正文未披露黄仁勋突然卸任原因及后续管理层安排。",
+        "单一芯片公司表现不足以证明电子行业整体需求或盈利同步改善。"
+      ],
+      "usage": {
+        "total_tokens": 2815,
+        "prompt_tokens": 1105,
+        "completion_tokens": 1710
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "8cbaf157eb6bb30b481b6bf792908c4eb81d3b3948ca0666272c1cb3604e2120",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 153,
+      "scored_at": "2026-11-18T09:41:00.747691+08:00"
+    },
+    "f1816850e4d39c2a99705aaf981284cd0d1b29fea21baecc1e40b6720d747fca": {
+      "summary": "英伟达预计第四季度营收1261亿至1339亿美元，高于市场预期，董事会新增1500亿美元股票回购计划，盘后股价涨幅扩大至5%。公司经营预期偏正面，但证据不足以外推至全行业或宏观。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅涉及英伟达公司级业绩指引、回购及股价反应，未提供向宏观需求、盈利或六大指数传导的证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达股价盘后涨幅扩大至5%，此前公司预计第四季度营收1261亿至1339亿美元，高于市场预期；董事会批准增加1500亿美元股票回购计划。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.78,
+          "reason": "英伟达营收指引高于预期，对电子行业半导体环节的经营预期形成正向信号；但仅为单一公司且未披露驱动，不能外推全行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达股价盘后涨幅扩大至5%，此前公司预计第四季度营收1261亿至1339亿美元，高于市场预期；董事会批准增加1500亿美元股票回购计划。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "next_session"
+        }
+      ],
+      "uncertainties": [
+        "第四季度营收为公司预计值，实际业绩及超预期原因尚未披露",
+        "股票回购计划的具体执行期限、价格与实际规模未披露",
+        "材料无法证明公司事件已传导至电子全行业或宏观经济"
+      ],
+      "usage": {
+        "total_tokens": 2789,
+        "prompt_tokens": 1090,
+        "completion_tokens": 1699
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4f9baddaad7d80944e741645bacdccfeb33d0e17f960f3e6b034d7a1491f7f9b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 80,
+      "scored_at": "2026-11-18T09:41:15.428798+08:00"
+    },
+    "6b07dc981d5f3723a253ad3446075e49a93f4f08586096d6cd9a40bf4adbeb94": {
+      "summary": "百度、京东、腾讯、阿里于11月16日至19日进入季度业绩披露窗口，港股科技关注点转向盈利、AI资本开支回报与现金流；恒指上周跌3.45%，板块修复仍待验证。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "仅披露财报日程、指数表现和资金流向，未提供盈利、AI投入回报或明确宏观传导，无法判断市场方向。",
+        "evidence": [
+          "财联社11月18日电，本周（11月16日至19日），港股互联网龙头进入密集财报披露窗口，百度集团-W、京东集团-SW、腾讯控股、阿里巴巴-W将陆续交出最新季度业绩单。Wind数据显示，恒生指数上周累计下跌3.45%，市场情绪一度承压，但南向资金却逆势转为净买入118.68亿港元，在调整过程中展现出一定的承接力度。分析人士认为，港股科技板块估值经历重新消化后，本轮财报季市场的关注重心已从单纯的收入增速转向盈利改善的能见度、AI资本开支的回报周期以及现金流的安全边际。",
+          "科技股能否借此契机展开进一步修复，仍需基本面给出扎实验证。 （中证报）"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "港股互联网龙头进入财报窗口，但尚无收入、利润、AI资本开支及现金流结果，无法判定传媒细分经营受益或受损。",
+          "evidence": [
+            "财联社11月18日电，本周（11月16日至19日），港股互联网龙头进入密集财报披露窗口，百度集团-W、京东集团-SW、腾讯控股、阿里巴巴-W将陆续交出最新季度业绩单。Wind数据显示，恒生指数上周累计下跌3.45%，市场情绪一度承压，但南向资金却逆势转为净买入118.68亿港元，在调整过程中展现出一定的承接力度。分析人士认为，港股科技板块估值经历重新消化后，本轮财报季市场的关注重心已从单纯的收入增速转向盈利改善的能见度、AI资本开支的回报周期以及现金流的安全边际。",
+            "科技股能否借此契机展开进一步修复，仍需基本面给出扎实验证。 （中证报）"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "四家公司最新季度业绩结果尚未披露。",
+        "AI资本开支的规模、回报周期及现金流安全边际未明确。",
+        "板块修复能否成立仍取决于后续基本面验证。"
+      ],
+      "usage": {
+        "total_tokens": 3753,
+        "prompt_tokens": 1183,
+        "completion_tokens": 2570
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "59b8c60beadc3d56d946a788ae085bd6096ecb3fe444ecbc0da667e718260fcf",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 269,
+      "scored_at": "2026-11-18T09:42:39.362414+08:00"
+    },
+    "2be589ba24dd812683c5aac7c2f55031bebbbbae057446835c106addb5bdda91": {
+      "summary": "多家美股机构披露2026年三季度持仓，拼多多、阿里巴巴、携程、BOSS直聘等中概股获不同程度增持，英伟达则出现机构减持与加仓并存。材料仅反映持仓调仓，未提供产业经营变化或宏观传导证据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "仅为美股机构持仓披露，未涉及宏观变量、指数资金流或A股经营传导，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，近日，美股投资机构陆续披露2026年三季度持仓情况，伯克希尔·哈撒韦、桥水、文艺复兴科技、景林、高瓴、高毅资产、段永平旗下H&H等知名机构的调仓动态相继浮出水面。整体来看，中概股成为多家机构共同关注的方向，拼多多、阿里巴巴、携程、BOSS直聘等获得不同程度的增持。科技股操作则明显分化：一边是大力减持英伟达的机构名单不断拉长，另一边仍有机构逆势加仓；同时，资金也在大型科技公司与中小型公司之间重新布局。 （中证报）"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "报道仅涉及拼多多、阿里巴巴的机构持仓变化，未披露零售需求、平台收入、竞争或成本变化，不能外推A股零售经营影响。",
+          "evidence": [
+            "财联社11月18日电，近日，美股投资机构陆续披露2026年三季度持仓情况，伯克希尔·哈撒韦、桥水、文艺复兴科技、景林、高瓴、高毅资产、段永平旗下H&H等知名机构的调仓动态相继浮出水面。整体来看，中概股成为多家机构共同关注的方向，拼多多、阿里巴巴、携程、BOSS直聘等获得不同程度的增持。科技股操作则明显分化：一边是大力减持英伟达的机构名单不断拉长，另一边仍有机构逆势加仓；同时，资金也在大型科技公司与中小型公司之间重新布局。 （中证报）"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "携程、BOSS直聘获增持仅是资本市场配置信息，缺少订单、客流、招聘需求及盈利数据，无法判断社会服务经营方向。",
+          "evidence": [
+            "财联社11月18日电，近日，美股投资机构陆续披露2026年三季度持仓情况，伯克希尔·哈撒韦、桥水、文艺复兴科技、景林、高瓴、高毅资产、段永平旗下H&H等知名机构的调仓动态相继浮出水面。整体来看，中概股成为多家机构共同关注的方向，拼多多、阿里巴巴、携程、BOSS直聘等获得不同程度的增持。科技股操作则明显分化：一边是大力减持英伟达的机构名单不断拉长，另一边仍有机构逆势加仓；同时，资金也在大型科技公司与中小型公司之间重新布局。 （中证报）"
+          ],
+          "sector_code": "801210.SI",
+          "sector_name": "社会服务",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "机构对英伟达减持与加仓并存属于持仓分化，未披露产品需求、供应链订单或成本变化，不能推断电子行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，近日，美股投资机构陆续披露2026年三季度持仓情况，伯克希尔·哈撒韦、桥水、文艺复兴科技、景林、高瓴、高毅资产、段永平旗下H&H等知名机构的调仓动态相继浮出水面。整体来看，中概股成为多家机构共同关注的方向，拼多多、阿里巴巴、携程、BOSS直聘等获得不同程度的增持。科技股操作则明显分化：一边是大力减持英伟达的机构名单不断拉长，另一边仍有机构逆势加仓；同时，资金也在大型科技公司与中小型公司之间重新布局。 （中证报）"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "披露内容为2026年三季度持仓，不能确认报道时点的实际持仓仍与三季度一致。",
+        "未披露增持或减持的金额、价格及组合权重，无法判断资金规模与持续性。",
+        "缺少公司经营数据和明确宏观传导，无法将中概股持仓变化映射为A股行业盈利变化。"
+      ],
+      "usage": {
+        "total_tokens": 3979,
+        "prompt_tokens": 1148,
+        "completion_tokens": 2831
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "ddc8ad1de829118b6f4cb43eb1b58333d995f26a99ef936e7d16fdbd1dcbcb85",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 218,
+      "scored_at": "2026-11-18T09:43:31.684659+08:00"
+    },
+    "80335b340ae33ae7b729e41c3a504322c4628fef0148606e09d49a5ccdeafe69": {
+      "summary": "美股股指期货集体高开，纳指期货涨1.38%、标普500指数期货涨0.75%，英伟达盘后涨超4%；海外风险偏好短线偏强，但缺乏向A股基本面的明确传导。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "正文仅报告美股期货和英伟达盘后上涨，未说明宏观催化及其对A股盈利、流动性或风险偏好的传导。",
+        "evidence": [
+          "财联社11月18日电，美股股指期货集体高开，其中纳指期货涨1.38%，标普500指数期货涨0.75%。英伟达股价盘后涨超4%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "仅有英伟达单家公司股价表现，未披露行业订单、需求、利润或政策变化，不能据此认定电子行业经营受益。",
+          "evidence": [
+            "财联社11月18日电，美股股指期货集体高开，其中纳指期货涨1.38%，标普500指数期货涨0.75%。英伟达股价盘后涨超4%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "美股期货高开及英伟达上涨的原因未说明",
+        "单家公司盘后表现能否持续未知",
+        "对A股及电子行业基本面的传导未获正文证实"
+      ],
+      "usage": {
+        "total_tokens": 2676,
+        "prompt_tokens": 1084,
+        "completion_tokens": 1592
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "1c7befd10bd60bea9b5072b3792f8ee4cd6e092bd8698ac2f40622b6753d800d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 63,
+      "scored_at": "2026-11-18T09:44:00.562705+08:00"
+    },
+    "c38d81a1bf34ddaf1ad116b63a0be6ed477dc0f822fa01d0508d5cceb61b3b5a": {
+      "summary": "纳斯达克100指数ETF（QQQ）盘中一度上涨1.3%，但未说明涨幅持续性，也未提供对A股行业经营的明确传导。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露QQQ一度上涨1.3%，缺少明确宏观传导、持续时间及对A股指数的影响依据。",
+        "evidence": [
+          "财联社11月18日电，纳斯达克100指数ETF (QQQ)一度上涨1.3%。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "盘中涨幅的持续性及最终收盘表现不明",
+        "未提供上涨驱动因素",
+        "未提供对A股行业经营或盈利的明确传导"
+      ],
+      "usage": {
+        "total_tokens": 1695,
+        "prompt_tokens": 1044,
+        "completion_tokens": 651
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "78088db671bd7a6c1d2ffe975f12d4bc8104d594b7f9053a71048ea906ffdc4d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 38,
+      "scored_at": "2026-11-18T09:44:07.539685+08:00"
+    },
+    "7d3c476512e9e79f8e38057f2e074894bff144f3765bae942f69c2b8b713f34a": {
+      "summary": "戴尔、惠普企业和英特尔盘后分别上涨5%、4%和1.9%，相关个股交易情绪偏强，但缺乏经营数据，尚不能判断对科技硬件行业或大盘的影响。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅有三家公司个股盘后涨幅，未披露影响六大指数的宏观因素或行业基本面变化。",
+        "evidence": [
+          "财联社11月18日电，戴尔股价盘后上涨5%，惠普企业涨4%，英特尔涨1.9%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "英特尔等个股上涨仅反映盘后交易表现，缺少订单、收入、成本及供需数据，不能外推电子行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，戴尔股价盘后上涨5%，惠普企业涨4%，英特尔涨1.9%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "戴尔和惠普企业的股价上涨未伴随经营或行业信息，无法据此判断计算机行业盈利与需求变化。",
+          "evidence": [
+            "财联社11月18日电，戴尔股价盘后上涨5%，惠普企业涨4%，英特尔涨1.9%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明三家公司的股价上涨原因",
+        "未提供任何经营、财务或行业供需变化",
+        "无法据此推断板块及大盘方向"
+      ],
+      "usage": {
+        "total_tokens": 2440,
+        "prompt_tokens": 1050,
+        "completion_tokens": 1390
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "2a0ba01c87a7b6aace95995c9bdf84fc873c222a31ddd011ae25ae2931e143e6",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 39,
+      "scored_at": "2026-11-18T09:44:21.236521+08:00"
+    },
+    "72f46bd1e678e3aac07ed46f96056c9045e3822950f98ea19b9bde559eaac243": {
+      "summary": "20余家基金公司因监管要求临近过渡期，密集校准旗下基金风险等级并完善划分体系，以落实投资者适当性管理；材料未显示对销售、利润或市场走势的明确影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "正文仅披露基金公司风险等级校准及系统改造进展，未提供宏观传导、销售变化或市场影响证据。",
+        "evidence": [
+          "财联社11月18日电，校准基金产品风险等级，是为了落实投资者适当性管理，让基金产品销售给合适的投资者。近期，20余家基金公司密集发布公告，调整旗下基金风险等级。今年6月，监管部门要求基金公司在6个月内，按照相关要求完善基金风险等级划分体系、完成相关系统改造。随着过渡窗口期临近，基金公司近期正密集校准产品风险等级。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.86,
+          "reason": "基金公司调整基金风险等级和系统，有助于执行投资者适当性要求，但可能增加合规投入；正文未披露具体成本、销售或盈利变化。",
+          "evidence": [
+            "财联社11月18日电，校准基金产品风险等级，是为了落实投资者适当性管理，让基金产品销售给合适的投资者。近期，20余家基金公司密集发布公告，调整旗下基金风险等级。今年6月，监管部门要求基金公司在6个月内，按照相关要求完善基金风险等级划分体系、完成相关系统改造。随着过渡窗口期临近，基金公司近期正密集校准产品风险等级。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "未说明此次调整覆盖的基金数量、具体产品及风险等级变化。",
+        "未披露系统改造投入、合规成本及其对基金公司利润的影响。",
+        "过渡窗口的具体截止时间及后续监管执行安排未在正文中明确。"
+      ],
+      "usage": {
+        "total_tokens": 1893,
+        "prompt_tokens": 1089,
+        "completion_tokens": 804
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "9e123b96337f36fff2fa035a82a7e3cb090b4b5a7e283bdd36415e23eaa3d6f0",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 157,
+      "scored_at": "2026-11-18T09:44:33.352962+08:00"
+    },
+    "597934621b40b908df3ab4ade3b988329195310c44947eb02851ffd14995dd6c": {
+      "summary": "英伟达盘后涨幅扩大至4%，反映其盘后股价走强；材料未提供行业基本面或宏观传导证据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅有单家公司盘后股价表现，无法据此推断整体市场或六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，英伟达盘后涨幅扩大至4%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "仅披露英伟达单家公司股价上涨，未提供产品、订单、供应链或行业需求变化，无法确认对电子行业经营及盈利的传导。",
+          "evidence": [
+            "财联社11月18日电，英伟达盘后涨幅扩大至4%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明此次盘后涨幅的催化因素、成交量及持续性。",
+        "缺乏对电子产业链需求、订单、成本或盈利影响的证据。",
+        "单家公司股价表现不能代表电子行业整体变化。"
+      ],
+      "usage": {
+        "total_tokens": 2031,
+        "prompt_tokens": 1032,
+        "completion_tokens": 999
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3757e7617d889aed144e9d84e7310d892b992c9a23c3281a63962c449212632b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 24,
+      "scored_at": "2026-11-18T09:44:41.709462+08:00"
+    },
+    "b91c0aa301ec0843f765a3bab8df1f9771eb9a8ac3362831d36970cfa30f6604": {
+      "summary": "英伟达希望尽快任命正式CEO，但董事会强调不因赶时间而降低人选标准；继任人选和时间表仍未确定，未披露经营或财务变化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "仅涉及单一公司CEO继任表态，未披露行业需求、成本、盈利或政策传导，无法判断整体市场影响。",
+        "evidence": [
+          "财联社11月18日电，英伟达董事会主席哈维·琼斯称，我们希望尽快任命正式首席执行官，但不会为了赶时间而仓促决定，必须先找到最合适的人选。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.35,
+          "reason": "英伟达正式CEO人选及任命时间未定，报道未提供订单、业绩或战略变化，无法判断电子行业整体经营影响。",
+          "evidence": [
+            "财联社11月18日电，英伟达董事会主席哈维·琼斯称，我们希望尽快任命正式首席执行官，但不会为了赶时间而仓促决定，必须先找到最合适的人选。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正式CEO人选尚未确定",
+        "具体任命时间尚不明确",
+        "未披露继任安排可能带来的经营或财务影响"
+      ],
+      "usage": {
+        "total_tokens": 2252,
+        "prompt_tokens": 1079,
+        "completion_tokens": 1173
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "9de0448f40746ec4b800222185b42a7d096e7b36795b8fccee2712bd34c2c30d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 68,
+      "scored_at": "2026-11-18T09:45:11.715215+08:00"
+    },
+    "14c02b88ad20fec944775e44c5aaa04317943b3b67e15fbfc36e2032c7016fc6": {
+      "summary": "隔夜美股三大指数收跌，英伟达三季度及数据中心收入、下一季指引均超预期并上调2028年增长预期；高美债收益率与加息预期压制风险偏好，AI算力需求仍强。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.86,
+        "reason": "美股三大指数收跌、标普创9月以来最长连跌，且10年期美债收益率处于5%以上的时长接近纪录、交易员完全计入12月加息，高利率与紧缩预期压制广谱风险偏好。",
+        "evidence": [
+          "1、美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，为连续第四个交易日下跌，创9月以来最长连跌。纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。 2、英伟达第三季度营收1158亿美元，环比增长20.3%，同比增长103.1%，预期1093.3亿美元。",
+          "10、纽约联储主席威廉姆斯表示，通胀“顽固地高企”，要让通胀回到2%仍有更多工作要做。但他同时指出，不认为当前形势需要采取重大行动。 11、美国10年期国债收益率位于5%以上的时间正在接近2007年以来的最长。交易员目前已完全计入美联储在12月9日会议上加息25个基点的可能性，并预计到2027年9月累计收紧幅度将超过80个基点。 12、俄总统普京、韩总统李在明、马来西亚总理安瓦尔等多国领导人凌晨抵达深圳，将出席亚太经合组织第三十三次领导人非正式会议。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.91,
+          "reason": "英伟达数据中心收入同比增110%、下一季营收指引高于预期，云业务积压订单达2.5万亿美元；SpaceX拟融资采购AI芯片，增强AI芯片需求，但2028年增长仍是管理层预测。",
+          "evidence": [
+            "1、美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，为连续第四个交易日下跌，创9月以来最长连跌。纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。 2、英伟达第三季度营收1158亿美元，环比增长20.3%，同比增长103.1%，预期1093.3亿美元。",
+            "其中数据中心营收1076亿美元，环比增长21%，同比增长110%，预期1018.7亿美元。调整后毛利率74.9%。英伟达预计第四季度营收1261亿至1339亿美元，预期1252.5亿美元。英伟达预计第四季度GAAP和非GAAP毛利率在71.0%至72.0%之间。英伟达董事会批准增加1500亿美元股票回购计划，剩余股票回购授权额度为2273亿美元。 3、英伟达首席财务官上调2028年营收增长预期，预计2028财年营收将增长75%，云业务积压订单达2.5万亿美元。",
+            "4、SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购AI芯片提供资金。 5、SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，SpaceX明年或成为最大的AI基础设施参与者。 6、美国知名做空机构浑水宣布做空英伟达。 7、知名IT分析师郭明錤称，由于英伟达继任CEO的不确定，谷歌将与主要客户讨论2028年以后的TPU供应计划。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.73,
+          "reason": "OpenAI推出按Token定价的新模型，Meta上线AI智能体并提供订阅，叠加模型厂商算力需求预期上升，指向AI应用商业化与算力需求；对A股订单传导尚未量化。",
+          "evidence": [
+            "4、SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购AI芯片提供资金。 5、SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，SpaceX明年或成为最大的AI基础设施参与者。 6、美国知名做空机构浑水宣布做空英伟达。 7、知名IT分析师郭明錤称，由于英伟达继任CEO的不确定，谷歌将与主要客户讨论2028年以后的TPU供应计划。",
+            "他预计，OpenAI在2028年和2029年将寻求购买约1200万个TPU，而Anthropic则需约1400万个。 8、OpenAI推出新的Astra AI模型GPT-6.2 Astra，定价为每百万Token输入8美元、缓存输入0.40美元、输出40美元。 9、Meta旗下AI智能体Muse已在澳大利亚的iOS、Android、Muse.ai和Mac应用上线，并将很快登陆AI眼镜。Muse免费提供，另有可选订阅方案。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.46,
+          "reason": "Meta推进AI智能体及AI眼镜，Google讨论远期TPU供应，显示平台AI产品继续扩展；但未披露收入、订单或A股传媒公司的受益传导，无法判断行业方向。",
+          "evidence": [
+            "4、SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购AI芯片提供资金。 5、SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，SpaceX明年或成为最大的AI基础设施参与者。 6、美国知名做空机构浑水宣布做空英伟达。 7、知名IT分析师郭明錤称，由于英伟达继任CEO的不确定，谷歌将与主要客户讨论2028年以后的TPU供应计划。",
+            "他预计，OpenAI在2028年和2029年将寻求购买约1200万个TPU，而Anthropic则需约1400万个。 8、OpenAI推出新的Astra AI模型GPT-6.2 Astra，定价为每百万Token输入8美元、缓存输入0.40美元、输出40美元。 9、Meta旗下AI智能体Muse已在澳大利亚的iOS、Android、Muse.ai和Mac应用上线，并将很快登陆AI眼镜。Muse免费提供，另有可选订阅方案。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.48,
+          "reason": "SpaceX拟发债采购AI芯片并称可能成为AI基础设施参与者，但融资主要投向算力，未给出通信设备、运营商订单或A股产业链传导，行业方向不明。",
+          "evidence": [
+            "4、SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购AI芯片提供资金。 5、SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，SpaceX明年或成为最大的AI基础设施参与者。 6、美国知名做空机构浑水宣布做空英伟达。 7、知名IT分析师郭明錤称，由于英伟达继任CEO的不确定，谷歌将与主要客户讨论2028年以后的TPU供应计划。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "英伟达2028年增长75%、TPU采购量、SpaceX融资及其AI基础设施地位均属预测、计划或可能事项，尚非已实现经营结果。",
+        "浑水做空仅是机构公告且原文无核实结论；英伟达继任CEO不确定性可能扰动2028年后的客户供应讨论。",
+        "12月加息及2027年累计收紧幅度是交易员定价而非美联储决定；海外AI需求向A股公司订单的传导尚无证据。"
+      ],
+      "usage": {
+        "total_tokens": 9503,
+        "prompt_tokens": 1709,
+        "completion_tokens": 7794
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0a84a1d774a4a0392ff1c0ece3c4c04d3cf3c059cf2977183067b4e247ca732c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1081,
+      "scored_at": "2026-11-18T09:46:30.082944+08:00"
+    },
+    "fcc4ee9a844ca4a58869e83ee7cf43189e352f4e5adcd244a127f7a33ea2c463": {
+      "summary": "英伟达临时CEO克雷斯称，各代GPU租赁价格全面上涨，可能抬升使用方成本并改善算力租赁方定价，但尚不能确认英伟达销售及相关企业盈利变化。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "单一公司的GPU租赁价格变化缺少向六大指数盈利或估值传导的明确证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达临时CEO克雷斯称，英伟达各代GPU租赁价格全面上涨。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.72,
+          "reason": "英伟达属于电子行业，但GPU租赁价格并非其芯片售价或租赁收入，文章未披露销量、订单及利润影响。",
+          "evidence": [
+            "财联社11月18日电，英伟达临时CEO克雷斯称，英伟达各代GPU租赁价格全面上涨。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.7,
+          "reason": "算力租赁服务方可受益于更高租赁收入，GPU租用方成本可能上升；文章未说明具体主体、交易量及成本传导能力。",
+          "evidence": [
+            "财联社11月18日电，英伟达临时CEO克雷斯称，英伟达各代GPU租赁价格全面上涨。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "GPU租赁价格上涨的持续时间、成交量及供需驱动未披露。",
+        "租赁价格与英伟达芯片售价、销售收入及利润之间没有直接证据。",
+        "算力租赁方与GPU使用方的具体行业覆盖及成本转嫁能力不明。"
+      ],
+      "usage": {
+        "total_tokens": 3096,
+        "prompt_tokens": 1050,
+        "completion_tokens": 2046
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "e49730b014061aab71dae962a3736df83d055379b3139d1bcab19bfb29dd741f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 41,
+      "scored_at": "2026-11-18T09:46:52.474211+08:00"
+    },
+    "22b2f9bac3960be7583111e8f0e642c8fca9a44fe8545b1c8b9bc53e9ca1d64f": {
+      "summary": "英伟达临时CEO称，Hopper GPU多年期协议重新签约价最高为原价两倍，B300推出后涨价超60%。涨价强化其AI GPU定价表现，也可能抬高下游算力采购成本。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露英伟达两款GPU价格变化，未给出对总量、通胀或主要指数的明确宏观传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达临时CEO表示，根据多年期协议，Hopper GPU的重新签约价格最高达到原价的两倍，而B300自推出以来价格上涨超过60%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.76,
+          "reason": "Hopper重新签约价最高翻倍、B300涨超60%，直接提升AI GPU厂商单价及潜在收入弹性；但仅是英伟达个案，不能外推至电子全行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达临时CEO表示，根据多年期协议，Hopper GPU的重新签约价格最高达到原价的两倍，而B300自推出以来价格上涨超过60%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "涨价原因、销量变化及持续期限未披露。",
+        "仅涉及英伟达，不能据此判断电子行业整体需求或盈利。",
+        "未提供下游采购成本、订单及利润敏感度，无法量化受损方。"
+      ],
+      "usage": {
+        "total_tokens": 3860,
+        "prompt_tokens": 1078,
+        "completion_tokens": 2782
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "53fbc44d39002af3eb7441a590308c6d19810a7674be784f82fad7ffb215c205",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 77,
+      "scored_at": "2026-11-18T09:47:15.256601+08:00"
+    },
+    "835e2a9cb60a854e08a3b1c7dfe4bdb6b1694cd9e94ab76e15112d73571eb67f": {
+      "summary": "英伟达称云产业未交订单由三个月前2万亿美元增至2.5万亿美元，强化算力硬件需求预期，但订单口径、兑现节奏及利润贡献未披露。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.3,
+        "reason": "订单增长指向算力需求，但原文仅披露行业订单总额，未说明订单构成、交付节奏及对宽基指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达称云产业的未交订单目前达到2.5万亿美元，较仅三个月前的2万亿美元增加。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.72,
+          "reason": "未交订单三个月内由2万亿美元增至2.5万亿美元→算力硬件采购需求及订单能见度提升→电子行业需求预期改善；但订单口径和兑现情况未披露。",
+          "evidence": [
+            "财联社11月18日电，英伟达称云产业的未交订单目前达到2.5万亿美元，较仅三个月前的2万亿美元增加。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "“云产业未交订单”的统计范围及是否主要指英伟达订单不明",
+        "未交订单不等于已确认收入，交付、取消及延期风险未披露",
+        "未提供订单覆盖企业、兑现周期和利润贡献"
+      ],
+      "usage": {
+        "total_tokens": 2526,
+        "prompt_tokens": 1062,
+        "completion_tokens": 1464
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "fcda50f64cd1070d5e4d00d640cf6af18bc78dd9a5a537bff49cf183f775c32d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 50,
+      "scored_at": "2026-11-18T09:47:32.449068+08:00"
+    },
+    "008ada0b451185cb0b10140cd152fff743ae272bbd44e5da40d28fbb5fa996ae": {
+      "summary": "英伟达CFO将2028财年营收增速预期上调至75%，释放更乐观的业务扩张信号；但这是单家公司预测，尚不能外推至行业或宏观增长。",
+      "tone": "positive",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "单一公司管理层营收预测缺乏对宏观增长、通胀或六大指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达首席财务官上调2028年营收增长预期，预计2028财年营收将增长75%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.78,
+          "reason": "英伟达上调自身2028财年营收增速预期，直接指向未来收入与业务扩张；但仅为单家公司预测，不能证明电子行业整体需求同步改善。",
+          "evidence": [
+            "财联社11月18日电，英伟达首席财务官上调2028年营收增长预期，预计2028财年营收将增长75%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "75%增长的基数、计算口径及驱动假设未披露",
+        "2028财年营收增速属于预测，实际结果可能偏离",
+        "单一公司指引不能代表电子行业或宏观需求"
+      ],
+      "usage": {
+        "total_tokens": 2494,
+        "prompt_tokens": 1058,
+        "completion_tokens": 1436
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "f8ce7fa44b13b0ac86a9a3a19aceda769fc715acd6a581c753f838e4e5d9f93e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 50,
+      "scored_at": "2026-11-18T09:47:49.684342+08:00"
+    },
+    "ed31074e673c9879f4fa28dd3da637f8916138e3dbfbdd87e98e36c902e1450b": {
+      "summary": "英伟达董事会主席称公司不打算让黄仁勋复职，属于核心管理层人事安排。材料未披露经营、订单或财务后果，单一公司事件暂不足以判断电子行业影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.97,
+        "reason": "仅披露单一公司的核心管理层意向，没有可验证的宏观需求、成本、盈利或风险传导路径。",
+        "evidence": [
+          "财联社11月18日电，英伟达董事会主席表示，公司不打算让黄仁勋复职。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "事件仅涉及英伟达管理层安排，虽可能引发治理与经营连续性关注，但无业务或财务影响证据，不能外推至电子行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达董事会主席表示，公司不打算让黄仁勋复职。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明黄仁勋不复职的具体安排、时间及原因。",
+        "未披露继任安排及其对治理、业务和财务的影响。",
+        "单一公司事件不能代表半导体或电子行业整体。"
+      ],
+      "usage": {
+        "total_tokens": 2972,
+        "prompt_tokens": 1044,
+        "completion_tokens": 1928
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3b502bc879ef624fdf8b038d6e98a872e6fa8301c9da600a7635ceb2f5406e3b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 34,
+      "scored_at": "2026-11-18T09:49:01.296974+08:00"
     }
   },
   "failures": {

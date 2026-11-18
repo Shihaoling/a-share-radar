@@ -2111,6 +2111,48 @@
         "method": ".infos > .item",
         "source_value": "2026年10月13日 06:00"
       }
+    },
+    "6d5f94b54e3e2bf7acf1f26b539d4a484c96f52c304ac28100dc02edaac8d740": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68364",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "11274263ec4ec7aa15ad19bc3b71ece66cc4650da3a9511831fe2e39c2e09f69": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68344",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "9b574b9b6d9a12cd61d4433ddf1542f783be41bcff19e693e9bcd5d60da9b8c2": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68325",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "207bf0c6d4cca97565ea6563d4f90ce6f60749f26513653a311d57d3c405efa1": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68324",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "109f7d64c8d9628cdb1057d1206ae1237bf147230fc0a79f3885fb959b2a5e90": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68264",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "73998ce676150f5cf0a3c1ae8c88c083e3bf3f95fdc9535c2bf5c53864fc08e9": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68245",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T09:38:39.766567+08:00",
+      "retry_after": "2026-11-19T09:38:39.766567+08:00"
     }
   },
   "hosts": {

@@ -270,15 +270,27 @@
         "error_code": "rate_limited",
         "provider_code": 429,
         "provider_reason": "rate_limited"
+      },
+      {
+        "api": "cyq_perf",
+        "params": {
+          "ts_code": "600519.SH",
+          "trade_date": "20261117"
+        },
+        "channel": "backup15000",
+        "status": "unavailable",
+        "error_code": "rate_limited",
+        "provider_code": 429,
+        "provider_reason": "rate_limited"
       }
     ],
-    "cursor": 16,
+    "cursor": 17,
     "status": "partial",
-    "checked_at": "2026-11-18T09:25:30.888193+08:00",
+    "checked_at": "2026-11-18T09:50:03.036857+08:00",
     "credential_match": true,
-    "next_allowed_after": "2026-11-18T09:26:30.888155+08:00",
+    "next_allowed_after": "2026-11-18T09:51:03.036822+08:00",
     "planned_apis": 23,
-    "pending_apis": 7,
+    "pending_apis": 6,
     "minute_entities_completed": 4,
     "migration_completed": "2026-11-17T23:13:52.005804+08:00",
     "deferred_api": "news",
