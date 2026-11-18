@@ -17942,6 +17942,900 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 486,
       "scored_at": "2026-11-18T15:21:37.489003+08:00"
+    },
+    "4968313d091041e9f9c56f0c486963ab55f8f210f22ecccdf38ac2b919ec098b": {
+      "summary": "截至11月12日，过去三个月固收+期权产品近四成负收益、机构表现分化；文章认为竞争逻辑转向多资产分散、回撤控制和精细衍生品策略。",
+      "tone": "mixed",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "文章仅复盘理财产品收益并讨论策略，未证明相关产品或资金变化对整体市场产生净影响。",
+        "evidence": [
+          "南财理财通数据显示，截至2026年11月12日，理财公司共存续310只公募“固收+期权”产品（按产品登记编码统计）。近三月区间净值增长率的中位数为0.13%，均值仅为0.02%，产品收益首尾分化，区间从-1.73%至+3.69%。\n值得注意的是，其中有124只产品录得负收益，占比40%。\n进一步剖析这124只负收益产品可以发现，其挂钩的期权标的多为大类资产指数，其中又以钱潮指数居多。此前红极一时的钱潮指数在本轮市场行情下弹性欠佳。",
+          "受近期市场整体下行拖累，该产品净值出现明显下滑，从10月30日的1.0162跌至11月13日的1.0075，约半个月时间净值下滑0.86%，后续收益有待观察。\n整体来看，在权益单边杀跌的行情中，单纯暴露方向性敞口的产品大概率会受损，而挂钩多资产策略并利用风险平价模型分散风险的产品，则展现出了较强的韧性。此外，期权的观察日设计尤为关键，区间内的过山车行情对期权产品并不友好。\n在单边牛市渐行渐远的背景下，“固收+期权”的竞争逻辑正在发生逆转。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.78,
+          "reason": "近四成产品负收益及部分理财子均值告负，或压制银行理财销售与管理规模；更优结构设计和多资产配置有助提升产品吸引力，但未披露银行整体利润影响。",
+          "evidence": [
+            "南财理财通数据显示，截至2026年11月12日，理财公司共存续310只公募“固收+期权”产品（按产品登记编码统计）。近三月区间净值增长率的中位数为0.13%，均值仅为0.02%，产品收益首尾分化，区间从-1.73%至+3.69%。\n值得注意的是，其中有124只产品录得负收益，占比40%。\n进一步剖析这124只负收益产品可以发现，其挂钩的期权标的多为大类资产指数，其中又以钱潮指数居多。此前红极一时的钱潮指数在本轮市场行情下弹性欠佳。",
+            "不仅如此，一些产品在期权结构设计上缺乏“障碍敲入/敲出”等结构化保护，一旦市场走出单边下跌，或产品未能触发行权条件，产品净值便会受到拖累。\n从各机构表现来看，近三月区间净值增长率均值最高的是渝农商理财，为0.71%，其后依次是中银理财（0.52%）、中邮理财（0.51%）、汇华理财（0.37%）与徽银理财（0.33%）。在市场波动中，部分机构通过底层大类资产配置有效平滑了净值波动。与之形成对比的是，部分理财公司“固收+期权”产品近三月平均净值增长率告负，交银理财跌幅相对较大。",
+            "过去，这类产品常因配置小比例期权而被视作博取高收益的“彩票”；如今，市场波动之下40%的产品出现负收益，可见期权不仅是博取收益的矛，更应成为控制回撤的盾。谁能用精细化的衍生品策略把回撤控制在极低区间，谁能用大类资产的分散配置替代单边博弈，谁就能真正把握住震荡市中的长盈机会。\n（文章来源：21世纪经济报道）"
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "黄金剧烈震荡仅被用于解释挂钩黄金期权的收益与观察日风险，未提供金矿生产、销量或盈利变化证据，无法判断有色金属经营影响。",
+          "evidence": [
+            "尽管其间债市经历过急跌，但整体上仍为产品提供了难得的底仓正收益。此外，\n黄金\n今年的走势堪称“过山车”，三季度虽有3.74%的涨幅，但进入10月、11月后迅速回吐，11月中旬伦敦现货\n黄金\n跌至3883.98美元/盎司附近。\n对于挂钩黄金的“固收+期权”产品而言，期权部分的收益取决于设定的观察日能否踩中高点，而非产品存续期间黄金的最高浮盈。部分产品观察日的设置“运气不佳”，也导致了产品净值的较大波动。"
+          ],
+          "sector_code": "801050.SI",
+          "sector_name": "有色金属",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "统计期为截至2026年11月12日的近三个月，不能代表完整市场周期。",
+        "观察日、行权条件、底层资产和结构设计共同影响收益，文中未提供后续业绩。",
+        "未披露相关理财公司的管理规模、费率与利润弹性，无法量化对银行整体经营的影响。"
+      ],
+      "usage": {
+        "total_tokens": 9170,
+        "prompt_tokens": 2404,
+        "completion_tokens": 6766
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "067a4dcaef3df9a5647a11adda505e3d4c2bf56add4a57dfb8326176f4ce71f9",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 2098,
+      "scored_at": "2026-11-18T15:41:06.031073+08:00"
+    },
+    "ff0c780f93a3f2d62bcec94c46620869a11f5aabe2b30cecfc8a8a0f3976f3c3": {
+      "summary": "乌克兰使用本国制造的无人机和导弹击中刻赤桥公路段并切断交通；俄罗斯随后袭击基辅两座桥，乌方称至少2人死亡、4个地区发生火灾。冲突升级扰乱局部陆路运输并增加地缘风险，但未提供能源、贸易或资本市场传导证据。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "文章呈现军事升级、局部桥梁交通中断及待安排的斡旋会谈，但未给出能源价格、贸易量、通胀或资产价格传导，无法判断六大指数方向。",
+        "evidence": [
+          "f winterBut the strike did not come without Russian retaliation. The same night, Russia pounded two critical bridges in Kyiv, the Northern and Southern bridges over the Dnipro River.",
+          "y day, including bridges in Zaporizhzhia, Dnipro, Kyiv and the Odesa region. Ukraine, he wrote, is \"reminding Russia that war will always return to where it began.\"Trump has said he will bring up the war when he sits down with Xi and Putin",
+          "in China this week. Kyiv and Moscow are still waiting for the next round of U.S.-brokered talks to be scheduled.The damage is still being assessed by both sides in a war where bridges, literal and otherwise, keep being destroyed."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.9,
+          "reason": "涉事区域公路运输因刻赤桥路桥损毁、基辅跨河桥关闭而受扰并拥堵；铁路段未垮且列车于周二下午恢复，公路受损与铁路韧性并存。事件未显示影响A股运输企业。",
+          "evidence": [
+            "day. Ukraine's General Staff said one of the bridge's arches and a span of its road section fell into the water, cutting off road traffic.",
+            "even better than it was before.\" Russian-installed officials in Crimea said trains were running across it again by Tuesday afternoon.IN CASE YOU MISSED IT | Zelenskyy warns Starshield restrictions threaten Ukraine’s energy defenses ahead o",
+            "traffic, a capital on the brink of paralysis. With two of its main river crossings shut, commuters crawled toward the bridges that remained open between the two halves of the city.Zelenskyy said Russia strikes Ukraine's infrastructure ever"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.84,
+          "reason": "乌方称行动使用11类且几乎全部在乌制造的武器，并通过多阶段行动削弱防空、雷达及电子战体系，体现国产装备实战使用；但无采购预算、订单或涉华企业关联证据，无法确认A股军工经营受益。",
+          "evidence": [
+            "Videos released by Ukraine's Security Service show the moment of impact.Ukrainian President Volodymyr Zelenskyy called it \"an unprecedented operation.\" He said it ran in seven stages over several weeks, as Ukrainian forces wore down air de",
+            "mselves. Zelenskyy listed 11 types used in the operation, almost all of them made in Ukraine. Palianytsia jet-powered drones struck the road section, he said.",
+            "The railway section was hit by Neptune missiles, first built to sink ships, by Ruta drones and by the Flamingo, Ukraine's heaviest cruise missile.The Kerch Bridge itself was an act of war, the capstone of Russia's occupation of Ukrainian C"
+          ],
+          "sector_code": "801740.SI",
+          "sector_name": "国防军工",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "刻赤桥公路修复范围、持续时间及进一步交通影响仍在评估。",
+        "基辅两座桥关闭后的恢复安排和基础设施损失未明。",
+        "下一轮美方斡旋会谈尚未排期，且文章未说明冲突对中国能源、贸易或上市公司订单的传导。"
+      ],
+      "usage": {
+        "total_tokens": 10792,
+        "prompt_tokens": 1938,
+        "completion_tokens": 8854
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4f679a13bb09042ece7a7203efe9720755ac0b766ad156916bf86dc5ce1917d8",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3595,
+      "scored_at": "2026-11-18T15:42:32.760784+08:00"
+    },
+    "9a225b48f50dad75b65ad6800431f8ddba13c1ff2cf3ebea5ee4b33567896a12": {
+      "summary": "2026年上半年中国液冷服务器厂商收入同比增长153.1%，部分液冷部件订单排至年底、个别企业订单同比接近翻倍；机构同时预计液冷渗透率与光模块需求继续提升。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "材料仅披露算力基础设施细分、相关指数和ETF资金流，未呈现向宏观经济、通胀或六大指数的明确传导。",
+        "evidence": [
+          "截至10:29，创业板算力基础设施指数上涨1.1%。同花顺iFinD数据显示，截至昨日，创业板算力ETF易方达（158050）连续3日获资金净流入，合计约1.2亿元。 AI算力基础设施景气度持续验证。随着万卡智算中心、超节点等高功率算力集群加速落地，芯片功耗不断攀升，液冷正从“可选”走向“必选”，多地液冷部件产线订单已排至年底，部分企业订单同比接近翻倍。",
+          "创业板算力ETF易方达（158050）跟踪该指数，助力投资者布局算力基础设施产业成长机遇。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.9,
+          "reason": "液冷部件订单排至年底、个别企业订单同比接近翻倍，需求向液冷温控设备及部件传导；受益集中于相关细分，不能外推至全部通用机械。",
+          "evidence": [
+            "截至10:29，创业板算力基础设施指数上涨1.1%。同花顺iFinD数据显示，截至昨日，创业板算力ETF易方达（158050）连续3日获资金净流入，合计约1.2亿元。 AI算力基础设施景气度持续验证。随着万卡智算中心、超节点等高功率算力集群加速落地，芯片功耗不断攀升，液冷正从“可选”走向“必选”，多地液冷部件产线订单已排至年底，部分企业订单同比接近翻倍。"
+          ],
+          "sector_code": "801890.SI",
+          "sector_name": "机械设备",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.91,
+          "reason": "2026年上半年中国液冷服务器厂商收入同比增长153.1%，直接反映液冷服务器细分需求和收入扩张，但不能外推至全部软件及IT服务。",
+          "evidence": [
+            "IDC数据显示，2026年上半年中国液冷服务器市场厂商收入同比增长153.1%；机构预计2026年液冷行业渗透率将达53%，液冷市场规模有望突破千亿元。 中信建投证券指出，算力需求持续强劲，持续看好算力产业链：国产GPU公司进一步兑现业绩、份额仍有较大提升空间，光互连占比持续提升带动2027年800G、1.6T光模块需求高增，大陆液冷公司将进入关键业绩兑现期。 创业板算力基础设施指数聚焦创业板算力基础设施龙头，覆盖服务器、液冷温控、光模块、数据中心等核心环节。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.74,
+          "reason": "机构认为光互连占比提升将带动2027年800G、1.6T光模块需求高增，若兑现可改善相关厂商订单收入；但仅为预测，节奏与幅度不确定。",
+          "evidence": [
+            "IDC数据显示，2026年上半年中国液冷服务器市场厂商收入同比增长153.1%；机构预计2026年液冷行业渗透率将达53%，液冷市场规模有望突破千亿元。 中信建投证券指出，算力需求持续强劲，持续看好算力产业链：国产GPU公司进一步兑现业绩、份额仍有较大提升空间，光互连占比持续提升带动2027年800G、1.6T光模块需求高增，大陆液冷公司将进入关键业绩兑现期。 创业板算力基础设施指数聚焦创业板算力基础设施龙头，覆盖服务器、液冷温控、光模块、数据中心等核心环节。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.67,
+          "reason": "机构称国产GPU公司将进一步兑现业绩且份额仍有提升空间，可传导至相关厂商订单和份额；缺少公司名单及销量数据验证。",
+          "evidence": [
+            "IDC数据显示，2026年上半年中国液冷服务器市场厂商收入同比增长153.1%；机构预计2026年液冷行业渗透率将达53%，液冷市场规模有望突破千亿元。 中信建投证券指出，算力需求持续强劲，持续看好算力产业链：国产GPU公司进一步兑现业绩、份额仍有较大提升空间，光互连占比持续提升带动2027年800G、1.6T光模块需求高增，大陆液冷公司将进入关键业绩兑现期。 创业板算力基础设施指数聚焦创业板算力基础设施龙头，覆盖服务器、液冷温控、光模块、数据中心等核心环节。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "液冷部件订单未披露企业名称、订单金额及收入确认口径，年底排产和同比高增的持续性难判断。",
+        "53%渗透率、千亿元市场规模及2027年光模块需求高增均属机构预测，存在不及预期可能。",
+        "国产GPU业绩与份额提升主要为机构观点，缺少公司级销量、价格和客户验证。"
+      ],
+      "usage": {
+        "total_tokens": 4470,
+        "prompt_tokens": 1321,
+        "completion_tokens": 3149
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "a783d7039a3eaa373105493957199a4314f4718855b719ef2409a48a51616ed1",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 455,
+      "scored_at": "2026-11-18T15:42:59.459215+08:00"
+    },
+    "dfcd4a193169dd4de82dae65c82ac55f3807fa8afafc1c467b51d848f1ac2ac2": {
+      "summary": "午间创业板系列指数走弱，创业板ETF易方达半日获3.8亿份净申购；资金流仅涉及单只产品，不能外推为全市场或产业基本面改善。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅披露指数半日涨跌及单只ETF净申购，缺乏宏观政策、盈利改善或市场总量传导证据。",
+        "evidence": [
+          "截至午间收盘，创业板成长指数下跌0.04%，创业板指数下跌0.6%，创业板200指数下跌1.4%。同花顺iFinD数据显示，创业板ETF易方达（159915，联接基金A/C/Y：110026/004744/022907）半日获3.8亿份净申购。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "半日净申购能否持续及其后续规模未知",
+        "单只创业板ETF资金流不能代表全市场资金偏好",
+        "正文未提供行业经营、业绩或政策信息"
+      ],
+      "usage": {
+        "total_tokens": 1739,
+        "prompt_tokens": 1097,
+        "completion_tokens": 642
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "06a16dbb430945fd99e6449dff75dfabe617bba502972d2575f61cbfc3b53384",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 122,
+      "scored_at": "2026-11-18T15:43:07.400508+08:00"
+    },
+    "9d31d2587fcbe9f6d2edfaf4f57317429a02d1a1f53ec2d01f91fe387288179e": {
+      "summary": "英伟达披露云产业未交付订单较上季度增加5000亿美元、累计25000亿美元，临时CEO预计需求至少延伸至2028年；Anthropic年化收入达810亿美元，创业板算力ETF连续3日净流入约1.2亿元，强化算力需求预期。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "材料仅反映算力主题指数表现及单只ETF资金流，未提供对宏观经济、通胀或六大指数的明确传导。",
+        "evidence": [
+          "截至午间收盘，创业板算力基础设施指数上涨1.4%，中证云计算与大数据主题指数上涨0.2%，中证芯片产业指数上涨0.1%，中证半导体材料设备主题指数下跌0.1%。同花顺iFinD数据显示，截至昨日，创业板算力ETF易方达（158050）连续3日获资金净流入，合计约1.2亿元。",
+          "消息面上，英伟达披露最新财报，云产业未交付订单较上季度增加5000亿美元、累计达25000亿美元，临时CEO称当前需求非常庞大、预计至少延伸至2028年；Anthropic年化收入亦达810亿美元、单月净增100亿美元，AI产业融资、算力与收入正形成商业闭环，算力基础设施需求持续放量。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.85,
+          "reason": "云产业未交付订单扩张及算力需求预期向芯片、半导体材料设备采购传导；但持续至2028年属于预测，交付与盈利兑现仍不确定。",
+          "evidence": [
+            "消息面上，英伟达披露最新财报，云产业未交付订单较上季度增加5000亿美元、累计达25000亿美元，临时CEO称当前需求非常庞大、预计至少延伸至2028年；Anthropic年化收入亦达810亿美元、单月净增100亿美元，AI产业融资、算力与收入正形成商业闭环，算力基础设施需求持续放量。",
+            "截至午间收盘，创业板算力基础设施指数上涨1.4%，中证云计算与大数据主题指数上涨0.2%，中证芯片产业指数上涨0.1%，中证半导体材料设备主题指数下跌0.1%。同花顺iFinD数据显示，截至昨日，创业板算力ETF易方达（158050）连续3日获资金净流入，合计约1.2亿元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.82,
+          "reason": "云产业订单增长及AI融资、算力与收入闭环提升算力基础设施需求预期；但订单交付和利润转化节奏未披露。",
+          "evidence": [
+            "消息面上，英伟达披露最新财报，云产业未交付订单较上季度增加5000亿美元、累计达25000亿美元，临时CEO称当前需求非常庞大、预计至少延伸至2028年；Anthropic年化收入亦达810亿美元、单月净增100亿美元，AI产业融资、算力与收入正形成商业闭环，算力基础设施需求持续放量。",
+            "截至午间收盘，创业板算力基础设施指数上涨1.4%，中证云计算与大数据主题指数上涨0.2%，中证芯片产业指数上涨0.1%，中证半导体材料设备主题指数下跌0.1%。同花顺iFinD数据显示，截至昨日，创业板算力ETF易方达（158050）连续3日获资金净流入，合计约1.2亿元。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "“未交付订单”的具体口径、交付周期及能否转化为收入未说明。",
+        "需求至少延伸至2028年来自临时CEO判断，属于预测而非已发生事实。",
+        "单只ETF净流入及主题指数日内表现不能代表全行业盈利改善，且材料没有明确宏观传导证据。"
+      ],
+      "usage": {
+        "total_tokens": 4494,
+        "prompt_tokens": 1211,
+        "completion_tokens": 3283
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "74e4f6ea420f1f479fbe1381ba5332f35665b8e056e854c3e98540f29366fc53",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 281,
+      "scored_at": "2026-11-18T15:43:37.349926+08:00"
+    },
+    "25306a30d1b90c996fcebf519552d1141e6b9b14c532f02390fca291c65641cd": {
+      "summary": "11月18日早盘A股高开回落，三大指数下跌，半日成交7990亿元；元件、算力租赁等逆势走强，沪深300ETF连续两日净流入约27.8亿元。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.93,
+        "reason": "早盘市场高开回落且A股三大指数集体下跌，整体风险偏好承压；局部板块走强和沪深300ETF净流入仅形成结构性支撑。",
+        "evidence": [
+          "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。",
+          "同花顺iFinD数据显示，截至昨日，沪深300ETF易方达（510310，联接基金A/C/Y：110020/007339/022928）连续2日获资金净流入，合计约27.8亿元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.88,
+          "reason": "盘中通信服务板块涨幅居前，通信细分当日行情偏强；未披露订单、收入或成本变化，不能据此认定经营改善。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.92,
+          "reason": "元件板块逆势走强，港股电子设备与元件亦活跃，电子硬件细分当日行情偏强；未提供销量、价格或利润数据。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.72,
+          "reason": "算力租赁板块逆势走强，计算机相关租赁题材短期受资金关注；未提供业务量、收入或盈利变化，经营受益尚未确认。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.91,
+          "reason": "小家电板块涨幅居前，家电细分当日行情偏强；未提供销量、成本或利润数据，不能外推盈利改善。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.95,
+          "reason": "煤炭板块涨幅居前，煤炭细分当日行情偏强；未提供供需、煤价、产量或成本信息，行业盈利方向仍待验证。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801950.SI",
+          "sector_name": "煤炭",
+          "horizon": "today"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.96,
+          "reason": "影视院线与游戏板块均居跌幅前列，传媒细分当日行情偏弱；未提供票房、内容收入或利润变化，不能据此认定经营受损。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "today"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.93,
+          "reason": "贵金属板块跌幅居前，有色金属中的贵金属细分当日行情偏弱；未提供价格、产量或利润变化，经营影响未获确认。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801050.SI",
+          "sector_name": "有色金属",
+          "horizon": "today"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.93,
+          "reason": "医疗服务板块居跌幅前列，医药细分当日行情偏弱；未提供诊疗量、收入或成本变化，经营影响仍不确定。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.72,
+          "reason": "港股油气板块表现活跃，石油石化细分短期跨市场情绪偏强；对A股供需、价格和盈利的传导尚无证据。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.74,
+          "reason": "港股港口航运板块表现活跃，交通运输相关细分短期跨市场情绪偏强；未提供运价、吞吐量或A股公司经营变化证据。",
+          "evidence": [
+            "11月18日早盘，市场高开回落，A股三大指数集体下跌，全市场半日成交额7990亿元。板块题材上，通信服务、元件、算力租赁、小家电、煤炭板块涨幅居前，影视院线、贵金属、医疗服务、游戏板块跌幅居前。港股主要指数延续回调，油气、港口航运、电子设备和元件板块表现较活跃。 截至午间收盘，中证A500指数下跌0.7%，沪深300指数下跌0.5%，创业板指数下跌0.6%，科创50指数上涨0.5%，恒生中国企业指数下跌1.0%。"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "正文仅提供半日行情与单只ETF资金流，未披露板块涨跌原因及订单、供需、价格、成本和盈利变化。",
+        "通信服务、元件、算力租赁等行情题材与申万一级行业并非完全一一对应，行业映射及行情持续性存在不确定性。",
+        "港股油气、港口航运和电子设备表现不能直接证明A股相关公司经营改善或受损。"
+      ],
+      "usage": {
+        "total_tokens": 11209,
+        "prompt_tokens": 1223,
+        "completion_tokens": 9986
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4c4625d766ea0ccadfb1c0f57087e5a340a45c94acf750b2e0a923122e094723",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 297,
+      "scored_at": "2026-11-18T15:45:13.573053+08:00"
+    },
+    "0e6adf6f559a4cbc417b8a1580ccb6a5441516c03b18b22eb8b632387ed2b864": {
+      "summary": "午间科创50和科创成长指数均上涨0.5%，科创50ETF易方达月内净流入超60亿元；科创综指、科创100及科创200下跌，相关指数表现分化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "mixed",
+        "confidence": 0.95,
+        "reason": "科创50ETF获得显著净流入且科创50午间上涨，但其他科创指数下跌，影响仅限所列指数与ETF。",
+        "evidence": [
+          "截至午间收盘，科创50指数上涨0.5%，科创成长指数上涨0.5%，科创综指下跌0.4%，科创100指数下跌1.2%，科创200指数下跌2.1%。同花顺iFinD数据显示，截至昨日，科创50ETF易方达（588080，联接基金A/C/Y：011608/011609/022895）月内合计获超60亿元资金净流入。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "指数变动为午间收盘数据，不能代表全天表现。",
+        "ETF资金净流入未对应明确产业经营变化，且正文未披露持仓结构。",
+        "材料仅覆盖部分科创指数，不能外推至整个市场或具体申万行业。"
+      ],
+      "usage": {
+        "total_tokens": 2281,
+        "prompt_tokens": 1127,
+        "completion_tokens": 1154
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "8b5a26680f0dfec4ee5dbdff2c8cfbd1d770a5c060d191f5b429a67afc8cf2cb",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 155,
+      "scored_at": "2026-11-18T15:45:40.782864+08:00"
+    },
+    "a9b1b4be40eed012a6618ea323e189aeefc9bc3b2dd00b4ea7b553d135e4688c": {
+      "summary": "10月DDR4 8Gb合约均价环比涨5.77%，机构预计2026年四季度PC DRAM合约价续涨13%—18%；半导体设备ETF半日净申购1.62亿份。涨价或改善存储芯片供给端售价，但可能抬升下游电子采购成本。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "材料仅反映存储价格、芯片指数表现和ETF申赎，未建立对宏观增长、通胀或六大指数的明确传导。",
+        "evidence": [
+          "截至午间收盘，上证科创板芯片指数上涨0.5%，中证芯片产业指数上涨0.1%，中证半导体材料设备主题指数下跌0.1%，上证科创板芯片设计主题指数下跌0.4%。同花顺iFinD数据显示，半导体设备ETF易方达（159558，联接基金A/C：021893/021894）半日获1.62亿份净申购。",
+          "消息面上，根据DRAMeXchange统计，10月通用型DRAM产品DDR4 8Gb（1Gx8）的平均合约价格达到27.5美元，较9月的26美元上涨5.77%；对比2016年6月开始追踪统计时的2.9美元，累计涨幅已经达到约9.5倍。该机构还预计，2026年第四季度PC DRAM合约价格将环比上涨13%至18%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.88,
+          "reason": "DRAM合约价已上涨且四季度续涨被预计，存储芯片供给端售价受益；使用DRAM的电子终端采购成本可能上升，成本转嫁及需求影响未披露。",
+          "evidence": [
+            "消息面上，根据DRAMeXchange统计，10月通用型DRAM产品DDR4 8Gb（1Gx8）的平均合约价格达到27.5美元，较9月的26美元上涨5.77%；对比2016年6月开始追踪统计时的2.9美元，累计涨幅已经达到约9.5倍。该机构还预计，2026年第四季度PC DRAM合约价格将环比上涨13%至18%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "2026年四季度PC DRAM涨价幅度属于机构预测，并非已发生事实。",
+        "材料未披露存储厂商成本、库存、下游订单及终端提价能力，无法判断行业整体利润变化。",
+        "ETF净申购属于资金流，不能据此认定半导体设备行业经营改善。"
+      ],
+      "usage": {
+        "total_tokens": 3416,
+        "prompt_tokens": 1220,
+        "completion_tokens": 2196
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "a7456ff46147094ed03e242a989217b3bdb1bd0a413a89a873c8284eceacc8c8",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 303,
+      "scored_at": "2026-11-18T15:45:57.725161+08:00"
+    },
+    "8d9e125c15da6261b234a3e27300cbf0759af700c15f8801c3364092ac7480a1": {
+      "summary": "国证成长100指数午间收涨1.6%；截至昨日，成长ETF易方达连续5日获资金加仓，合计约7.8亿元，指数上涨与资金流入均属已发生事实。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露特定成长指数和ETF的行情及资金流，未提供宏观驱动或向广泛市场的明确传导，故不外推整体市场方向。",
+        "evidence": [
+          "截至午间收盘，国证成长100指数上涨1.6%。同花顺iFinD数据显示，截至昨日，成长ETF易方达（159259，联接基金A/C：027858/027859）连续5日获资金加仓，合计约7.8亿元。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "材料未披露ETF加仓的资金来源、成交结构及后续持续性。",
+        "指数上涨和ETF流入不能证明任何申万一级行业的基本面或盈利改善。",
+        "午间指数表现与截至昨日统计的连续5日资金流入期限不同，不能据此认定直接因果。"
+      ],
+      "usage": {
+        "total_tokens": 3245,
+        "prompt_tokens": 1086,
+        "completion_tokens": 2159
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "416cb5a82bfb0c73ebd6989ccc0782d1977fb3bda6de6b64d2f43de0eb8b5b71",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 98,
+      "scored_at": "2026-11-18T15:46:22.503671+08:00"
+    },
+    "434258d4cc971082c567fda449e8f7aaea20491070d88afe03352639d328504c": {
+      "summary": "证监会否认要求基金公司上报全部产品AI敞口，确认基金投资标的及比例仍由管理人依合同和内控自主决定，暂未形成新增统一报送义务。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "材料仅澄清公募基金监管要求，未涉及流动性、盈利、宏观政策或六大指数传导。",
+        "evidence": []
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.95,
+          "reason": "事件涉及公募基金监管口径；否认统一上报全部AI敞口要求，未形成新增投资、费用或盈利变化。",
+          "evidence": [
+            "财联社11月18日电，中国证监会新闻发言人答记者问。问：近日，发现互联网上传播“监管要求基金公司上报全部产品AI敞口”相关信息，请问这一情况是否属实？答：该信息不属实。公募基金投资运作依照《证券投资基金法》等法律法规和基金合同约定进行，投资标的、投资比例由基金管理人按照基金合同和内部投资决策程序自主确定。中国证监会依法履行监管职责，未向基金管理人提出相关数据报送要求。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "未披露公募基金AI投资敞口、相关持仓或潜在申赎影响",
+        "未说明市场是否已对相关传言定价，亦未提供后续监管安排"
+      ],
+      "usage": {
+        "total_tokens": 2220,
+        "prompt_tokens": 1096,
+        "completion_tokens": 1124
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "53f9d4be52aa1566a67e12f7ac2f8fb4ca4bc909cda6d928f39742439b918a02",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 185,
+      "scored_at": "2026-11-18T15:46:35.101213+08:00"
+    },
+    "a68cbcc76ce41c186d5722a51cb2b109708317cb5cea3b1bb02951dec4d7b28b": {
+      "summary": "证监会否认网传要求基金公司上报全部产品AI敞口，明确未提出相关数据报送要求；公募基金投资运作仍依合同及内部决策自主确定。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "材料仅澄清一项监管传言，未显示对宏观增长、流动性或六大指数产生明确影响。",
+        "evidence": [
+          "财联社11月18日电，中国证监会新闻发言人答记者问。问：近日，发现互联网上传播“监管要求基金公司上报全部产品AI敞口”相关信息，请问这一情况是否属实？答：该信息不属实。公募基金投资运作依照《证券投资基金法》等法律法规和基金合同约定进行，投资标的、投资比例由基金管理人按照基金合同和内部投资决策程序自主确定。中国证监会依法履行监管职责，未向基金管理人提出相关数据报送要求。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.96,
+          "reason": "辟谣确认未新增全部产品AI敞口报送要求，未改变基金投资决策及行业经营规则，对公募基金经营影响有限。",
+          "evidence": [
+            "财联社11月18日电，中国证监会新闻发言人答记者问。问：近日，发现互联网上传播“监管要求基金公司上报全部产品AI敞口”相关信息，请问这一情况是否属实？答：该信息不属实。公募基金投资运作依照《证券投资基金法》等法律法规和基金合同约定进行，投资标的、投资比例由基金管理人按照基金合同和内部投资决策程序自主确定。中国证监会依法履行监管职责，未向基金管理人提出相关数据报送要求。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文未披露网传信息对公募基金短期情绪、交易及合规成本的实际影响。",
+        "澄清仅针对全部产品AI敞口报送，不能据此推断其他监管要求或AI产业政策发生变化。"
+      ],
+      "usage": {
+        "total_tokens": 2069,
+        "prompt_tokens": 1107,
+        "completion_tokens": 962
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "53f9d4be52aa1566a67e12f7ac2f8fb4ca4bc909cda6d928f39742439b918a02",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 185,
+      "scored_at": "2026-11-18T15:46:43.384743+08:00"
+    },
+    "79fab6ce81245e31ea18b02a4a29f94b6a1ba52a0feb77454bd9a73ef6c381c8": {
+      "summary": "早盘三大指数小幅下跌、超4500股下跌，但国产算力链中的华为算力、算力租赁及PCB走强；市场仍处弱势轮动，增量资金不足，尚无明确企稳信号。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "文章仅描述指数、个股涨跌及板块轮动，未提供宏观变量向企业订单、成本或盈利的传导。",
+        "evidence": [
+          "今日早盘市场延续震荡整理，三大指数小幅下跌，全市场超4500股飘绿。国产算力链继续保持强势，华为算力、算力租赁等细分板块涨幅居前。算力硬件赛道情绪有所回暖，PCB概念同步冲高。整体来看，当前市场仍未脱离弱势调整区间，资金观望情绪较重，板块轮动节奏偏快，增量资金入场意愿不足，短期仍需耐心等待更明确的企稳转强信号。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "国产算力、算力租赁板块走强仅表明交易情绪改善，未披露需求、订单或盈利变化，经营影响无法判定。",
+          "evidence": [
+            "今日早盘市场延续震荡整理，三大指数小幅下跌，全市场超4500股飘绿。国产算力链继续保持强势，华为算力、算力租赁等细分板块涨幅居前。算力硬件赛道情绪有所回暖，PCB概念同步冲高。整体来看，当前市场仍未脱离弱势调整区间，资金观望情绪较重，板块轮动节奏偏快，增量资金入场意愿不足，短期仍需耐心等待更明确的企稳转强信号。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "算力硬件情绪回暖、PCB概念冲高反映短期风险偏好，未提供订单、收入或利润改善证据。",
+          "evidence": [
+            "今日早盘市场延续震荡整理，三大指数小幅下跌，全市场超4500股飘绿。国产算力链继续保持强势，华为算力、算力租赁等细分板块涨幅居前。算力硬件赛道情绪有所回暖，PCB概念同步冲高。整体来看，当前市场仍未脱离弱势调整区间，资金观望情绪较重，板块轮动节奏偏快，增量资金入场意愿不足，短期仍需耐心等待更明确的企稳转强信号。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未提供算力及PCB相关企业的订单、收入或利润数据",
+        "未明确华为算力、算力租赁与PCB上涨的具体公司构成",
+        "弱势整理、快速轮动及增量资金不足可能使板块行情持续性不确定"
+      ],
+      "usage": {
+        "total_tokens": 3861,
+        "prompt_tokens": 1110,
+        "completion_tokens": 2751
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "273ca9a307dfd4781248f6238d64d78e73396c935795041c2faf9e397ef5f893",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 156,
+      "scored_at": "2026-11-18T15:47:04.853863+08:00"
+    },
+    "f70e0f9e2967902f17730411eb972cfbd6d42e381c69bf5553d5d03955fe660c": {
+      "summary": "摩根大通将迪士尼目标价由137美元上调至140美元，属于券商观点调整；原文未提供公司经营变化或行业传导依据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅有个股目标价调整，未提供宏观、行业或六大指数传导证据。",
+        "evidence": [
+          "财联社11月18日电，摩根大通将迪士尼（DIS.N）目标价从137美元上调至140美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.96,
+          "reason": "事件仅涉及迪士尼个股目标价，未披露经营、需求或行业盈利变化，不能据此判断传媒板块影响。",
+          "evidence": [
+            "财联社11月18日电，摩根大通将迪士尼（DIS.N）目标价从137美元上调至140美元。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "目标价上调属于摩根大通观点，并非迪士尼经营指引。",
+        "原文未披露迪士尼业务、业绩或基本面发生变化。",
+        "缺少可验证的传媒行业需求、成本或盈利传导。"
+      ],
+      "usage": {
+        "total_tokens": 2151,
+        "prompt_tokens": 1052,
+        "completion_tokens": 1099
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6188d807d9be81e30cb879d6302637206561ff0e6353d8606e9d2a70e3ebcab5",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 44,
+      "scored_at": "2026-11-18T15:47:16.529049+08:00"
+    },
+    "a5d04c65e9d01bc35444f04c336e0cd8b4036eafe82953794c93e04085230b6d": {
+      "summary": "石药集团披露前9个月营收252.6亿元、同比增长27%，净利润70.8亿元、同比增长101.5%，利润增速显著快于收入增速，反映公司层面盈利能力明显改善。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.2,
+        "reason": "仅为单家公司已披露业绩，缺少对行业整体盈利、需求或流动性的宏观传导依据，无法外推至大盘指数。",
+        "evidence": [
+          "财联社11月18日电，石药集团9个月营收252.6亿元人民币，同比增加27%，净利润70.8亿元人民币，同比增加101.5%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.5,
+          "reason": "营收与净利润双增为已发生事实，改善公司盈利与市场对医药企业盈利质量预期，对化学制药/创新药板块情绪偏正面；但数据只覆盖单一企业且无分产品、毛利率与费用拆分，不能据此判断全行业景气变化。",
+          "evidence": [
+            "财联社11月18日电，石药集团9个月营收252.6亿元人民币，同比增加27%，净利润70.8亿元人民币，同比增加101.5%。"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "next_session"
+        }
+      ],
+      "uncertainties": [
+        "业绩仅为前9个月口径，第四季度及全年情况未披露",
+        "未提供分产品收入、毛利率、研发与销售费用等拆分，增长来源不明确",
+        "单一公司业绩事件，不足以推断医药生物行业整体盈利或需求趋势"
+      ],
+      "usage": {
+        "total_tokens": 1756,
+        "prompt_tokens": 1060,
+        "completion_tokens": 696
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b51e87d5204425c308902287c9560105547b699b22e4cddcd4ff5915e43680db",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 63,
+      "scored_at": "2026-11-18T15:47:39.393697+08:00"
+    },
+    "b42c9486a1f701e2683c4ed647687d595bc5ecb2209d0cc53054fb245655876a": {
+      "summary": "11月18日港股午间收盘，恒生指数跌1.13%、恒生科技指数跌1.47%，大型科网、黄金股及创新药概念股走弱；材料未提供产业基本面变化。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.98,
+        "reason": "港股主要指数及多类龙头股同步下跌，直接反映当日港股风险偏好走弱，但不代表相关行业基本面已经下修。",
+        "evidence": [
+          "财联社11月18日电，港股午间收盘，恒生指数跌1.13%，恒生科技指数跌1.47%。大型科网股走低，京东集团跌近8%，百度集团跌逾2%，腾讯控股跌超1%。黄金股普跌，中国黄金国际跌7%，紫金黄金国际跌逾6%，赤峰黄金、山东黄金跌超5%。创新药概念股走弱，康方生物跌近6%，药明生物、亚盛医药跌近5%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.4,
+          "reason": "京东集团跌近8%仅反映个股当日承压，未提供零售需求、成本或盈利变化，不能据此外推行业经营。",
+          "evidence": [
+            "财联社11月18日电，港股午间收盘，恒生指数跌1.13%，恒生科技指数跌1.47%。大型科网股走低，京东集团跌近8%，百度集团跌逾2%，腾讯控股跌超1%。黄金股普跌，中国黄金国际跌7%，紫金黄金国际跌逾6%，赤峰黄金、山东黄金跌超5%。创新药概念股走弱，康方生物跌近6%，药明生物、亚盛医药跌近5%。"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.4,
+          "reason": "百度集团、腾讯控股等科网股走弱，但材料未说明业务经营或盈利驱动因素，无法判断传媒行业实际影响。",
+          "evidence": [
+            "财联社11月18日电，港股午间收盘，恒生指数跌1.13%，恒生科技指数跌1.47%。大型科网股走低，京东集团跌近8%，百度集团跌逾2%，腾讯控股跌超1%。黄金股普跌，中国黄金国际跌7%，紫金黄金国际跌逾6%，赤峰黄金、山东黄金跌超5%。创新药概念股走弱，康方生物跌近6%，药明生物、亚盛医药跌近5%。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.45,
+          "reason": "黄金股普跌仅是股价表现，材料未提供金价、产量、成本或利润变化，不能认定黄金产业经营受损。",
+          "evidence": [
+            "财联社11月18日电，港股午间收盘，恒生指数跌1.13%，恒生科技指数跌1.47%。大型科网股走低，京东集团跌近8%，百度集团跌逾2%，腾讯控股跌超1%。黄金股普跌，中国黄金国际跌7%，紫金黄金国际跌逾6%，赤峰黄金、山东黄金跌超5%。创新药概念股走弱，康方生物跌近6%，药明生物、亚盛医药跌近5%。"
+          ],
+          "sector_code": "801050.SI",
+          "sector_name": "有色金属",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.45,
+          "reason": "创新药概念股走弱仅反映市场表现，未披露研发、订单、销售或盈利变化，不能外推医药生物行业影响。",
+          "evidence": [
+            "财联社11月18日电，港股午间收盘，恒生指数跌1.13%，恒生科技指数跌1.47%。大型科网股走低，京东集团跌近8%，百度集团跌逾2%，腾讯控股跌超1%。黄金股普跌，中国黄金国际跌7%，紫金黄金国际跌逾6%，赤峰黄金、山东黄金跌超5%。创新药概念股走弱，康方生物跌近6%，药明生物、亚盛医药跌近5%。"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "材料为午间盘面信息，未说明下跌由基本面、资金面还是行业事件驱动。",
+        "未提供商品价格、销量、订单、成本或盈利等经营数据。",
+        "盘中跌幅能否延续至收盘及其后续影响尚不确定。"
+      ],
+      "usage": {
+        "total_tokens": 4182,
+        "prompt_tokens": 1127,
+        "completion_tokens": 3055
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "923a71ac7ce76280ea95cae879adcd7665bef2f11d49ad4bd4a1e99cdc499b02",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 150,
+      "scored_at": "2026-11-18T15:48:18.351084+08:00"
+    },
+    "20a4334e798b72f014f91cabb8096ef936269dc0f3f079e6b41765b76f24480c": {
+      "summary": "午盘32股涨停、8只连板，封板率63%（不含ST股、退市股），焦点集中于算力芯片、华为算力及家电个股；表现仅反映交易热度，未显示相关行业基本面变化。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露午盘涨停、连板和封板率，缺少宏观政策、需求或盈利传导，不能外推指数影响。",
+        "evidence": [
+          "财联社11月18日电，今日午盘全市场共32股涨停，连板股总数8只，19股封板未遂，封板率为63%（不含ST股、退市股）。焦点股方面，算力芯片概念股华东重机4连板，家电股长虹美菱3连板，华为算力概念股华胜天成4天3板。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.8,
+          "reason": "正文仅将华东重机作为算力芯片概念股记录4连板，未说明其算力业务对主营经营的贡献，不能外推机械设备行业受益。",
+          "evidence": [
+            "财联社11月18日电，今日午盘全市场共32股涨停，连板股总数8只，19股封板未遂，封板率为63%（不含ST股、退市股）。焦点股方面，算力芯片概念股华东重机4连板，家电股长虹美菱3连板，华为算力概念股华胜天成4天3板。"
+          ],
+          "sector_code": "801890.SI",
+          "sector_name": "机械设备",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "长虹美菱3连板仅体现单一个股交易表现，正文未提供家电需求、成本或盈利变化，无法确认行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，今日午盘全市场共32股涨停，连板股总数8只，19股封板未遂，封板率为63%（不含ST股、退市股）。焦点股方面，算力芯片概念股华东重机4连板，家电股长虹美菱3连板，华为算力概念股华胜天成4天3板。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "华胜天成4天3板属于华为算力概念股交易表现，未披露算力业务收入、订单或需求变化，不能推及计算机行业。",
+          "evidence": [
+            "财联社11月18日电，今日午盘全市场共32股涨停，连板股总数8只，19股封板未遂，封板率为63%（不含ST股、退市股）。焦点股方面，算力芯片概念股华东重机4连板，家电股长虹美菱3连板，华为算力概念股华胜天成4天3板。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "数据截至午盘，午后涨停、连板及封板情况可能变化。",
+        "正文仅列少数焦点股，未披露相关行业订单、需求、成本或盈利变化。",
+        "算力芯片及华为算力仅为概念标签，相关业务贡献与持续性未说明。"
+      ],
+      "usage": {
+        "total_tokens": 6036,
+        "prompt_tokens": 1086,
+        "completion_tokens": 4950
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "effba312678ffa1355034f743bd4962a7251fa18b19a9f8c8624dc92fa3adf2b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 108,
+      "scored_at": "2026-11-18T15:49:16.580843+08:00"
     }
   },
   "failures": {

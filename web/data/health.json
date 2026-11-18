@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-18T15:24:44.094885+08:00",
+  "generated_at": "2026-11-18T15:49:21.800221+08:00",
   "status": "ready",
   "market_session": {
     "phase": "post_close",
@@ -8,16 +8,16 @@
     "target_kind": "next_open",
     "is_trading_day": true
   },
-  "requests_this_run": 2,
+  "requests_this_run": 1,
   "target_trade_date": "2026-11-18",
-  "cooldown_until": "2026-11-18T15:07:58+08:00",
+  "cooldown_until": "2026-11-18T15:35:37+08:00",
   "endpoints": {
     "sw_daily": {
-      "status": "pending",
-      "error_code": "daily_not_published",
+      "status": "cooldown",
+      "error_code": "rate_limited",
       "last_success": "2026-11-18T14:42:38.623263+08:00",
-      "last_attempt": "2026-11-18T15:06:58+08:00",
-      "next_retry": "2026-11-18T15:21:58+08:00"
+      "last_attempt": "2026-11-18T15:34:37+08:00",
+      "next_retry": "2026-11-18T15:35:37+08:00"
     },
     "index_daily": {
       "status": "success",
@@ -63,43 +63,43 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
-      "next_retry": null,
+      "last_attempt": "2026-11-18T15:34:37+08:00",
+      "next_retry": "2026-11-18T15:49:37+08:00",
       "requests_this_run": null
     },
     {
       "id": "fed",
-      "status": "stale",
+      "status": "success",
       "error_code": null,
-      "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
+      "last_success": "2026-11-18T15:35:54.055763+08:00",
+      "last_attempt": "2026-11-18T15:34:37+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
     {
       "id": "ecb",
-      "status": "stale",
+      "status": "success",
       "error_code": null,
-      "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
+      "last_success": "2026-11-18T15:35:54.055763+08:00",
+      "last_attempt": "2026-11-18T15:34:37+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
     {
       "id": "eia",
-      "status": "stale",
+      "status": "success",
       "error_code": null,
-      "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
+      "last_success": "2026-11-18T15:35:54.055763+08:00",
+      "last_attempt": "2026-11-18T15:34:37+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
     {
       "id": "bbc_business",
-      "status": "stale",
+      "status": "success",
       "error_code": null,
-      "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
+      "last_success": "2026-11-18T15:35:54.055763+08:00",
+      "last_attempt": "2026-11-18T15:34:37+08:00",
       "next_retry": null,
       "requests_this_run": null
     },
@@ -108,8 +108,8 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
-      "next_retry": null,
+      "last_attempt": "2026-11-18T15:34:37+08:00",
+      "next_retry": "2026-11-18T15:49:37+08:00",
       "requests_this_run": null
     },
     {
@@ -117,8 +117,8 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-18T13:36:38.897256+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
-      "next_retry": "2026-11-18T14:23:55+08:00",
+      "last_attempt": "2026-11-18T15:34:37+08:00",
+      "next_retry": "2026-11-18T16:04:37+08:00",
       "requests_this_run": null
     },
     {
@@ -126,8 +126,8 @@
       "status": "stale",
       "error_code": null,
       "last_success": "2026-11-18T14:10:01.842049+08:00",
-      "last_attempt": "2026-11-18T14:08:55+08:00",
-      "next_retry": null,
+      "last_attempt": "2026-11-18T15:34:37+08:00",
+      "next_retry": "2026-11-18T15:49:37+08:00",
       "requests_this_run": null
     },
     {
@@ -213,21 +213,21 @@
     },
     {
       "id": "funds",
-      "status": "cooldown",
-      "error_code": null,
+      "status": "partial",
+      "error_code": "empty_response",
       "last_success": null,
       "last_attempt": null,
-      "next_retry": "2026-11-18T15:07:58+08:00",
+      "next_retry": null,
       "requests_this_run": null
     },
     {
       "id": "stock_api",
       "status": "cooldown",
-      "error_code": "daily_not_published",
+      "error_code": "rate_limited",
       "last_success": "2026-11-18T14:42:38.623263+08:00",
       "last_attempt": null,
-      "next_retry": "2026-11-18T15:07:58+08:00",
-      "requests_this_run": 2
+      "next_retry": "2026-11-18T15:35:37+08:00",
+      "requests_this_run": 1
     },
     {
       "id": "baostock_fallback",
@@ -339,8 +339,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 14,
-      "emotion_scored_n": 13,
+      "emotion_n": 16,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -376,8 +376,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 14,
-      "emotion_scored_n": 13,
+      "emotion_n": 16,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -413,8 +413,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 15,
-      "emotion_scored_n": 14,
+      "emotion_n": 16,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -450,8 +450,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 14,
-      "emotion_scored_n": 13,
+      "emotion_n": 16,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -487,8 +487,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 16,
-      "emotion_scored_n": 14,
+      "emotion_n": 17,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -524,8 +524,8 @@
         "vendor_valuation_date": null
       },
       "emotion_label": "mixed",
-      "emotion_n": 14,
-      "emotion_scored_n": 13,
+      "emotion_n": 16,
+      "emotion_scored_n": 15,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     }
   ],
@@ -590,8 +590,8 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 2,
-      "emotion_scored_n": 2,
+      "emotion_n": 1,
+      "emotion_scored_n": 1,
       "emotion_method": "minimax_full_text"
     },
     {
@@ -654,9 +654,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 6,
+      "emotion_n": 5,
       "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801080.SI",
@@ -686,8 +686,8 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 37,
-      "emotion_scored_n": 35,
+      "emotion_n": 35,
+      "emotion_scored_n": 34,
       "emotion_method": "financial-tone-rules-v2+minimax_full_text"
     },
     {
@@ -717,10 +717,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 7,
-      "emotion_scored_n": 6,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_label": "positive",
+      "emotion_n": 5,
+      "emotion_scored_n": 5,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801120.SI",
@@ -782,9 +782,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "positive",
-      "emotion_n": 2,
+      "emotion_n": 1,
       "emotion_scored_n": 1,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801140.SI",
@@ -845,10 +845,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "negative",
-      "emotion_n": 4,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_label": "mixed",
+      "emotion_n": 5,
+      "emotion_scored_n": 5,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801160.SI",
@@ -909,10 +909,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 5,
-      "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_label": "positive",
+      "emotion_n": 4,
+      "emotion_scored_n": 4,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801180.SI",
@@ -1101,10 +1101,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
-      "emotion_n": 3,
-      "emotion_scored_n": 3,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_label": "negative",
+      "emotion_n": 1,
+      "emotion_scored_n": 1,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801730.SI",
@@ -1198,9 +1198,9 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 25,
-      "emotion_scored_n": 24,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_n": 19,
+      "emotion_scored_n": 19,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801760.SI",
@@ -1229,10 +1229,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
+      "emotion_label": "negative",
       "emotion_n": 4,
       "emotion_scored_n": 4,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801770.SI",
@@ -1264,7 +1264,7 @@
       "emotion_label": "mixed",
       "emotion_n": 7,
       "emotion_scored_n": 7,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801780.SI",
@@ -1294,8 +1294,8 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 1,
-      "emotion_scored_n": 1,
+      "emotion_n": 2,
+      "emotion_scored_n": 2,
       "emotion_method": "minimax_full_text"
     },
     {
@@ -1328,7 +1328,7 @@
       "emotion_label": "mixed",
       "emotion_n": 5,
       "emotion_scored_n": 5,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801880.SI",
@@ -1358,8 +1358,8 @@
         "vendor_valuation_date": "2026-11-17"
       },
       "emotion_label": "mixed",
-      "emotion_n": 3,
-      "emotion_scored_n": 3,
+      "emotion_n": 2,
+      "emotion_scored_n": 2,
       "emotion_method": "minimax_full_text"
     },
     {
@@ -1391,8 +1391,8 @@
       },
       "emotion_label": "mixed",
       "emotion_n": 5,
-      "emotion_scored_n": 4,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_scored_n": 5,
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801950.SI",
@@ -1421,10 +1421,10 @@
         "vendor_pe_ttm": null,
         "vendor_valuation_date": "2026-11-17"
       },
-      "emotion_label": "mixed",
+      "emotion_label": "positive",
       "emotion_n": 2,
       "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801960.SI",
@@ -1456,7 +1456,7 @@
       "emotion_label": "mixed",
       "emotion_n": 2,
       "emotion_scored_n": 2,
-      "emotion_method": "financial-tone-rules-v2+minimax_full_text"
+      "emotion_method": "minimax_full_text"
     },
     {
       "id": "801970.SI",
@@ -1535,25 +1535,25 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-18T15:24:37.341962+08:00",
+    "as_of": "2026-11-18T15:49:16.661813+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
     "window_policy_version": "published-and-observed-v1",
     "stock_api_news_merged_count": 0,
     "stock_api_news_duplicate_count": 433,
-    "news_count": 1168,
-    "eligible_count": 143,
-    "unique_news_count": 143,
+    "news_count": 1171,
+    "eligible_count": 137,
+    "unique_news_count": 137,
     "duplicate_count": 0,
-    "excluded_count": 1025,
+    "excluded_count": 1034,
     "rumors_excluded": 1,
     "old_publications_excluded": 746,
-    "unknown_publication_time_excluded": 239,
+    "unknown_publication_time_excluded": 235,
     "model_requested": false,
     "model_loaded": false,
     "model_id": "yiyanghkust/finbert-tone-chinese",
-    "reuse_only": true,
+    "reuse_only": false,
     "model_inference_count": 0,
     "model_language_counts": {
       "chinese": 0,
@@ -1570,27 +1570,34 @@
     "model_error": null,
     "fallback_method": "financial-tone-rules-v2",
     "labels": {
-      "positive": 2,
-      "negative": 6,
-      "mixed": 24,
+      "positive": 5,
+      "negative": 7,
+      "mixed": 20,
       "neutral": 0,
       "unknown": 5
     }
   },
   "fund_summary": {
-    "status": "cooldown",
+    "status": "partial",
     "covered_sectors": 24,
     "total_sectors": 31,
     "candidate_count": 116,
-    "requests_this_run": 0,
+    "requests_this_run": 1,
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-18T15:07:11+08:00",
-      "requests_this_run": 0,
-      "status": "cooldown",
-      "cooldown_until": "2026-11-18T15:07:58+08:00",
-      "endpoints": {},
+      "last_run_at": "2026-11-18T15:35:45+08:00",
+      "requests_this_run": 1,
+      "status": "partial",
+      "endpoints": {
+        "fund_daily": {
+          "status": "cooldown",
+          "error_code": "empty_response",
+          "last_success": null,
+          "last_attempt": "2026-11-18T15:35:45+08:00",
+          "next_retry": "2026-11-18T15:50:45+08:00"
+        }
+      },
       "cache_summary": {
         "etf_basic": {
           "fetched_at": "2026-11-16T20:56:44+08:00",
@@ -1612,22 +1619,18 @@
   },
   "daily_forecast_summary": {
     "schema_version": "daily-index-sector-close-v3",
-    "status": "ready",
-    "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
+    "status": "pending",
+    "reason": "参考日线已过时，等待最近交易日完整收盘数据",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-18T15:21:49.224158+08:00",
+    "issued_at": "2026-11-18T15:49:21.800221+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
-    "target_date": "2026-11-18",
+    "target_date": null,
     "target": "next_close_return_pct",
     "unit": "percentage_points",
     "mae_target": 0.1,
-    "market_count": 6,
-    "sector_count": 31,
-    "forward_evaluation": {
-      "settled_rows": 37,
-      "mae_pct": 0.9688182663865705,
-      "note": "仅对实际留存后成熟的标签结算，不混入历史回溯分数"
-    },
+    "market_count": 0,
+    "sector_count": 0,
+    "forward_evaluation": {},
     "evaluation": {
       "historical_research": true,
       "note": "两轮开发调优后固定选择；末20日已在V3看过，仅作重复历史参考，不是新的独立确认；未据此选模。",
@@ -1645,7 +1648,7 @@
     }
   },
   "equity_summary": {
-    "as_of": "2026-11-18T15:21:49.224158+08:00",
+    "as_of": "2026-11-18T15:49:21.800221+08:00",
     "target_date": "2026-11-19",
     "target_kind": "next_open",
     "reference_date": "2026-11-18",
@@ -1694,6 +1697,6 @@
       "trained_at": "2026-11-16T21:26:31.237710+08:00"
     }
   },
-  "news_count": 1168,
+  "news_count": 1171,
   "ledger_count": 334
 }
