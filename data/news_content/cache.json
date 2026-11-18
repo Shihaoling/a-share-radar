@@ -2773,6 +2773,250 @@
         "method": ".infos > .item",
         "source_value": "2026年11月18日 12:18"
       }
+    },
+    "39961303a627db6c6674882778e82426688365f84e679ac65e961311a002a5ab": {
+      "url": "https://finance.eastmoney.com/a/202611183933882478.html",
+      "status": "complete",
+      "full_text": "午后，亚太股市异动！\n今日午后，A股出现一波拉升行情，上证指数一度翻红，科创50大涨近2%，\n半导体\n及\n半导体\n设备集体大涨。日本股市亦开盘快速翻红，韩国\n综合\n指数（KOSPI）在早盘跳水后由跌转涨、明显走强，涨幅超1%；\n纳斯达克\n股指\n期货\n也小幅企稳。在全球市场整体偏弱的环境下，哪些变量在扰动行情？\n分析人士认为，美联储官员表态仍是核心扰动因素。今日，影响力仅次于美联储主席的纽约联储主席\n威廉姆斯\n，对市场有关下月加息50个基点的激进预期降温。\n威廉姆斯\n称，美国经济走强、通胀形势恶化，美联储仍有工作要做，但当前局面暂不需要激进政策。他提到，通胀顽固高企，关税、能源冲击正向更广范围的通胀指标传导；同时当前金融环境仍利于经济增长，市场运行平稳。\n与之形成反差，圣路易斯联储主席穆萨莱姆周二表态，美联储未来数月或最多还需加息四次，这也是目前美联储官员释放的最鹰派观点之一。受该言论影响，美元指数进一步走高，现货\n黄金\n跌破3800美元/盎司。\n对股市来说，美元是重要变量：美元走强通常压制资产估值，而加息预期升温往往助推美元上行。\n德意志银行\n策略师Mallika Sachdeva在11月16日的外汇报告中提到，2026年二季度全球\n半导体\n贸易额首次超过油气贸易额，“石油美元正在快速被芯片美元替代”。有报道称，这一趋势带动上万亿美元资金流入美资产，支撑美元维持强势；\n高盛\n判断，美元强势格局将延续至2027年。\n国金证券\n牟一凌提出，市场上调美联储紧缩预期，底层逻辑是2025年下半年AI基建扩张带动美国就业与经济显著回暖；若该逻辑发生变化，美联储紧缩力度或将放缓。分析人士补充，在此过程中，如果美股出现大幅回调，加息预期也可能随之降温，进而约束美元走势。\n（文章来源：券商中国）",
+      "text_hash": "fa131727ff857a1f587171d851ae3862a3c92a9b5cfaab5d155aab124f73f65a",
+      "fetched_at": "2026-11-18T13:37:04.420196+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933882478.html",
+      "published_at": "2026-11-18T13:30:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:37:04.420217+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933882478.html",
+        "checked_at": "2026-11-18T13:37:04.420217+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:30"
+      }
+    },
+    "292abf17db07609784b4de7552ce39c0f171ea7a098fadd9413f9435c0286896": {
+      "url": "https://finance.eastmoney.com/a/202611183933870998.html",
+      "status": "complete",
+      "full_text": "自9月中下旬以来，A股市场迎来阶段性调整。\n国金证券\n首席策略官、常务副所长牟一凌在接受《证券日报》记者采访时表示，本轮市场回调的核心扰动在于外部不确定性加剧。\n一方面，地缘局势复杂推高油价，加剧了美国通胀风险，\n美债收益率依然处于高位，流动性紧缩压力下全球风险资产估值承压；另一方面，伴随着海外大型云厂商财报的陆续发布，以及领先闭源大模型厂商招股书的公布，市场对于AI（\n人工智能\n）产业投资回报的担忧再度升温。\n但拉长时间维度，从基本面来看，最新三季报数据显示当下A股业绩表现依然稳健。牟一凌表示，这将是未来全球市场波动提升中A股的韧性来源。2026年三季度全部A股（非金融地产）营收累计同比增速达到7.4%，相较二季度边际抬升0.2个百分点，表明需求侧依然充满韧性；利润侧，三季度全部A股（非金融地产）归母净利润累计同比增速为16.9%，相较二季度虽有一定下滑，但依然维持在2022年以来的高位，且扣除非经常性损益后的归母净利润累计同比增速达到17.5%，整体与二季度相当。结构上看，双创指数表现出色，新经济强劲的增长动能在上市公司层面得到充分体现。同时，内需消费板块中部分环节同样出现企稳迹象，\n商贸零售\n、医药、\n社会服务\n、纺织服装等行业2026年三季度的归母净利润累计同比增速均出现了不同程度的边际改善。\n从估值维度来看，当前核心蓝筹股的估值水平已经处于历史偏低水平，尤其成长类大盘蓝筹性价比凸显。牟一凌介绍，创业板指2010年至今的市盈率（PE，TTM为滚动口径）历史分位数仅为6.1%；从结构上看，\n电子\n、\n通信\n、\n电力\n设备与\n医药生物\n等权重板块历史分位数分别为28%、8%、12%与23%，均处于历史估值偏低区间。同时，\n食品饮料\n、\n有色金属\n、\n石油石化\n等\n大盘价值\n蓝筹集中的行业，2010年至今的市盈率（TTM）历史分位数同样处于30%以内。\n在市场表现波动放大之际，上市企业的回购意愿十分强烈。牟一凌表示，2026年10月份至今，已有近300家上市公司通过股东提议或董事会预案发布回购方案，拟回购金额上限超350亿元，展现出较强的稳定股价与维护股东权益的决心。\n对于本轮AI产业周期的发展，牟一凌认为，随着自主创新的加速，本轮中国AI产业的发展具备明显的自主可控性。在中国完备的基础设施、稳定的产业政策，以及庞大的工程师红利支持下，国内算力的竞争力已然显著增强。因此在未来海外AI产业发展预期发生波动之际，中国科技板块有望成为全球成长资金的避风港。对于部分与海外算力联系密切的板块而言，AI产业趋势仍然存在，从科技巨头的三季报中同样能够看到AI在各行各业的渗透仍在加速。在经历近期因预期抢跑与流动性波动带来的深度调整后，筹码结构有望迎来进一步出清。\n具体配置建议上，牟一凌建议关注三大方向。第一，实际利率下行期，\n黄金\n向上空间正在打开；第二，以\n煤炭\n、石油、油运为代表的能源链将继续受益于全球补库需求，能源链是资本成本波动与地缘冲突下的韧性资产；第三，财报视角下建议关注三条线索：一是高景气延续，如\n医疗服务\n、专业连锁、\n煤炭\n开采、\n航运港口\n，以及有色、化工中的细分领域等；二是困境反转策略，如纺织服装的细分领域，以及\n造纸\n、\n炼化及贸易\n、\n医疗器械\n、\n快递\n等；三是在科技领域，建议关注国产算力及应用，以及非AI相关的部分存在潜在催化的成长板块，如\n机器人\n、\n自动化设备\n等。\n（文章来源：证券日报）",
+      "text_hash": "5e4c2c502bcf68bf83bac51b45d1f36b0e3599d353bbb419a150892731ed7022",
+      "fetched_at": "2026-11-18T13:37:26.047731+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933870998.html",
+      "published_at": "2026-11-18T12:42:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:37:26.047754+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933870998.html",
+        "checked_at": "2026-11-18T13:37:26.047754+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:42"
+      }
+    },
+    "3b9c132964ac8f4c0dd5bcfe1d1a5fa74afdbf69dd3d529abc609a7624c8aed9": {
+      "url": "https://finance.eastmoney.com/a/202611183933878016.html",
+      "status": "complete",
+      "full_text": "本报评论员陆跃玲\n一名从小在荔枝园里长大的年轻人，大学毕业后选择辞去广州高校的工作，回到家乡当农民。近日，《思想耀岭南》特别版来到广东省茂名市高州市曹江镇华坑村，讲述高州市帅果农业发展有限公司总经理陈小敏的返乡创业故事。\n从最初在淘宝开网店，帮助全村卖出荔枝，到引入农业专家指导种植、探索液氮冻眠技术，再到借助新修的\n水泥\n路将荔枝运往更广阔的市场，陈小敏的返乡创业故事说明，农业增效、农民增收，靠的不是某一个环节的单打独斗，而是人才、技术、市场和基础设施等要素的协同发力。\n首先，人才返乡，是要素流动的“回流泵”。农业生产看似门槛不高，真正要实现规模化、标准化和市场化，却需要懂技术、懂经营、懂市场的人。一个懂电商的年轻人，可以帮助农户打开销路；一支农业科研团队，可以解决种植过程中的技术难题；一个熟悉现代消费市场的经营者，则可能推动传统\n农产品\n从初级销售向品牌化、精细化经营转型。\n《乡村全面振兴规划（2024—2027年）》明确提出“推动人才、技术等要素规范有序向乡村流动”。在广东，截至2025年底，全省已累计培育超10万名兴乡青年、2000多名兴乡青年创客。从青年把“见识、经验、知识”带回来，到创业导师、投资人跟着进村，人才与智力下乡，激活的是乡村最稀缺的“能人效应”。\n其次，技术进乡，是产业增值的“倍增器”。对于荔枝这样的特色水果而言，种植技术和采后处理直接关系到产业竞争力。在纪录片中，当地果农萧锡才在实践中发现，荔枝种植最困难的其实是技术，以前只能通过看书慢慢摸索，试错成本很高；现在，镇里邀请华南农业大学陈厚彬教授团队担任科技特派员，为果园提供技术指导。面对鲜果保鲜和销售半径的限制，陈小敏尝试引入液氮冻眠技术，希望让荔枝经过储存后，仍能保留接近“夏天的新鲜”。\n在这里，农业科技的价值，不仅仅是提高了产量。良种选育、科学种植、病虫害防治、智能化管理以及\n农产品\n保鲜加工，都可能成为提升农业附加值的重要环节。在这方面，广东科技创新资源聚集，有充足的“技术进乡”条件。尤其对于具有明显季节性和地域特色的水果产业，采后处理技术和精深加工能力，能够帮助\n农产品\n突破鲜果销售的时间和空间限制，延长产业链条。\n再次，电商迭代，是农产品上行的“出山路”。技术有了，产品种出来了，还必须解决卖到哪里、怎样卖得更好的问题。陈小敏最初从淘宝网店起步，随后根据消费市场变化，将经营重心转向\n社区团购\n、精品水果店和\n新零售\n。\n互联网打破了传统农产品销售的地域限制，让小规模生产者有机会直接接触更广阔的消费市场。更重要的是，线上销售能够形成市场反馈，帮助生产者了解消费者偏好，进而调整品种、品质和产品结构。当电商与\n农产品加工\n、品牌建设、仓储\n物流\n结合起来，便有可能推动农业从单纯卖产品向提供多元化商品和服务转变。\n最后，道路畅通，是山货出村的“连通器”。陈小敏在采访中提到，过去村里的道路是泥路，下雨天车辆上下山容易打滑。政府修建\n水泥\n路后，荔枝、香蕉等农产品能够更加顺畅地运往市场。这条路虽然不长，却连接着果园和市场，也连接着农户的收入。\n这说明，要看到乡村基础设施建设背后的产业价值。对于农业生产而言，道路通畅意味着农资运输更加便利、农产品出村更加及时；对于电商经营而言，道路改善则为\n快递\n进村、\n物流\n配送和农产品外运创造了条件。特别是生鲜农产品，对运输时间和储存条件要求较高，交通、冷链和\n物流\n体系的完善，直接影响产品损耗和销售半径。\n可以看到，乡村产业发展并不是某一项政策、某一种技术或某一个创业者能独立完成的。人才回得来、货卖得出、技术用得上、路修得到位，四者协同，正是城乡要素双向流动的完整闭环。政府需要做好规划引导、公共服务和基础设施保障，市场主体则要发挥经营和创新能力，农户也应通过合作经营、就业参与等方式融入产业发展，让产业增值收益更多留在乡村、惠及农民。\n当然，\n乡村振兴\n最终要落到农民增收上。正如陈小敏所言：“只要我们能够实实在在赚到钱，年轻人就想回来了。我们一人富不算是富的，要家家富、村村富，才算是真的富。”让人才、技术、市场和基础设施等要素在乡村产业链条上形成合力，才能真正把资源优势转化为产业优势，让农业成为有奔头的富民产业。陈小敏的返乡创业经历，也为观察广东如何通过畅通要素流动、激活乡村产业提供了一个生动切口。\n（文章来源：21世纪经济报道）",
+      "text_hash": "4ad24e11fc090f0d0a6eacc734455da26d574bd51e4cf0ee52cc22076a036730",
+      "fetched_at": "2026-11-18T13:37:45.635619+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933878016.html",
+      "published_at": "2026-11-18T12:23:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:37:45.635639+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933878016.html",
+        "checked_at": "2026-11-18T13:37:45.635639+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:23"
+      }
+    },
+    "ac38e596ac4e56bb93ead35c3b62f890ea6ae8fdbe0f7c08029edd5a3bf52e97": {
+      "url": "https://finance.eastmoney.com/a/202611183933879852.html",
+      "status": "complete",
+      "full_text": "21世纪经济报道特约记者庞华玮\n11月16日，民生加银增强收益债券A单日净值下跌6.42%。基金吧里一片哗然：“20%的股票仓位，是怎么做到一天亏掉6个点的？”“我买的是债券基金吗？跌得跟股票基金一样狠。”\n这已是它连续第三个交易日下挫——11月12日跌3.01%，13日跌5.31%，16日跌6.42%。\n把时间拉长，截至11月16日，这只成立于2009年、走过17个年头的老牌债基，下半年以来累计跌幅达40.56%，而同期业绩基准仅下跌6.83%，跑输基准约34个百分点。\n这并非个别现象：下半年以来32只债券基金（初始份额口径，下同）累计跌幅超20%，121只跌逾10%。\n以“稳健”立身的债券基金，为何跌出了权益产品才有的心跳？\n一只“债基”的“股基化”迷途\n民生加银增强收益的法定身份是混合债券型二级基金。按照合同，这类产品以债券打底，用不超过20%的仓位投资股票与可转债做“收益增强”，风险定位为“低于股票型和混合型基金”——这类“固收+”产品一向被基金行业定义为“进可攻、退可守”的经典。\n但三季报显示，这只二级债基把“权益”空间用到了极致。股票端，仓位逼近20%的合同上限（占基金总资产18.40%），前十大重仓股依次为\n紫金矿业\n、\n寒武纪\n、\n海光信息\n、\n长鑫科技\n、\n中际旭创\n、\n北方华创\n、\n同花顺\n、\n生益科技\n、\n金诚信\n、\n兆易创新\n——除\n紫金矿业\n、\n金诚信\n带有资源属性外，其余八只主要涉及AI算力、光\n通信\n与\n半导体\n等科技方向。\n更关键的是债券端。65.91%的债券仓位集中于可转债，前五大债券持仓中有四只是可转债：精测转2、金诚转债、宙邦转债、微导转债，对应正股属于\n半导体\n检测、矿业、电解液、薄膜沉积设备等方向，整体偏向科技与资源上游，清一色是股性活跃的偏股型品种。可转债虽名为“债”，价格却紧跟正股起伏，业内戏称其为“穿着债衣的股票”。\n于是，一个“双重暴露”的结构成型：转债正股与股票端集中压在\n半导体\n/光模块上，一方面股票端重仓押注成长赛道，另一方面债券端又借高波动转债押注同一批科技资产。\n简单来说，这只产品表面分散于两类资产，底层却高度重叠，一旦科技股深度回调，便是“股债双杀”，没有任何缓冲。数据印证了这种脆弱：下半年以来，Wind半导体指数下跌50.65%，光模块（CPO）概念指数下跌53.37%，芯片指数下跌39.38%，基金净值随之快速回落。\n值得一提的是，这只债基长期在业绩基准上“名实错位”。直到2026年9月21日，该基金业绩基准才由单一的“中国债券\n综合\n指数收益率”，改为包含可转债指数与沪深300的复合基准——“中证可转换债券指数收益率×50%+中债-\n综合\n全价（总值）指数收益率×32%+沪深300指数收益率×18%”。此前多年，它一直以纯债指数为标尺，却实实在在承担着转债与成长股的双重敞口。\n戏剧性的是，这套激进打法曾在2025年登顶：该基金以35.89%的年度收益，在全市场4100多只债基中排名第二，同时位列二级债基第一。\n而2025年的出色业绩吸引了大批投资者，该基金的份额由2025年末的14.77亿份，增长至2026年一季度末的28.41亿份，增幅92.35%；同期，规模也由29.72亿元，增长至55.09亿元，增幅85.36%。\n不过，随着基金业绩回落，大批投资者用脚投票，2026年三季度末，该基金的份额缩水至16.87亿份，规模缩水至28.82亿元，较2026年一季度末高点时分别下降40.62%、47.69%。\n业内人士分析，从底层看，该基金股票仓位20%以下，属于中高波“固收+”，以\n电子\n、\n有色金属\n为主。今年上半年该基金大幅增加了\n电子\n行业仓位，\n电子\n行业占股票市值由年初的二成上升至六成。该基金三季度继续加仓电子、\n通信\n，这时期的操作属于半路抄底被埋。\n正所谓，成也科技，败也科技。当市场风格骤然切换，昔日的收益引擎，便成了净值“反噬”的源头。\n让人意外的是，掌舵人谢志华并非新手，而是一位拥有20年证券从业经验的固收老将，是民生加银基金首席投资官（固定收益）、混合资产投资部总监。\n这个事件中还有一个问题值得一提：民生加银增强收益的机构占比很高，超过了70%。\n“固收+”为何集体变成“固收-”？\n民生加银增强收益并非孤例。基金吧里不少人在感叹：“‘固收+’基金变‘固收-’基金。”\nWind数据显示，截至11月16日，下半年以来，全市场已有32只债券基金累计跌幅超20%，121只债券基金跌逾10%。其中，民生加银增强收益、华夏可转债增强、金鹰元丰、民生加银鑫享、南方昌元可转债、华富可转债、东方可转债、广发可转债、国泰可转债、上银慧恒收益增强等10只产品跌幅超过三成。\n值得注意的是，债基跌幅榜上清一色是可转债主题基金，以及重仓转债的一级、二级债基。这一次规模较大的债基产品也未能幸免：南方昌元可转债、华夏可转债增强、金鹰元丰截至三季度末规模分别约85亿元、50亿元、40亿元，南方广利回报规模更是达到272亿元。即便是没有直接股票仓位的一级债基也难逃暴跌命运——由谢志华管理的民生加银鑫享A，可转债占基金净值70%，其中不少可转债涉及科技赛道，下半年该基金净值跌幅也达35.43%。\n“固收+”基金包括二级债基（占大头）、一级债基与偏债混合型基金，与债基有部分重合。“固收+”在这一轮市场震荡中也表现欠佳。Wind数据显示，截至11月16日，下半年以来，全市场2018只“固收+”基金中，仅有567只取得正收益，占比28.10%。\n把这一批债基产品放在一起看，业内人士认为，有三大共性问题：\n其一，“固收+”的名实之辨。当“+”从“锦上添花”变成“孤注一掷”，债基或偏债混合型基金便悄然蜕变为披着债券外衣的行业主题基金。投资者冲着“稳健”而来，承担的却是集中押注单一赛道的剧烈波动，风险偏好与产品实际风险严重错配。\n其二，基准与考核的错位。以纯债指数为业绩标尺，却重仓权益资产，既让投资者误判风险，也让基金经理在排名压力下追逐高弹性的赛道行情。\n其三，“双重暴露”被系统性低估。股票与可转债同押一个板块，看似分散投资，实则风险同源。这是本轮回撤中最具迷惑性、也最致命的一环。\n（文章来源：21世纪经济报道）",
+      "text_hash": "663ff33576007ec2a29dcfacbfeb10d6282e9e6bfdba118752e9f0afd0484c56",
+      "fetched_at": "2026-11-18T13:38:06.189553+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933879852.html",
+      "published_at": "2026-11-18T11:56:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:38:06.189582+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933879852.html",
+        "checked_at": "2026-11-18T13:38:06.189582+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 11:56"
+      }
+    },
+    "c83d0fc66c56f19e87724a71602b97661c5816ded313f7f243512af4101b8194": {
+      "url": "https://finance.eastmoney.com/a/202611183933870183.html",
+      "status": "complete",
+      "full_text": "开放的磁场持续吸引全球资源。今天上午，第四十三批跨国公司地区总部和研发中心颁证仪式举行，30家跨国公司地区总部、15家外资研发中心获颁证书，在双向奔赴中积蓄创新动能。\n上海市商务委介绍，新一批地区总部和研发中心大多来自生物医药、集成电路、\n高端装备\n、\n汽车\n、时尚消费品等上海重点发展产业领域。领军企业多，7家世界500强企业设立地区总部或研发中心。能级水平高，包括5家亚太区总部、3家大中华区总部、2家事业部总部、4家全球研发中心和2家开放式创新平台。\n2026年1-9月，上海新设外资企业4720家，实际使用外资达到132亿美元，同比增长9.4%。新认定跨国公司地区总部48家、外资研发中心44家，至今年9月，累计分别达到1124家、680家，上海是外商投资的首选地之一、是跨国公司全球产业链和供应链布局的首选地之一。\n长期投入中国市场\n刚刚在“四叶草”完成进博会首秀，不到两周，皮尔法伯集团再次站在聚光灯之下，从上海市长的手中接过跨国公司地区总部的证书。皮尔法伯\n化妆品\n（中国）总经理高汀安（Antonin Godin）说，两场紧密衔接的重要时刻，共同印证了我们扎根中国、长期投入的坚定决心。\n“中国市场是皮尔法伯集团仅次于法国的第二大市场，未来有望成为第一大市场。我们有信心在未来6到7年，实现中国业务规模翻倍。”高汀安表示，在第九届进博会上，皮尔法伯集团与多家中国企业和\n医院\n达成合作，例如与晶泰科技共同探索AI驱动药物发现，牵手\n国药控股\n拓展肿瘤领域的协同布局，充分利用中国创新资源。\n随着中国区总部的挂牌，展台上的首发与投资，将通过总部职能转化为贯穿365天的持续效应。他表示，接下来，皮尔法伯将进一步完善品牌统筹、市场管理、创新孵化等区域总部职能。“我们将以上海为支点，打通集团亚太乃至全球网络，把来自中国市场的洞察向外传递。”\n从医用手术手套原料、家用门窗涂层到低气味\n环保\n胶带，作为全球领先的特种聚合物及高性能化工材料供应商，昕特玛（Synthomer）的特种材料已融入日常。“全球化工产业约50%的体量集中在中国，兼具强大的供应链、广阔的市场与丰富的创新机会，可以说中国是昕特玛全球战略中最重要的区域之一。”昕特玛中国区总经理刘萁说，昕特玛中国区总部已经建立了覆盖研发、生产、销售和技术服务的全方位本地化运营体系。\n“2024年，我们投资6000万元，在上海化工区‘创新绿洲’布局研发中心，紧邻自有工厂与上下游客户研发机构，产业协同优势突出。”刘萁透露，就在11月12日，昕特玛和中国民营企业巴德富集团成立合资公司，建立面向特种\n涂料\n市场的战略合作伙伴关系。依托本土供应链与运营优势，未来昕特玛将落地更多本土合作。\n“我们是一家来自西班牙的家族企业，2009年在上海普陀设立中国公司，这次被认定为中国区总部。”杰起起重设备有限公司总经理古仁德（Asier Bideguren）说着一口流利的中文，他曾是天津大学的交换生，已在中国生活了13年。说到近年来的发展机遇，他特别提到了航空保税维修的加速扩容。“我们为航空、\n汽车\n等自动化要求较高的行业提供起重设备。从2023年开始，全国不少自贸区开始建设飞机维修基地，为我们带来订单增量。杰起也会深化在中国、在上海的投资布局，坚持长期发展路线。”\n中国创新赋能全球\n凭借拜耳Co.Lab共创平台，拜耳获得了上海外资开放式创新平台认定。“我们曾在全球范围内寻找适合设立创新中心的地方，上海张江成为了这个不二之选。”拜耳集团处方药事业部副总裁、中国合作创新中心负责人黄丹洁博士表示。\n2024年9月，拜耳Co.Lab落地上海张江，依托上海丰富的生命科学创新资源和张江生物医药产业集群，汇聚不同技术路线和发展阶段的创新企业，促进创新资源协同与成果转化。“中国已成长为全球生物医药创新的重要策源地。作为长期扎根中国的跨国医药企业，拜耳始终深度融入这一创新进程，持续加强与本土创新伙伴的协同合作。”黄丹洁表示：“站在新起点，拜耳将助力更多源自中国的创新成果链接全球资源，共同构建开放协同、互利共赢的创新生态。”\n“安波福连接器业务亚太区总部及研发中心，统筹管理亚太区9个制造基地与5个研发中心，包括韩国、印度等市场，这是无可争议的领导地位。”安波福连接器系统事业部副总裁兼亚太区总经理沈国樑表示，中国不仅是全球最大的\n汽车\n市场，更是全球汽车创新最活跃的市场之一。安波福长期将研发和制造布局在中国，不只是服务中国市场，更是希望第一时间参与创新、定义产品，并将中国创新成果推广到全球。\n“上海基地是安波福全球最领先的制造中心。以连接器领域为例，约80%\n新能源\n汽车零部件\n在中国研发再推广到全球，而在燃油车时代，这个比例是倒过来的。”沈国樑说，目前上海基地正在重点应用工业大模型、\n数字孪生\n、工业智能体、具身智能\n机器人\n、多模态感知等技术，未来将把经验推广到更多海外基地，支持全球运营效率和制造能力提升。\n同样是“中国创新”加速走向全球，欧莱雅设立在上海的研发中心此次被认定为全球研发中心，恰是欧莱雅“全球芯”技术底座与“中国心”本土创新能力在上海加速沉淀、持续升级的直接体现。\n欧莱雅中国研发和创新中心副总裁白林（Xavier BLIN）介绍，2005 年，我们在上海设立欧莱雅中国研发和创新中心，经过20余年的发展已进入成熟阶段。目前欧莱雅集团在全球设有22个研发中心,中国研发中心是这一网络中的八大区域枢纽之一。\n“经过20余年的发展，中国研发中心已进入成熟阶段，实现前沿科技‘引进来’和‘走出去’。一方面是将全球顶尖技术快速引入中国市场，为消费者带来前沿产品，另一方面依托中国蓬勃发展的科创生态，联动本土初创企业、学界等多方力量，拓展研发边界与创新能力。”他表示，此次“全球研发中心”的认定,是对欧莱雅开放式创新的认可，而创新不止于好想法，还需要合适的生态，上海提供了这样的生态，我们也荣幸能支持上海建设国际科技创新中心的目标。\n（文章来源：上观新闻）",
+      "text_hash": "638243348a71b7ff419803fe3ee4de14d51014e629094fb6793b3e505851ef8b",
+      "fetched_at": "2026-11-18T13:38:26.803134+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933870183.html",
+      "published_at": "2026-11-18T12:55:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:38:26.803154+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933870183.html",
+        "checked_at": "2026-11-18T13:38:26.803154+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:55"
+      }
+    },
+    "a6452d1cfd3c1e79d86e9ea8f325eb18d15eee17b896b63d9d0eb705f8fc24dc": {
+      "url": "https://finance.eastmoney.com/a/202611183933881913.html",
+      "status": "complete",
+      "full_text": "11月16日，由中国社会科学\n出版\n社、中国经营报社联合主办的“再走长征路”系列丛书发布会在北京举行。此次发布的第一辑共三册，分别为《红色文化与文旅融合：长征沿线的融合实践》《“红飘带”上的产业振兴：长征沿线特色产业发展观察》《双向奔赴携手共富——协作帮扶结硕果》。\n中国社会科学院工业经济研究所所长、党委副书记陈彦斌表示，把《中国经营报》“再走长征路·见证新时代”重大主题报道结集\n出版\n，就是要将新闻现场沉淀为历史记录，将采访成果转化为持久的精神力量，引导更多人从长征精神中汲取奋进力量。\n今年是长征胜利90周年。这次重大主题报道5月15日从于都出发，10月16日到延安会师，历时5个月。5支采访分队20多名记者跨越11个省区，深入167个县，走访近千家各类市场主体，面对面访谈2000余人，推出700多篇图文报道、400多条视频报道。\n陈彦斌介绍，作为中国社会科学院主管、工业经济研究所主办的财经媒体，《中国经营报》组织开展这次报道，是工业经济研究所党委指导报社落实院党组部署、服务发展大局的一次具体实践。报社在采访团成立临时党小组，党员记者带头攻坚，各采访分队协同推进。\n在陈彦斌看来，这次报道没有停留在对红色历史的追忆，也没有把老区发展写成简单的成就清单。记者们把红色故事与发展故事有机结合起来，把历史纵深与经济观察深度融合起来。报道涉及红色文旅、特色产业、\n乡村振兴\n，同时关注东西部协作和中央单位对口帮扶，追问产业何以成长、群众如何受益、帮扶怎样形成长效机制。\n他特别提到报道对记者队伍的锻炼。“脚底有泥，心中才能有数；对人民有感情，笔下才能有力量。”5个月里，年轻记者在一线经风雨、见世面，在群众中找问题、找答案，脚力、眼力、脑力、笔力得到了实实在在的锻炼。\n对于丛书本身，陈彦斌认为，中国社会科学\n出版\n社与中国经营报社通力合作，对分散的报道进行系统梳理和编辑提升，使一线见闻有了更清晰的脉络，也让新闻作品增加了研究和阅读价值，是财经媒体与学术出版机构协同推出主题出版成果的一次有益探索。\n“图书出版不是给这项工作画上句号。”陈彦斌就下一步工作提出三点期望。\n一是把牢正确政治方向，在守正创新中担起主流媒体责任，坚持以内容建设为根本，创新融媒体产品，让有思想、有深度、有温度的报道触达更广泛的读者。\n二是深化“智库＋媒体”协同。工经所研究人员要与报社记者加强常态化合作，围绕革命老区振兴、区域协调发展、乡村全面振兴、特色产业培育、东西部协作等问题开展持续跟踪和比较研究，既总结可复制、可推广的经验做法，也正视制约发展的短板困难，提出有针对性的政策建议，服务“十五五”发展大局。\n三是坚持人民立场，把一次行走变成长期关注。老区振兴是一项长期事业，媒体的关注也不能止于一次集中采访。要选择一批有代表性的地区持续回访，看看产业有没有新的成长、群众生活有没有新的改善、发展中又出现了哪些新问题。\n“长征永远在路上，新闻工作永远在路上，哲学社会科学研究也永远在路上。”陈彦斌希望，这套图书能够让更多人读懂长征精神的时代价值，看见革命老区的发展变化。\n（文章来源：中国经营报）",
+      "text_hash": "7f480512c9e6e52293001dcbd80d617f752df0614ba25cd5c679a46c800b29cf",
+      "fetched_at": "2026-11-18T13:38:46.776460+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933881913.html",
+      "published_at": "2026-11-18T12:22:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:38:46.776478+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933881913.html",
+        "checked_at": "2026-11-18T13:38:46.776478+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:22"
+      }
+    },
+    "02af938cf3d69b86f1a3b8b016c69c297bf4625dbaed3a23cee132e926f01107": {
+      "url": "https://udn.com/news/story/120910/9723415",
+      "status": "complete",
+      "full_text": "1994 年 TVBS 開播的「2100 全民開講」，捧紅主持人李濤，而且建立鮮明的主持風格，被稱為「台灣的賴利金」。此外，「2100 全民開講」開啟\n電視\n觀眾 Call-In 現場互動的熱潮，培養許多民眾晚間看政論節目的收視習慣，稱霸近二十年，直到 2013 年才停播。\n「2100 全民開講」的一大特色是開放 Call-In，歡迎觀眾打電話到節目現場表達意見。由於許多觀眾撥電話打不進節目，為了即時反應民意，製作單位建置電腦語音調查系統，可同時容納一千通電話打來，讓觀眾透過電話鍵盤輸入支持或反對意見。例如「台灣能取代中華民國嗎？」這個議題，當時就由民進黨立委呂秀蓮與國民黨立委魏鏞展開辯論，火花四射，同時開放觀眾以電話投票。\n有別於老三台的傳統包袱，第四台的政論節目反而有更大的揮灑空間，大搶收視率。\n【同場加映】\n1994年底台北市長陳水扁為落實市民主義 舉行「與市民有約」\n1998年「扁帽工廠」開張！吸引年輕選票、開啟選舉文創小物風潮\n☞點我追蹤更多有趣的懷舊時光☜\n當時為了選舉，許多政治人物都想上「2100 全民開講」爭取選民支持。例如 1994 年底的首次北高市長選舉，台北市長候選人陳水扁是當時的媒體寵兒，他登上「2100 全民開講」，接受觀眾的電話質詢。另外，高雄市長候選人張俊雄在該節目上，公開坦承少年得志曾經發生婚外情，也讓「雙人枕頭」的爭議長期跟隨他的政治生涯。\n由於「2100 全民開講」的觀眾砲火猛烈，不同陣營立場的發言都有，相當考驗主持人李濤的臨場反應。另一方面，李濤也受惠於該節目的高收視率，奠定他在媒體的高知名度。\n全民開講 採用電腦語音調查系統\n千條熱線 民意更通暢\n1994-08-22/聯合晚報/10版/藝聞\n【本報記者/台北報導】\n在國外極為流行的電視民意調查，今晚要在TVBS無線衛星台「2100全民開講」節目中出現。觀眾除了可以透過原有電話專線打入現場反應外，還可以透過另一條可同時容納一千個電話打進來的「電腦語音調查系統」表達意見。\n開播以來就受到矚目的「全民開講」節目，主持人李濤及特別來賓常經由觀眾現場打進的電話反應而就主題進行討論。由於受到觀眾不斷表示打不通電話，製作單位乾脆增設語音調查系統，讓觀眾可以透過電話鍵盤輸入，表達支持或反對的意見。\n今天討論的是前幾集已受到觀眾熱烈反應的國名更改問題，「『台灣』能取代『中華民國』嗎？」節目將邀請原班人馬，民進黨立委呂秀蓮、國民黨立委魏鏞進行辯論。觀眾可使用這支全台通用，不需撥區域號碼的專線，「412-1111」，「全民開講」今晚9時播出。",
+      "text_hash": "435a4bc7fcff5373d8502d90d934bb7ac73f43e6e87aaab152f8d1c83e7df477",
+      "fetched_at": "2026-11-18T13:39:07.564988+08:00",
+      "extraction_method": "html:.article-content",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://udn.com/news/story/120910/9723415",
+      "published_at": "2026-11-18T08:30:07+08:00",
+      "published_at_verified_at": "2026-11-18T13:39:07.565009+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://udn.com/news/story/120910/9723415",
+        "checked_at": "2026-11-18T13:39:07.565009+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:30:07+08:00"
+      }
+    },
+    "a90ecc908b75ba82355f4c478d7c478dbe504d7558cb6e9c9a71ac94398c715b": {
+      "url": "https://www.khaama.com/canada-and-china-expand-tariff-relief-as-carney-and-xi-deepen-partnership-despite-u-s-pressure/",
+      "status": "complete",
+      "full_text": "Canada and China expand tariff relief as Carney and Xi deepen partnership despite U.S. pressure\nBy\nKhaama Press\nNovember 18, 2026\n54\n0\nShare\nFacebook\nX\nWhatsApp\nLinkedin\nEmail\nPrint\nTumblr\nTelegram\nImmigration News\nKabul Appoints Four More Diplomats to Afghanistan’s Missions in Germany\nNovember 17, 2026\nUS Charges Afghan Man With Forging Visa Documents for Friends and Family\nNovember 17, 2026\nUS Lawmaker Urges Extension of Protections for Afghans Who Helped American Forces\nNovember 17, 2026\nWhy Are Five EU Countries Turning to Rwanda to Deport Rejected Asylum Seekers?\nNovember 16, 2026\nCPJ Urges US to Release Afghan Journalist Facing Deportation\nNovember 14, 2026\nPakistan Arrests 13 Afghans, Including Eight Women, in Rawalpindi\nNovember 14, 2026\nKhaama Press\nhttps://www.khaama.com\nKhaama Press is a Kabul-based independent and non-political news organization established in 2010.\nCanadian Prime Minister Mark Carney (L) and Chinese President Xi Jinping (R) in a combination of file photographs from October 2025. Photo: Arif Kartono/AFP\nCanada and China agreed on Tuesday to cut tariffs on more of each other’s goods. Prime Minister Mark Carney met Chinese President Xi Jinping in Shenzhen ahead of the APEC summit.\nCarney’s office said China will give tariff relief on about C$400 million in Canadian exports, mostly frozen pork and seafood such as shrimp, sea cucumber and Greenland halibut. In return, Canada will extend its tariff remissions on some Chinese steel and aluminium products for two more years. It will also add 32 items that Canadian producers can’t supply in enough quantity. Ottawa’s broader 25 per cent surtax on Chinese steel and aluminium stays in place.\nThe leaders also announced a Canadian trade mission to China in 2027, new Air Canada flights from Vancouver to Guangzhou, and scholarships for 850 Canadian students. Ottawa says it has now restored access for more than 90 per cent of the trade hit by Chinese tariffs, worth nearly C$7.5 billion.\nBeijing’s readout of the meeting focused on the political relationship. Xi called for stronger political trust, wider cooperation in trade, energy and the digital economy, and joint support for the United Nations and the multilateral trading system. The readout did not mention the United States.\nPork producers welcomed the deal. Kyle Larkin of the Canadian Meat Council told CBC it was “a great step in the right direction.” The Canadian Steel Producers Association said the steel items covered are niche and should have little effect on domestic mills.\nCritics were less convinced. Conservative trade critic Stephanie Kusie wrote on X that Canadian values matter as much as trade. NDP MP Jenny Kwan urged Carney to raise foreign interference with Xi.\nWashington’s response was sharper. Before the meeting, Carney had said Canada could turn to Chinese automakers if trade talks with the U.S. failed. White House trade adviser Peter Navarro replied on X, asking whether Carney was “really threatening to play China off the U.S.” Carney has said this is not leverage. Ian Lee, a professor at Carleton University, told CTV News that Carney is “walking a very fine line” with Washington.\nThe thaw started in January, when Canada cut its tariff on Chinese electric vehicles from 100 per cent to 6.1 per cent in exchange for Chinese relief on canola and other farm goods. U.S. President Donald Trump then threatened 100 per cent tariffs on Canada if it made a deal with China. Canada-U.S. trade talks broke down in August.\nShare\nFacebook\nX\nWhatsApp\nLinkedin\nEmail\nPrint\nTumblr\nTelegram\nPrevious article\nBiden says he was told Kabul would hold for six months after US troops left\nNext article\nA New Congress Can Stop Washington From Underwriting Pakistan’s Generals\n- Advertisement -\nMore articles\nGoogle Warns Fully Autonomous AI Cyberattacks Could Emerge Within Three Months\nNovember 18, 2026\nNew James Bond Film Sparks Fierce Competition Among Luxury Brands\nNovember 18, 2026\nBahrain Air Defences Intercept Several Iranian Attacks\nNovember 18, 2026\nLEAVE A REPLY\nCancel reply\n- Advertisement -\nThe World News\nGoogle Warns Fully Autonomous AI Cyberattacks Could Emerge Within Three Months\nNovember 18, 2026\nNew James Bond Film Sparks Fierce Competition Among Luxury Brands\nNovember 18, 2026\nBahrain Air Defences Intercept Several Iranian Attacks\nNovember 18, 2026\nSonia Gandhi’s Memoir Sells 200,000 Copies in Less Than a Week\nNovember 17, 2026\nChina Warns of Technology Curbs in Response to EU Chip Export Restrictions\nNovember 17, 2026\nTrump Approval Rating Falls to 32%, Near Lowest Level\nNovember 17, 2026\nIran Exploring Dirty Bomb or Chemical Attack on Trump Officials, US Intelligence Warns\nNovember 17, 2026\nTrump Says He May Meet North Korea’s Kim Jong Un During China Visit\nNovember 17, 2026",
+      "text_hash": "31c3f5ca5387faf367d7192b8c5d83c6739ee3660a33e86c8ee16a2c2f8309f6",
+      "fetched_at": "2026-11-18T13:39:29.733710+08:00",
+      "extraction_method": "html:article",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.khaama.com/canada-and-china-expand-tariff-relief-as-carney-and-xi-deepen-partnership-despite-u-s-pressure/",
+      "publication_verification": {
+        "status": "conflict",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.khaama.com/canada-and-china-expand-tariff-relief-as-carney-and-xi-deepen-partnership-despite-u-s-pressure/",
+        "checked_at": "2026-11-18T13:39:29.733730+08:00"
+      }
+    },
+    "35e7ea771cd6e0c46b84cec8a93be53f88e2878f72b897f33d77a3caf5d5f6b2": {
+      "url": "https://www.ntdtv.com/b5/2026/11/17/a104151558.html",
+      "status": "complete",
+      "full_text": "美收緊AI芯片管制 三大渠道封堵中共獲算力\n北京時間：\n2026-11-18 07:59\n北京時間：\n2026-11-18 07:59\nFacebook\nTwitter\nEmail\nPrint\nFont Size\n簡體\n【新唐人北京時間2026年11月18日訊】美國正在進一步收緊\nAI芯片出口管制\n。商務部最近公布新規，要求新加坡、馬來西亞、泰國和印尼的數據中心，必須事先取得美國政府許可，才能購買英偉達等美國公司的先進AI芯片。專家分析，美國這次主要從\n芯片轉運\n、遠程租用算力，以及海外代工三個方面下手，堵住中企繞過出口管制的漏洞。\n這次\n美國商務部\n出台的新規，主要有三個方向：第一，打擊中共走私高端AI芯片；第二，限制中國企業透過租用海外數據中心取得芯片算力；第三，阻止中國芯片設計公司委託台積電等海外廠商代工生產先進AI芯片。\n美國經濟學者李恆青：「它後續的應用，估計是要把所有的應用都報商務部來批。像這一次，印尼受美國委託到新加坡去調查它的應用，結果就發現那個箱子都沒開啟，直接轉口，直接就轉運到中國去了。所以這一次一加強了以後，那肯定管用。」\n近年來，阿里巴巴、字節跳動等中國企業，透過海外數據中心租用\n英偉達芯片\n，遠程訓練AI模型。美國這次就是要堵住這條灰色渠道。\n國際投資機構顧問林修民：「透過這種不同地方的轉運，你可以限制它最終到中國境內。可是如果假設不去中國境內，它藉由繞到在東南亞或者像這一次焦點的新加坡，把芯片放在那邊，然後透過遠端的方式去取得算力，這個基本上等於是把芯片出口到中國是一樣的意思。所以這一次美國知道了這個漏洞的話，對於這件事情就把它補起來，當然能夠強制的去限制中（共）國未來使用先進算力。」\n這次受到關注的是新加坡公司Megaspeed。彭博社披露，阿里巴巴曾透過這家公司，使用部署在馬來西亞的\n英偉達芯片\n。11月16日，\n美國商務部\n和司法部證實，司法部正在對Megaspeed展開刑事調查，並警告將依法追究相關責任。\n分析認為，AI技術已經成為美國國家安全的重要議題，未來不論哪個政黨掌握國會，都會繼續收緊芯片出口管制。\n林修民：「我預期美國未來接下來，即使民主黨大勝，在民主黨或者是共和黨，他們對於美國的國家安全，都不會有任何的妥協。所以我認為，仍然會有更嚴格的出口管制，特別是AI芯片的出口管制會產生。」\n新唐人電視台記者懿馨、邱越採訪報導\n本文網址: https://www.ntdtv.com/b5/2026/11/17/a104151558.html\n相關文章\n美商務部出新規 五國成AI芯片重點監控區\n2026-11-17\n沈棟駁斥「賣給中國AI芯片讓它繼續落後」邏輯\n2026-11-16\n黃樂關聯企業投資DeepSeek 涉供應受限AI芯片\n2026-11-14\n名列美黑名單 中國大學被爆違禁購買AI芯片\n2026-11-12\n蘋果財報亮眼股價卻跳水 AI芯片巨頭集體狂飆\n2026-11-04\n涉轉運英偉達AI芯片伺服器至中國 美超微包商認罪\n2026-10-10\n【財經100秒】走私AI芯片到中國 加州科技老闆被捕起訴\n2026-10-03\n川習會倒數 台灣AI芯片美債四大焦點議題登場\n2026-09-18\n評論\n抱歉，評論功能暫時關閉！",
+      "text_hash": "900b36ea705d68029a5b329e26a573cdf2ab2c26fb68636bb477997519dfa296",
+      "fetched_at": "2026-11-18T13:39:50.218045+08:00",
+      "extraction_method": "html:.article_content",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.ntdtv.com/b5/2026/11/17/a104151558.html",
+      "published_at": "2026-11-18T07:59:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:39:50.218063+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.ntdtv.com/b5/2026/11/17/a104151558.html",
+        "checked_at": "2026-11-18T13:39:50.218063+08:00",
+        "method": ".time",
+        "source_value": "北京時間： 2026-11-18 07:59"
+      }
+    },
+    "b99576382a5b7ec2e149c8bed12b809931073b081b8c73f9d3d5dee45521b6ba": {
+      "url": "https://www.ntdtv.com/b5/2026/11/17/a104151557.html",
+      "status": "complete",
+      "full_text": "黃仁勳打破沉默喊「願回任」 市場買不買單？\n北京時間：\n2026-11-18 06:55\n北京時間：\n2026-11-18 06:55\nFacebook\nTwitter\nEmail\nPrint\nFont Size\n簡體\n【新唐人北京時間2026年11月18日訊】再來關注。\n英偉達\n前執行長\n黃仁勳\n已經被證實，即將出席美國國會多個委員會的閉門聽證。在面臨\n英偉達\n獨立調查之際，黃仁勳今天也打破沉默，表示願意回任CEO。\n前英偉達執行長\n黃仁勳\n，今天稍早發表了下台後的首次公開談話，他說如果董事會邀請，他願意重返執行長的崗位。\n不過，CNBC及路透社週一報導，英偉達董事會目前沒有考慮讓黃仁勳復職，也沒有相關的討論，而是在推進對黃仁勳的獨立調查。\n黃仁勳辭職後，呼籲他復職的「Stand With Jensen」請願活動網站，至截稿前，請願人數超過19萬人，超過十萬人自稱持有英偉達股票。這些身分資料都是自願申報，沒有經過獨立核實。\n部分投資者和企業管理專家則警告，如果在相關調查結束前讓黃仁勳復職，可能讓英偉達面臨新的法律和治理風險。也有部分投資人不看好黃仁勳回任的呼聲，並舉例蘋果與微軟，在長期領導人離開後，依舊能維持成長動能。\n黃仁勳即將在下個月1日，出席國會眾議院外交事務委員會、情報委員會，和對中共特別委員會的聽證會。\n委員會在今天的一份聲明中還指出，英偉達總法律顧問蒂姆·泰特（Tim Teter）則是會在2日出席聽證，預計都是\n閉門聽證會\n。\n不僅如此，參議院銀行委員會主席斯科特（Tim Scott），也已經傳喚黃仁勳，在3日出席公開聽證會。斯科特還要求商務部長盧特尼克在10日出面作證。\n黃仁勳在與疑似共諜的\n黃樂\n，爆出婚外情醜聞後，他與商務部長盧特尼克的關係，引發議員們擔憂，並質疑政府是否採取足夠力度，打擊英偉達\n高階芯片\n流向中共。\n美國副總統萬斯（2026.11.16）：「我們設有出口管制措施，但同時，也有各類企業想方設法繞過這些管制，試圖掩蓋它們正與中共開展合作的事實。」「我不知道，他（川普總統）也不知道，這個女人（\n黃樂\n）到底是不是間諜；但這不是問題的核心。核心在於，我們需要實現美國『再工業化』，並保護我們的關鍵技術和關鍵基礎設施。唯一方法就是在美國本土進行更多相關的建設，並防止這些技術和設施落入敵手。」\n與此同時，英偉達董事會今天成立「國家安全與出口管制監督委員會」，負責監督公司的國家安全政策、出口管制合規與全球貿易風險管理，並將聘請獨立外部專家，提供法律、國家安全及全球貿易合規方面的專業意見。\n至於黃樂丈夫康偉，稍早被踢爆在中國建立了龐大的數據中心業務網絡。\n《華爾街日報》週一報導，公開記錄顯示，康偉在安徽、四川兩個大型項目計畫投資合計高達95億美元，其中蕪湖項目受到中共地方政府在電力及基礎設施方面的支持。截至2026年4月，至少有一棟面積約50萬平方英尺的數據中心大樓登記竣工。\n報導指出，在康偉擴展中國數據中心業務的同時，黃樂則在海外通過Megaspeed，並利用黃仁勳的不倫關係，暗中建立英偉達\n高階芯片\n的供應渠道。\n新唐人電視台記者王姿懿美國報導\n本文網址: https://www.ntdtv.com/b5/2026/11/17/a104151557.html\n相關文章\n英偉達設立出口管制委員會 黃仁勳復職無望\n2026-11-17\n【禁聞】黃仁勳去職 黨媒擔憂衝擊尖端算力\n2026-11-18\n黃仁勳發聲明：願意回英偉達做執行長\n2026-11-18\n支持黃仁勳回鍋？OpenAI奧特曼首度公開表態\n2026-11-17\n黃仁勳突發短訊求救？台灣警方揭電詐新手法\n2026-11-17\n黃仁勳辭職內幕 美媒：盧比奧是關鍵推手\n2026-11-16\n【禁聞】獨家：黃仁勳是中共「天網專案」獵物之一\n2026-11-17\n黃仁勳離職 專家：美應防範中共多層次滲透\n2026-11-14\n評論\n抱歉，評論功能暫時關閉！",
+      "text_hash": "0ed29e188ce10e707a5a15ba2f08de25ac7af8f9201fdb540eac04184f662236",
+      "fetched_at": "2026-11-18T13:40:11.058464+08:00",
+      "extraction_method": "html:.article_content",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.ntdtv.com/b5/2026/11/17/a104151557.html",
+      "published_at": "2026-11-18T06:55:00+08:00",
+      "published_at_verified_at": "2026-11-18T13:40:11.058484+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.ntdtv.com/b5/2026/11/17/a104151557.html",
+        "checked_at": "2026-11-18T13:40:11.058484+08:00",
+        "method": ".time",
+        "source_value": "北京時間： 2026-11-18 06:55"
+      }
+    },
+    "9336cd816a6809312bcd6754b525d86509baa57459d8f88c41aa8b37d3ff541c": {
+      "url": "https://udn.com/news/story/6656/9885538",
+      "status": "complete",
+      "full_text": "國民黨、民眾黨去年於立法院推動「環境影響評估法」等法修正案三讀通過，當時民進黨台北市長候選人沈伯洋投下反對票。國民黨立委羅智強說，台北市長蔣萬安力阻翡翠水庫被鋪上光電板，若沈當選，經濟部會再度發函台北市政府，「盤點」翡翠水庫設光電板，大家相信背叛環保的沈，不會出賣翡翠水庫、出賣大台北的水給光電業者嗎？\n羅智強說，沈伯洋背叛環保、擁抱光電的鐵證在此。這樣的人，台北市民敢把翡翠水庫交給他？烏山頭水庫的光電板鋪設面積達11.5公頃，相當於16座足球場。羅問，這麼大的光電板，還坐落在供應民生用水的水庫上，有沒有進行環評？答案是：沒有。不用驚訝，這就是民進黨。\n羅智強表示，為了光電，逢山挖山、遇田毀田、樹擋砍樹，到處蓋光電，民進黨鑽法律漏洞，跳過環評，踐踏台灣大地，大發環境國難財，為光電業者開路。\n羅智強指出，以烏山頭水庫為例，民進黨政府跳過環境影響評估的藉口是「案址未位於重要濕地」。這是號稱愛環保、愛鄉土的民進黨，為了給光電業者開綠燈，竟然連環境影響評估都免了，直接出賣台灣的好山好水。\n羅智強提到，為了保護環境，堵住漏洞，國民黨和民眾黨在去年修正「環境影響評估法」等三法，修法明文規定，水面型光電設置或累積設置面積達5公頃，或裝置容量達 1 萬瓩（10MW），就須辦理環評。民進黨破壞環境，國民黨保護環境，這就是鐵的記錄。\n羅智強表示，只可惜法律不溯及既往，因為法律是在去年通過的，所以沒有辦法保護烏山頭水庫，不受民進黨圖利光電業者的黑手染指。\n羅智強說，為什麼2022年到2024年，連續三年，民進黨執政下的經濟部，都來函詢問翡翠水庫可不可以設光電板，去年開始就不問了嗎？有三個原因，第一，台北市政府連續三年SAY NO；第二，蔣萬安去年在議會公開表態，絕對不准在翡翠水庫設光電板；第三，因為依去年通過的環評法等三法，超過5公頃面積、或者裝置容量達 1 萬瓩以上的水面型光電，這些水面型光電，必須通過環評。\n羅智強表示，卓榮泰就是找藉口。經濟部不是佛心來了，忽然不問了。而是因為上面三個原因，不敢再問。去年在表決環評法等三法的修法，要求面積達5公頃，或裝置容量達1萬瓩（10 MW）的水面型光電必須環評時，沈伯洋、蘇巧慧、何欣純、賴瑞隆、陳亭妃、劉建國、陳素月、王美惠、蔡易餘、陳瑩等投下了「反對票」，「沈伯洋們」在表決時投下反對票的那一刻，就是台灣大地、台灣水庫、台灣環保的叛徒。\n羅智強說，民進黨立法院黨團事後痛批這項保護環境的修法「法規失去彈性，妨礙綠電供給」。賴瑞隆更公然為光電業者護航，痛批環評修法水面型光電要環評是「限縮台灣綠電產業的發展，反而對台不利」，還要求經濟部再提修法版本，推翻在野黨通過的法律，而經濟部長龔明鑫也當場同意再提修法版本。民進黨眾立委們，赤裸裸地把自己活成了「光電門神」、「環保殺手」。\n羅智強提到，他可以做出三個預言，第一，如果民進黨國會再次恢復多數，民進黨的「賴瑞隆們」就會刪除環評法中面積達5公頃的水面型光電要環評的法律，為光電業者剷除路障；第二，如果沈伯洋當選台北市長，經濟部會再度發函台北市政府，「盤點」翡翠水庫設光電板。\n羅智強續指，第三，沈伯洋會說「尊重經濟部的意見」。翡翠水庫就會和烏山頭水庫一樣，鋪上光電板。這也是為什麼，即便台北市民反彈極大，沈伯洋在第一時間不是說「和蔣萬安一樣堅決反對翡翠水庫設光電板」，而是回答：「尊重經濟部的意見。」因為沈不敢得罪光電業者。\n羅智強表示，因為沈伯洋知道，經濟部只是「暫時」不再發函問翡翠水庫要不要設光電。因為沈伯洋知道，只要民進黨恢復國會多數，「賴瑞隆們」就會推翻在野黨的修法，讓水面型光電免環評。\n羅智強說，沈伯洋若選上台北市長，只要經濟部再度發函，他還是可以說他「尊重經濟部的意見」，然後讓翡翠水庫上面蓋上大片光電。\n羅智強喊話，600萬的大台北地區市民們，大家還覺得蔣萬安連續拒絕經濟部詢問水庫蓋光電不重要嗎？沒有蔣萬安的拒絕，翡翠水庫根本等不到去年環評法修法，就已經和烏山頭水庫一樣，鋪上光電板了。大家還相信，若在環評法修法時背叛環保的沈伯洋，當上台北市長不會出賣翡翠水庫、出賣大台北的水給光電業者嗎？\n2026九合一選舉\n2026縣市長選舉倒數！看22縣市完整參選名單\n選舉查詢器／你家選區有誰參選里長？\n1128投票攻略！從領票、圈票到投票，一起實境演練\n2026九合一選舉\n新北市選舉\n【即將截止】登入簽到\n【即將截止】簽到有禮\n現在還來得及！最後機會🚀\n每日簽到送 LINE 點數\n玩遊戲抽 7-11 禮券🎁\n現在還來得及！最後機會🚀\n每日簽到送 LINE 點數\n玩遊戲抽 7-11 禮券🎁\n立即登入\n立即前往",
+      "text_hash": "1283b8428d9665e16329e7204fcbd88af2dd06a87d7490743905460ef598354c",
+      "fetched_at": "2026-11-18T13:40:11.784487+08:00",
+      "extraction_method": "html:.article-content",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://udn.com/news/story/6656/9885538",
+      "published_at": "2026-11-18T08:30:41+08:00",
+      "published_at_verified_at": "2026-11-18T13:40:11.784505+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://udn.com/news/story/6656/9885538",
+        "checked_at": "2026-11-18T13:40:11.784505+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:30:41+08:00"
+      }
+    },
+    "6f85ddb20ef0f5f0ed9a5e13f08005494fb1ee984783fc922bdca993dcac3672": {
+      "url": "https://www.richmondandtwickenhamtimes.co.uk/news/national/26735858.ukraine-strikes-major-russian-bridge-aerial-attacks-escalate/",
+      "status": "unavailable",
+      "reason": "restricted_article",
+      "attempted_at": "2026-11-18T13:36:42.781804+08:00",
+      "retry_after": "2026-11-19T13:36:42.781804+08:00"
+    },
+    "91b0b5407a136013244119386aec709ce324a30b3aaa446fd5d61b8031189321": {
+      "url": "https://www.son.tv/thalatta-yeni-karar-ticaret-bakanligi-8-ulkeden-ithal-edilen-ipliklere-yonelik-damping-onlemlerini-surdurecek/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T13:36:42.781804+08:00",
+      "retry_after": "2026-11-19T13:36:42.781804+08:00"
+    },
+    "ff3e16d0adf994687b564599b83ecba2896d60550b78105c06057362304b02d7": {
+      "url": "https://www.163.com/dy/article/LBUN8BEJ0556J7FF.html",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T13:36:42.781804+08:00",
+      "retry_after": "2026-11-19T13:36:42.781804+08:00"
+    },
+    "c522a68623e705abfa169fa9edfae07959ea2b5d6d5a254166bbc0c7e22799ad": {
+      "url": "https://www.lebanondemocrat.com/maconcounty/news/national/44-cool-finds-for-holiday-hosting-that-make-entertaining-easier/article_e7177c21-76dc-595c-b3ae-1cd2324b55b0.html",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T13:36:42.781804+08:00",
+      "retry_after": "2026-11-19T13:36:42.781804+08:00"
     }
   },
   "hosts": {
@@ -2780,7 +3024,10 @@
     "www.bbc.co.uk": "2026-11-19T11:35:15.282176+08:00",
     "www.ecb.europa.eu": "2026-11-19T11:35:15.282176+08:00",
     "www.federalreserve.gov": "2026-11-19T11:35:15.282176+08:00",
-    "www.eia.gov": "2026-11-19T11:35:15.282176+08:00"
+    "www.eia.gov": "2026-11-19T11:35:15.282176+08:00",
+    "www.son.tv": "2026-11-19T13:36:42.781804+08:00",
+    "www.163.com": "2026-11-19T13:36:42.781804+08:00",
+    "www.lebanondemocrat.com": "2026-11-19T13:36:42.781804+08:00"
   },
   "protocol_migration": {
     "host": "finance.eastmoney.com",
