@@ -126,6 +126,14 @@ function runFrontendChecks(source) {
   check('invalid stock prediction array is rejected before rendering',()=>{const r=requestFixture([{status:200,body:{...d,equity_forecast:{stocks:{}}}}]);ok(r.error.message.includes('equity_forecast.stocks'));});
   check('fallback dashboard is validated too',()=>{const r=requestFixture([{status:404},{status:200,body:{market:[],sectors:[]}}]);eq(r.calls.length,2);ok(r.error);});
 
+  check('one damaged baseline section retains only its previous value',()=>{
+    const next={...d,market:[{id:'fresh-index'}],news:{invalid:true}};
+    const partial=api.validateSnapshot(next,d);
+    eq(partial.news,d.news);eq(partial.market[0].id,'fresh-index');eq(partial.unavailable_sections[0],'资讯');
+    const cold=api.validateSnapshot(next,null);eq(cold.news,undefined);eq(cold.market[0].id,'fresh-index');
+    eq(api.validateSnapshot({...next,news:[]},partial).unavailable_sections,undefined);
+  });
+
   const closeForecast={schema_version:1,status:'ready',model_id:'daily-research-20261117',issued_at:'2026-11-17T01:00:00+08:00',trained_at:'2026-11-17T00:50:00+08:00',target_date:'2026-11-18',target:'next_close_return_pct',unit:'percentage_points',mae_target:.1,
     evaluation:{historical_research:true,note:'历史回溯研究，未来表现待结算',market:{mae_pct:.5,baseline_mae_pct:.6,target_met:false},sector:{mae_pct:1.2,baseline_mae_pct:1.3,target_met:false}},
     market:Array.from({length:6},(_,i)=>({id:'index'+i,name:'预测指数'+i,reference_date:'2026-11-17',reference_close:3000,predicted_return_pct:i===0?0:.2,predicted_close:3006,validation_mae_pct:.5,model_family:'ridge'})),
@@ -249,7 +257,7 @@ async function runRefreshChecks(source) {
   }
   const program = source.replace(/^refresh\(\);$/m, '') + `
     render=()=>onRender();
-    return {refresh,refreshFeed,feeds,publications,state,normalizeDashboard,baseData,responseError};
+    return {refresh,refreshFeed,pollFeed,quietQuoteSession,feeds,publications,state,normalizeDashboard,baseData,responseError};
   `;
   const api = new Function('document','location','history','localStorage','window','setInterval','fetch','onRender', program)(
     doc,{hash:'#news'},{},{getItem:k=>k==='guanlan.preferences'?'{"autoRefresh":false}':null},
@@ -284,6 +292,32 @@ async function runRefreshChecks(source) {
   const countBefore = requests.length;
   for(const timer of intervals)timer.fn();
   assert.equal(requests.length,countBefore);
+
+  // A same-day server-confirmed break reduces only quote polling and automatically
+  // releases the throttle on the first scheduled poll after the local session opens.
+  const quoteSpec=api.feeds.find(feed=>feed.key==='liveQuotes');
+  assert.equal(quoteSpec.interval,5000);
+  const liveTask=api.publications.get(quoteSpec.key);
+  const stamp=time=>Date.parse(today+'T'+time+'+08:00');
+  const quiet={source:'sxdata_relay',schema_version:1,trade_date:today,market:[],sectors:[],
+      generated_at:today+'T11:30:00+08:00',collector:{session:'midday_break'}};
+  liveTask.retryAt=0;
+  replies.set('live-quotes.json',json(quiet,200,{ETag:'lunch'}));
+  await api.refreshFeed(quoteSpec);
+  liveTask.lastStartedAt=stamp('12:58:00');
+  const beforeLunchPoll=requests.length;
+  await api.pollFeed(quoteSpec,stamp('12:59:54'));
+  assert.equal(requests.length,beforeLunchPoll);
+  await api.pollFeed(quoteSpec,stamp('13:00:00'));
+  assert.equal(requests.length,beforeLunchPoll+1);
+  await api.refreshFeed(quoteSpec);
+  assert.equal(requests.length,beforeLunchPoll+2);
+  const quoteAt=(phase,trade_date=today)=>({...quiet,trade_date,collector:{session:phase}});
+  assert.equal(api.quietQuoteSession(quoteAt('midday_break'),stamp('11:29:00')),false);
+  assert.equal(api.quietQuoteSession(quoteAt('closed',yesterday),stamp('09:30:00')),false);
+  assert.equal(api.quietQuoteSession(quoteAt('pre_open'),stamp('09:30:00')),false);
+  assert.equal(api.quietQuoteSession(quoteAt('post_close'),stamp('15:00:00')),true);
+  assert.equal(api.quietQuoteSession(quoteAt('closed'),stamp('14:00:00')),true);
 
   const before = api.state.cloudNews;
   replies.set('cloud-news.json',json(null,429,{'Retry-After':'600'}));

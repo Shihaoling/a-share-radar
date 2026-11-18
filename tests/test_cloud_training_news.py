@@ -93,6 +93,38 @@ class HistoricalNewsTests(unittest.TestCase):
         self.assertEqual(records[0]["end_at"], records[1]["begin_at"])
         self.assertEqual(news.progress(self.db)["days"][0]["audited_windows"], 0)
 
+    def test_recent_empty_day_rechecked_after_delay_and_late_content_is_retained(self):
+        self.collect([])
+        self.assertEqual(news.progress(self.db)["pending_late_checks"], 1)
+        self.now += timedelta(hours=2)
+        self.collect([])
+        self.assertEqual(self.client.request.call_count, 1)
+        self.now += timedelta(hours=5)
+        self.collect([self.article()])
+        self.now += timedelta(hours=12)
+        self.collect([])
+        self.assertEqual(self.client.request.call_count, 2)
+        progress = news.progress(self.db)
+        self.assertEqual((progress["collected"], progress["audited_days"], progress["pending_late_checks"]), (1, 1, 0))
+
+    def test_old_empty_windows_are_not_added_to_the_late_queue(self):
+        self.now += timedelta(days=12)
+        self.collect([])
+        self.now += timedelta(hours=8)
+        self.collect([])
+        self.assertEqual(self.client.request.call_count, 1)
+        self.assertEqual(news.progress(self.db)["pending_late_checks"], 0)
+
+    def test_recent_partial_window_can_recover_after_ordinary_retries_are_exhausted(self):
+        for _ in range(3):
+            self.collect([self.article(), self.article({"bad": "title"})])
+            self.now += timedelta(hours=1)
+        self.assertEqual(self.window()["state"], "unverified")
+        self.now += timedelta(hours=7)
+        self.collect([self.article(), self.article("晚到的更正")])
+        self.assertEqual(self.window()["state"], "complete")
+        self.assertEqual(news.progress(self.db)["collected"], 2)
+
     def test_shared_cooldown_does_not_charge_a_window_attempt_or_retry_early(self):
         self.client.count = 0
         self.client.request.side_effect = news._Failure("rate_limited", 7200)

@@ -86,6 +86,68 @@ class CloudNewsTests(unittest.TestCase):
         self.assertEqual(news.checkpoint(self.db, "coverage_end"), NOW.replace(hour=11, minute=30).isoformat())
         self.assertEqual(self.db.execute("SELECT count(*) FROM articles").fetchone()[0], 1)
 
+    def test_delayed_publication_after_429_and_empty_reply_is_collected_analysed_and_published(self):
+        news.save_article(self.db, report("cached", body="", published_date=NOW.date().isoformat()))
+        news.set_checkpoint(self.db, "coverage_end", NOW.isoformat())
+        published = NOW-timedelta(minutes=10)
+        windows = []
+        def upstream(api, params):
+            windows.append(params)
+            if len(windows) == 1:
+                raise news._Failure("rate_limited", 1200)
+            if len(windows) == 2 or not (params["start_date"] <= published.strftime("%F %T") <= params["end_date"]):
+                return []
+            return [{"datetime":published.isoformat(), "content":"迟到快讯的完整正文",
+                     "title":"迟到发布的市场快讯", "channels":""}]
+        client = Mock()
+        client.request.side_effect = upstream
+        with patch.object(news, "relay_client", return_value=nullcontext(client)):
+            for minutes in (0, 2, 20, 40):
+                now = NOW+timedelta(minutes=minutes)
+                news.shanghai_now.return_value = now
+                news.collect(self.db, now)
+                feed = self.feed(now)
+                if minutes<40:
+                    self.assertEqual([article["id"] for article in feed["articles"]], ["cached"])
+        self.assertEqual(len(windows), 3)
+        self.assertEqual(feed["collector"]["coverage_end"], now.isoformat())
+        def infer(item, cfg, key, **kwargs):
+            if "digest_articles" in item:
+                return kwargs["validator"]({"summary":"迟到快讯已于本轮纳入总览", "positives":[], "risks":[], "watch":[]})
+            return {"summary":"根据快讯正文生成摘要", "sector_impacts":[]}
+        with patch.object(news, "infer_article", side_effect=infer):
+            news.analyze(self.db, now, 2)
+        final = self.feed(now)
+        restored = next(item for item in final["articles"] if item["id"] != "cached")
+        self.assertEqual(restored["published_at"], published.isoformat())
+        self.assertEqual(restored["first_seen_at"], now.isoformat())
+        self.assertEqual(restored["llm_status"], "ready")
+        self.assertEqual(final["news_digest"]["article_count"], 1)
+
+    def test_long_outage_across_midnight_alternates_latest_headlines_with_late_prior_day(self):
+        now = NOW.replace(hour=2)
+        cursor = now-timedelta(hours=3)
+        news.set_checkpoint(self.db, "coverage_end", cursor.isoformat())
+        late = cursor-timedelta(minutes=20)
+        windows = []
+        def upstream(api, params):
+            windows.append(params)
+            published = now if len(windows) == 1 else late
+            self.assertLessEqual(params["start_date"], published.strftime("%F %T"))
+            self.assertGreaterEqual(params["end_date"], published.strftime("%F %T"))
+            return [{"datetime":published.isoformat(), "content":"来源正文",
+                     "title":"当天即时快讯" if len(windows)==1 else "前一日迟到快讯", "channels":""}]
+        client = Mock()
+        client.request.side_effect = upstream
+        with patch.object(news, "relay_client", return_value=nullcontext(client)):
+            news.collect(self.db, now)
+            news.collect(self.db, now+timedelta(minutes=20))
+        result = self.feed(now+timedelta(minutes=20))
+        self.assertEqual([item["title"] for item in result["articles"]], ["当天即时快讯"])
+        self.assertEqual([item["title"] for item in result["recent_articles"]], ["前一日迟到快讯"])
+        self.assertEqual(result["collector"]["coverage_end"], (cursor+timedelta(hours=1)).isoformat())
+        self.assertEqual(client.request.call_count, 2)
+
     def test_one_second_saturation_records_the_gap_and_allows_later_news_through(self):
         news.set_checkpoint(self.db, "collect_next_start", NOW.isoformat())
         news.set_checkpoint(self.db, "collect_next_end", NOW.isoformat())

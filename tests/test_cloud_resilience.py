@@ -4,12 +4,14 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
+import sqlite3
 import sys
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import Mock, patch
 
 from pipeline import minimax_news
+from pipeline import data_service
 
 with patch.object(sys, "path", [str(Path(__file__).resolve().parents[1] / "deploy/tencent-preview"), *sys.path]):
     import market_daily
@@ -17,6 +19,19 @@ with patch.object(sys, "path", [str(Path(__file__).resolve().parents[1] / "deplo
 
 
 class CloudResilienceTests(unittest.TestCase):
+    def test_five_second_pacing_applies_only_between_two_live_quote_requests(self):
+        with TemporaryDirectory() as root, patch.dict(os.environ, {
+            "RADAR_SERVICE_GATE_FILE": str(Path(root) / "gate.json")
+        }), patch.object(data_service.time, "time", return_value=100):
+            data_service.sent("rt_idx_k")
+            self.assertEqual(data_service.gate_state("rt_k", 5)[1], 5)
+            self.assertEqual(data_service.gate_state("news", 5)[1], 6)
+            self.assertEqual(data_service.gate_state("rt_k")[1], 6)
+            data_service.sent("news")
+            self.assertEqual(data_service.gate_state("rt_idx_k", 5)[1], 6)
+            data_service.failed("news", 120, host=True)
+            self.assertEqual(data_service.gate_state("rt_idx_k", 5)[0], 120)
+
     def test_minimax_quota_is_shared_until_retry_after(self):
         with TemporaryDirectory() as root, patch.dict(os.environ, {
             "RADAR_MINIMAX_COOLDOWN_DB": str(Path(root) / "new/guard.sqlite3")
@@ -61,6 +76,39 @@ class CloudResilienceTests(unittest.TestCase):
         market_daily.merge_daily({"market":[entity]}, {"bars":{}, "stocks":{}, "market_caps":{"m":{"2026-11-16":10}}})
         self.assertEqual(entity["market_cap"], 20)
         self.assertEqual(len(entity["market_cap_history"]), 2)
+
+    def test_preopen_retries_previous_session_and_recomputes_only_after_receipt(self):
+        now = datetime.fromisoformat("2026-11-19T08:41:00+08:00")
+        with TemporaryDirectory() as root, patch.dict(os.environ, {"CREDENTIALS_DIRECTORY": root}):
+            folder = Path(root)
+            (folder/"sxdata-token").write_text("fixture")
+            source = folder/"view.json"
+            source.write_text(json.dumps({"market":[{"id":"sh000001"}], "sectors":[]}))
+            client = Mock()
+            bar = dict(ts_code="000001.SH",trade_date="20261118",open=10,high=11,low=9,close=10,
+                       pre_close=10,change=0,pct_chg=0,vol=1,amount=10)
+            client.request.side_effect = lambda api, params: [bar] if api=="index_daily" else []
+            output = folder/"models.json"
+            output.write_text(json.dumps({"daily_forecast":{"status":"pending"}}))
+            with patch.object(market_daily,"SOURCE",source), patch.object(market_daily,"OUTPUT",folder/"daily.json"), \
+                 patch.object(market_daily,"shanghai_now",return_value=now), \
+                 patch.object(market_daily,"relay_client",return_value=nullcontext(client)), \
+                 patch.object(cloud_models,"SOURCE",source), patch.object(cloud_models,"OUTPUT",output), \
+                 patch.object(cloud_models,"STATE",folder), patch.object(cloud_models,"shanghai_now",return_value=now), \
+                 patch.object(cloud_models,"update_daily_forecasts",side_effect=lambda d,*args:{**d,"daily_forecast":{"status":"ready"}}) as forecast, \
+                 patch.object(cloud_models,"update_direction_probabilities",side_effect=lambda d,*args:{**d,"direction_probability":{"status":"ready"}}):
+                cloud_models.main()
+                forecast.assert_not_called()
+                market_daily.refresh()
+                recovered = market_daily.read_daily()["bars"]["sh000001"]["2026-11-18"]
+                self.assertEqual(recovered["fetched_at"], now.isoformat())
+                self.assertEqual(client.request.call_args_list[0].args[1]["end_date"], "20261118")
+                cloud_models.main()
+                cloud_models.main()
+                forecast.assert_called_once()
+                self.assertEqual(json.loads(output.read_text())["daily_forecast"]["status"],"ready")
+                with sqlite3.connect(folder/"model/inputs.sqlite3") as db:
+                    self.assertEqual(db.execute("SELECT count(*) FROM factors").fetchone()[0],0)
 
     def test_model_factors_only_use_dated_current_nonrumor_articles(self):
         now = datetime.fromisoformat("2026-11-18T14:00:00+08:00")

@@ -1,7 +1,7 @@
 """Post-close research using read-only model assets and confirmed SXData rows."""
 
 from copy import deepcopy
-from datetime import time
+from datetime import time, timedelta
 import json
 import math
 import os
@@ -88,24 +88,43 @@ def refresh_members(dashboard, token, now, cache):
 
 def fetch_flows(token, now, previous, stocks):
     date = now.date().isoformat()
-    if now.time()<time(19) or previous.get("trade_date")==date:
+    if now.time()<time(19) or not stocks:
         return previous
+    today = previous.get("trade_date") == date
+    values = {symbol: row.copy() for symbol, row in previous.get("stocks", {}).items()
+              if today and symbol in stocks}
+    # Only stocks with an actual net flow support the figure shown on the site.
+    covered = sum(row.get("net_mf_amount") is not None for row in values.values())
+    same_run_day = previous.get("target_date") == date
+    attempts = previous.get("attempts", 0) if same_run_day else int(today)
+    state = {**previous, "target_date": date, "eligible_stocks": len(stocks),
+             "covered_stocks": covered, "attempts": attempts}
+    if covered == len(stocks):
+        return {**state, "status": "ready"}
+    if attempts >= 3 or (same_run_day and (previous.get("retry_after") or "") > now.isoformat()):
+        return state
     FIELDS["moneyflow"] = "ts_code,trade_date,net_mf_amount,buy_lg_amount,sell_lg_amount"
     try:
         with relay_client(token,timeout=20) as client:
             rows = client.request("moneyflow", {"trade_date":now.strftime("%Y%m%d")})
     except _Failure as error:
-        return {**previous,"status":error.code}
-    values = {}
+        return {**state, "status": error.code, "attempts": attempts + int(not error.deferred),
+                "retry_after": (now+timedelta(seconds=max(60,error.retry_seconds))).isoformat()}
     for row in rows:
         symbol = row["ts_code"]
-        if symbol not in stocks or row["trade_date"]!=now.strftime("%Y%m%d"):
+        if not isinstance(symbol,str) or symbol not in stocks or row["trade_date"]!=now.strftime("%Y%m%d"):
             continue
         fields = {key: value for key,value in row.items() if key.endswith("_amount")
                   and type(value) in (int,float) and math.isfinite(value)}
         if fields:
-            values[symbol] = fields
-    return {"status":"ready","trade_date":date,"unit":"CNY_10000","stocks":values} if values else {**previous,"status":"empty"}
+            values.setdefault(symbol, {}).update(fields)
+    if values:
+        state.update(trade_date=date, unit="CNY_10000", stocks=values)
+    covered = sum(row.get("net_mf_amount") is not None for row in values.values())
+    complete = covered == len(stocks)
+    state.update(status="ready" if complete else "partial" if values else "empty", covered_stocks=covered,
+                 attempts=attempts+1, retry_after=None if complete else (now+timedelta(minutes=20)).isoformat())
+    return state
 
 
 def attach_quotes(dashboard, daily, now):

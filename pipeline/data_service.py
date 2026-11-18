@@ -50,23 +50,30 @@ def _edit_gate():
         _save(state)
 
 
-def gate_state(api):
+REALTIME_BATCHES = frozenset({"rt_idx_k", "rt_k"})
+
+
+def gate_state(api, min_interval=6):
     state = _read()
     now = time.time()
     host_until = state.get('host_until', 0)
     api_until = state.get('apis', {}).get(api, 0)
     reason = (state.get('host_code') if host_until >= api_until
               else state.get('api_codes', {}).get(api))
-    return max(0, max(host_until, api_until)-now), max(0, 6-(now-state.get('last', 0))), reason or 'rate_limited'
+    # A news, history or legacy request on either side keeps its original spacing.
+    gap = 5 if (min_interval <= 5 and api in REALTIME_BATCHES
+                and state.get('last_api') in REALTIME_BATCHES) else 6
+    return max(0, max(host_until, api_until)-now), max(0, gap-(now-state.get('last', 0))), reason or 'rate_limited'
 
 
 def gate_delay(api):
     return gate_state(api)[:2]
 
 
-def sent():
+def sent(api=None):
     with _edit_gate() as state:
         state['last'] = time.time()
+        state['last_api'] = api
 
 
 def failed(api, seconds=60, host=False, *, code='rate_limited'):

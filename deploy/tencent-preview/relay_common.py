@@ -22,7 +22,7 @@ def relay_guard():
 
 
 @contextmanager
-def relay_client(token, *, timeout=8):
+def relay_client(token, *, timeout=8, min_gap_seconds=6):
     with relay_guard():
-        yield _Client(token, {"max_requests": 1, "min_interval_seconds": 6,
+        yield _Client(token, {"max_requests": 1, "min_interval_seconds": min_gap_seconds,
                               "timeout_seconds": timeout, "budget_seconds": timeout + 7}, shanghai_now())

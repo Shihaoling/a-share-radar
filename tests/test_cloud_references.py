@@ -20,6 +20,42 @@ OLD = (NOW - timedelta(days=30)).isoformat()
 
 
 class ReferenceRotation(unittest.TestCase):
+    def test_late_flows_merge_without_losing_prior_fields_or_counting_preblocked_calls(self):
+        now = NOW.replace(hour=19)
+        stocks = {"000001.SZ","000002.SZ"}
+        def row(symbol, **fields):
+            return {"ts_code":symbol, "trade_date":now.strftime("%Y%m%d"), **fields}
+        prior = {"trade_date":"2026-11-18", "stocks":{"000001.SZ":{"net_mf_amount":6}}}
+        client = Mock()
+        client.request.side_effect = [
+            research._Failure("rate_limited", 120, deferred=True),
+            [],
+            [row("000001.SZ", net_mf_amount=0, buy_lg_amount=3)],
+            [row("000001.SZ", sell_lg_amount=2), row("000002.SZ", net_mf_amount=1)],
+        ]
+        with patch.object(research, "relay_client", return_value=nullcontext(client)):
+            for offset, status, covered, attempts in [
+                (0,"rate_limited",0,0), (1,"rate_limited",0,0), (3,"empty",0,1),
+                (15,"empty",0,1), (25,"partial",1,2), (50,"ready",2,3), (80,"ready",2,3),
+            ]:
+                prior = research.fetch_flows("fixture",now+timedelta(minutes=offset),prior,stocks)
+                self.assertEqual((prior["status"],prior["covered_stocks"],prior["attempts"]),(status,covered,attempts))
+                if not covered:
+                    self.assertEqual(prior["trade_date"],"2026-11-18")
+        self.assertEqual(client.request.call_count,4)
+        self.assertEqual(prior["stocks"]["000001.SZ"],{"net_mf_amount":0,"buy_lg_amount":3,"sell_lg_amount":2})
+
+    def test_persistently_incomplete_flow_uses_only_three_daily_calls(self):
+        now = NOW.replace(hour=19)
+        client = Mock()
+        client.request.return_value = [{"ts_code":"000001.SZ","trade_date":"20261119","net_mf_amount":3}]
+        state = {}
+        with patch.object(research, "relay_client", return_value=nullcontext(client)):
+            for i in range(6):
+                state = research.fetch_flows("fixture",now+timedelta(minutes=30*i),state,{"000001.SZ","000002.SZ"})
+        self.assertEqual(client.request.call_count,3)
+        self.assertEqual((state["status"],state["covered_stocks"],state["eligible_stocks"]),("partial",1,2))
+
     def test_weights_do_not_replace_old_payload_with_empty_or_stale_results(self):
         with TemporaryDirectory() as directory:
             state = Path(directory)

@@ -1,7 +1,8 @@
 {
-  "slot_seconds": 6,
-  "min_gap_seconds": 6,
+  "slot_seconds": 5,
+  "min_gap_seconds": 5,
   "project_cap_per_minute": 100,
-  "collector_cap_per_minute": 10,
+  "collector_cap_per_minute": 12,
+  "stock_every_slots": 6,
   "batches": ["rt_idx_k", "rt_k"]
 }

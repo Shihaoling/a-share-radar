@@ -239,7 +239,7 @@ class _Client:
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        _service_before(api,self.remaining())
+        _service_before(api, self.remaining(), self.interval)
         body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
                            "fields": FIELDS[api]}, separators=(",", ":")).encode("utf-8")
         request = urllib.request.Request(self.url, data=body, method="POST", headers={
@@ -265,12 +265,12 @@ class _Client:
             return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
 
 
-def _service_before(api,remaining):
-    cooldown,gap,code=gate_state(api)
+def _service_before(api, remaining, min_interval=6):
+    cooldown,gap,code=gate_state(api, min_interval)
     if cooldown>0:raise _Failure(code,math.ceil(cooldown),deferred=True)
     if gap>=remaining:raise _Failure('budget_exhausted',deferred=True)
     if gap:time.sleep(gap)
-    sent()
+    sent(api)
 
 def _closed_day(now):
     if is_trading_day(now.date()) is True and now.time().replace(tzinfo=None) >= clock(18, 30):

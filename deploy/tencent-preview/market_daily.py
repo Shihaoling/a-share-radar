@@ -6,7 +6,7 @@ import math
 import os
 from pathlib import Path
 
-from pipeline.calendar import is_trading_day, shanghai_now
+from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
 from pipeline.stock_api import FIELDS, _Failure, _basic_records, _index_bars, _index_code, _sw_bars
 from relay_common import STATE, relay_client
 from relay_quotes import SOURCE, publish
@@ -59,7 +59,14 @@ def merge_daily(data, daily, through=None):
 def refresh():
     now = shanghai_now()
     day = now.date()
-    if is_trading_day(day) is not True or now.time() < time(15, 30):
+    if is_trading_day(day) is not True:
+        return
+    pre_open_recovery = time(7) <= now.time() < time(9, 15)
+    if pre_open_recovery:
+        day = previous_trading_day(day)
+        if day is None:
+            return
+    elif now.time() < time(15, 30):
         return
     date = day.isoformat()
     api_date = day.strftime("%Y%m%d")
@@ -97,7 +104,7 @@ def refresh():
                     save(entity_id, bar)
             except _Failure as error:
                 print(json.dumps({"api": "index_daily", "symbol": code, "status": error.code}), flush=True)
-        if now.time() >= time(18, 30) and any(date not in daily["bars"].get(code, {}) for code in industry_ids):
+        if (pre_open_recovery or now.time() >= time(18, 30)) and any(date not in daily["bars"].get(code, {}) for code in industry_ids):
             rows = request("sw_daily", {"trade_date": api_date})
             if rows:
                 grouped = {}

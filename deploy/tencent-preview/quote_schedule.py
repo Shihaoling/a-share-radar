@@ -15,12 +15,17 @@ class QuoteSchedule:
         self.gap = settings["min_gap_seconds"]
         self.cap = min(settings["project_cap_per_minute"], settings["collector_cap_per_minute"])
         self.batches = tuple(settings["batches"])
+        self.stock_every_slots = settings.get("stock_every_slots", 5)
+        if type(self.stock_every_slots) is not int or self.stock_every_slots < 2:
+            raise ValueError("expected at least two slots per stock batch")
         if not (1 <= self.slot <= self.gap <= 60 and 1 <= self.cap <= 100):
             raise ValueError("invalid quote request limits")
         if self.batches not in (("rt_idx_k",), ("rt_idx_k", "rt_k")):
             raise ValueError("expected the SXData index batch and optional stock batch")
         self.starts = deque()
         self.last_slot = None
+        self.next_stock_slot = self.stock_every_slots - 1
+        self.last_batch = None
         self.paused_until = {}
         self.in_flight = None
 
@@ -43,17 +48,28 @@ class QuoteSchedule:
         key = (opening, slot_index)
         if self.last_slot is not None and key <= self.last_slot:
             return None
+        if self.last_slot is None or self.last_slot[0] != opening:
+            self.next_stock_slot = self.stock_every_slots - 1
+            self.last_batch = None
         self.last_slot = key
-        batch = "rt_k" if "rt_k" in self.batches and slot_index % 5 == 4 else "rt_idx_k"
+        # A delayed index call may skip the nominal stock slot. Give the next
+        # available slot to stocks, keeping an index turn between stock turns.
+        batch = "rt_idx_k"
+        if "rt_k" in self.batches and slot_index >= self.next_stock_slot and self.last_batch == "rt_idx_k":
+            batch = "rt_k"
+            self.next_stock_slot = slot_index + self.stock_every_slots
+        self.last_batch = batch
         if stamp < self.paused_until.get(batch, 0):
             return None
         self.starts.append(stamp)
         self.in_flight = batch
         return batch
 
-    def finish(self, now, retry_after=0):
+    def finish(self, now, retry_after=0, *, host=False):
         if self.in_flight and retry_after:
-            self.paused_until[self.in_flight] = shanghai_now(now).timestamp() + max(60, retry_after)
+            until = shanghai_now(now).timestamp() + max(60, retry_after)
+            for batch in self.batches if host else (self.in_flight,):
+                self.paused_until[batch] = max(self.paused_until.get(batch, 0), until)
         self.in_flight = None
 
 
@@ -77,7 +93,7 @@ def main():
     parser.add_argument("--at", required=True, type=datetime.fromisoformat)
     parser.add_argument("--seconds", type=int, default=60, choices=range(1, 301), metavar="1..300")
     args = parser.parse_args()
-    profile = Path(__file__).with_name("quote-cadence.json")
+    profile = Path(__file__).with_name("relay-active.json")
     settings = json.loads(profile.read_text(encoding="utf-8"))
     print(json.dumps(replay(settings, shanghai_now(args.at), args.seconds), ensure_ascii=False))
 

@@ -121,11 +121,16 @@ def collect(db, now):
     pending_end = checkpoint(db, "collect_next_end")
     if pending and datetime.fromisoformat(pending) > now:
         return
-    start = (datetime.fromisoformat(pending) if pending else
-             datetime.fromisoformat(cursor)-timedelta(minutes=5) if cursor else now-timedelta(hours=1))
-    # Keep the previous evening catchable when the first run of the day is delayed.
-    start = max(now-timedelta(days=1), min(start.replace(microsecond=0), now))
-    end = min(now, start+timedelta(hours=1))
+    oldest = now-timedelta(days=1)
+    if cursor and not pending:
+        # Reread late publications behind the cursor while advancing up to one hour
+        # *ahead* of it, even after a long outage. Each tick still makes one call.
+        watermark = max(oldest, min(datetime.fromisoformat(cursor).replace(microsecond=0), now))
+        start, end = max(oldest, watermark-timedelta(hours=1)), min(now, watermark+timedelta(hours=1))
+    else:
+        start = datetime.fromisoformat(pending).replace(microsecond=0) if pending else now-timedelta(hours=1)
+        start = max(oldest, min(start, now))
+        end = min(now, start+timedelta(hours=1))
     if pending_end and datetime.fromisoformat(pending_end) >= start:
         end = min(end, datetime.fromisoformat(pending_end))
     # During a long outage alternate recovery windows with a recent window. Readers can

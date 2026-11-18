@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import sqlite3
 
-from pipeline.calendar import market_session, shanghai_now
+from pipeline.calendar import market_session, previous_trading_day, shanghai_now
 from pipeline.daily_forecast import update_daily_forecasts
 from pipeline.direction_probability import update_direction_probabilities
 from market_daily import merge_daily, read_daily
@@ -62,21 +62,27 @@ def main():
                 "observations": rows, "news_revision": revision, "news": news,
                 "status": "missing_intraday_model" if rows else "missing_exact_minute_observations"})))
             return
-        if phase != "post_close" or now.time() < time(15, 30):
+        pre_open_recovery = phase == "pre_open" and time(7) <= now.time() < time(9, 15)
+        if not pre_open_recovery and (phase != "post_close" or now.time() < time(15, 30)):
             return
         daily = read_daily()
-        fingerprint = sha256(json.dumps([now.date().isoformat(), daily["bars"], revision], sort_keys=True).encode()).hexdigest()
-        previous = json.loads(OUTPUT.read_text())
-        if previous.get("input_signature") == fingerprint:
+        price_day = previous_trading_day(now.date()) if pre_open_recovery else now.date()
+        if pre_open_recovery and (not price_day or not any(price_day.isoformat() in bars for bars in daily["bars"].values())):
             return
-        db.execute("INSERT OR REPLACE INTO factors VALUES (?,?)", ("close:"+now.date().isoformat(),
-                   json.dumps({"news_revision": revision, "news": news})))
+        prices = sha256(json.dumps([price_day.isoformat(), daily["bars"]], sort_keys=True).encode()).hexdigest()
+        fingerprint = sha256(json.dumps([prices, revision]).encode()).hexdigest()
+        previous = json.loads(OUTPUT.read_text())
+        if previous.get("input_signature") == fingerprint or (pre_open_recovery and previous.get("price_signature") == prices):
+            return
+        if not pre_open_recovery:
+            db.execute("INSERT OR REPLACE INTO factors VALUES (?,?)", ("close:"+price_day.isoformat(),
+                       json.dumps({"news_revision": revision, "news": news})))
         data = merge_daily(json.loads(SOURCE.read_text()), daily)
         data = update_daily_forecasts(data, RUNTIME/"data/daily_forecast/models", now, previous)
         data = update_direction_probabilities(data, RUNTIME/"data/direction_probability/models/bundle.json", now, previous)
         payload = {"schema_version": 1, "source": "tencent_models", "status": STATUS,
                    "daily_forecast": data["daily_forecast"], "direction_probability": data["direction_probability"],
-                   "input_signature": fingerprint, "generated_at": now.isoformat()}
+                   "input_signature": fingerprint, "price_signature": prices, "generated_at": now.isoformat()}
         publish(OUTPUT, payload)
         print(json.dumps({"point_status": data["daily_forecast"]["status"],
                           "direction_status": data["direction_probability"]["status"],

@@ -92,6 +92,9 @@ def open_dataset():
         CREATE TABLE IF NOT EXISTS window_rechecks (
             begin_at TEXT PRIMARY KEY, failures INTEGER NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS late_window_checks (
+            begin_at TEXT PRIMARY KEY, checked_at TEXT NOT NULL
+        );
         CREATE TABLE IF NOT EXISTS usage (
             id INTEGER PRIMARY KEY, at TEXT NOT NULL, attempted INTEGER NOT NULL, accepted INTEGER NOT NULL,
             input_tokens INTEGER, output_tokens INTEGER, total_tokens INTEGER, outcome TEXT NOT NULL
@@ -211,11 +214,26 @@ def split_window(db, window, begin, end, checked, reason):
     middle = begin + timedelta(seconds=int((end-begin).total_seconds()//2))
     db.execute("DELETE FROM window_audit WHERE begin_at=?", (window["begin_at"],))
     db.execute("DELETE FROM window_rechecks WHERE begin_at=?", (window["begin_at"],))
+    db.execute("DELETE FROM late_window_checks WHERE begin_at=?", (window["begin_at"],))
     db.execute("""UPDATE windows SET end_at=?, state='pending',rows_received=NULL,retry_at='',
                   attempts=attempts+1, checked_at=?, outcome=?
                   WHERE begin_at=?""", (middle.isoformat(), checked, reason, window["begin_at"]))
     db.execute("INSERT OR IGNORE INTO windows(begin_at,end_at) VALUES (?,?)",
                (middle.isoformat(), end.isoformat()))
+
+
+def late_window_candidates(db, now):
+    # A recent empty feed (or repeatedly partial reply) gets one later observation.
+    # Older historical days and verified exports are kept as originally audited.
+    first_day = (now.date()-timedelta(days=7)).isoformat()
+    return db.execute("""SELECT w.* FROM windows w
+        LEFT JOIN window_rechecks r ON r.begin_at=w.begin_at
+        LEFT JOIN late_window_checks late ON late.begin_at=w.begin_at
+        WHERE w.begin_at>=? AND late.begin_at IS NULL AND w.checked_at IS NOT NULL
+          AND ((w.state='complete' AND w.rows_received=0
+                AND EXISTS(SELECT 1 FROM window_audit a WHERE a.begin_at=w.begin_at))
+               OR (w.state='unverified' AND r.failures>=3))
+        ORDER BY w.checked_at,w.begin_at""", (first_day,)).fetchall()
 
 
 def collect(db, now):
@@ -242,6 +260,18 @@ def collect(db, now):
         WHERE retry_at<=? AND (priority<2 OR NOT EXISTS(
             SELECT 1 FROM candidates WHERE priority<2 AND state!='unverified'))
         ORDER BY priority,attempts,begin_at LIMIT 1""", (priority_days,checked)).fetchone()
+    late_check = False
+    if (not window or window["priority"] != 0) and metadata(db, "next_late_check") <= checked:
+        archive = final_directory(metadata(db, "start_day"), metadata(db, "end_day"))
+        if not (archive / "manifest.json").is_file():
+            settled = (now-timedelta(hours=6)).isoformat(timespec="seconds")
+            due = next((row for row in late_window_candidates(db, now)
+                        if row["checked_at"] <= settled and row["retry_at"] <= checked), None)
+            if due:
+                window = due
+                late_check = True
+                with db:
+                    set_meta(db, "next_late_check", (now+timedelta(hours=2)).isoformat(timespec="seconds"))
     if not window:
         return
     begin, end = (datetime.fromisoformat(window[key]) for key in ("begin_at", "end_at"))
@@ -316,6 +346,8 @@ def collect(db, now):
                   row["published_at"]) for row in in_window}
     with db:
         count = sum(add_article(db, row, begin, end, received) for row in in_window)
+        if late_check:
+            db.execute("INSERT OR REPLACE INTO late_window_checks VALUES (?,?)", (window["begin_at"], received))
         state = "complete" if len(rows) < 1500 else "capped"
         outcome = "empty" if not rows else "partial_parse" if len(in_window)!=len(rows) else "ok"
         previous_rows = window["rows_received"] or 0
@@ -534,6 +566,7 @@ def progress(db):
     return {"schema_version":1,"source":SOURCE,"model":DEFAULT_MODEL,"start_day":start_day,
             "end_day_exclusive":end_day,"total_days":len(states),"queried_days":completed,"audited_days":audited,
             "days_with_news":sum(row.get("collected",0)>0 for row in states),
+            "pending_late_checks":0 if verified_at else len(late_window_candidates(db, generated)),
             **{key:(value or 0) for key,value in dict(result).items()}, "usage":{k:(v or 0) for k,v in dict(usage).items()},
             "label_rate": {"articles": recent_labels, "minutes": LABEL_RATE_WINDOW_MINUTES},
             "collection_attempts":window_count,"latest_collection":dict(latest) if latest else None,
@@ -583,6 +616,7 @@ def export(db):
             manifest = {**snapshot,"version":VERSION,"export_at":stamp,
                         "sha256":checksum,"format":"UTF-8 JSON Lines + gzip","timezone":"Asia/Shanghai",
                         "archive_complete":snapshot["total_days"]==snapshot["audited_days"]==180
+                        and snapshot["pending_late_checks"]==0
                         and snapshot["collected"]>0 and snapshot["collected"]==snapshot["labelled"]}
             publish(folder/"manifest.json", manifest)
             publish_final(folder, manifest)

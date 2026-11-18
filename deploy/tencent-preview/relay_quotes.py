@@ -12,6 +12,7 @@ from tempfile import NamedTemporaryFile
 import time
 
 from pipeline.calendar import market_session, previous_trading_day, shanghai_now
+from pipeline.data_service import gate_delay
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
 from quote_schedule import QuoteSchedule
@@ -57,19 +58,20 @@ def publish(path, payload):
             temporary.unlink(missing_ok=True)
 
 
-def collect(token, api, symbols):
+def collect(token, api, symbols, min_gap_seconds=6):
     if not symbols:
         return []
-    with relay_client(token, timeout=5) as client:
+    with relay_client(token, timeout=5, min_gap_seconds=min_gap_seconds) as client:
         received = client.request(api, {"ts_code": ",".join(symbols)})
     now = shanghai_now()
     filtered = {}
     for row in received:
         code = row["ts_code"]
-        if not isinstance(code, str) or code not in symbols or code in filtered:
+        if not isinstance(code, str) or code not in symbols:
             continue
         try:
-            filtered.update(_realtime([row], symbols, now, api, token))
+            record = _realtime([row], symbols, now, api, token)[code]
+            filtered.setdefault((code, record["quote_timestamp"]), record)
         except _Failure as failure:
             if failure.code not in {"empty_realtime", "invalid_bar", "invalid_number", "invalid_timestamp"}:
                 raise
@@ -78,7 +80,7 @@ def collect(token, api, symbols):
     return [{"id": symbols[code], "name": record["name"], **{key: record[key] for key in FIELDS},
              "previous_close": record["price"] / (1 + record["change_pct"] / 100),
              "volume_unit": "share" if api == "rt_k" else record["volume_unit"],
-             "timestamp_quality": "source_reported"} for code, record in filtered.items()]
+             "timestamp_quality": "source_reported"} for (code, _), record in filtered.items()]
 
 
 def board_estimates(sectors, stock_quotes, day):
@@ -119,14 +121,62 @@ def queue_retry(history, batch, now, delay, error):
     history.commit()
 
 
-def settle_retries(history, batch, fetched):
-    minutes = {quote["quote_timestamp"][:16] for quote in fetched}
+INDEX_MINUTE_STORED = """EXISTS(SELECT 1 FROM samples s WHERE s.minute=retries.minute
+                                AND s.id IN (SELECT value FROM json_each(?)))"""
+
+
+def settle_retries(history, batch, minutes, index_ids):
     if not minutes:
         return
+    if batch == "rt_idx_k":
+        # A later failure can share a minute with an already stored index observation.
+        history.execute(f"""UPDATE retries SET status='recovered' WHERE api=? AND status<>'recovered'
+            AND ((status='awaiting_retry' AND minute<=?) OR minute IN (SELECT value FROM json_each(?)))
+            AND {INDEX_MINUTE_STORED}""", (batch, max(minutes), json.dumps(sorted(minutes)), json.dumps(list(index_ids))))
+    else:
+        history.executemany("UPDATE retries SET status='observed_snapshot_only' WHERE api=? AND minute=?",
+                            [(batch, minute) for minute in minutes])
     history.execute("UPDATE retries SET status='unrecoverable' WHERE api=? AND status='awaiting_retry' AND minute<?",
                     (batch, max(minutes)))
-    history.executemany("UPDATE retries SET status='recovered' WHERE api=? AND minute=?",
-                        [(batch, minute) for minute in minutes])
+
+
+def reconcile_retry_history(history, index_ids):
+    history.execute("""UPDATE retries SET status='observed_snapshot_only' WHERE api='rt_k' AND status='recovered'""")
+    history.execute(f"""UPDATE retries SET status='unverified' WHERE api='rt_idx_k' AND status='recovered'
+        AND NOT {INDEX_MINUTE_STORED}""", (json.dumps(list(index_ids)),))
+
+
+def expire_prior_day_retries(history, day, index_ids):
+    history.execute(f"""UPDATE retries SET status=CASE WHEN api='rt_idx_k' AND {INDEX_MINUTE_STORED}
+        THEN 'recovered' ELSE 'unrecoverable' END WHERE status='awaiting_retry' AND minute<?""",
+        (json.dumps(list(index_ids)), day))
+
+
+def store_quotes(history, batch, fetched, latest, index_ids):
+    sample_changed = False
+    minutes = set()
+    for quote in fetched:
+        stamp = quote["quote_timestamp"]
+        minute = stamp[:16]
+        if batch == "rt_idx_k":
+            inserted = history.execute("""INSERT INTO samples (id,minute,source_stamp,price,change_pct)
+                VALUES (?,?,?,?,?) ON CONFLICT(id,minute) DO NOTHING""",
+                (quote["id"], minute, stamp, quote["price"], quote["change_pct"]))
+            sample_changed |= inserted.rowcount > 0
+        minutes.add(minute)
+        previous = latest.get(quote["id"])
+        if not previous or stamp >= (previous.get("quote_timestamp") or ""):
+            latest[quote["id"]] = quote
+    settle_retries(history, batch, minutes, index_ids)
+    return sample_changed
+
+
+def restore_gate_cooldowns(schedule, now):
+    for batch in schedule.batches:
+        remaining, _ = gate_delay(batch)
+        if remaining:
+            until = now.timestamp() + remaining
+            schedule.paused_until[batch] = max(schedule.paused_until.get(batch, 0), until)
 
 
 def publish_intraday(path, history, day, entity_ids):
@@ -160,7 +210,7 @@ def start(args):
     universe = groups(data, weights)
     sector_ids = {sector["id"] for sector in data["sectors"]}
     if args.diagnostic:
-        result = collect(token, "rt_idx_k", universe["rt_idx_k"])
+        result = collect(token, "rt_idx_k", universe["rt_idx_k"], conf["min_gap_seconds"])
         print(json.dumps({"mode": "diagnostic_no_publication", "count": len(result),
                           "source_latest": max((q["quote_timestamp"] for q in result), default=None)}), flush=True)
         return
@@ -199,8 +249,11 @@ def start(args):
         history.execute("""CREATE TABLE IF NOT EXISTS retries (
             api TEXT, minute TEXT, due TEXT, error TEXT, status TEXT, PRIMARY KEY(api, minute)
         ) WITHOUT ROWID""")
+        reconcile_retry_history(history, entity_ids)
+        history.commit()
         for batch, due in history.execute("SELECT api, max(due) FROM retries WHERE status='awaiting_retry' GROUP BY api"):
             schedule.paused_until[batch] = datetime.fromisoformat(due).timestamp()
+        restore_gate_cooldowns(schedule, shanghai_now())
         while True:
             now = shanghai_now()
             day = now.date().isoformat()
@@ -212,7 +265,8 @@ def start(args):
                 if weight_file.exists():
                     weights = json.loads(weight_file.read_text())
                     universe = groups(data, weights)
-                history.execute("UPDATE retries SET status='unrecoverable' WHERE status='awaiting_retry' AND minute<?", (day,))
+                    entity_ids = universe["rt_idx_k"].values()
+                expire_prior_day_retries(history, day, entity_ids)
                 history.commit()
             phase = market_session(now)["phase"]
             if last_phase != phase:
@@ -226,18 +280,10 @@ def start(args):
                 return
             if batch:
                 delay = 0
+                host_cooldown = False
                 try:
-                    fetched = collect(token, batch, universe[batch])
-                    for quote in fetched:
-                        stamp = quote["quote_timestamp"]
-                        previous = quotes[batch].get(quote["id"], {})
-                        if stamp < previous.get("quote_timestamp", "") or quote == previous:
-                            continue
-                        quotes[batch][quote["id"]] = quote
-                        if batch == "rt_idx_k":
-                            sample_changed |= history.execute("INSERT OR IGNORE INTO samples VALUES (?,?,?,?,?)",
-                                (quote["id"], stamp[:16], stamp, quote["price"], quote["change_pct"])).rowcount > 0
-                    settle_retries(history, batch, fetched)
+                    fetched = collect(token, batch, universe[batch], conf["min_gap_seconds"])
+                    sample_changed = store_quotes(history, batch, fetched, quotes[batch], entity_ids)
                     if batch == "rt_k":
                         for estimate in board_estimates(data["sectors"], quotes[batch], day):
                             stamp = estimate["quote_timestamp"]
@@ -246,17 +292,21 @@ def start(args):
                                     (estimate["id"], stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
                     history.commit()
                     finished_at = shanghai_now()
-                    fresh = sum((finished_at - datetime.fromisoformat(quote["quote_timestamp"])).total_seconds() <= 30
-                                for quote in fetched)
-                    status[batch] = "stale" if not fresh else "ok" if fresh == len(universe[batch]) else "partial"
+                    fresh_ids = {q["id"] for q in fetched
+                                 if (finished_at - datetime.fromisoformat(q["quote_timestamp"])).total_seconds() <= 30}
+                    status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == len(universe[batch]) else "partial"
                 except _Failure as failure:
                     status[batch] = failure.code
-                    delay = failure.retry_seconds or 60
-                    queue_retry(history, batch, shanghai_now(), delay, failure.code)
+                    if failure.deferred:
+                        restore_gate_cooldowns(schedule, shanghai_now())
+                    else:
+                        delay = failure.retry_seconds or 60
+                        host_cooldown = failure.host or failure.code == "rate_limited"
+                        queue_retry(history, batch, shanghai_now(), delay, failure.code)
                     print(json.dumps({"event": "source_failure", "api": batch,
                                       "code": failure.code, "provider_code": failure.provider_code}), flush=True)
                 finally:
-                    schedule.finish(shanghai_now(), delay)
+                    schedule.finish(shanghai_now(), delay, host=host_cooldown)
 
             if day != history_day or batch == "rt_k":
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
