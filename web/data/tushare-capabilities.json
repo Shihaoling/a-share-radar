@@ -335,15 +335,27 @@
         "error_code": "transport_error",
         "provider_code": null,
         "provider_reason": null
+      },
+      {
+        "api": "major_news",
+        "params": {
+          "start_date": "2026-11-18 00:00:00",
+          "end_date": "2026-11-18 10:52:22"
+        },
+        "channel": "main",
+        "status": "unavailable",
+        "error_code": "api_denied",
+        "provider_code": -1,
+        "provider_reason": "provider_error"
       }
     ],
-    "cursor": 20,
+    "cursor": 21,
     "status": "partial",
-    "checked_at": "2026-11-18T10:17:43.807491+08:00",
+    "checked_at": "2026-11-18T10:52:23.782342+08:00",
     "credential_match": true,
-    "next_allowed_after": "2026-11-18T10:18:43.807455+08:00",
+    "next_allowed_after": "2026-11-18T11:52:23.782306+08:00",
     "planned_apis": 23,
-    "pending_apis": 3,
+    "pending_apis": 2,
     "minute_entities_completed": 4,
     "migration_completed": "2026-11-17T23:13:52.005804+08:00",
     "deferred_api": "news",

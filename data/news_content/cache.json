@@ -2195,6 +2195,27 @@
       "reason": "article_body_not_found",
       "attempted_at": "2026-11-18T10:07:29.800583+08:00",
       "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "3ca1bd1030e8a3faacc183ddd7c0f3ef4af0e03dc50ce74cb63accf7a9ea1160": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68125",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:39:35.056409+08:00",
+      "retry_after": "2026-11-19T10:39:35.056409+08:00"
+    },
+    "121d8be51366c09f6019c83460e05fab1579c3df4ddebe03b2cc7718bd821cad": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68124",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:39:35.056409+08:00",
+      "retry_after": "2026-11-19T10:39:35.056409+08:00"
+    },
+    "aa6979c4c99abd0495ce8c036d985afe734fc8f982198126c79942b33263a272": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68104",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:39:35.056409+08:00",
+      "retry_after": "2026-11-19T10:39:35.056409+08:00"
     }
   },
   "hosts": {

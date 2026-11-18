@@ -9309,6 +9309,914 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 23,
       "scored_at": "2026-11-18T10:15:06.603885+08:00"
+    },
+    "e78fde12c0eb8d23ae1001761d2b01f52f7d077042079cd0584b4f333e7da33e": {
+      "summary": "TrendForce预计2026年中国高端AI芯片出货500万片、同比增83%，国产份额约90%，算力芯片概念盘中回升。若预测兑现，本土芯片需求空间将扩大，但厂商份额与盈利未披露。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "仅披露算力芯片概念盘中回升及行业出货预测，未说明对六大指数或宏观基本面的明确传导。",
+        "evidence": [
+          "财联社11月18日电，算力芯片概念盘中震荡回升，旋极信息涨超10%，此前华东重机走出4连板，摩尔线程、寒武纪、海光信息、沐曦股份、龙芯中科跟涨。消息面上，TrendForce表示，预计2026年中国高端AI芯片出货量将达到500万片，同比增长83%。90%的国产份额意味着约450万片来自本土厂商，留给海外厂商的只剩下约50万片。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.83,
+          "reason": "高端AI芯片出货量预测同比增83%，且国产份额约90%，若兑现将增加本土芯片厂商的销售机会；但未给出厂商份额、价格及利润率。",
+          "evidence": [
+            "财联社11月18日电，算力芯片概念盘中震荡回升，旋极信息涨超10%，此前华东重机走出4连板，摩尔线程、寒武纪、海光信息、沐曦股份、龙芯中科跟涨。消息面上，TrendForce表示，预计2026年中国高端AI芯片出货量将达到500万片，同比增长83%。90%的国产份额意味着约450万片来自本土厂商，留给海外厂商的只剩下约50万片。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.7,
+          "reason": "国产高端AI芯片出货增长为本土算力硬件厂商带来潜在需求增量，海光信息、龙芯中科等跟涨；但跟涨仅属交易表现，不能确认订单或盈利改善。",
+          "evidence": [
+            "财联社11月18日电，算力芯片概念盘中震荡回升，旋极信息涨超10%，此前华东重机走出4连板，摩尔线程、寒武纪、海光信息、沐曦股份、龙芯中科跟涨。消息面上，TrendForce表示，预计2026年中国高端AI芯片出货量将达到500万片，同比增长83%。90%的国产份额意味着约450万片来自本土厂商，留给海外厂商的只剩下约50万片。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "500万片、同比增83%及90%国产份额均为TrendForce预测，并非已实现出货。",
+        "预测未披露统计口径、产品范围和厂商分配，无法据此推导单家公司收入或利润。",
+        "文章未披露订单、价格、毛利率或对六大指数的影响。"
+      ],
+      "usage": {
+        "total_tokens": 4584,
+        "prompt_tokens": 1107,
+        "completion_tokens": 3477
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "40cf3767c6c85dfed62ec0ff7053800c777ec7b5c02b9ee4a10693e8938155ee",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 165,
+      "scored_at": "2026-11-18T10:41:08.803952+08:00"
+    },
+    "d7bf572ecaf67f5fee42c60c404f6ebf6d8493787b4652bd3d4a3663c6944249": {
+      "summary": "京东健康盘中股价跌幅一度扩大至15%，报35.38港元；材料未披露下跌原因，无法判断对经营或相关行业的实质影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅有单只股票盘中跌幅及价格，缺少公司经营、宏观政策或指数传导证据。",
+        "evidence": [
+          "财联社11月18日电，京东健康跌幅一度扩大至15%，现报35.38港元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "个股股价下跌不等同于行业经营受损，材料未提供需求、盈利、成本或政策传导依据。",
+          "evidence": [
+            "财联社11月18日电，京东健康跌幅一度扩大至15%，现报35.38港元。"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "下跌的触发因素及公司基本面影响未披露",
+        "报道时点为盘中，跌幅是否持续至收盘未知",
+        "材料不足以判断相关行业整体经营方向"
+      ],
+      "usage": {
+        "total_tokens": 2593,
+        "prompt_tokens": 1044,
+        "completion_tokens": 1549
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "1bfc987290e7dd95da8c5d6c1a5fbff27f871bdb5e7477bc223535de7476b69b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 36,
+      "scored_at": "2026-11-18T10:41:29.311525+08:00"
+    },
+    "132ac0a2493933dfb85b76aa80a0c1c2766b41a55b79f8f552a990eff5e5bcdb": {
+      "summary": "中汽协称10月汽车出口连续5个月超100万辆并保持较快增长；消息面带动汽车整车板块震荡拉升，众泰汽车涨停，多家车企跟涨。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "材料仅给出汽车出口数据和汽车股表现，未说明对整体经济、流动性或六大指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，汽车整车板块震荡拉升，众泰汽车涨停，中国重汽、海马汽车、中通客车、江铃汽车、上汽集团跟涨。消息面上，据中国汽车工业协会分析，10月，汽车出口保持较强韧性，月度出口量连续5个月保持在100万辆以上，出口继续保持高速增长。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.93,
+          "reason": "出口连续5个月超100万辆且保持较快增长，显示汽车外需韧性并提振板块情绪；但缺少盈利、订单及持续性数据，不能外推所有车企。",
+          "evidence": [
+            "财联社11月18日电，汽车整车板块震荡拉升，众泰汽车涨停，中国重汽、海马汽车、中通客车、江铃汽车、上汽集团跟涨。消息面上，据中国汽车工业协会分析，10月，汽车出口保持较强韧性，月度出口量连续5个月保持在100万辆以上，出口继续保持高速增长。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "仅披露10月出口连续5个月超100万辆，未给出同比增速、车型和地区结构。",
+        "未提供相关车企出口敞口、订单兑现、成本及盈利数据。",
+        "板块上涨与出口消息同时出现，无法确认其持续性或是否由该消息单独驱动。"
+      ],
+      "usage": {
+        "total_tokens": 2601,
+        "prompt_tokens": 1074,
+        "completion_tokens": 1527
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "7163db7d7eb43a266667143c4cdbff12818d18d3e67b121cc31c92a08238bc2d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 120,
+      "scored_at": "2026-11-18T10:41:47.253706+08:00"
+    },
+    "1f9ce7aab29c77836ab9b6ac0ef725eab8f12c7ceb64f56c7acce196702ad7ac": {
+      "summary": "煤炭板块当日活跃，安泰集团涨停，郑州煤电等跟涨；国盛证券预计2027年煤价中枢或维持高位，若电力耗煤稳定则可能高于今年。煤价上行或改善煤炭盈利，同时可能抬高火电成本。",
+      "tone": "positive",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.75,
+        "reason": "材料仅反映煤炭板块表现及机构煤价预测，未提供对宏观经济或主要指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，煤炭板块表现活跃，安泰集团直线涨停，郑州煤电、晋控煤业、兖矿能源、中煤能源跟涨。消息面上，国盛证券发布研报称，预计2027年煤价中枢大概率维持在高位，且若电力耗煤保持稳定，明年价格中枢有极大概率超过今年。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.82,
+          "reason": "研报预计2027年煤价中枢维持高位，若电力耗煤稳定则可能高于今年，对煤炭售价和盈利形成正向预期，但尚属有条件预测。",
+          "evidence": [
+            "财联社11月18日电，煤炭板块表现活跃，安泰集团直线涨停，郑州煤电、晋控煤业、兖矿能源、中煤能源跟涨。消息面上，国盛证券发布研报称，预计2027年煤价中枢大概率维持在高位，且若电力耗煤保持稳定，明年价格中枢有极大概率超过今年。"
+          ],
+          "sector_code": "801950.SI",
+          "sector_name": "煤炭",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.55,
+          "reason": "煤价中枢若高于今年，火电燃料成本可能上升并压缩利润；材料未说明煤电占比、长协采购及电价传导，程度不确定。",
+          "evidence": [
+            "财联社11月18日电，煤炭板块表现活跃，安泰集团直线涨停，郑州煤电、晋控煤业、兖矿能源、中煤能源跟涨。消息面上，国盛证券发布研报称，预计2027年煤价中枢大概率维持在高位，且若电力耗煤保持稳定，明年价格中枢有极大概率超过今年。"
+          ],
+          "sector_code": "801160.SI",
+          "sector_name": "公用事业",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "煤价判断来自券商研报，摘要未提供供需假设、预测模型及具体价格区间。",
+        "电力耗煤稳定仅为预测条件，正文未给出实际耗煤、产量或库存数据。",
+        "缺少火电长协比例、煤电占比及电价传导信息，无法量化利润影响。"
+      ],
+      "usage": {
+        "total_tokens": 4484,
+        "prompt_tokens": 1080,
+        "completion_tokens": 3404
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "2e0563830c6be16867ea5312afb84fe885a6e9a91379d9a323d15422f7909ed6",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 113,
+      "scored_at": "2026-11-18T10:42:26.011521+08:00"
+    },
+    "3a8788c74d8d7813f1ab41f5ff29c0b5d961e2d41b1d746ef79a3e8b9a195875": {
+      "summary": "截至发稿，紫金黄金国际、灵宝黄金、潼关黄金和中国黄金国际港股下跌4.13%至5.66%，黄金股短线走弱，但未提供金价或经营数据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.15,
+        "reason": "仅披露个股盘中跌幅，未提供对宏观变量或主要指数的明确传导，无法判断整体市场方向。",
+        "evidence": [
+          "财联社11月18日电，截至发稿，紫金黄金国际(02259.HK)跌5.66%、灵宝黄金(03330.HK)跌5.62%、潼关黄金(00340.HK)跌4.60%、中国黄金国际(02099.HK)跌4.13%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "四家港股黄金公司股价同步下跌，仅能确认黄金采选细分短期情绪走弱；因缺少金价、产量、成本及需求数据，无法判断有色金属经营盈利方向。",
+          "evidence": [
+            "财联社11月18日电，截至发稿，紫金黄金国际(02259.HK)跌5.66%、灵宝黄金(03330.HK)跌5.62%、潼关黄金(00340.HK)跌4.60%、中国黄金国际(02099.HK)跌4.13%。"
+          ],
+          "sector_code": "801050.SI",
+          "sector_name": "有色金属",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "报道仅覆盖四家港股黄金公司，不能代表整个黄金板块或A股有色金属行业表现。",
+        "下跌原因未说明，无法区分公司个体因素与板块共同因素。",
+        "未提供金价、产量、成本或需求变化，无法确认经营影响。"
+      ],
+      "usage": {
+        "total_tokens": 2916,
+        "prompt_tokens": 1080,
+        "completion_tokens": 1836
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "2547047d46e161c22f2f41443a9bc14aa02ae52823d39b43b23321049269b612",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 104,
+      "scored_at": "2026-11-18T10:43:06.770746+08:00"
+    },
+    "cf8bd42f11d0bbacb4ada7d682332007ddd8e63e4578d47f206cadd8f724a8b4": {
+      "summary": "冰雪经济概念走强，龙江交通15天8板；11月张家口、阿勒泰机票预订量同比分别增长超270%、约50%，冰雪游咨询较往年提前至少一个月，旅游需求升温。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.97,
+        "reason": "文章仅反映冰雪旅游主题及个股表现，未提供对六大指数或宏观基本面的明确传导。",
+        "evidence": [
+          "财联社11月18日电，冰雪经济概念震荡走高，龙江交通15天8板，冰山冷热、晶雪节能、雪人集团、长白山跟涨。消息面上，航旅纵横的数据显示，11月前往张家口的机票预订量同比增长超270%，前往阿勒泰地区的机票预订量同比增长约50%。众信旅游订单信息显示，早在10月中旬，冰雪游咨询就已启动，较往年提前至少一个月。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.86,
+          "reason": "冰雪游咨询提前及机票预订增长或带动旅行社、景区客流与收入，但咨询和预订尚未等同于实际消费。",
+          "evidence": [
+            "财联社11月18日电，冰雪经济概念震荡走高，龙江交通15天8板，冰山冷热、晶雪节能、雪人集团、长白山跟涨。消息面上，航旅纵横的数据显示，11月前往张家口的机票预订量同比增长超270%，前往阿勒泰地区的机票预订量同比增长约50%。众信旅游订单信息显示，早在10月中旬，冰雪游咨询就已启动，较往年提前至少一个月。"
+          ],
+          "sector_code": "801210.SI",
+          "sector_name": "社会服务",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.8,
+          "reason": "目的地机票预订高增提供航空客运需求领先信号，但缺少航班量、客座率、票价及实际出行数据。",
+          "evidence": [
+            "财联社11月18日电，冰雪经济概念震荡走高，龙江交通15天8板，冰山冷热、晶雪节能、雪人集团、长白山跟涨。消息面上，航旅纵横的数据显示，11月前往张家口的机票预订量同比增长超270%，前往阿勒泰地区的机票预订量同比增长约50%。众信旅游订单信息显示，早在10月中旬，冰雪游咨询就已启动，较往年提前至少一个月。"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "机票预订和咨询数据不等同于实际游客到访及旅游消费",
+        "未披露客座率、票价、航班运力及企业盈利变化",
+        "概念股上涨不能外推为相关行业整体或大盘表现"
+      ],
+      "usage": {
+        "total_tokens": 2597,
+        "prompt_tokens": 1100,
+        "completion_tokens": 1497
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d4a749b5f90ab4ea8d7e32f18c72058bb0a03cb6560a02d302ce0d5d4725b8c5",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 154,
+      "scored_at": "2026-11-18T10:43:23.950403+08:00"
+    },
+    "c4c0621201601224d25747a8d2eb152247311758f69ee3c1fa208d93644618c7": {
+      "summary": "华为昇腾云已覆盖80%的中国具身智能企业，重点高校基本全覆盖，相关算力概念股早盘走强；但未披露订单、收入或利润增量。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "报道仅涉及概念股表现和云服务覆盖率，未给出对宏观经济、六大指数或总量盈利的明确传导。",
+        "evidence": [
+          "财联社11月18日电，早盘华为算力概念再度走强，四川长虹涨停，此前真视通走出2连板，华胜天成、华丰科技、天源迪科、卡莱特、直真科技等跟涨。消息面上，从CloudRobo具身世界模型发布会获悉，华为昇腾云已覆盖80%的中国具身智能企业，重点高校基本实现全覆盖。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.58,
+          "reason": "具身智能企业及高校的昇腾云覆盖扩大，理论上增加算力硬件与电子配套需求；但无订单、收入或客户转化数据，产业增益仍待验证。",
+          "evidence": [
+            "财联社11月18日电，早盘华为算力概念再度走强，四川长虹涨停，此前真视通走出2连板，华胜天成、华丰科技、天源迪科、卡莱特、直真科技等跟涨。消息面上，从CloudRobo具身世界模型发布会获悉，华为昇腾云已覆盖80%的中国具身智能企业，重点高校基本实现全覆盖。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.52,
+          "reason": "昇腾云在具身智能与高校的渗透可能拉动平台、软件及IT服务需求；文中仅有概念股跟涨，尚不能确认行业收入或利润改善。",
+          "evidence": [
+            "财联社11月18日电，早盘华为算力概念再度走强，四川长虹涨停，此前真视通走出2连板，华胜天成、华丰科技、天源迪科、卡莱特、直真科技等跟涨。消息面上，从CloudRobo具身世界模型发布会获悉，华为昇腾云已覆盖80%的中国具身智能企业，重点高校基本实现全覆盖。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "四川长虹涨停仅反映单一个股表现，文中没有家电需求、订单或盈利变化证据，不能外推至全行业。",
+          "evidence": [
+            "财联社11月18日电，早盘华为算力概念再度走强，四川长虹涨停，此前真视通走出2连板，华胜天成、华丰科技、天源迪科、卡莱特、直真科技等跟涨。消息面上，从CloudRobo具身世界模型发布会获悉，华为昇腾云已覆盖80%的中国具身智能企业，重点高校基本实现全覆盖。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "80%覆盖率的统计口径、企业范围及确认标准未披露。",
+        "未披露相关订单、客户转化、收入或利润增量。",
+        "概念股上涨主要体现市场情绪，不能据此确认产业基本面改善。"
+      ],
+      "usage": {
+        "total_tokens": 3813,
+        "prompt_tokens": 1094,
+        "completion_tokens": 2719
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6e3e0c9e27a60c95817d908edae9f4bf1c80c0004eeea643c158de4dacc7bdc3",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 129,
+      "scored_at": "2026-11-18T10:43:50.626434+08:00"
+    },
+    "e330807cc111afe099f8456db17e5bfe4f55de210d6aa537b54af5619f1ffed9": {
+      "summary": "截至发稿，天数智芯、黑芝麻智能、壁仞科技和长光辰芯分别上涨5.76%、4.88%、4.72%和3.65%，港股半导体个股走强；材料未披露基本面变化。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露四只港股半导体个股盘中涨幅，未提供宏观传导或申万电子行业整体经营变化。",
+        "evidence": [
+          "财联社11月18日电，截至发稿，天数智芯(09903.HK)涨5.76%、黑芝麻智能(02533.HK)涨4.88%、壁仞科技(06082.HK)涨4.72%、长光辰芯(03277.HK)涨3.65%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "股价上涨仅反映个股交易表现，材料未提供订单、收入、成本或政策变化，无法判断行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，截至发稿，天数智芯(09903.HK)涨5.76%、黑芝麻智能(02533.HK)涨4.88%、壁仞科技(06082.HK)涨4.72%、长光辰芯(03277.HK)涨3.65%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "材料仅覆盖四只港股半导体个股，不代表申万电子行业整体表现",
+        "未披露上涨对应的经营、订单或基本面因素",
+        "盘中涨幅能否维持至收盘未知"
+      ],
+      "usage": {
+        "total_tokens": 1786,
+        "prompt_tokens": 1081,
+        "completion_tokens": 705
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "9cc2489b40e084b2536587ebdd70bb44ca70fa55f6512c4006356c9400c8ae15",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 101,
+      "scored_at": "2026-11-18T10:43:58.635220+08:00"
+    },
+    "dc8ae171d7a94076fc0807b40b75cd1ce5a87498737fbd210a93117b3449aece": {
+      "summary": "SEMI预测全球半导体设备销售额2026年同比增长23.2%至1659亿美元，2028年有望达2295亿美元；A股早盘半导体设备板块延续强势，多只个股跟涨。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "材料仅反映半导体设备板块表现及行业销售预测，未提供对六大指数的明确宏观传导。",
+        "evidence": [
+          "财联社11月18日电，早盘半导体设备板块延续昨日强势，盛剑科技、全筑股份走出2连板，芯碁微装、海立股份、国林科技、智立方等跟涨。消息面上，据SEMI预测，2026年全球半导体设备销售额将达1659亿美元，同比增长23.2%；2028年有望达到2295亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.84,
+          "reason": "全球半导体设备销售额增长预测强化设备需求扩张预期，对电子行业设备制造环节的订单和收入预期偏正面；但数据仅为预测，未说明具体A股公司的受益程度。",
+          "evidence": [
+            "财联社11月18日电，早盘半导体设备板块延续昨日强势，盛剑科技、全筑股份走出2连板，芯碁微装、海立股份、国林科技、智立方等跟涨。消息面上，据SEMI预测，2026年全球半导体设备销售额将达1659亿美元，同比增长23.2%；2028年有望达到2295亿美元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "1659亿美元和2295亿美元均为SEMI预测，并非已实现销售额。",
+        "材料未披露订单、业绩、客户结构或具体公司受益情况，不能据板块上涨推定全行业盈利改善。"
+      ],
+      "usage": {
+        "total_tokens": 2320,
+        "prompt_tokens": 1089,
+        "completion_tokens": 1231
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "100dabe14dc16c54b76e08568b81049cdbc5cf98329445cdd9e7661f5644b895",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 129,
+      "scored_at": "2026-11-18T10:44:14.182604+08:00"
+    },
+    "92aef597e854f632a03b36a2c8bb6e63d2a28da4c82e820ba9f780326c362e97": {
+      "summary": "2026年10月家电出口量4.02亿台、同比增长14.1%，出口额同比增长20.9%且增速逐季改善；券商预计四季度出口仍将增长，家电板块走强。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.86,
+        "reason": "出口改善仅直接指向家电行业需求，未提供对六大指数的明确宏观传导。",
+        "evidence": [
+          "财联社11月18日电，家电板块延续强势，长虹美菱3连板，爱仕达直线涨停，小熊电器、美的集团、九阳股份、苏泊尔跟涨。消息面上，国金证券研报称，海关总署数据显示，2026年10月份，家电出口量达4.02亿台，同比增长14.1%；出口金额达89.56亿美元，同比增长20.9%。出口增速逐季改善，四季度出口有望延续增长。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.88,
+          "reason": "出口量与金额同比增长、增速逐季改善→海外需求及收入增长预期增强→家电出口链经营受益；四季度增长仍属预测，利润弹性未披露。",
+          "evidence": [
+            "财联社11月18日电，家电板块延续强势，长虹美菱3连板，爱仕达直线涨停，小熊电器、美的集团、九阳股份、苏泊尔跟涨。消息面上，国金证券研报称，海关总署数据显示，2026年10月份，家电出口量达4.02亿台，同比增长14.1%；出口金额达89.56亿美元，同比增长20.9%。出口增速逐季改善，四季度出口有望延续增长。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "四季度出口延续增长是券商预测，并非已发生事实",
+        "未披露地区和产品结构、原材料成本及利润率，无法量化盈利弹性",
+        "个股涨停及跟涨仅反映市场表现，不能证明全行业均同等受益"
+      ],
+      "usage": {
+        "total_tokens": 2248,
+        "prompt_tokens": 1106,
+        "completion_tokens": 1142
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "215d996dd3b6112ee39e65fd8fe5b6256cc8325b985b2297def98f034885ac67",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 157,
+      "scored_at": "2026-11-18T10:44:28.243087+08:00"
+    },
+    "4610726dbeceb56124c6992284f2a0d47b4c164dcecb0ecdf27fc4864eb19046": {
+      "summary": "工信部同意北京等8个省（市）开展6G创新发展部省协同试点，6G概念当日活跃，武汉凡谷涨停并有多股跟涨。试点释放研发验证支持信号，但尚无订单、收入或投资规模数据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "材料仅显示6G行业试点及概念交易活跃，未提供对六大宏观指数盈利、估值或流动性的明确传导证据。",
+        "evidence": [
+          "财联社11月18日电，6G概念表现活跃，武汉凡谷涨停，创远信科、本川智能、盛路通信跟涨。消息面上，11月17日，工信部网站发布《工业和信息化部办公厅关于同意北京市等8个省（市）开展6G创新发展部省协同试点工作的复函》。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.84,
+          "reason": "部省协同试点为6G研发、试验及产业协同提供政策支持，通信产业相关活动可能增加；但材料未披露订单、投入或收入，尚不能量化经营改善。",
+          "evidence": [
+            "财联社11月18日电，6G概念表现活跃，武汉凡谷涨停，创远信科、本川智能、盛路通信跟涨。消息面上，11月17日，工信部网站发布《工业和信息化部办公厅关于同意北京市等8个省（市）开展6G创新发展部省协同试点工作的复函》。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "复函未披露试点期限、考核机制、资金安排及具体建设清单。",
+        "缺少6G相关订单、资本开支和收入数据，概念上涨不能证明行业盈利改善。",
+        "材料未说明相关上市公司与6G业务的具体关联程度及受益边界。"
+      ],
+      "usage": {
+        "total_tokens": 2615,
+        "prompt_tokens": 1078,
+        "completion_tokens": 1537
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0411a7d13d00ae9b175c5cca73d14f9ec6af28ed349bf4e2cac4bbfe6d115a3c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 109,
+      "scored_at": "2026-11-18T10:44:46.748606+08:00"
+    },
+    "59a3d42580dec5aad5566e357f96a249081ee7ec8bf15d862d24802def3a6d1b": {
+      "summary": "AI漫剧概念走弱，文投控股、浙文影业二连跌停，大晟文化、慈文传媒、湖北广电跟跌。材料反映相关传媒标的短线承压，但未提供经营或宏观基本面变化证据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅反映AI漫剧概念股下跌，未显示对宏观经济、六大指数或行业盈利的明确传导。",
+        "evidence": [
+          "财联社11月18日电，AI漫剧概念走弱，文投控股、浙文影业二连跌停，大晟文化、慈文传媒、湖北广电跟跌。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "股价表现仅说明AI漫剧相关传媒标的短线交易情绪走弱，未披露订单、收入、利润或需求变化，不能外推为传媒行业经营利好或利空。",
+          "evidence": [
+            "财联社11月18日电，AI漫剧概念走弱，文投控股、浙文影业二连跌停，大晟文化、慈文传媒、湖北广电跟跌。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "材料未解释AI漫剧概念走弱原因，无法区分基本面变化与交易性因素。",
+        "未提供相关公司收入、利润、订单或需求数据，经营影响无法判断。",
+        "材料仅覆盖当日股价表现，下跌持续性及后续传导均不明确。"
+      ],
+      "usage": {
+        "total_tokens": 2754,
+        "prompt_tokens": 1055,
+        "completion_tokens": 1699
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "64e3a4b424e2966e5f5546d9b8f3e9c32b3e6346324fb4dee2f3a485f1177753",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 51,
+      "scored_at": "2026-11-18T10:45:33.730238+08:00"
+    },
+    "ef3de9e18e8a7493feab0dda1f34008b71c0f8a35613e419ddba3509628a6431": {
+      "summary": "文章仅披露11月18日竞价个股表现：华东重机、长虹美菱竞价涨停，阳光照明、瀛通通讯、顺钠股份等低开。未涉及行业需求、成本或盈利变化，产业经营影响无法判定。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "仅有多只个股集合竞价涨跌幅，缺少宏观政策、总量需求或指数层面传导证据，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.91,
+          "reason": "阳光照明低开、长虹美菱竞价涨停、小熊电器高开，仅表明相关个股竞价分化；未提供家电销量、成本或盈利数据，经营影响未知。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "瀛通通讯以端侧AI概念低开3.28%，仅属个股竞价与主题交易，未给出通信产业订单、需求或盈利变化，不能外推行业方向。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "华东重机以算力芯片概念竞价涨停，机器人概念股低开；均为个股表现，未显示机械行业订单、成本或盈利改善，经营方向未知。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801890.SI",
+          "sector_name": "机械设备",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "好当家以大消费概念低开4.00%，未提供食品饮料需求、渠道库存或盈利变化，个股竞价不能外推行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "顺钠股份作为电网设备概念股低开6.39%，未提供电网投资、订单或企业盈利变化，不能据个股竞价判断行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801730.SI",
+          "sector_name": "电力设备",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.89,
+          "reason": "华胜天成以华为概念高开4.58%，未提供计算机行业订单、需求或政策落地信息，不能由概念股高开推定行业受益。",
+          "evidence": [
+            "财联社11月18日电，市场焦点股阳光照明（14天8板）低开9.82%，端侧AI概念股瀛通通讯（6天4板）低开3.28%，算力芯片概念股华东重机（3板）竞价涨停，大消费板块好当家（4天3板）低开4.00%，家电股长虹美菱（2板）竞价涨停、小熊电器（2板）高开0.25%，电网设备板块顺钠股份（2板）低开6.39%，机器人概念股北投科技（2板）低开6.33%，华为概念股华胜天成（3天2板）高开4.58%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文仅提供集合竞价即时表现，未包含开盘后成交、收盘价或完整资金数据。",
+        "未提供行业订单、需求、成本、盈利与政策数据，无法建立个股表现到行业经营的因果链。",
+        "标题称华东重机晋级4连板，正文称3板，连板数口径不一致；正文亦未说明北投科技的具体主营及行业归属。"
+      ],
+      "usage": {
+        "total_tokens": 8582,
+        "prompt_tokens": 1163,
+        "completion_tokens": 7419
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "eca43900f23ef920b6917e89f92e8cdf8baab1850a93d0b7e3f3356679b80e63",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 201,
+      "scored_at": "2026-11-18T10:48:13.986609+08:00"
+    },
+    "cbc4deafad8380e8f4497137304c8bc9ac3bc20c326c3303ca878f299ada9f8d": {
+      "summary": "11月18日沪指、深成指、创业板指高开0.33%、0.37%、0.61%，算力硬件、半导体芯片和6G板块领涨；材料仅反映开盘交易，未披露产业经营变化。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "positive",
+        "confidence": 0.98,
+        "reason": "三大指数明确高开且科技主题板块涨幅居前，开盘市场情绪偏强；但仅为高开数据，不能推断全天或中期走势。",
+        "evidence": [
+          "财联社11月18日电，沪指高开0.33%，深成指高开0.37%，创业板指高开0.61%，算力硬件、半导体芯片、6G等板块指数涨幅居前。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "半导体芯片及算力硬件板块开盘领先，仅能确认相关板块交易表现；材料未提供订单、需求、成本或盈利变化，经营影响未知。",
+          "evidence": [
+            "财联社11月18日电，沪指高开0.33%，深成指高开0.37%，创业板指高开0.61%，算力硬件、半导体芯片、6G等板块指数涨幅居前。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "材料仅披露算力硬件板块领涨，未说明具体产业构成、订单或盈利变化，且主题涨幅不能直接等同于计算机行业经营利好。",
+          "evidence": [
+            "财联社11月18日电，沪指高开0.33%，深成指高开0.37%，创业板指高开0.61%，算力硬件、半导体芯片、6G等板块指数涨幅居前。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "6G板块指数涨幅居前是盘面事实，但材料未提供需求、订单、资本开支或盈利数据，不能据此认定通信行业经营受益。",
+          "evidence": [
+            "财联社11月18日电，沪指高开0.33%，深成指高开0.37%，创业板指高开0.61%，算力硬件、半导体芯片、6G等板块指数涨幅居前。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "高开及板块领涨能否延续至全天或后续交易日未知。",
+        "材料未提供相关产业的订单、收入、成本或盈利数据。",
+        "主题板块与申万一级行业的具体成分及受益边界未披露。"
+      ],
+      "usage": {
+        "total_tokens": 3343,
+        "prompt_tokens": 1053,
+        "completion_tokens": 2290
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "44d78c6a693cfea9428ca054073dd1eb8a631681fe7c9563aae0b6e9215206b9",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 67,
+      "scored_at": "2026-11-18T10:49:12.995824+08:00"
+    },
+    "23ab7aaeb0613e0781436568fbd12769f69287777ea6051422c854f6cd96e251": {
+      "summary": "18只主动ETF披露上市公告，平均股票仓位超过55%；截至11月16日未完成建仓时，银行股占前20重仓中的7席、合计7.92亿元，贵州茅台、美的集团、宁德时代持仓居前。披露主要反映资金配置，缺少经营改善证据。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "披露内容为未完成建仓的组合及仓位数据，未给出宏观需求、成本、盈利或后续资金流传导，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。",
+          "从基金公司最新披露的公告来看，18只ETF平均股票仓位占比超过55%，最高仓位已抬升至90%以上，最低仓位不足30%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "银行股占前20重仓中的7席、合计持有7.92亿元，反映较高配置；但未提供信贷需求、息差、资产质量或盈利变化，经营方向不明。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.78,
+          "reason": "6只ETF合计持有贵州茅台3.36亿元，显示集中配置；未提供白酒需求、价格、渠道库存或盈利变化，不能将持仓等同于基本面利好。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.78,
+          "reason": "7只ETF合计持有美的集团2.48亿元；仅有持仓数据，未提供家电需求、出口、成本或盈利变化，经营影响无法判定。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.78,
+          "reason": "5只ETF合计持有宁德时代2.24亿元；未提供电池需求、价格、产能利用率或盈利数据，无法由配置推断经营方向。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801730.SI",
+          "sector_name": "电力设备",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.76,
+          "reason": "寒武纪、海康威视进入主动ETF前20重仓，反映资金配置关注；未提供订单、产品价格、研发转化或盈利变化，经营影响不明。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.74,
+          "reason": "中际旭创进入前20重仓；未提供订单、售价、客户结构或盈利数据，无法由持仓配置推断通信行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.72,
+          "reason": "多只主动ETF重点配置煤炭防御板块；未披露煤价、产量、库存或成本变化，且无法确认是否属于新增配置，经营方向不明。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801950.SI",
+          "sector_name": "煤炭",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.72,
+          "reason": "多只主动ETF重点配置油气防御板块；未披露油价、产量、炼化利润或资本开支变化，不能由配置推断经营方向。",
+          "evidence": [
+            "财联社11月18日电，11月17日晚间，18只主动ETF发布旗下主动ETF上市公告，从截至11月16日的重仓股（未建仓完毕）来看，多只产品重点配置银行、白酒、煤炭、油气等防御性板块，其中6只ETF合计持有贵州茅台3.36亿元居首，7只ETF合计持有美的集团2.48亿元位居次席，5只ETF合计持有宁德时代2.24亿元位居第三。在主动ETF持仓前20个股中，银行股占据7席，合计持有市值达7.92亿元；科技股占据3席，分别为寒武纪、中际旭创、海康威视。"
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "持仓截至11月16日且尚未建仓完毕，最终仓位及行业权重可能变化。",
+        "正文未提供ETF后续申赎、成交规模或持仓调整方向，无法确认配置是否形成持续增量。",
+        "正文未提供相关行业订单、价格、需求、成本、盈利或政策变化，无法建立经营影响的因果链。"
+      ],
+      "usage": {
+        "total_tokens": 6346,
+        "prompt_tokens": 1200,
+        "completion_tokens": 5146
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "dc8ef0fb31eb3d2c8c0d9db7316ee98b2899e8558b00e27c5a26b5475f538a3e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 284,
+      "scored_at": "2026-11-18T10:49:48.448440+08:00"
+    },
+    "49460615df9e46645fbf7ddfedee8cf7673a274b714e0189f957b378393a2cf8": {
+      "summary": "截至11月18日发稿，剑桥科技、智谱、海致科技集团和MINIMAX-W盘中上涨4.40%至4.85%，显示港股AI标的短线交易偏强，但未出现经营数据佐证。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露四只港股盘中涨幅，未提供宏观政策、需求或盈利传导，无法判断六大指数影响。",
+        "evidence": [
+          "财联社11月18日电，截至发稿，剑桥科技(06166.HK)涨4.85%、智谱(02513.HK)涨4.78%、海致科技集团(02706.HK)涨4.77%、MINIMAX-W(00100.HK)涨4.40%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "智谱、海致科技集团及MINIMAX-W上涨仅表明相关AI标的短线交易活跃；无订单、收入、成本或政策信息，不能据此认定行业经营利好。",
+          "evidence": [
+            "财联社11月18日电，截至发稿，剑桥科技(06166.HK)涨4.85%、智谱(02513.HK)涨4.78%、海致科技集团(02706.HK)涨4.77%、MINIMAX-W(00100.HK)涨4.40%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "剑桥科技盘中上涨可确认相关通信标的短线交易走强，但正文无业务量、价格、订单或成本变化，无法推断通信行业盈利影响。",
+          "evidence": [
+            "财联社11月18日电，截至发稿，剑桥科技(06166.HK)涨4.85%、智谱(02513.HK)涨4.78%、海致科技集团(02706.HK)涨4.77%、MINIMAX-W(00100.HK)涨4.40%。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "盘中涨幅并非收盘表现，涨势持续性未提供。",
+        "正文未提供订单、收入、利润或业务量数据，经营影响无法验证。",
+        "正文没有明确的宏观政策或跨行业成本需求传导。"
+      ],
+      "usage": {
+        "total_tokens": 2972,
+        "prompt_tokens": 1079,
+        "completion_tokens": 1893
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "a2e3940027153ad414ffd65dcf4391f932d029537fd9ce6bb91f3c569d74f117",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 105,
+      "scored_at": "2026-11-18T10:50:12.023418+08:00"
     }
   },
   "failures": {
