@@ -3017,6 +3017,157 @@
       "reason": "source_unavailable",
       "attempted_at": "2026-11-18T13:36:42.781804+08:00",
       "retry_after": "2026-11-19T13:36:42.781804+08:00"
+    },
+    "4ad6a5d81fd7b0f1a9ba88fdbf0c5fb7c3cd767fc4627ab0746156dfea8a7308": {
+      "url": "https://finance.eastmoney.com/a/202611183933884622.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "6315ca1d286d8cb24b2dd1b6d78ca16b56c9af9a6ef26ebdfa9b5d73fe98c363": {
+      "url": "https://finance.eastmoney.com/a/202611183933900277.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "5f8253456ff6caf069bd39ea8a5e048b83c9a44fe9962fca9c2bdec80b0412fc": {
+      "url": "https://finance.eastmoney.com/a/202611183933888375.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "0d85ed921007bec25e1a73c95339cda4cb5e92ebff3cbc038f4fb71f074ca115": {
+      "url": "https://finance.eastmoney.com/a/202611183933890583.html",
+      "status": "complete",
+      "full_text": "Wind数据显示，截至2026年11月16日净值数据（下同），全市场所有公募基金中，今年以来收益率达到或超过100%的产品数量已归零。\n目前收益率居首的易方达供给改革混合年内收益率为96.31%，距离翻倍仅差约3.7个百分点，易方达产业机遇混合A、C分别以91.61%、90.78%紧随其后。而在二季度末，全市场年内翻倍的公募基金曾多达246只。\n“今年的多只翻倍基清零，是极致抱团后的估值消化与风格剧烈切换的集中体现。上半年AI、算力、\n半导体\n赛道单边暴涨，资金集中涌入高景气方向，公募对科技板块的配置触及历史高位，同时也出现了多只翻倍基。7月后高位获利盘集中兑现，叠加全球AI产业链估值泡沫出清，科技赛道迎来深度调整。”资深基金评价人士王铁牛对《华夏时报》记者表示。\n翻倍基“清零”\n上半年，AI、\n半导体\n、算力等科技主线持续走强，带动重仓科技赛道的基金净值快速抬升。Wind数据显示，截至二季度末，全市场年内收益率翻倍的公募基金多达246只。彼时，方正富邦核心优势混合A、财通多策略福鑫等产品一度位居业绩榜前列，科技主题基金在结构性行情中表现尤为突出。\n进入三季度，市场风格出现明显切换。7月以来，科创50指数、创业板指均出现较大跌幅，\n电子\n、\n通信\n等前期涨幅较高的板块回调明显，重仓科技赛道的基金净值随之大幅回撤。Wind数据显示，截至三季度末，全市场年内收益率翻倍的公募基金仅剩2只，较二季度末减少逾九成。\n至2026年10月末，年内“翻倍基”已无产品留存。王铁牛对《华夏时报》记者表示，今年的大多数翻倍基，持仓集中、仓位较高、收益来源单一，赛道上涨时能快速获取超高收益，赛道集中下跌时风险也会同步集中爆发，盈亏同源特征十分显著。普通投资者盲目追高短期排名靠前的爆款产品，很容易在赛道高点入场，最终直面净值大幅回撤、浮盈快速回吐的局面。\n格上基金研究员谢诗琦对《华夏时报》记者表示，年内公募翻倍基清零，本质是极端结构性行情后的估值回归。上半年AI、算力等赛道交易拥挤度处于高位，部分产品凭借高集中度暴露获取超额收益；随着三季度科技板块深度回调，收益回吐具有必然性，但市场诸多利空，科技板块的跌幅超出市场预期。在市场的回撤过程中反映出基金经理对产品的风控与回撤管理能力，短期翻倍更多是赛道弹性的产物，不能等同于基金经理的持续投研能力。对投资者而言，不宜追逐短期业绩榜单，高收益若未及时兑现，回撤阶段同样剧烈。更应关注基金经理的\n综合\n能力、组合结构、风控体系。\n首尾业绩差超160个百分点\n翻倍基清零只是表象，更值得关注的是基金业绩的两极分化。截至11月16日，主动权益基金年内收益率首尾差已超过160个百分点，表现最好的易方达供给改革混合收益率为96.31%，而垫底的泰信互联网+主题混合A亏损达66.59%。从更长的时间维度看，截至11月16日，近一年维度有2只基金收益率超过100%。\n截至11月16日，年内主动权益类基金分类冠军呈现明显的头部集中特征。灵活配置型与主动权益整体冠军均由易方达供给改革拿下，年内收益率96.31%；偏股混合型冠军为易方达产业机遇A，收益率91.61%。普通股票型冠军则由汇安趋势动力A获得，收益率为51.13%。\n此外，QDII全部类别冠军为易方达原油A美元现汇，收益率约80%。被动产品方面，国内ETF/指数型冠军为建信易盛郑商所能源化工\n期货\nETF，收益率41.33%；场内ETF中涨幅居前的为嘉实标普石油\n天然气\nETF和富国标普石油\n天然气\nETF，收益率分别为40.71%和40.69%。\nQDII原油“霸榜”\nWind数据显示，截至11月16日，在剔除美元份额产品后，全市场年内收益率排名前五的基金中，原油QDII占据三席。南方原油A以80.85%的年内收益率位列第三，嘉实原油以75.04%年内收益率、易方达原油A人民币以71.87%年内收益率分列第四、第五位。\n有关原油后市看法，\n中泰期货\n11月17日研报显示，“此前‘美伊僵持、油价震荡’的判断应修正为‘震荡区间下移、重心下移过程中的高波动’，地缘扰动更可能提供反弹后的沽空窗口”。\n随着三季度AI、\n半导体\n等前期高位板块遭遇剧烈回调，绝大多数重仓科技赛道的基金净值大幅回撤并退出前排，而原油类产品凭借大宗商品行情形成独立走势。从“科技牛”到“原油热”，榜单的结构性换血揭示了一个关键事实：在极致的风格轮动中，今年的领跑主线并非一成不变，踏准宏观大宗周期的产品，正成为翻倍基清零后的最大赢家。\n（文章来源：华夏时报网）",
+      "text_hash": "21ecfe0ff7316d795bc2c94dcc814abfd40e0368e80cec13c8d097e1e9426c17",
+      "fetched_at": "2026-11-18T14:11:31.451738+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933890583.html",
+      "published_at": "2026-11-18T13:11:00+08:00",
+      "published_at_verified_at": "2026-11-18T14:11:31.451761+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933890583.html",
+        "checked_at": "2026-11-18T14:11:31.451761+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:11"
+      }
+    },
+    "9972a8fb299eef696a9c9b9c85599a29eb05fa3e884ff69f6fc412e27a7d3a07": {
+      "url": "https://finance.eastmoney.com/a/202611183933886578.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "bd2990f23ef5c7551c6e257e7900f73e7a0b2a634415099284f7dbeb8f906ef7": {
+      "url": "https://finance.eastmoney.com/a/202611183933900443.html",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "50b715a4710e01b0c4ee67f9333a86ff63b7862bee01abe5e2ffc5cb90ecd9f0": {
+      "url": "https://mondafrique.com/decryptage/israel-va-t-il-attaquer-liran-seul/",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "8d0148ed02c6595013194d8c0ab2d9050f3d78c19249038556aac9e68d466804": {
+      "url": "https://udn.com/news/story/124652/9885530",
+      "status": "complete",
+      "full_text": "針對台南市長公辦政見會昨天的烏山頭\n水庫\n光電板\n交鋒，媒體今天問台北市長\n蔣萬安\n，民進黨候選人\n陳亭妃\n昨針對\n烏山頭水庫\n光電板，前一秒稱「現在所有水庫根本就沒有光電板，不要再誤導民眾，後稱烏山頭只要到2032年4月23日就不能再續約，會強力控管」，蔣萬安酸「我以為是AI影片，結果是真的」。\n蔣萬安今天一早與台南市長候選人謝龍介到台北第一果菜與魚類批發市場拜票，針對水庫光電板議題，蔣說，他想跟謝龍介委員說一聲，「辛苦了，你一定要贏，要為台南鄉親出一口氣，我會在我的崗位上面，繼續守護台北市民的用水安全。」\n年底選戰最後倒數決戰10天，蔣萬安、謝龍介今早到台北第一果菜與魚類批發市場拜票，攤商相當熱情，凍蒜聲不斷，蔣萬安也逐一與攤商店家握手。\n針對烏山頭水庫光電板議題，謝龍介也表示，台北市有一個堅持用水安心的蔣萬安市長，我們南部鄉親非常非常羨慕，所以「不斷敦促我，無論如何一定要信守承諾，拆除烏山頭水庫的光電板」，不管是水利署、還是個別，就是保障台南市民跟鄉親的用水安心，這麼卑微的請求，如果你還要我等到2032年才能拆除它，就不是一個有勇氣、有擔當的市長。\n謝龍介說，「我再度承諾，我如果沒有把烏山頭水庫的光電板拆除，拆不了，大家可以公開罷免我，全台灣都可以罷免我，台南市民可以罷免我，我無話可說。」\n蔣萬安今天受訪說，昨天他看到陳亭妃委員在政見會上，前一秒說水庫上面沒有光電板，下一句突然說光電只用到121年，「我以為是AI影片，結果是真的」。所以龍介委員「你一定要贏，要為台南鄉親出一口氣」。\n年底選戰最後倒數決戰10天，台北市長蔣萬安、台南市長候選人謝龍介今早到台北第一果菜與魚類批發市場拜票，攤商相當熱情，凍蒜聲不斷，蔣萬安也逐一與攤商店家握手。截自供訊直播\n年底選戰最後倒數決戰10天，台北市長蔣萬安、台南市長候選人謝龍介今早到台北第一果菜與魚類批發市場拜票，攤商相當熱情，凍蒜聲不斷，蔣萬安也逐一與攤商店家握手。截自供訊直播\n2026九合一選舉\n2026縣市長選舉倒數！看22縣市完整參選名單\n選舉查詢器／你家選區有誰參選里長？\n1128投票攻略！從領票、圈票到投票，一起實境演練\n蔣萬安\n陳亭妃\n2026九合一選舉\n台北市選舉\n烏山頭水庫\n光電板\n水庫\n【即將截止】登入簽到\n【即將截止】簽到有禮\n現在還來得及！最後機會🚀\n每日簽到送 LINE 點數\n玩遊戲抽 7-11 禮券🎁\n現在還來得及！最後機會🚀\n每日簽到送 LINE 點數\n玩遊戲抽 7-11 禮券🎁\n立即登入\n立即前往",
+      "text_hash": "53a6cf9e91454aa075efaddd5266e2cb09a875a221f463a79965bf19b0decbc2",
+      "fetched_at": "2026-11-18T14:12:53.984980+08:00",
+      "extraction_method": "html:.article-content",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://udn.com/news/story/124652/9885530",
+      "published_at": "2026-11-18T08:25:55+08:00",
+      "published_at_verified_at": "2026-11-18T14:12:53.985004+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://udn.com/news/story/124652/9885530",
+        "checked_at": "2026-11-18T14:12:53.985004+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:25:55+08:00"
+      }
+    },
+    "63ef9a1b4ad7f4894537d18ac478831b458926fd0d9b647a6b573178d00cb6a2": {
+      "url": "https://www.clarin.com/mundo/donald-trump-llego-asia-esperada-cumbre-vladimir-putin-xi-jinping-reunira-kim-jong-un_0_cBZzwmT2dc.html",
+      "status": "unavailable",
+      "reason": "restricted_article",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "c2a4360e683aa8f813f1a5456bb4c05cc2e7c6446c50d31b30d7218a2a4e3fdd": {
+      "url": "https://www.hexham-courant.co.uk/news/national/26735858.ukraine-strikes-major-russian-bridge-aerial-attacks-escalate/",
+      "status": "unavailable",
+      "reason": "restricted_article",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "aae52fdce4d5aaad367d5c90f5f39bf92ea80dbf52f8e903e58e6fccadf9808f": {
+      "url": "https://www.sggp.org.vn/thu-tuong-le-minh-hung-ket-thuc-tot-dep-chuyen-cong-tac-du-hoi-nghi-cap-cao-asean-49-post882324.html",
+      "status": "complete",
+      "full_text": "Thủ tướng Lê Minh Hưng cùng trưởng đoàn các nước chụp ảnh chung tại Lễ khai mạc Hội nghị cấp cao ASEAN lần thứ 49. Ảnh: TTXVN\nChuyến công tác được thực hiện theo lời mời của Tổng thống Philippines Ferdinand Romualdez Marcos Jr., Chủ tịch ASEAN năm 2026.\nTrong 4 ngày công tác, Thủ tướng Lê Minh Hưng có lịch trình dày đặc với nhiều hoạt động đa phương và song phương, tham dự các hội nghị, sự kiện của ASEAN và các hội nghị giữa ASEAN với các đối tác. Thủ tướng cũng có các cuộc gặp, tiếp xúc với lãnh đạo nhiều nước ASEAN, các nước đối tác và tổ chức quốc tế tham dự hội nghị.\nTại các hội nghị, Thủ tướng Lê Minh Hưng đưa ra nhiều đề xuất mang tính chiến lược, góp phần định hướng và thúc đẩy hợp tác giữa ASEAN với các đối tác, vì lợi ích của người dân khu vực và thế giới.\nThủ tướng Lê Minh Hưng phát biểu tại Hội nghị Thượng đỉnh Kinh doanh và Đầu tư ASEAN (ASEAN-BIS). Ảnh: TTXVN\nPhát biểu tại Hội nghị thượng đỉnh Kinh doanh và Đầu tư ASEAN (ABIS) 2026, Thủ tướng đề xuất \"Xây dựng hạ tầng cho nền kinh tế ASEAN tương lai\" với 4 ưu tiên trọng tâm: kết nối giao thông và logistics xuyên biên giới; kết nối năng lượng; kết nối số; kết nối thể chế và con người.\nSau khi dự lễ khai mạc Hội nghị cấp cao ASEAN lần thứ 49, Thủ tướng dự Phiên toàn thể Hội nghị cấp cao ASEAN lần thứ 49, trong đó Thủ tướng nêu 3 định hướng chiến lược nhằm tăng cường hợp tác ASEAN.\nThủ tướng Lê Minh Hưng cùng các Trưởng đoàn tham dự Phiên họp hẹp Hội nghị Cấp cao ASEAN lần thứ 49. Ảnh: TTXVN\nTrong Phiên họp hẹp, Thủ tướng đưa ra 3 đề xuất nhằm bảo đảm hòa bình, an ninh và phát triển khu vực, gồm: củng cố lòng tin, xử lý khác biệt thông qua đối thoại; chủ động phòng ngừa, quản lý khủng hoảng và ứng phó các thách thức chung; chủ động dẫn dắt hợp tác với các đối tác, chuyển từ tư duy giữ vai trò trung tâm sang kiến tạo vai trò trung tâm.\nTại Phiên đối thoại lần thứ 15 giữa lãnh đạo ASEAN và đại diện Đại hội đồng liên Nghị viện ASEAN (AIPA), Thủ tướng đề xuất 3 định hướng trọng tâm trong hợp tác ASEAN - AIPA: tham vấn từ sớm, thực thi hiệu quả; củng cố đoàn kết, vun đắp niềm tin; tập trung vào các ưu tiên mang lại lợi ích thiết thực cho người dân.\nThủ tướng cũng đề nghị Quốc hội, nghị viện các nước sớm xem xét phê chuẩn Công ước của Liên hợp quốc về chống tội phạm mạng (Công ước Hà Nội), tạo cơ sở pháp lý để tăng cường hợp tác trong lĩnh vực này.\nThủ tướng Lê Minh Hưng còn tham dự các hội nghị cấp cao giữa ASEAN với Trung Quốc, Liên hợp quốc, Australia, Hàn Quốc, Nhật Bản, Ấn Độ, Hoa Kỳ; Hội nghị cấp cao ASEAN+3; Hội nghị cấp cao Mekong - Hàn Quốc, Mekong - Nhật Bản (Việt Nam đồng chủ trì); Hội nghị thượng đỉnh Cộng đồng châu Á phát thải ròng bằng \"0\" (AZEC) và Hội nghị cấp cao Đông Á (EAS). Tại các hội nghị, Thủ tướng đưa ra những đề xuất thúc đẩy hợp tác giữa ASEAN với các đối tác.\nThủ tướng Lê Minh Hưng tham dự Hội nghị cấp cao đặc biệt ASEAN - Hoa Kỳ. Ảnh: TTXVN\nBên lề các hội nghị, Thủ tướng Lê Minh Hưng có các cuộc gặp, tiếp xúc song phương với lãnh đạo Brazil, Canada, Australia, Thái Lan; trao đổi với lãnh đạo Lào, Philippines, Singapore, Campuchia và Tổng Giám đốc Quỹ Tiền tệ Quốc tế (IMF)...\nViệc Thủ tướng Lê Minh Hưng tham dự và có những đóng góp thiết thực tại Hội nghị cấp cao ASEAN lần thứ 49 và các hội nghị liên quan tiếp tục khẳng định tầm quan trọng chiến lược của ASEAN trong chính sách đối ngoại của Việt Nam.\nTTXVN",
+      "text_hash": "cdfbe6b3406590f1a8bed3f8038b1c2cc17b084f877f9cd4b1c5719c0a241e7b",
+      "fetched_at": "2026-11-18T14:13:58.688607+08:00",
+      "extraction_method": "html:[itemprop=\"articleBody\"]",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.sggp.org.vn/thu-tuong-le-minh-hung-ket-thuc-tot-dep-chuyen-cong-tac-du-hoi-nghi-cap-cao-asean-49-post882324.html",
+      "published_at": "2026-11-18T08:40:15+08:00",
+      "published_at_verified_at": "2026-11-18T14:13:58.688630+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.sggp.org.vn/thu-tuong-le-minh-hung-ket-thuc-tot-dep-chuyen-cong-tac-du-hoi-nghi-cap-cao-asean-49-post882324.html",
+        "checked_at": "2026-11-18T14:13:58.688630+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T07:40:15+0700"
+      }
+    },
+    "a2b9aff1c51872e05dbd5a0751004c924d9d204862dcfafdd163618ca1e624d0": {
+      "url": "https://ec.ltn.com.tw/article/breakingnews/5644378",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "e4b131e83ef32898e1248b4547729cb4099f3af1f35e78fbb8e7456cba7e9bbf": {
+      "url": "https://www.chinanews.com.cn/sh/2026/11-18/10733850.shtml",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "7984c79ec454dff9d8f6ffde1fafe51e4bcf2603778d36b6fd151dc13b3f7ff2": {
+      "url": "https://www.ntdtv.com/b5/2026/11/17/a104151444.html",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "f38d748b41c3cdd633284cc2d05eeb7f8699226ceacd1c0549cf4f201d7d9a2c": {
+      "url": "https://www.comnews.ru/content/248424/2026-11-18/2026-w47/1008/rossiyskie-drony-poletyat-zimovat-globalnyy-yug",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
+    },
+    "6073068ec035ec6bbd5ba01ab86b059f3447cccf668c62db6e741370414e69bd": {
+      "url": "https://www.padovanews.it/2026/11/18/cina-pubblicate-le-linee-guida-sul-sistema-di-riciclo-delle-risorse-rinnovabili/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T14:10:06.823953+08:00",
+      "retry_after": "2026-11-19T14:10:06.823953+08:00"
     }
   },
   "hosts": {
@@ -3027,7 +3178,12 @@
     "www.eia.gov": "2026-11-19T11:35:15.282176+08:00",
     "www.son.tv": "2026-11-19T13:36:42.781804+08:00",
     "www.163.com": "2026-11-19T13:36:42.781804+08:00",
-    "www.lebanondemocrat.com": "2026-11-19T13:36:42.781804+08:00"
+    "www.lebanondemocrat.com": "2026-11-19T13:36:42.781804+08:00",
+    "ec.ltn.com.tw": "2026-11-19T14:10:06.823953+08:00",
+    "www.chinanews.com.cn": "2026-11-19T14:10:06.823953+08:00",
+    "www.ntdtv.com": "2026-11-19T14:10:06.823953+08:00",
+    "www.comnews.ru": "2026-11-19T14:10:06.823953+08:00",
+    "www.padovanews.it": "2026-11-19T14:10:06.823953+08:00"
   },
   "protocol_migration": {
     "host": "finance.eastmoney.com",

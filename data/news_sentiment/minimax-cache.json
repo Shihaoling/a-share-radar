@@ -15405,6 +15405,850 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 1074,
       "scored_at": "2026-11-18T13:51:02.672697+08:00"
+    },
+    "dc536be936f28aa200655edbe547278ddd88a9f99eeb19ecae0b7dd8d34b1844": {
+      "summary": "年内翻倍公募基金由二季度末246只降至10月末零只，主动权益首尾收益差超160个百分点；科技重仓基金回撤，原油QDII收益居前，但机构预计油价中枢下移。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "材料仅呈现科技回撤与原油占优的结构性轮动，未给出对整体盈利、通胀或宽基指数的明确传导，不能据此泛化市场方向。",
+        "evidence": [
+          "彼时，方正富邦核心优势混合A、财通多策略福鑫等产品一度位居业绩榜前列，科技主题基金在结构性行情中表现尤为突出。\n进入三季度，市场风格出现明显切换。7月以来，科创50指数、创业板指均出现较大跌幅，\n电子\n、\n通信\n等前期涨幅较高的板块回调明显，重仓科技赛道的基金净值随之大幅回撤。Wind数据显示，截至三季度末，全市场年内收益率翻倍的公募基金仅剩2只，较二季度末减少逾九成。\n至2026年10月末，年内“翻倍基”已无产品留存。",
+          "等前期高位板块遭遇剧烈回调，绝大多数重仓科技赛道的基金净值大幅回撤并退出前排，而原油类产品凭借大宗商品行情形成独立走势。从“科技牛”到“原油热”，榜单的结构性换血揭示了一个关键事实：在极致的风格轮动中，今年的领跑主线并非一成不变，踏准宏观大宗周期的产品，正成为翻倍基清零后的最大赢家。\n（文章来源：华夏时报网）"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.91,
+          "reason": "7月以来电子板块随科技拥挤交易退潮而明显回调，重仓基金净值大幅回撤；主要体现估值、流动性与资金面风险，文中无收入、利润或订单数据。",
+          "evidence": [
+            "赛道单边暴涨，资金集中涌入高景气方向，公募对科技板块的配置触及历史高位，同时也出现了多只翻倍基。7月后高位获利盘集中兑现，叠加全球AI产业链估值泡沫出清，科技赛道迎来深度调整。”资深基金评价人士王铁牛对《华夏时报》记者表示。\n翻倍基“清零”\n上半年，AI、\n半导体\n、算力等科技主线持续走强，带动重仓科技赛道的基金净值快速抬升。Wind数据显示，截至二季度末，全市场年内收益率翻倍的公募基金多达246只。",
+            "彼时，方正富邦核心优势混合A、财通多策略福鑫等产品一度位居业绩榜前列，科技主题基金在结构性行情中表现尤为突出。\n进入三季度，市场风格出现明显切换。7月以来，科创50指数、创业板指均出现较大跌幅，\n电子\n、\n通信\n等前期涨幅较高的板块回调明显，重仓科技赛道的基金净值随之大幅回撤。Wind数据显示，截至三季度末，全市场年内收益率翻倍的公募基金仅剩2只，较二季度末减少逾九成。\n至2026年10月末，年内“翻倍基”已无产品留存。",
+            "上半年AI、算力等赛道交易拥挤度处于高位，部分产品凭借高集中度暴露获取超额收益；随着三季度科技板块深度回调，收益回吐具有必然性，但市场诸多利空，科技板块的跌幅超出市场预期。在市场的回撤过程中反映出基金经理对产品的风控与回撤管理能力，短期翻倍更多是赛道弹性的产物，不能等同于基金经理的持续投研能力。对投资者而言，不宜追逐短期业绩榜单，高收益若未及时兑现，回撤阶段同样剧烈。更应关注基金经理的\n综合\n能力、组合结构、风控体系。\n首尾业绩差超160个百分点"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.9,
+          "reason": "通信等前期涨幅较高板块在7月后回调明显，相关科技基金净值大幅回撤；影响集中于估值和持仓风险，未提供通信企业盈利变化。",
+          "evidence": [
+            "赛道单边暴涨，资金集中涌入高景气方向，公募对科技板块的配置触及历史高位，同时也出现了多只翻倍基。7月后高位获利盘集中兑现，叠加全球AI产业链估值泡沫出清，科技赛道迎来深度调整。”资深基金评价人士王铁牛对《华夏时报》记者表示。\n翻倍基“清零”\n上半年，AI、\n半导体\n、算力等科技主线持续走强，带动重仓科技赛道的基金净值快速抬升。Wind数据显示，截至二季度末，全市场年内收益率翻倍的公募基金多达246只。",
+            "彼时，方正富邦核心优势混合A、财通多策略福鑫等产品一度位居业绩榜前列，科技主题基金在结构性行情中表现尤为突出。\n进入三季度，市场风格出现明显切换。7月以来，科创50指数、创业板指均出现较大跌幅，\n电子\n、\n通信\n等前期涨幅较高的板块回调明显，重仓科技赛道的基金净值随之大幅回撤。Wind数据显示，截至三季度末，全市场年内收益率翻倍的公募基金仅剩2只，较二季度末减少逾九成。\n至2026年10月末，年内“翻倍基”已无产品留存。",
+            "上半年AI、算力等赛道交易拥挤度处于高位，部分产品凭借高集中度暴露获取超额收益；随着三季度科技板块深度回调，收益回吐具有必然性，但市场诸多利空，科技板块的跌幅超出市场预期。在市场的回撤过程中反映出基金经理对产品的风控与回撤管理能力，短期翻倍更多是赛道弹性的产物，不能等同于基金经理的持续投研能力。对投资者而言，不宜追逐短期业绩榜单，高收益若未及时兑现，回撤阶段同样剧烈。更应关注基金经理的\n综合\n能力、组合结构、风控体系。\n首尾业绩差超160个百分点"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.78,
+          "reason": "AI、算力等上半年强势主线吸引高度集中配置，三季度后拥挤交易与估值消化造成相关基金重仓方向回撤；缺少算力产业链订单和利润证据。",
+          "evidence": [
+            "赛道单边暴涨，资金集中涌入高景气方向，公募对科技板块的配置触及历史高位，同时也出现了多只翻倍基。7月后高位获利盘集中兑现，叠加全球AI产业链估值泡沫出清，科技赛道迎来深度调整。”资深基金评价人士王铁牛对《华夏时报》记者表示。\n翻倍基“清零”\n上半年，AI、\n半导体\n、算力等科技主线持续走强，带动重仓科技赛道的基金净值快速抬升。Wind数据显示，截至二季度末，全市场年内收益率翻倍的公募基金多达246只。",
+            "上半年AI、算力等赛道交易拥挤度处于高位，部分产品凭借高集中度暴露获取超额收益；随着三季度科技板块深度回调，收益回吐具有必然性，但市场诸多利空，科技板块的跌幅超出市场预期。在市场的回撤过程中反映出基金经理对产品的风控与回撤管理能力，短期翻倍更多是赛道弹性的产物，不能等同于基金经理的持续投研能力。对投资者而言，不宜追逐短期业绩榜单，高收益若未及时兑现，回撤阶段同样剧烈。更应关注基金经理的\n综合\n能力、组合结构、风控体系。\n首尾业绩差超160个百分点",
+            "等前期高位板块遭遇剧烈回调，绝大多数重仓科技赛道的基金净值大幅回撤并退出前排，而原油类产品凭借大宗商品行情形成独立走势。从“科技牛”到“原油热”，榜单的结构性换血揭示了一个关键事实：在极致的风格轮动中，今年的领跑主线并非一成不变，踏准宏观大宗周期的产品，正成为翻倍基清零后的最大赢家。\n（文章来源：华夏时报网）"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.82,
+          "reason": "原油QDII收益居前反映此前商品行情占优；按研报后续油价区间与重心下移的预测，上游盈利可能承压、下游原料成本可能缓解，但缺少企业利润数据。",
+          "evidence": [
+            "灵活配置型与主动权益整体冠军均由易方达供给改革拿下，年内收益率96.31%；偏股混合型冠军为易方达产业机遇A，收益率91.61%。普通股票型冠军则由汇安趋势动力A获得，收益率为51.13%。\n此外，QDII全部类别冠军为易方达原油A美元现汇，收益率约80%。被动产品方面，国内ETF/指数型冠军为建信易盛郑商所能源化工\n期货\nETF，收益率41.33%；场内ETF中涨幅居前的为嘉实标普石油\n天然气\nETF和富国标普石油\n天然气\nETF，收益率分别为40.71%和40.69%。",
+            "QDII原油“霸榜”\nWind数据显示，截至11月16日，在剔除美元份额产品后，全市场年内收益率排名前五的基金中，原油QDII占据三席。南方原油A以80.85%的年内收益率位列第三，嘉实原油以75.04%年内收益率、易方达原油A人民币以71.87%年内收益率分列第四、第五位。\n有关原油后市看法，\n中泰期货\n11月17日研报显示，“此前‘美伊僵持、油价震荡’的判断应修正为‘震荡区间下移、重心下移过程中的高波动’，地缘扰动更可能提供反弹后的沽空窗口”。\n随着三季度AI、\n半导体",
+            "等前期高位板块遭遇剧烈回调，绝大多数重仓科技赛道的基金净值大幅回撤并退出前排，而原油类产品凭借大宗商品行情形成独立走势。从“科技牛”到“原油热”，榜单的结构性换血揭示了一个关键事实：在极致的风格轮动中，今年的领跑主线并非一成不变，踏准宏观大宗周期的产品，正成为翻倍基清零后的最大赢家。\n（文章来源：华夏时报网）"
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "能源化工期货ETF收益居前只反映期货组合表现，材料未披露具体品种涨跌、价差、库存或企业利润，无法判断基础化工经营方向。",
+          "evidence": [
+            "灵活配置型与主动权益整体冠军均由易方达供给改革拿下，年内收益率96.31%；偏股混合型冠军为易方达产业机遇A，收益率91.61%。普通股票型冠军则由汇安趋势动力A获得，收益率为51.13%。\n此外，QDII全部类别冠军为易方达原油A美元现汇，收益率约80%。被动产品方面，国内ETF/指数型冠军为建信易盛郑商所能源化工\n期货\nETF，收益率41.33%；场内ETF中涨幅居前的为嘉实标普石油\n天然气\nETF和富国标普石油\n天然气\nETF，收益率分别为40.71%和40.69%。"
+          ],
+          "sector_code": "801030.SI",
+          "sector_name": "基础化工",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "文章聚焦公募基金业绩分化、持仓集中和回撤风险，但未披露基金规模、申赎、管理费或公司利润变化，无法判断非银金融经营方向。",
+          "evidence": [
+            "王铁牛对《华夏时报》记者表示，今年的大多数翻倍基，持仓集中、仓位较高、收益来源单一，赛道上涨时能快速获取超高收益，赛道集中下跌时风险也会同步集中爆发，盈亏同源特征十分显著。普通投资者盲目追高短期排名靠前的爆款产品，很容易在赛道高点入场，最终直面净值大幅回撤、浮盈快速回吐的局面。\n格上基金研究员谢诗琦对《华夏时报》记者表示，年内公募翻倍基清零，本质是极端结构性行情后的估值回归。",
+            "上半年AI、算力等赛道交易拥挤度处于高位，部分产品凭借高集中度暴露获取超额收益；随着三季度科技板块深度回调，收益回吐具有必然性，但市场诸多利空，科技板块的跌幅超出市场预期。在市场的回撤过程中反映出基金经理对产品的风控与回撤管理能力，短期翻倍更多是赛道弹性的产物，不能等同于基金经理的持续投研能力。对投资者而言，不宜追逐短期业绩榜单，高收益若未及时兑现，回撤阶段同样剧烈。更应关注基金经理的\n综合\n能力、组合结构、风控体系。\n首尾业绩差超160个百分点",
+            "翻倍基清零只是表象，更值得关注的是基金业绩的两极分化。截至11月16日，主动权益基金年内收益率首尾差已超过160个百分点，表现最好的易方达供给改革混合收益率为96.31%，而垫底的泰信互联网+主题混合A亏损达66.59%。从更长的时间维度看，截至11月16日，近一年维度有2只基金收益率超过100%。\n截至11月16日，年内主动权益类基金分类冠军呈现明显的头部集中特征。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "科技回调主要归因于拥挤交易、获利兑现与估值消化，缺少订单、收入和利润数据，无法确认基本面是否恶化。",
+        "油价后续预测受地缘扰动影响，且缺少供需、库存与持续时间信息，路径及上下游利润弹性不确定。",
+        "公募基金申赎、规模、费率及资金流向未披露，非银金融经营影响无法量化。"
+      ],
+      "usage": {
+        "total_tokens": 10629,
+        "prompt_tokens": 2257,
+        "completion_tokens": 8372
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "21ecfe0ff7316d795bc2c94dcc814abfd40e0368e80cec13c8d097e1e9426c17",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1873,
+      "scored_at": "2026-11-18T14:15:36.465937+08:00"
+    },
+    "6f30f6ebb5a4a08024cba9c0e0af199c7cf411e965376c30c0770556f5853aa1": {
+      "summary": "越南总理在东盟会议期间提出跨境交通物流、能源、数字连接及制度合作等战略倡议，并开展多双边接触；报道未披露具体项目、规模或落地安排。",
+      "tone": "positive",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.86,
+        "reason": "内容以区域合作战略和倡议为主，未披露具体项目、投资规模、执行时间或约束性安排，无法判断宏观及整体市场影响。",
+        "evidence": [
+          "Tại các hội nghị, Thủ tướng Lê Minh Hưng đưa ra nhiều đề xuất mang tính chiến lược, góp phần định hướng và thúc đẩy hợp tác giữa ASEAN với các đối tác, vì lợi ích của người dân khu vực và thế giới.",
+          "Phát biểu tại Hội nghị thượng đỉnh Kinh doanh và Đầu tư ASEAN (ABIS) 2026, Thủ tướng đề xuất \"Xây dựng hạ tầng cho nền kinh tế ASEAN tương lai\" với 4 ưu tiên trọng tâm: kết nối giao thông và logistics xuyên biên giới; kết nối năng lượng; kế",
+          "Tại các hội nghị, Thủ tướng đưa ra những đề xuất thúc đẩy hợp tác giữa ASEAN với các đối tác.\nThủ tướng Lê Minh Hưng tham dự Hội nghị cấp cao đặc biệt ASEAN - Hoa Kỳ. Ảnh: TTXVN"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.58,
+          "reason": "跨境交通与物流连接若转化为线路、枢纽和通关项目，可增加运输需求并改善网络效率；当前仅为战略提案，未披露项目、规模与时点。",
+          "evidence": [
+            "Phát biểu tại Hội nghị thượng đỉnh Kinh doanh và Đầu tư ASEAN (ABIS) 2026, Thủ tướng đề xuất \"Xây dựng hạ tầng cho nền kinh tế ASEAN tương lai\" với 4 ưu tiên trọng tâm: kết nối giao thông và logistics xuyên biên giới; kết nối năng lượng; kế"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.47,
+          "reason": "能源连接若落地为跨境电网及配套能源基础设施建设，可形成电力设备需求；未明确技术路线、项目清单或采购安排。",
+          "evidence": [
+            "Phát biểu tại Hội nghị thượng đỉnh Kinh doanh và Đầu tư ASEAN (ABIS) 2026, Thủ tướng đề xuất \"Xây dựng hạ tầng cho nền kinh tế ASEAN tương lai\" với 4 ưu tiên trọng tâm: kết nối giao thông và logistics xuyên biên giới; kết nối năng lượng; kế",
+            "t nối số; kết nối thể chế và con người.\nSau khi dự lễ khai mạc Hội nghị cấp cao ASEAN lần thứ 49, Thủ tướng dự Phiên toàn thể Hội nghị cấp cao ASEAN lần thứ 49, trong đó Thủ tướng nêu 3 định hướng chiến lược nhằm tăng cường hợp tác ASEAN."
+          ],
+          "sector_code": "801730.SI",
+          "sector_name": "电力设备",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.5,
+          "reason": "数字连接若落地为跨境网络和数字基础设施项目，可提升通信网络建设及服务需求；未披露投资规模、技术方案和执行主体。",
+          "evidence": [
+            "t nối số; kết nối thể chế và con người.\nSau khi dự lễ khai mạc Hội nghị cấp cao ASEAN lần thứ 49, Thủ tướng dự Phiên toàn thể Hội nghị cấp cao ASEAN lần thứ 49, trong đó Thủ tướng nêu 3 định hướng chiến lược nhằm tăng cường hợp tác ASEAN."
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "各倡议仍属战略提议，执行主体、时间表及约束性均不明确。",
+        "报道未披露具体项目清单、投资规模、资金来源或参与企业。",
+        "未说明跨境交通、能源和数字合作将采用何种规则及实施标准，经营改善程度无法量化。"
+      ],
+      "usage": {
+        "total_tokens": 6658,
+        "prompt_tokens": 3085,
+        "completion_tokens": 3573
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "cdfbe6b3406590f1a8bed3f8038b1c2cc17b084f877f9cd4b1c5719c0a241e7b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3347,
+      "scored_at": "2026-11-18T14:16:15.814010+08:00"
+    },
+    "b0fa0aa1eed9250633e441c6140c308f8b521656911a1d6d4b6605e3009a6424": {
+      "summary": "陈亭妃称乌山头水库光电至2032年4月23日将不能续约，谢龙介承诺当选后拆除；争议聚焦供水安全与既有光伏运营，但无实施、补偿或替代方案。",
+      "tone": "negative",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "内容仅涉及台南单一水库的选举争议与口头承诺，未见全国性电价、光伏政策或装机调整，无法判断宏观传导。",
+        "evidence": [
+          "針對台南市長公辦政見會昨天的烏山頭\n水庫\n光電板\n交鋒，媒體今天問台北市長\n蔣萬安\n，民進黨候選人\n陳亭妃\n昨針對\n烏山頭水庫\n光電板，前一秒稱「現在所有水庫根本就沒有光電板，不要再誤導民眾，後稱烏山頭只要到2032年4月23日就不能再續約，會強力控管」，蔣萬安酸「我以為是AI影片，結果是真的」。",
+          "針對烏山頭水庫光電板議題，謝龍介也表示，台北市有一個堅持用水安心的蔣萬安市長，我們南部鄉親非常非常羨慕，所以「不斷敦促我，無論如何一定要信守承諾，拆除烏山頭水庫的光電板」，不管是水利署、還是個別，就是保障台南市民跟鄉親的用水安心，這麼卑微的請求，如果你還要我等到2032年才能拆除它，就不是一個有勇氣、有擔當的市長。\n謝龍介說，「我再度承諾，我如果沒有把烏山頭水庫的光電板拆除，拆不了，大家可以公開罷免我，全台灣都可以罷免我，台南市民可以罷免我，我無話可說。」"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.54,
+          "reason": "若不续约或拆除，水库光伏项目运营及资产利用将受影响；但仅为候选人口头承诺，项目主体、补偿及替代方案均未披露。",
+          "evidence": [
+            "針對台南市長公辦政見會昨天的烏山頭\n水庫\n光電板\n交鋒，媒體今天問台北市長\n蔣萬安\n，民進黨候選人\n陳亭妃\n昨針對\n烏山頭水庫\n光電板，前一秒稱「現在所有水庫根本就沒有光電板，不要再誤導民眾，後稱烏山頭只要到2032年4月23日就不能再續約，會強力控管」，蔣萬安酸「我以為是AI影片，結果是真的」。",
+            "針對烏山頭水庫光電板議題，謝龍介也表示，台北市有一個堅持用水安心的蔣萬安市長，我們南部鄉親非常非常羨慕，所以「不斷敦促我，無論如何一定要信守承諾，拆除烏山頭水庫的光電板」，不管是水利署、還是個別，就是保障台南市民跟鄉親的用水安心，這麼卑微的請求，如果你還要我等到2032年才能拆除它，就不是一個有勇氣、有擔當的市長。\n謝龍介說，「我再度承諾，我如果沒有把烏山頭水庫的光電板拆除，拆不了，大家可以公開罷免我，全台灣都可以罷免我，台南市民可以罷免我，我無話可說。」"
+          ],
+          "sector_code": "801160.SI",
+          "sector_name": "公用事业",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "陈亭妃所称2032年4月23日不续约的合同依据及是否可提前终止未说明",
+        "候选人的拆除承诺能否落实以及所需程序和时程不明",
+        "项目业主、拆除补偿、发电损失及替代方案未披露，无法量化经营影响"
+      ],
+      "usage": {
+        "total_tokens": 5920,
+        "prompt_tokens": 1965,
+        "completion_tokens": 3955
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "53a6cf9e91454aa075efaddd5266e2cb09a875a221f463a79965bf19b0decbc2",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1053,
+      "scored_at": "2026-11-18T14:17:22.078225+08:00"
+    },
+    "c7509e98a1d2f2b3392718bdec208b147a15bca4ea14d616cdc4555a3aa2e498": {
+      "summary": "美国对五国数据中心采购先进芯片实施逐案许可与更严审查，收紧中国企业境外AI算力通道；可能增加中国AI训练约束并冲击部分东南亚项目，也可能推动国产芯片替代。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.3,
+        "reason": "文章明确的是先进芯片、AI算力和区域数据中心项目受约束，未给出对整体经济、流动性或六大指数的传导证据。",
+        "evidence": [
+          "On Monday, Washington announced new interim rules that will increase scrutiny of  data centre operators in Singapore, Malaysia, Thailand, Indonesia and Brazil.",
+          "Countries like Malaysia and Thailand whose data centre roll out has been heavily driven by Chinese buyers could be hit hardest, says international trade expert Naoise McDonagh from Australia's Edith Cowan University.",
+          "The new restrictions on South East Asia and Brazil have taken away \"one of the more practical routes Chinese AI developers had to accessing frontier computing power,\" Bhattacharya said."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.78,
+          "reason": "境外先进芯片与算力受限，压制依赖进口芯片的国内AI硬件需求；政策亦可能推动国产半导体替代，国内芯片厂商或受益，但尚无订单或盈利证据。",
+          "evidence": [
+            "The move not only restricts the export of advanced chips, but also access to their computing power, which Chinese firms currently rent abroad to train artificial intelligence (AI) models.",
+            "The new restrictions on South East Asia and Brazil have taken away \"one of the more practical routes Chinese AI developers had to accessing frontier computing power,\" Bhattacharya said.",
+            "But tighter restrictions could also push Chinese firms towards domestic semiconductors and further drive advancement at home."
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.8,
+          "reason": "依赖境外算力的中国AI开发商面临许可与审查，算力可得性下降可能延缓模型训练和迭代；逐案许可及国产替代效果使实际冲击程度仍不确定。",
+          "evidence": [
+            "The move not only restricts the export of advanced chips, but also access to their computing power, which Chinese firms currently rent abroad to train artificial intelligence (AI) models.",
+            "But now these firms will need a US government licence to buy advanced chips from Nvidia or other American chipmakers. This allows Washington to monitor if those chips are being used to serve Chinese companies, or being smuggled to China.",
+            "The new restrictions on South East Asia and Brazil have taken away \"one of the more practical routes Chinese AI developers had to accessing frontier computing power,\" Bhattacharya said."
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "许可证按个案发放，实际获批范围、审查强度及对现有合同的影响尚不明确。",
+        "依赖中国买家的马来西亚、泰国项目或受冲击更大，但整体数据中心投资被认为仍具韧性。",
+        "中国所称必要措施及国产芯片替代的实际范围、速度和效果均未披露。"
+      ],
+      "usage": {
+        "total_tokens": 6913,
+        "prompt_tokens": 2701,
+        "completion_tokens": 4212
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bb38483f9fdfb59fc58a47a90567b05a1238750a61c34c46bc71a8e0d703cf66",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 6375,
+      "scored_at": "2026-11-18T14:18:03.429860+08:00"
+    },
+    "d661921631f1a9bb2c3ccfc2fb1c081f891febdb2131156d9f9a28d0ab029fd2": {
+      "summary": "ICE基于数千份历史项目数据推出量化工具，预测未来24个月数据中心项目中断概率，回测准确率77%；其警示中位投资27亿美元项目若延期12个月，融资及资金占用成本或达1.62亿至2.7亿美元。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "材料仅披露单一公司的项目评估工具及延期成本情景，未提供对六大指数或整体行业盈利的明确传导。",
+        "evidence": [
+          "财联社11月17日电，洲际交易所（ICE）宣布推出ICE Data Center Site Analytics Tool，用于评估数据中心项目的建设可行性及延期风险。该工具覆盖美国3100多个县，基于数千份历史项目审批及建设数据，预测未来24个月项目遭遇中断的概率，历史回测准确率达77%。ICE表示，对于投资额中位数为27亿美元的数据中心项目，若延期12个月，融资及资金占用成本可能达到1.62亿至2.7亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.78,
+          "reason": "新产品对ICE自身数据分析服务构成产品增量，但无客户、收费、收入贡献或同业采用信息，不能据单一公司事件判断申万非银金融板块方向。",
+          "evidence": [
+            "财联社11月17日电，洲际交易所（ICE）宣布推出ICE Data Center Site Analytics Tool，用于评估数据中心项目的建设可行性及延期风险。该工具覆盖美国3100多个县，基于数千份历史项目审批及建设数据，预测未来24个月项目遭遇中断的概率，历史回测准确率达77%。ICE表示，对于投资额中位数为27亿美元的数据中心项目，若延期12个月，融资及资金占用成本可能达到1.62亿至2.7亿美元。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.64,
+          "reason": "对数据中心开发与运营环节，工具提升选址、可行性及延期风险可见度，属边际风控利好；但其不降低中断概率，延期及资金成本风险仍在。",
+          "evidence": [
+            "财联社11月17日电，洲际交易所（ICE）宣布推出ICE Data Center Site Analytics Tool，用于评估数据中心项目的建设可行性及延期风险。该工具覆盖美国3100多个县，基于数千份历史项目审批及建设数据，预测未来24个月项目遭遇中断的概率，历史回测准确率达77%。ICE表示，对于投资额中位数为27亿美元的数据中心项目，若延期12个月，融资及资金占用成本可能达到1.62亿至2.7亿美元。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.52,
+          "reason": "若预测的延期或中断发生，数据中心工程承包环节的施工进度、结算和资金占用可能承压；工具仅用于评估，未证明会降低延期风险。",
+          "evidence": [
+            "财联社11月17日电，洲际交易所（ICE）宣布推出ICE Data Center Site Analytics Tool，用于评估数据中心项目的建设可行性及延期风险。该工具覆盖美国3100多个县，基于数千份历史项目审批及建设数据，预测未来24个月项目遭遇中断的概率，历史回测准确率达77%。ICE表示，对于投资额中位数为27亿美元的数据中心项目，若延期12个月，融资及资金占用成本可能达到1.62亿至2.7亿美元。"
+          ],
+          "sector_code": "801720.SI",
+          "sector_name": "建筑装饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "77%为历史回测准确率，未来预测效果、误差分布及不同项目类型差异未知。",
+        "1.62亿至2.7亿美元为ICE针对中位项目延期的估算，不代表所有项目。",
+        "工具的定价、客户、采用率、收入贡献及对A股相关公司的实际敞口均未披露。"
+      ],
+      "usage": {
+        "total_tokens": 6951,
+        "prompt_tokens": 1123,
+        "completion_tokens": 5828
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d2e5f016346738d79dd8465a127018c48486d7eb38eeba41f0fdb40324300312",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 207,
+      "scored_at": "2026-11-18T14:18:44.723279+08:00"
+    },
+    "30fc2eaa228aada5e520f5aca888f6ce267fc0270d5a89ff65e07085672b9648": {
+      "summary": "Anthropic IPO超额认购倍数被披露为10至20倍，Altimeter已申报50亿美元认购意向；材料未显示该事件对A股行业经营或指数有明确传导。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅有单家公司IPO认购信息，缺少对六大指数盈利、需求或风险的明确传导。",
+        "evidence": [
+          "财联社11月17日电，Altimeter Capital首席执行官布拉德・格斯特纳透露，Anthropic的首次公开募股(IPO)认购热度极高，超额认购倍数达10至20倍。他同时表示，其投资机构已经申报了价值50亿美元的新股认购意向。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "超额认购及50亿美元认购意向均来自CEO披露，正文未提供认购数据来源或最终完成情况。",
+        "正文未说明Anthropic的业务、定价或上市时间，也未给出对A股相关行业订单、收入或成本的影响。"
+      ],
+      "usage": {
+        "total_tokens": 2592,
+        "prompt_tokens": 1073,
+        "completion_tokens": 1519
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "77fffc96eae73ea0f00903902905393ea81fd562637ba846fb7ef39349cf398b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 117,
+      "scored_at": "2026-11-18T14:19:04.043836+08:00"
+    },
+    "3deda443de0d6b9b1814a2953368cec43ab5b4c6e4e9917cbecb98d62e93fbc9": {
+      "summary": "易方达品质均衡主动ETF将于11月23日上市，截至11月16日股票仓位50.04%，前三大持仓为贵州茅台、宁德时代和北方华创。该事件仅涉及单只产品配置，未显示相关公司经营或行业盈利发生变化。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "单一ETF上市及持仓披露未形成明确宏观传导，无法据此判断六大指数方向。",
+        "evidence": [
+          "上交所公告显示，品质均衡主动ETF易方达（581050）将于11月23日上市。 公告显示，该产品机构投资者和个人投资者的比例分别为15.05%和84.95%；前十大份额持有人中，易方达基金为第一大持有人，持有份额1.6亿份，占比8.02%，第二大持有人为国泰海通证券，持有份额5343万份，占比2.67%。截至11月16日，该产品股票仓位占比为50.04%，贵州茅台、宁德时代、北方华创为前三大权重股。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.88,
+          "reason": "贵州茅台为ETF前三大权重股，配置可能带来边际交易需求，但未涉及公司销量、价格、成本或盈利变化，不能认定为行业利好。",
+          "evidence": [
+            "上交所公告显示，品质均衡主动ETF易方达（581050）将于11月23日上市。 公告显示，该产品机构投资者和个人投资者的比例分别为15.05%和84.95%；前十大份额持有人中，易方达基金为第一大持有人，持有份额1.6亿份，占比8.02%，第二大持有人为国泰海通证券，持有份额5343万份，占比2.67%。截至11月16日，该产品股票仓位占比为50.04%，贵州茅台、宁德时代、北方华创为前三大权重股。"
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "next_session"
+        },
+        {
+          "direction": "neutral",
+          "confidence": 0.88,
+          "reason": "宁德时代为ETF前三大权重股，配置仅影响交易结构，未提供订单、需求或盈利改善证据，对行业经营影响中性。",
+          "evidence": [
+            "上交所公告显示，品质均衡主动ETF易方达（581050）将于11月23日上市。 公告显示，该产品机构投资者和个人投资者的比例分别为15.05%和84.95%；前十大份额持有人中，易方达基金为第一大持有人，持有份额1.6亿份，占比8.02%，第二大持有人为国泰海通证券，持有份额5343万份，占比2.67%。截至11月16日，该产品股票仓位占比为50.04%，贵州茅台、宁德时代、北方华创为前三大权重股。"
+          ],
+          "sector_code": "801730.SI",
+          "sector_name": "电力设备",
+          "horizon": "next_session"
+        },
+        {
+          "direction": "neutral",
+          "confidence": 0.88,
+          "reason": "北方华创为ETF前三大权重股，纳入持仓不等同于产业受益，且无新增订单、收入或利润变化证据。",
+          "evidence": [
+            "上交所公告显示，品质均衡主动ETF易方达（581050）将于11月23日上市。 公告显示，该产品机构投资者和个人投资者的比例分别为15.05%和84.95%；前十大份额持有人中，易方达基金为第一大持有人，持有份额1.6亿份，占比8.02%，第二大持有人为国泰海通证券，持有份额5343万份，占比2.67%。截至11月16日，该产品股票仓位占比为50.04%，贵州茅台、宁德时代、北方华创为前三大权重股。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "next_session"
+        }
+      ],
+      "uncertainties": [
+        "11月23日上市后的实际申购赎回规模及股票仓位调整未知。",
+        "仅披露前三大权重股，完整行业配置及后续调仓情况未知。",
+        "产品配置对相关公司交易和经营的影响缺乏量化证据。"
+      ],
+      "usage": {
+        "total_tokens": 3004,
+        "prompt_tokens": 1214,
+        "completion_tokens": 1790
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "f58667c93f856abc728e5fa1c0392e9a1327252ef782c98344de2a102ada2fb9",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 317,
+      "scored_at": "2026-11-18T14:19:16.899068+08:00"
+    },
+    "9c7243a419bec98b8d3dbc6cda0febfb1921e45d8d964b6f1c21081938ac116c": {
+      "summary": "Sellas Life Sciences因癌症试验数据披露，美股盘前股价上涨315%。该事件仅体现公司层面的即时市场反应，尚无证据表明医药生物行业经营改善。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "癌症试验数据引发单家美股公司盘前大涨，未提供可传导至六大指数或宏观基本面的明确证据。",
+        "evidence": [
+          "财联社11月17日电，美股Sellas Life Sciences盘前股价因癌症试验数据飙升315%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "事件主体为单家生物科技公司，试验数据内容、监管进展及商业化影响均未披露，不能据此判断行业需求或盈利变化。",
+          "evidence": [
+            "财联社11月17日电，美股Sellas Life Sciences盘前股价因癌症试验数据飙升315%。"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "癌症试验数据的具体结果、统计有效性及适用癌种未披露",
+        "后续监管审批、临床推进和商业化前景尚不明确",
+        "缺乏证据证明该事件对医药生物行业其他公司存在经营传导"
+      ],
+      "usage": {
+        "total_tokens": 1781,
+        "prompt_tokens": 1044,
+        "completion_tokens": 737
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "de1fdd05731c75bddcc18dfa6031db1e8d60e917fbd54ba8d08ba81da584f9d9",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 51,
+      "scored_at": "2026-11-18T14:19:26.892564+08:00"
+    },
+    "6811523d1d61e5e5e50536785e10a2439caf004d9c0e51d2e23b72392871ea5a": {
+      "summary": "索宝蛋白拟以2000万至4000万元回购股份，价格上限25.43元/股，所回购股份拟用于员工持股计划或股权激励。该事项仅涉及单家公司资本安排，未提供经营或行业供需变化。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "回购计划仅涉及索宝蛋白自身资金安排及员工激励，无明确宏观传导，不能外推至六大指数。",
+        "evidence": [
+          "财联社11月17日电，索宝蛋白(603231.SH)公告称，公司拟以自有资金或自筹资金通过集中竞价交易方式回购股份，回购金额不低于2000万元且不超过4000万元，回购价格不超过25.43元/股，回购股份拟用于员工持股计划或股权激励。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.86,
+          "reason": "公司拟回购股份并用于员工持股或股权激励，或有激励作用，但未改变产品需求、成本、售价或行业供需，不能外推行业利好。",
+          "evidence": [
+            "财联社11月17日电，索宝蛋白(603231.SH)公告称，公司拟以自有资金或自筹资金通过集中竞价交易方式回购股份，回购金额不低于2000万元且不超过4000万元，回购价格不超过25.43元/股，回购股份拟用于员工持股计划或股权激励。"
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "回购尚处于计划阶段，实际回购金额、价格及完成情况未知",
+        "资金来源可为自有资金或自筹资金，对现金流和负债的影响未明确",
+        "员工持股计划或股权激励的最终实施条件、方案及效果尚未披露"
+      ],
+      "usage": {
+        "total_tokens": 3008,
+        "prompt_tokens": 1081,
+        "completion_tokens": 1927
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "eddff2ba6523328c8a5817d44f332509ac123087bd9e685463698ec2ebb42a7f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 117,
+      "scored_at": "2026-11-18T14:19:59.008305+08:00"
+    },
+    "4520292d745460987b5c10b4509d898710aa1eadf9d3a605b54d46f4a3894e59": {
+      "summary": "11月17日美股盘前，Coherent上涨10%，Lumentum和迈威尔科技均上涨5.2%；报道仅反映个股交易表现，未提供光通信需求、订单或业绩改善证据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露三只美股盘前涨幅，未给出明确宏观经济传导或行业基本面变化依据。",
+        "evidence": [
+          "财联社11月17日电，美股盘前交易的光通信股Coherent上涨10%，Lumentum和迈威尔科技上涨5.2%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "Coherent和Lumentum被列为光通信股，但股价上涨原因及订单、需求、盈利变化均未披露，不能认定通信行业受益。",
+          "evidence": [
+            "财联社11月17日电，美股盘前交易的光通信股Coherent上涨10%，Lumentum和迈威尔科技上涨5.2%。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.7,
+          "reason": "迈威尔科技仅披露股价上涨，缺乏产品需求、订单或业绩信息，无法据此判断电子行业经营方向。",
+          "evidence": [
+            "财联社11月17日电，美股盘前交易的光通信股Coherent上涨10%，Lumentum和迈威尔科技上涨5.2%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明相关个股上涨的具体原因",
+        "未提供光通信需求、订单、出货量或盈利数据",
+        "盘前股价表现不能代表相关产业经营趋势"
+      ],
+      "usage": {
+        "total_tokens": 2793,
+        "prompt_tokens": 1062,
+        "completion_tokens": 1731
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "1dde5cd4dfebf8164e152c0c0c7924763213e677fc2d8e426d4710320c0769d6",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 57,
+      "scored_at": "2026-11-18T14:20:48.931807+08:00"
+    },
+    "049bab53060f876e9c822972602352c0dfc4504d4395373a329fa32963b2a127": {
+      "summary": "摩根大通表示Bregje de Best将接替Jeremy Barnum担任首席财务官，属于单一金融机构高管更替；正文未披露对经营、业绩或行业格局的影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅披露金融机构首席财务官更替，未提供宏观政策、信贷供需、资本市场或资金流向变化，缺少明确市场传导依据。",
+        "evidence": [
+          "财联社11月17日电，摩根大通表示，Bregje de Best将接替Jeremy Barnum担任首席财务官。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "事件涉及摩根大通财务管理层更替，但未说明资本配置、资产管理、投资银行或风险策略变化，不能由单一公司事件推演行业影响。",
+          "evidence": [
+            "财联社11月17日电，摩根大通表示，Bregje de Best将接替Jeremy Barnum担任首席财务官。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文未披露更替原因及任职生效时间。",
+        "未提供首席财务官更替对财务战略、业绩或风险管理的具体影响。",
+        "单一金融机构的人事变动不足以判断申万非银金融行业整体方向。"
+      ],
+      "usage": {
+        "total_tokens": 2102,
+        "prompt_tokens": 1055,
+        "completion_tokens": 1047
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "e07e879b344dfd173696522a8a04988f4130bdcb1bc947f8b4d45f6b75aeffad",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 56,
+      "scored_at": "2026-11-18T14:21:10.204464+08:00"
+    },
+    "90dbc215e599a30244f11a37d1fac812e6f0d88f07882db078e6ec2e6a0b2a58": {
+      "summary": "永悦科技公告称，控股股东因未履行生效判决，法院裁定拍卖、变卖其持有的800万股，公司披露该部分股份存在被拍卖可能，影响集中于股东持股处置，尚无经营数据变化。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.85,
+        "reason": "事件仅涉及永悦科技控股股东股份司法拍卖，未提供宏观供需、融资条件或价格传导证据，无法判断六大指数影响。",
+        "evidence": [
+          "财联社11月17日电，永悦科技(603879.SH)公告称，公司收到鹿城区法院《执行裁定书》《执行告知书》，因控股股东江苏华英及陈翔未履行生效判决义务，法院裁定拍卖、变卖江苏华英持有的公司800万股股票，价值3624万元，一拍起拍价3261.60万元，二拍起拍价2609.28万元。截至公告日，江苏华英持有公司股份5865.95万股，占总股本16.32%，存在被拍卖可能。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.72,
+          "reason": "仅披露控股股东股份司法拍卖，未提供订单、产能、成本或行业供需变化证据，无法建立行业经营传导。",
+          "evidence": [
+            "财联社11月17日电，永悦科技(603879.SH)公告称，公司收到鹿城区法院《执行裁定书》《执行告知书》，因控股股东江苏华英及陈翔未履行生效判决义务，法院裁定拍卖、变卖江苏华英持有的公司800万股股票，价值3624万元，一拍起拍价3261.60万元，二拍起拍价2609.28万元。截至公告日，江苏华英持有公司股份5865.95万股，占总股本16.32%，存在被拍卖可能。"
+          ],
+          "sector_code": "801890.SI",
+          "sector_name": "机械设备",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "拍卖是否实施、能否成交及最终受让方均未知",
+        "司法拍卖后控股股东持股比例及公司控制权是否变化未知",
+        "正文未披露公司财务、主营业务或行业经营受到影响"
+      ],
+      "usage": {
+        "total_tokens": 2790,
+        "prompt_tokens": 1118,
+        "completion_tokens": 1672
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "5584aa243ee33d633d53072def2145be5a51f16e932955d0e59d03f3c8eba1df",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 186,
+      "scored_at": "2026-11-18T14:21:31.982481+08:00"
+    },
+    "d2e848a912bf64ff6aabdcb0887c4a432add2be7fc317cff00f65bef8bda3d26": {
+      "summary": "永悦科技实控人陈翔于2026年11月16日收到检察院《被监视居住人义务告知书》；其仍为实控人但未在公司任职，公司称生产经营正常。事件构成公司治理与合规扰动，暂无行业传导证据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "事件仅涉及永悦科技实控人，公司称日常生产经营正常，未出现可验证的宏观需求、成本或供给传导。",
+        "evidence": [
+          "财联社11月17日电，永悦科技(603879.SH)公告称，公司实控人陈翔于2026年11月16日收到福建省泉州市人民检察院的《被监视居住人义务告知书》。目前陈翔仍为公司实控人，但未在公司担任董事、高管或其他职务，公司日常生产经营正常，各项工作有序开展。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "仅为永悦科技单一主体治理与合规事件，公司称经营正常；未提供行业需求、成本、供给或同业影响，不能外推至基础化工行业。",
+          "evidence": [
+            "财联社11月17日电，永悦科技(603879.SH)公告称，公司实控人陈翔于2026年11月16日收到福建省泉州市人民检察院的《被监视居住人义务告知书》。目前陈翔仍为公司实控人，但未在公司担任董事、高管或其他职务，公司日常生产经营正常，各项工作有序开展。"
+          ],
+          "sector_code": "801030.SI",
+          "sector_name": "基础化工",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "监视居住涉及的具体原因、期限及后续进展未披露。",
+        "实控人虽不担任公司职务，但其控制权及后续治理安排的影响尚不明确。",
+        "正文未提供订单、产能、客户或行业层面经营变化数据。"
+      ],
+      "usage": {
+        "total_tokens": 2763,
+        "prompt_tokens": 1088,
+        "completion_tokens": 1675
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "45129a6f9776717a44868e3c032719ff2b80cf33e0e3082dbaec491dc92348a6",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 127,
+      "scored_at": "2026-11-18T14:21:46.510147+08:00"
+    },
+    "3579b20e8ae4700a58c1a4230d54fca7023ce53e2afb41fc510a98183f2f3ddb": {
+      "summary": "三星与苹果正敲定明年上半年起效、期限4—5年的DRAM长供协议，Anthropic获准上市；亚马逊拟投70亿美元发展印度可再生能源。油价、金银上涨，但加息表态与股指分化令宏观影响不明。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "美股期货涨跌不一、欧洲股指普跌，加息表态仅为个人观点，文中未形成一致且明确的宏观传导。",
+        "evidence": [
+          "财联社11月17日电，投资者需重点关注的美股市场财经要闻如下： 1、美股三大股指期货涨跌不一，道琼斯指数期货跌0.57%，标普500指数期货涨0.03%，纳斯达克100指数期货涨0.46%。 2、国际油价小幅上涨，WTI原油期货价格涨0.61%，报86.242美元/桶；布伦特原油期货价格涨0.6%，报92.997美元/桶。 3、国际金银现货上涨，现货黄金价格涨0.09%，报3859.53美元/盎司；现货白银价格涨1.87%，报47.84美元/盎司。",
+          "4、欧洲主要股指普跌，英国富时100指数跌0.91%，法国CAC40指数跌0.93%，德国DAX30指数跌0.87%，富时意大利MIB指数跌0.52%。 5、美联储穆萨莱姆表示，春季前可能需要“数次”加息；通胀持续高企的风险显著；实际政策利率需要上升约1个百分点。 6、据半导体行业17日消息，三星电子与苹果正在敲定DRAM半导体长期供货协议，将于明年上半年起生效，有效期4‑5年。",
+          "7、谷歌DeepMind首席战略官Jasjeet Sekhon于周一官宣离职，将加盟Anthropic。 8、Anthropic已获准在纳斯达克全球精选市场上市A类普通股，股票代码为“ANT”；公司在最新提交的文件中维持了IPO定价区间不变。 9、亚马逊计划2030年前向印度可再生能源投资70亿美元，新签四个风电和太阳能项目。 10、富国银行预计标普500指数将在2027年底前触及8200点；下调美国必需消费品板块评级至减持，下调金融和工业板块至中性。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.72,
+          "reason": "若协议于明年上半年生效，DRAM存储芯片长期需求和供货可见度提升；但协议尚在敲定，采购量、价格及A股供应商关联未披露，影响限于相关细分。",
+          "evidence": [
+            "4、欧洲主要股指普跌，英国富时100指数跌0.91%，法国CAC40指数跌0.93%，德国DAX30指数跌0.87%，富时意大利MIB指数跌0.52%。 5、美联储穆萨莱姆表示，春季前可能需要“数次”加息；通胀持续高企的风险显著；实际政策利率需要上升约1个百分点。 6、据半导体行业17日消息，三星电子与苹果正在敲定DRAM半导体长期供货协议，将于明年上半年起生效，有效期4‑5年。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.87,
+          "reason": "油价上涨利于上游原油售价，但增加炼化原料成本；成品油与化工品价差、库存收益及传导速度未披露，上游受益与下游承压并存。",
+          "evidence": [
+            "财联社11月17日电，投资者需重点关注的美股市场财经要闻如下： 1、美股三大股指期货涨跌不一，道琼斯指数期货跌0.57%，标普500指数期货涨0.03%，纳斯达克100指数期货涨0.46%。 2、国际油价小幅上涨，WTI原油期货价格涨0.61%，报86.242美元/桶；布伦特原油期货价格涨0.6%，报92.997美元/桶。 3、国际金银现货上涨，现货黄金价格涨0.09%，报3859.53美元/盎司；现货白银价格涨1.87%，报47.84美元/盎司。"
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "today"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.67,
+          "reason": "油价上涨抬升部分石化原料成本，若产品提价滞后将压缩化工价差；产品涨价、库存收益及向下游传导情况未知。",
+          "evidence": [
+            "财联社11月17日电，投资者需重点关注的美股市场财经要闻如下： 1、美股三大股指期货涨跌不一，道琼斯指数期货跌0.57%，标普500指数期货涨0.03%，纳斯达克100指数期货涨0.46%。 2、国际油价小幅上涨，WTI原油期货价格涨0.61%，报86.242美元/桶；布伦特原油期货价格涨0.6%，报92.997美元/桶。 3、国际金银现货上涨，现货黄金价格涨0.09%，报3859.53美元/盎司；现货白银价格涨1.87%，报47.84美元/盎司。"
+          ],
+          "sector_code": "801030.SI",
+          "sector_name": "基础化工",
+          "horizon": "today"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.78,
+          "reason": "油价上涨提高公路货运、航空等燃油成本，若运价无法同步调整则压缩利润；燃油采购占比和调价机制未披露。",
+          "evidence": [
+            "财联社11月17日电，投资者需重点关注的美股市场财经要闻如下： 1、美股三大股指期货涨跌不一，道琼斯指数期货跌0.57%，标普500指数期货涨0.03%，纳斯达克100指数期货涨0.46%。 2、国际油价小幅上涨，WTI原油期货价格涨0.61%，报86.242美元/桶；布伦特原油期货价格涨0.6%，报92.997美元/桶。 3、国际金银现货上涨，现货黄金价格涨0.09%，报3859.53美元/盎司；现货白银价格涨1.87%，报47.84美元/盎司。"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.76,
+          "reason": "金银现货上涨可改善贵金属矿山销售端价格与现金收入；涨幅较小且未披露产量、成本，不能外推至全部有色品种。",
+          "evidence": [
+            "财联社11月17日电，投资者需重点关注的美股市场财经要闻如下： 1、美股三大股指期货涨跌不一，道琼斯指数期货跌0.57%，标普500指数期货涨0.03%，纳斯达克100指数期货涨0.46%。 2、国际油价小幅上涨，WTI原油期货价格涨0.61%，报86.242美元/桶；布伦特原油期货价格涨0.6%，报92.997美元/桶。 3、国际金银现货上涨，现货黄金价格涨0.09%，报3859.53美元/盎司；现货白银价格涨1.87%，报47.84美元/盎司。"
+          ],
+          "sector_code": "801050.SI",
+          "sector_name": "有色金属",
+          "horizon": "today"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.59,
+          "reason": "亚马逊拟于2030年前在印度投70亿美元并新签四个风光项目，若实施可形成风电、光伏设备需求；投资仍属计划，供应商及A股订单未披露。",
+          "evidence": [
+            "7、谷歌DeepMind首席战略官Jasjeet Sekhon于周一官宣离职，将加盟Anthropic。 8、Anthropic已获准在纳斯达克全球精选市场上市A类普通股，股票代码为“ANT”；公司在最新提交的文件中维持了IPO定价区间不变。 9、亚马逊计划2030年前向印度可再生能源投资70亿美元，新签四个风电和太阳能项目。 10、富国银行预计标普500指数将在2027年底前触及8200点；下调美国必需消费品板块评级至减持，下调金融和工业板块至中性。"
+          ],
+          "sector_code": "801730.SI",
+          "sector_name": "电力设备",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.62,
+          "reason": "穆萨莱姆称春季前可能需数次加息，仅为个人条件性表态；若加息，银行息差可能改善但融资与信用成本上升，净影响及政策落地均不确定。",
+          "evidence": [
+            "4、欧洲主要股指普跌，英国富时100指数跌0.91%，法国CAC40指数跌0.93%，德国DAX30指数跌0.87%，富时意大利MIB指数跌0.52%。 5、美联储穆萨莱姆表示，春季前可能需要“数次”加息；通胀持续高企的风险显著；实际政策利率需要上升约1个百分点。 6、据半导体行业17日消息，三星电子与苹果正在敲定DRAM半导体长期供货协议，将于明年上半年起生效，有效期4‑5年。"
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.52,
+          "reason": "Anthropic上市获批及DeepMind高管转投仅影响相关公司融资与团队，未披露A股计算机企业订单、技术合作或收入，不能外推行业经营。",
+          "evidence": [
+            "7、谷歌DeepMind首席战略官Jasjeet Sekhon于周一官宣离职，将加盟Anthropic。 8、Anthropic已获准在纳斯达克全球精选市场上市A类普通股，股票代码为“ANT”；公司在最新提交的文件中维持了IPO定价区间不变。 9、亚马逊计划2030年前向印度可再生能源投资70亿美元，新签四个风电和太阳能项目。 10、富国银行预计标普500指数将在2027年底前触及8200点；下调美国必需消费品板块评级至减持，下调金融和工业板块至中性。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.5,
+          "reason": "单一公司IPO获批未披露承销商、发行规模和费用，无法判断券商投行收入增量，不足以推导非银金融行业整体受益。",
+          "evidence": [
+            "7、谷歌DeepMind首席战略官Jasjeet Sekhon于周一官宣离职，将加盟Anthropic。 8、Anthropic已获准在纳斯达克全球精选市场上市A类普通股，股票代码为“ANT”；公司在最新提交的文件中维持了IPO定价区间不变。 9、亚马逊计划2030年前向印度可再生能源投资70亿美元，新签四个风电和太阳能项目。 10、富国银行预计标普500指数将在2027年底前触及8200点；下调美国必需消费品板块评级至减持，下调金融和工业板块至中性。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "DRAM协议仍处于敲定阶段，采购量、价格及A股供应链关联未披露。",
+        "加息说法是穆萨莱姆的条件性观点，并非已经公布的货币政策决定。",
+        "亚马逊项目投资及潜在设备采购尚未充分落地，承建主体和A股供应商订单不明。"
+      ],
+      "usage": {
+        "total_tokens": 12885,
+        "prompt_tokens": 1436,
+        "completion_tokens": 11449
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "77b7462402ab0d6c1fc9bdffe381ad43188e07e58e4620b2a5fed3765918e475",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 647,
+      "scored_at": "2026-11-18T14:24:39.434980+08:00"
     }
   },
   "failures": {
