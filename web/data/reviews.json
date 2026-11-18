@@ -421,7 +421,7 @@
   },
   "2026-11-18": {
     "date": "2026-11-18",
-    "evaluated_at": "2026-11-18T11:04:21.530464+08:00",
+    "evaluated_at": "2026-11-18T11:13:13.116090+08:00",
     "timezone": "Asia/Shanghai",
     "issued_count": 0,
     "settled_count": 0,
@@ -435,18 +435,18 @@
     "by_sector": [],
     "by_task": [],
     "sentiment": {
-      "positive": 36,
-      "negative": 8,
-      "neutral": 12,
-      "uncertain": 31,
+      "positive": 40,
+      "negative": 12,
+      "neutral": 17,
+      "uncertain": 17,
       "labels": {
-        "mixed": 4,
-        "positive": 36,
-        "negative": 8,
-        "neutral": 12,
-        "unknown": 27
+        "positive": 40,
+        "negative": 12,
+        "neutral": 17,
+        "mixed": 5,
+        "unknown": 12
       },
-      "excluded_count": 1,
+      "excluded_count": 2,
       "rumor_count": 0,
       "alignment_count": 0,
       "alignment_rate": null,

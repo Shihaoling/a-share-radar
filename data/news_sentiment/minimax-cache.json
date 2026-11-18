@@ -10217,6 +10217,813 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 105,
       "scored_at": "2026-11-18T10:50:12.023418+08:00"
+    },
+    "c23e3a75949664d386938533046ad80d1406158005153271065562a039323e46": {
+      "summary": "恒生指数开盘跌0.34%，恒生科技指数跌0.18%，个股表现分化；快讯未披露涨跌原因或经营变化，无法推导产业影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "仅披露港股指数及个股开盘涨跌，未提供宏观因素或可验证的产业链传导。",
+        "evidence": [
+          "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.91,
+          "reason": "智谱、MiniMax涨超4%仅属个股价格表现，未披露订单、收入或政策变化，不能外推行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.91,
+          "reason": "中芯国际、蓝思科技上涨仅为个股表现，缺少需求、产能、价格及盈利数据，无法判断电子行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "联想控股涨超4%属于单一公司股价波动，文章未说明资产经营或业绩变化，不能推演综合行业影响。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801230.SI",
+          "sector_name": "综合",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "京东集团跌超4%仅为开盘价格表现，未披露消费需求、平台业务或成本变化，不能判定零售行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "微博跌近4%、网易跌超1%仅为个股波动，缺少广告、游戏收入及监管信息，无法外推传媒行业影响。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "理想汽车跌超1%仅为个股开盘表现，未提供销量、交付、价格或成本数据，无法判断汽车行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，香港恒生指数开盘跌0.34%，恒生科技指数跌0.18%，智谱、MiniMax、联想控股涨超4%，中芯国际、蓝思科技涨超1%。京东集团跌超4%，微博跌近4%，理想汽车、网易跌超1%。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "文章未说明指数及个股涨跌原因。",
+        "缺少经营、财务、供需及政策信息，无法形成行业盈利传导。",
+        "港股开盘表现与申万行业经营之间不存在文中可验证的明确传导。"
+      ],
+      "usage": {
+        "total_tokens": 3888,
+        "prompt_tokens": 1085,
+        "completion_tokens": 2803
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "c56aa4b02d6476e3106917ffc2d0f1f5b39e852ae642790600f891345aef370b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 101,
+      "scored_at": "2026-11-18T11:08:03.476818+08:00"
+    },
+    "d27e5277aced4746084152a85853f86cf186446299408dd0861c89ba669e1ad3": {
+      "summary": "截至11月17日，ETF两市融资融券余额1176.27亿元，较前一交易日增加10.13亿元；QDII型ETF增量最大，债券型及商品型ETF余额下降。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "两融余额存量上升不等同于资金净流入，且各类型ETF变化分化，文中不足以判断宽基或六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，据财联社盯盘数据显示，截至11月17日，ETF两市融资融券余额1176.27亿元，较上个交易日增加10.13亿元。 分类型来看，股票型ETF两融余额691.32亿元，增加5.54亿元；债券型ETF两融余额54.61亿元，减少5.46亿元；商品型ETF两融余额109.10亿元，减少0.31亿元；QDII型ETF两融余额321.25亿元，增加10.36亿元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.78,
+          "reason": "证券ETF两融余额排名靠前仅反映存量规模，文中无资金净流向、经纪业务或券商盈利变化证据，无法判断经营影响。",
+          "evidence": [
+            "其中，两融余额最高的股票型ETF分别是易方达创业板ETF、华夏上证科创板50成份ETF、国泰中证全指证券公司ETF，两融余额分别为56.90亿元、45.58亿元、40.15亿元。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "两融余额变化可能受价格波动、融资买入及偿还等因素共同影响，不能直接视为资金净流入。",
+        "股票型、QDII型ETF余额增加，而债券型、商品型ETF余额下降，结构分化明显。",
+        "缺少ETF申赎、净买入及行业持仓数据，无法识别具体受益或受损细分领域。"
+      ],
+      "usage": {
+        "total_tokens": 2444,
+        "prompt_tokens": 1186,
+        "completion_tokens": 1258
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "1876bbe75fe8822d4436130a414482ffa29e3ae71ce499251bad590589ce1ed0",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 279,
+      "scored_at": "2026-11-18T11:08:19.765001+08:00"
+    },
+    "b767cf7c1f61bab27c2e8a3297bfda45c6f4603fb66c7f79a7c7ec57f3bc8a01": {
+      "summary": "11月17日，创业板、沪深300和中证1000相关ETF份额居增，证券、A500及红利低波ETF份额居减。数据仅反映产品份额分化，尚不能证明相关行业基本面变化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "仅披露单日股票型ETF份额变化，未提供指数涨跌、成交额或宏观传导证据，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，据财联社盯盘数据显示，2026年11月17日，股票型ETF份额增加前三：广发创业板ETF+35.92亿份、华泰柏瑞沪深300ETF+13.42亿份、南方中证1000ETF+7.12亿份。 股票型ETF份额减少前三：华宝中证全指证券公司ETF-11.07亿份、华泰柏瑞中证A500ETF-9.45亿份、华泰柏瑞中证红利低波动ETF-7.58亿份。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.83,
+          "reason": "证券公司ETF份额减少仅反映该产品单日份额收缩，未披露券商成交、佣金、投行业务或盈利变化，无法确认行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，据财联社盯盘数据显示，2026年11月17日，股票型ETF份额增加前三：广发创业板ETF+35.92亿份、华泰柏瑞沪深300ETF+13.42亿份、南方中证1000ETF+7.12亿份。 股票型ETF份额减少前三：华宝中证全指证券公司ETF-11.07亿份、华泰柏瑞中证A500ETF-9.45亿份、华泰柏瑞中证红利低波动ETF-7.58亿份。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明ETF份额变化的具体原因及持续性。",
+        "仅披露份额而非净值、成交额或资金净流入金额。",
+        "单日个别产品变动不能代表行业基本面或市场趋势。"
+      ],
+      "usage": {
+        "total_tokens": 2837,
+        "prompt_tokens": 1129,
+        "completion_tokens": 1708
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "01d2438b5044dfbd87b6638e886c8d8528a053e5d1cb63058ea8cb72383f12bb",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 183,
+      "scored_at": "2026-11-18T11:08:39.132210+08:00"
+    },
+    "f3df22b00d805afac06f3903bdd6abd2f4971c60b7035b567734fdf175fe0725": {
+      "summary": "道指跌幅扩大至2%，标普500和纳指分别跌1.56%和1.44%，美股风险偏好走弱；原文未说明下跌原因或对A股产业的明确传导。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "仅披露美股三大指数同步下跌，缺少成因、持续性及对A股指数的明确传导证据。",
+        "evidence": [
+          "财联社11月18日电，道琼斯指数跌2%，标普500指数跌1.56%，纳斯达克综合指数跌1.44%。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "未披露美股下跌的原因",
+        "未提供对A股指数或申万行业的明确传导",
+        "无法判断跌幅及风险偏好的持续时间"
+      ],
+      "usage": {
+        "total_tokens": 1989,
+        "prompt_tokens": 1037,
+        "completion_tokens": 952
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b202a5165076488196641a5b2aefa50b0265ad4a17f6ded3bddfad0c3fa2f75c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 49,
+      "scored_at": "2026-11-18T11:08:51.560509+08:00"
+    },
+    "e898b903ea923b326f8f8943f33d50c56a0028dd62f4b5430b056b10d00f682e": {
+      "summary": "利弗莫尔中概股龙头指数跌幅扩大至2%至8041.82点，金山云等5只成分股跌逾5%；快讯未披露基本面变化，无法据此推断A股行业经营影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露指数及成分股价格下跌，未提供宏观政策、流动性、需求或盈利传导依据，无法判断整体市场影响。",
+        "evidence": [
+          "财联社11月18日电，利弗莫尔中概股龙头指数跌幅扩大至2%，报8041.82点。成分股中，金山云跌8.08%，小马智行跌7.02%，欧朋浏览器跌6.88%，京东跌6.74%，哔哩哔哩跌5.33%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "金山云跌8.08%仅为股价表现，未披露云业务订单、成本、收入或盈利变化，不能外推计算机行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，利弗莫尔中概股龙头指数跌幅扩大至2%，报8041.82点。成分股中，金山云跌8.08%，小马智行跌7.02%，欧朋浏览器跌6.88%，京东跌6.74%，哔哩哔哩跌5.33%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "小马智行跌7.02%仅反映成分股波动，材料未提供自动驾驶业务进展、商业化或监管信息，无法判断行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，利弗莫尔中概股龙头指数跌幅扩大至2%，报8041.82点。成分股中，金山云跌8.08%，小马智行跌7.02%，欧朋浏览器跌6.88%，京东跌6.74%，哔哩哔哩跌5.33%。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "欧朋浏览器和哔哩哔哩分别下跌6.88%和5.33%，但无广告、用户或收入数据，亦不能据此判断传媒行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，利弗莫尔中概股龙头指数跌幅扩大至2%，报8041.82点。成分股中，金山云跌8.08%，小马智行跌7.02%，欧朋浏览器跌6.88%，京东跌6.74%，哔哩哔哩跌5.33%。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "京东跌6.74%仅为股价下跌，材料未披露消费需求、履约成本或盈利变化，不能外推零售行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，利弗莫尔中概股龙头指数跌幅扩大至2%，报8041.82点。成分股中，金山云跌8.08%，小马智行跌7.02%，欧朋浏览器跌6.88%，京东跌6.74%，哔哩哔哩跌5.33%。"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "快讯未说明成分股下跌原因，无法归因于业绩、政策或行业需求变化。",
+        "仅有单一时点价格数据，无法据此判断中期经营趋势。",
+        "中概股指数与申万一级行业样本并非一一对应，指数波动不能直接代表A股行业表现。"
+      ],
+      "usage": {
+        "total_tokens": 3430,
+        "prompt_tokens": 1085,
+        "completion_tokens": 2345
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4b6092432c99f598d1390cbe75229d3ecd9470905b19ccb9bd74e206e4676b65",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 98,
+      "scored_at": "2026-11-18T11:09:17.470081+08:00"
+    },
+    "101a8cedc73932ed961741880cdf30807af994d41211ba1eed11ec7913fa27f5": {
+      "summary": "报道称浑水做空英伟达，但未提供做空依据、规模或期限；该单一公司事件尚不足以判断电子行业经营变化。",
+      "tone": "neutral",
+      "fact_status": "rumor",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "消息仅涉及英伟达被做空，未显示对宏观供需、流动性或六大指数存在明确传导。",
+        "evidence": [
+          "财联社11月18日电，据报道，美国知名做空机构浑水（Muddy Waters Research）做空英伟达。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "做空消息仅涉及英伟达，未提供业务、需求、盈利或供应链变化，不能据此推断电子行业整体影响。",
+          "evidence": [
+            "财联社11月18日电，据报道，美国知名做空机构浑水（Muddy Waters Research）做空英伟达。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "消息仅称“据报道”，未见浑水或英伟达正式确认",
+        "未披露做空依据、规模、期限及实际持仓情况",
+        "单一公司的做空事件能否产生行业经营影响尚无法判断"
+      ],
+      "usage": {
+        "total_tokens": 2107,
+        "prompt_tokens": 1052,
+        "completion_tokens": 1055
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "5c474bd19d897e16b35a6ab1d7747c66b63a6f51f4e49696e9d6eec9eeec24f1",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 54,
+      "scored_at": "2026-11-18T11:09:26.764292+08:00"
+    },
+    "07bd49d26ede32c39e298e4a50e72b527337975ed66cf5f8c9cfdacebf58cf92": {
+      "summary": "浑水研究宣布做空英伟达，新增事实仅为针对单一公司的做空表态，未披露研究依据，也未出现经营或供应链变化。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.97,
+        "reason": "仅有个股做空公告，缺乏公司经营变化及宏观传导证据，不能据此判断大盘方向。",
+        "evidence": [
+          "财联社11月18日电，美国知名做空机构浑水（Muddy Waters Research）宣布做空英伟达。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.96,
+          "reason": "做空对象为英伟达，但公告未提供影响需求、成本、盈利或风险的经营信息，单一公司的负面市场表态不能外推至电子行业。",
+          "evidence": [
+            "财联社11月18日电，美国知名做空机构浑水（Muddy Waters Research）宣布做空英伟达。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "公告未披露做空报告、核心论据或财务数据",
+        "未说明做空规模、持仓期限及后续行动",
+        "尚无证据显示英伟达经营或产业链发生变化"
+      ],
+      "usage": {
+        "total_tokens": 2117,
+        "prompt_tokens": 1050,
+        "completion_tokens": 1067
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "da33e622d65016ee0168e8b38e3643e7d6d92ea6595f46eb562da901fd98a50e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 52,
+      "scored_at": "2026-11-18T11:09:57.091785+08:00"
+    },
+    "3d217e2c4a2e08fa654e6426a085ea8d001d9e16b4fee3e8c84ffe5fcba8b985": {
+      "summary": "SpaceX首席财务官预计Anthropic将需要“多得多”的算力，并称SpaceX明年可能成为最大AI基础设施参与者；目前仅为预测，未披露订单或收入。",
+      "tone": "positive",
+      "fact_status": "uncertain",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.35,
+        "reason": "内容仅为算力需求预测及SpaceX潜在参与者判断，未披露订单、资本开支、收入或明确宏观传导。",
+        "evidence": [
+          "财联社11月18日电，SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，明年SpaceX可能成为最大的AI基础设施参与者。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.38,
+          "reason": "Anthropic算力需求若兑现，或带动AI计算硬件及核心零部件需求；但未披露采购规模、供应商或A股映射，业绩影响尚不确定。",
+          "evidence": [
+            "财联社11月18日电，SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，明年SpaceX可能成为最大的AI基础设施参与者。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.35,
+          "reason": "算力需求扩张若转化为基础设施采购，或改善服务器及算力平台订单预期；但SpaceX仅被称“可能”参与，缺少合同与规模信息。",
+          "evidence": [
+            "财联社11月18日电，SpaceX首席财务官表示，Anthropic将需要“多得多”的算力，明年SpaceX可能成为最大的AI基础设施参与者。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "“多得多”及“可能”均为定性预测，缺少算力规模、采购时间和合同金额。",
+        "未说明SpaceX参与AI基础设施的具体形态、投入规模及收入确认方式。",
+        "未提供受益供应商、地区或A股公司映射，无法确认订单传导。"
+      ],
+      "usage": {
+        "total_tokens": 3321,
+        "prompt_tokens": 1068,
+        "completion_tokens": 2253
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3d990cc093bb18341354d087527eb047d94e234de8953e8ccf012c3635b6a763",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 71,
+      "scored_at": "2026-11-18T11:10:15.462998+08:00"
+    },
+    "4295661e68f2343b8d7e8bd0e90115e1920aa531bec044652f1a414a377539ab": {
+      "summary": "威廉姆斯称通胀仍“顽固地高企”、回到2%仍需努力，但当前无需采取重大行动，政策信号兼具通胀压力与暂缓大动作表态。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.82,
+        "reason": "表态反映通胀压力，但同时认为当前无需重大行动，且未提供利率、流动性或经济传导细节。",
+        "evidence": [
+          "财联社11月18日电，纽约联储主席威廉姆斯表示，通胀“顽固地高企”，要让通胀回到2%仍有更多工作要做。但他同时指出，不认为当前形势需要采取重大行动。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "未说明是否会调整利率、流动性工具或推出其他政策",
+        "未提供通胀持续时间及其对需求、成本和盈利的影响",
+        "未给出明确的宏观政策传导方向"
+      ],
+      "usage": {
+        "total_tokens": 1759,
+        "prompt_tokens": 1061,
+        "completion_tokens": 698
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "2be93949f0423fb21f21014dee9edcbf6df82209add1d30dd85ff97c7d5647a0",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 74,
+      "scored_at": "2026-11-18T11:10:25.772746+08:00"
+    },
+    "ae721d7af66518c4825e64e6679ce78a1419da49ec5000dae628b2b82101cc35": {
+      "summary": "SpaceX拟于11月21日使用猎鹰9号执行NROL-136任务，地点为范登堡太空军基地4E发射场；材料未披露订单、供应商或财务影响，A股映射有限。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "单次航天发射计划，未披露宏观需求、价格或盈利传导，无法判断指数影响。",
+        "evidence": [
+          "财联社11月18日电，SpaceX表示，计划于11月21日从范登堡太空军基地4E航天发射场用猎鹰9号执行NROL-136任务。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.35,
+          "reason": "任务地点涉及太空军基地，但材料未给出A股产业链主体、订单或收入传导关系。",
+          "evidence": [
+            "财联社11月18日电，SpaceX表示，计划于11月21日从范登堡太空军基地4E航天发射场用猎鹰9号执行NROL-136任务。"
+          ],
+          "sector_code": "801740.SI",
+          "sector_name": "国防军工",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "任务仍为计划，执行情况存在不确定性",
+        "未披露供应商、客户订单及收入贡献",
+        "未提供与A股相关公司的直接业务联系"
+      ],
+      "usage": {
+        "total_tokens": 2034,
+        "prompt_tokens": 1080,
+        "completion_tokens": 954
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "c9dab0360590591d47528e6581b8d81940ae0c0c970fe07b7b823385348b8828",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 63,
+      "scored_at": "2026-11-18T11:10:36.336860+08:00"
+    },
+    "d02c939c6a19428b07fc2989e06f5cab81c2ce9c21a7a3347ecf86acb762b0fe": {
+      "summary": "苹果称iCloud账户及登录问题已解决，相关服务可用性恢复；材料未披露故障原因、影响范围及对产业链经营的影响。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "事件仅说明苹果iCloud账户及登录问题已解决，未出现可验证的宏观需求、价格、成本或政策传导。",
+        "evidence": [
+          "财联社11月18日电，苹果表示，iCloud账户及登录问题已解决。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.5,
+          "reason": "仅确认苹果iCloud账户与登录问题解决，未提供云服务需求、付费转化或行业竞争变化证据，不能外推行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，苹果表示，iCloud账户及登录问题已解决。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.35,
+          "reason": "事件涉及苹果服务可用性，但未提及终端销量、零部件订单或供应链变化，单家公司事件不足以判断电子行业方向。",
+          "evidence": [
+            "财联社11月18日电，苹果表示，iCloud账户及登录问题已解决。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "故障原因、影响用户数量及持续时间均未披露。",
+        "未披露问题解决后iCloud使用量、付费转化或收入变化。",
+        "单一公司的云服务事件能否外推至A股行业及指数不明。"
+      ],
+      "usage": {
+        "total_tokens": 4829,
+        "prompt_tokens": 1034,
+        "completion_tokens": 3795
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bdcd4350ce6bbd78847101bc55707a277894675272c5da60e2002cf8b8af8567",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 33,
+      "scored_at": "2026-11-18T11:11:21.251803+08:00"
+    },
+    "886cb8178aba2031861b21940c4d49c1ffba6c39a6998ad738f35fb5192c37de": {
+      "summary": "苹果称系统中断并非网络攻击所致，正努力尽快恢复运行。公司仅排除一种原因，未说明中断范围、持续时间及对产业链的影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "仅披露苹果系统中断及公司归因，未出现宏观需求、供给或价格传导证据。",
+        "evidence": [
+          "财联社11月18日电，苹果称中断并非由网络攻击所致，正努力“尽快”恢复系统运行。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.3,
+          "reason": "事件涉及苹果系统运行，但未说明受影响服务、用户范围及是否传导至硬件需求或供应链，行业经营影响无法判断。",
+          "evidence": [
+            "财联社11月18日电，苹果称中断并非由网络攻击所致，正努力“尽快”恢复系统运行。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "系统中断的具体服务、地区、用户范围及持续时间未披露。",
+        "除排除网络攻击外，中断原因尚未说明。",
+        "是否影响硬件销售、供应链及A股电子企业订单无证据支持。"
+      ],
+      "usage": {
+        "total_tokens": 2338,
+        "prompt_tokens": 1046,
+        "completion_tokens": 1292
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "016b62fa644e3127574ff4043607de959552c4ba4ee1bc051bb53cefc2b46052",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 40,
+      "scored_at": "2026-11-18T11:11:35.117653+08:00"
+    },
+    "cf72016626937834fcfaaaa3a4d8b931035e7c928f50e5abf7a1fefaa75361fe": {
+      "summary": "耐克预计匡威于2028年恢复增长、营收突破10亿美元，显示品牌中期经营修复预期，但目前仅为公司预测。",
+      "tone": "positive",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅有单一品牌的中期营收预测，缺乏宏观需求、盈利改善或指数层面的明确传导证据。",
+        "evidence": [
+          "财联社11月18日电，耐克预计旗下品牌匡威将于2028年恢复增长，预计匡威营收将突破10亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.68,
+          "reason": "耐克预计匡威2028年恢复增长且营收突破10亿美元，若兑现将改善该服装品牌经营表现；但仅限单一品牌，不能外推为行业整体需求回升。",
+          "evidence": [
+            "财联社11月18日电，耐克预计旗下品牌匡威将于2028年恢复增长，预计匡威营收将突破10亿美元。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "2028年恢复增长及营收突破10亿美元均为公司预测，并非已实现业绩。",
+        "未披露预测依据、利润率及现金流信息，经营改善幅度不明。",
+        "信息仅涉及单一品牌，不能确认对纺织服饰行业整体景气的影响。"
+      ],
+      "usage": {
+        "total_tokens": 3123,
+        "prompt_tokens": 1057,
+        "completion_tokens": 2066
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0d8fbb632559879ccc3b2cc5c94db769b4f46d725746208114f90e13a12d2de5",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 48,
+      "scored_at": "2026-11-18T11:12:06.695962+08:00"
+    },
+    "b3621a8ff117ace8c824e089eb7cb434b73e01f043690b09974007826932858e": {
+      "summary": "苹果状态页面显示音乐、App Store及AppleCare存在问题，反映部分服务可用性异常；故障范围、持续时间及财务影响尚未披露。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "问题仅涉及苹果部分服务，缺少持续时间、影响范围及宏观传导证据，不足以判断整体市场影响。",
+        "evidence": [
+          "财联社11月18日电，苹果状态页面列出音乐、App Store、AppleCare存在问题。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.55,
+          "reason": "服务异常对苹果相关业务短期偏负面，但无法确认对硬件销售、产业链或电子行业整体的影响。",
+          "evidence": [
+            "财联社11月18日电，苹果状态页面列出音乐、App Store、AppleCare存在问题。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "未披露故障原因、影响范围及持续时间",
+        "未量化对用户、收入或产业链的影响",
+        "单一公司服务异常不足以推导电子行业整体景气变化"
+      ],
+      "usage": {
+        "total_tokens": 2154,
+        "prompt_tokens": 1036,
+        "completion_tokens": 1118
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0fb93e330a8d68b003ad8c113eaa845cbe523908136239ee28d66e497b06b7e3",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 46,
+      "scored_at": "2026-11-18T11:12:23.288523+08:00"
+    },
+    "0eec56af6da6b75b2e93d74bcb9fa82994d25cfdb3ea3c19f926674f560b09d7": {
+      "summary": "扎克伯格称，Muse Wonder、Muse Spark 1.3、Muse Ember即将推出，新Muse模型将登陆Microsoft Foundry；尚无性能、定价、用户及商业化数据。",
+      "tone": "positive",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "仅为单一平台的新模型推出计划，缺少收入、需求及宏观传导证据，无法据此判断大盘影响。",
+        "evidence": [
+          "财联社11月18日电，扎克伯格表示，Muse Wonder、Muse Spark 1.3、Muse Ember即将推出，新的Muse模型即将登陆Microsoft Foundry。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.58,
+          "reason": "Muse系列模型推出并计划接入Microsoft Foundry，增加AI模型与平台生态供给，或利好计算机软件业务；但缺少性能、定价、采用率及收入贡献数据。",
+          "evidence": [
+            "财联社11月18日电，扎克伯格表示，Muse Wonder、Muse Spark 1.3、Muse Ember即将推出，新的Muse模型即将登陆Microsoft Foundry。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "具体推出时间、性能及定价均未披露",
+        "用户采用率与商业化收入贡献未披露",
+        "对产业链其他环节的需求影响未说明"
+      ],
+      "usage": {
+        "total_tokens": 2255,
+        "prompt_tokens": 1065,
+        "completion_tokens": 1190
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b2986b8099829a234875b637b313876b16a892d9fbfb001c7db767d9721c7f7e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 90,
+      "scored_at": "2026-11-18T11:12:46.666364+08:00"
+    },
+    "3be607cfafe2acccd3ed2eb88d92211202b5a2acc740b0484131f89beef62bd6": {
+      "summary": "微软称正与埃森哲、Adobe、毕马威、万事达卡及沃尔沃汽车等合作，参与制定AI系统开放标准。文章未披露标准内容、落地时间或经营影响。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露合作及标准制定事项，未提供宏观传导范围、实施时间或成本收益信息，无法判断指数影响。",
+        "evidence": [
+          "财联社11月18日电，微软表示，与埃森哲、Adobe、毕马威、万事达卡、沃尔沃汽车等合作，协助制定AI系统开放标准。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "微软与Adobe参与标准制定，可能涉及软件接口和兼容规则；但标准内容及实施要求未披露，无法判断开发成本或商业化影响。",
+          "evidence": [
+            "财联社11月18日电，微软表示，与埃森哲、Adobe、毕马威、万事达卡、沃尔沃汽车等合作，协助制定AI系统开放标准。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "埃森哲、毕马威参与可能带来咨询或合规需求，但合作角色、收费机制及订单转化均未披露，不能外推行业受益。",
+          "evidence": [
+            "财联社11月18日电，微软表示，与埃森哲、Adobe、毕马威、万事达卡、沃尔沃汽车等合作，协助制定AI系统开放标准。"
+          ],
+          "sector_code": "801210.SI",
+          "sector_name": "社会服务",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "万事达卡参与可能使支付系统面临后续适配，但无具体标准约束、实施时间及成本信息，经营影响不明。",
+          "evidence": [
+            "财联社11月18日电，微软表示，与埃森哲、Adobe、毕马威、万事达卡、沃尔沃汽车等合作，协助制定AI系统开放标准。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "沃尔沃汽车参与可能影响车载AI系统适配，但未披露技术要求、车型范围和时间表，无法判断研发及合规成本。",
+          "evidence": [
+            "财联社11月18日电，微软表示，与埃森哲、Adobe、毕马威、万事达卡、沃尔沃汽车等合作，协助制定AI系统开放标准。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "开放标准的具体内容、适用范围及落地时间均未披露",
+        "未披露参与方的角色分工、投入成本、收费模式或商业收益",
+        "合作是否转化为行业普遍要求及其对现有系统的改造成本尚不明确"
+      ],
+      "usage": {
+        "total_tokens": 3324,
+        "prompt_tokens": 1068,
+        "completion_tokens": 2256
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "5372e362eb04d0454e440768f8f076f0baa2726166c64cda10aada951bff2717",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 58,
+      "scored_at": "2026-11-18T11:13:06.373766+08:00"
     }
   },
   "failures": {
