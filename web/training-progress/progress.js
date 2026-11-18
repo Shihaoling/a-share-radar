@@ -69,12 +69,13 @@ function show(data) {
   for (const day of data.days) {
     const completed = day.complete_windows === day.windows;
     const receiving = day.day === inFlightDay;
-    const kind = receiving ? 'receiving' : !day.updated ? 'waiting' : completed && !day.collected ? 'empty'
+    const retry = day.limited_windows ? '限流待重试' : day.label_retry_pending ? '标注待重试' : '';
+    const kind = receiving ? 'receiving' : retry ? 'retry' : !day.updated ? 'waiting' : completed && !day.collected ? 'empty'
       : completed && day.labelled === day.collected ? 'ready' : 'partial';
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = kind;
-    const state = receiving ? '等待源回包' : day.limited_windows ? '限流待重试' : '';
+    const state = receiving ? '等待源回包' : retry;
     btn.title = `${day.day} · ${fmt(day.collected)} 条已收录，${fmt(day.labelled)} 条已标注${state ? ` · ${state}` : ''}`;
     btn.setAttribute('aria-label', btn.title);
     btn.setAttribute('aria-pressed', String(day.day === selected));

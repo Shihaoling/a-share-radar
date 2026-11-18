@@ -32,6 +32,7 @@ article p { margin: 5px 0 0; font-size: .83rem; }
 #days button[aria-pressed="true"], #days button:focus-visible { outline: 2px solid #152a42; outline-offset: 1px; }
 .waiting { background: #ded0f7; }
 .receiving { background: #a580d1; }
+.retry { background: #f2a36e; }
 .empty { background: #ecd99b; }
 .partial { background: #95c8ee; }
 .ready { background: #5dbda1; }
