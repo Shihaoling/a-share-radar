@@ -30,8 +30,8 @@ article p { margin: 5px 0 0; font-size: .83rem; }
 #days { display: grid; grid-template-columns: repeat(24,minmax(0,1fr)); gap: 5px; margin-top: 15px; }
 #days button { aspect-ratio: 1; min-width: 0; border: 1px solid #d8e4ee; border-radius: 4px; cursor: pointer; }
 #days button[aria-pressed="true"], #days button:focus-visible { outline: 2px solid #152a42; outline-offset: 1px; }
-.waiting { background: #edf1f5; }
-.receiving { background: #cbb4f2; }
+.waiting { background: #ded0f7; }
+.receiving { background: #a580d1; }
 .empty { background: #ecd99b; }
 .partial { background: #95c8ee; }
 .ready { background: #5dbda1; }

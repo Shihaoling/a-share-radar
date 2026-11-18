@@ -216,12 +216,22 @@ def collect(db, now):
     checked = now.isoformat(timespec="seconds")
     if metadata(db, "collection_pause_until") > checked:
         return
-    window = db.execute("""SELECT w.* FROM windows w
-        LEFT JOIN window_audit audit ON audit.begin_at=w.begin_at
-        WHERE (w.state='pending' OR w.state='complete' AND audit.begin_at IS NULL) AND w.retry_at<=?
-        ORDER BY CASE WHEN w.state='complete' THEN 0 WHEN w.outcome='rate_limited' THEN 1 ELSE 2 END,
-                 w.attempts,w.begin_at LIMIT 1""",
-        (checked,)).fetchone()
+    priority_days = metadata(db, "collection_priority_days", "[]")
+    window = db.execute("""WITH started_days AS (
+            SELECT DISTINCT substr(begin_at,1,10) AS day FROM windows WHERE attempts>0
+        ), candidates AS (
+            SELECT w.*, CASE WHEN preferred.value IS NOT NULL THEN 0
+                             WHEN started.day IS NOT NULL OR w.state='complete' THEN 1
+                             ELSE 2 END AS priority
+            FROM windows w
+            LEFT JOIN window_audit audit ON audit.begin_at=w.begin_at
+            LEFT JOIN started_days started ON started.day=substr(w.begin_at,1,10)
+            LEFT JOIN json_each(?) preferred ON preferred.value=substr(w.begin_at,1,10)
+            WHERE w.state='pending' OR w.state='complete' AND audit.begin_at IS NULL
+        )
+        SELECT * FROM candidates
+        WHERE retry_at<=? AND (priority<2 OR NOT EXISTS(SELECT 1 FROM candidates WHERE priority<2))
+        ORDER BY priority,attempts,begin_at LIMIT 1""", (priority_days,checked)).fetchone()
     if not window:
         return
     token = credential("sxdata-token")
