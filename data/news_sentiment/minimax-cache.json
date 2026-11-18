@@ -12891,6 +12891,795 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 122,
       "scored_at": "2026-11-18T12:18:56.307840+08:00"
+    },
+    "a7d30e68bda5bcc50d43202039022fe98d94bdc0e643c51c5662224b3efffefa": {
+      "summary": "美国BIS将先进AI芯片管制延伸至海外远程算力服务，中国企业相关超1200万TPP服务须逐案许可，存量如继续须90日内补办许可；国内算力建设、运营商投资及超节点集采提速，券商预计短期CSP云收入承压。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.91,
+        "reason": "经营影响集中于AI芯片、算力系统、云平台及网络设备，文章未提供向六大指数整体盈利或风险偏好的明确传导。",
+        "evidence": [
+          "中国证券报11月18日报道，截至9月，国家超算互联网平台注册用户突破170万，累计调度作业2.7亿条，接入17个省区市30余个算力中心，汇聚超25万张GPU卡，其中\n95%为国产算力\n；全国首个全国产十万卡AI超集群曙光8000已在郑州上线。\n采购端同步放量。\n中国移动\n11月6日宣布2027年计划算力投资超1000亿元；\n中国电信\n11月16日发布智算超节点（N系列）集群设备集采，最高投标限价\n257.88亿元",
+          "在11月18日发布的科技行业专题报告中指出，短期国内云服务商（CSP）云收入或系统性承压，中期国产HBM、先进制程与封装产能突破有望推动自主算力供给扩张；后续需关注90天存量安排、\n五国之外\n名单调整与许可审批口径。\n华创证券则从系统架构切入。该机构11月18日报告援引TrendForce预计，2026年全球前九大CSP资本支出将超9570亿美元，同比增长106%，AI服务器出货量预计增长32.2%。",
+          "\"在海外高端芯片供给存在不确定性的背景下，国产超节点凭借系统级方案拓展智算供给选择，有望成为国内算力建设的重要增量。\"华创证券指出。\n招商证券\n11月策略报告提供了商业化验证：10月湖北昇腾950千卡超节点业务正式上线，\n寒武纪\n、\n海光信息\n第三季度营收分别同比增长104%、45%。\"政策支持与产业商业化进展形成共振。\"\n招商证券\n认为，\"\n人工智能\n+\"行动有望推动AI在更多行业加速渗透，带动训练及推理算力需求增长。\n多股获融资客抢筹\n东方财富"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.88,
+          "reason": "超算平台扩容、全国产集群上线及服务器集采支撑算力硬件与调度软件需求；但券商预计短期国内CSP云收入系统性承压，硬件与服务受益分化。",
+          "evidence": [
+            "中国证券报11月18日报道，截至9月，国家超算互联网平台注册用户突破170万，累计调度作业2.7亿条，接入17个省区市30余个算力中心，汇聚超25万张GPU卡，其中\n95%为国产算力\n；全国首个全国产十万卡AI超集群曙光8000已在郑州上线。\n采购端同步放量。\n中国移动\n11月6日宣布2027年计划算力投资超1000亿元；\n中国电信\n11月16日发布智算超节点（N系列）集群设备集采，最高投标限价\n257.88亿元",
+            "在11月18日发布的科技行业专题报告中指出，短期国内云服务商（CSP）云收入或系统性承压，中期国产HBM、先进制程与封装产能突破有望推动自主算力供给扩张；后续需关注90天存量安排、\n五国之外\n名单调整与许可审批口径。\n华创证券则从系统架构切入。该机构11月18日报告援引TrendForce预计，2026年全球前九大CSP资本支出将超9570亿美元，同比增长106%，AI服务器出货量预计增长32.2%。",
+            "\"在海外高端芯片供给存在不确定性的背景下，国产超节点凭借系统级方案拓展智算供给选择，有望成为国内算力建设的重要增量。\"华创证券指出。\n招商证券\n11月策略报告提供了商业化验证：10月湖北昇腾950千卡超节点业务正式上线，\n寒武纪\n、\n海光信息\n第三季度营收分别同比增长104%、45%。\"政策支持与产业商业化进展形成共振。\"\n招商证券\n认为，\"\n人工智能\n+\"行动有望推动AI在更多行业加速渗透，带动训练及推理算力需求增长。\n多股获融资客抢筹\n东方财富"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.83,
+          "reason": "海外高端AI芯片获取受限增加供给不确定性并强化国产替代需求；国产HBM、制程、封装突破及GPU厂商营收增长提供正向验证，但仍含预测且主要依据个别厂商。",
+          "evidence": [
+            "美国将海外远程算力访问纳入许可管制，自主算力需求再受关注。国内算力网建设同步提速，国资云产业链迎来新催化。\n美国将云端算力访问纳入许可管制\n当地时间11月16日，美国商务部工业与安全局（BIS）发布临时最终规则，将先进\nAI芯片\n管制从实物出口延伸至海外\n数据中心\n的远程算力服务。若\n数据中心\n向总部或最终母公司设在中国（含中国澳门）等地的企业提供超过\n1200万TPP算力\n，知情芯片出口商须先申请许可证，并逐案审查。\n摩根士丹利",
+            "在11月18日发布的科技行业专题报告中指出，短期国内云服务商（CSP）云收入或系统性承压，中期国产HBM、先进制程与封装产能突破有望推动自主算力供给扩张；后续需关注90天存量安排、\n五国之外\n名单调整与许可审批口径。\n华创证券则从系统架构切入。该机构11月18日报告援引TrendForce预计，2026年全球前九大CSP资本支出将超9570亿美元，同比增长106%，AI服务器出货量预计增长32.2%。",
+            "\"在海外高端芯片供给存在不确定性的背景下，国产超节点凭借系统级方案拓展智算供给选择，有望成为国内算力建设的重要增量。\"华创证券指出。\n招商证券\n11月策略报告提供了商业化验证：10月湖北昇腾950千卡超节点业务正式上线，\n寒武纪\n、\n海光信息\n第三季度营收分别同比增长104%、45%。\"政策支持与产业商业化进展形成共振。\"\n招商证券\n认为，\"\n人工智能\n+\"行动有望推动AI在更多行业加速渗透，带动训练及推理算力需求增长。\n多股获融资客抢筹\n东方财富"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.85,
+          "reason": "中国移动公布2027年超1000亿元算力投资计划，中国电信超节点集采含RoCE交换机，形成网络与交换设备需求支撑；但计划及招标不等同订单落地和收入确认。",
+          "evidence": [
+            "中国证券报11月18日报道，截至9月，国家超算互联网平台注册用户突破170万，累计调度作业2.7亿条，接入17个省区市30余个算力中心，汇聚超25万张GPU卡，其中\n95%为国产算力\n；全国首个全国产十万卡AI超集群曙光8000已在郑州上线。\n采购端同步放量。\n中国移动\n11月6日宣布2027年计划算力投资超1000亿元；\n中国电信\n11月16日发布智算超节点（N系列）集群设备集采，最高投标限价\n257.88亿元",
+            "，预估采购智算服务器5248台、高性能存储110台、RoCE交换机374台。\n国产算力进入系统能力与需求兑现双驱动阶段\n国资云是以国资监管和央国企数字化需求为导向，由国资背景主体主导建设或运营，强调\n数据安全\n、自主可控和统一监管的云基础设施与服务体系。\n海外高端算力获取受限之际，国产芯片、超节点、云平台与算力调度能否协同落地，成为产业链承接需求的关键。\n\"国产算力正处于国内算力中流砥柱的起点。\"\n中信证券"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "规则生效后的90日存量安排、名单调整和许可审批口径未明确，实际执行强度不确定。",
+        "中方反制仍为条件性表态，具体措施、范围和时间未披露。",
+        "国产HBM、先进制程、封装及系统协同的兑现节奏未确定，短期CSP收入压力原因与持续期也未说明。"
+      ],
+      "usage": {
+        "total_tokens": 11295,
+        "prompt_tokens": 2443,
+        "completion_tokens": 8852
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3e8efc673b54c79ffe2c126f0b95adb2a8b3b866b1b825f956ef349ba081adcc",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 2024,
+      "scored_at": "2026-11-18T12:38:09.649831+08:00"
+    },
+    "b8e57ba7f556aed4ff4d95b5854c7cde3c9fe9118867986bc9b522ff7db0a42e": {
+      "summary": "11月18日家电板块逆市活跃，10月出口量、额同比增长14.1%和20.9%，龙头回购并拟注销强化股东回报。四季度出口延续增长、地产后周期需求改善及红利资金回流主要是机构判断，持续性待验证。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.3,
+        "reason": "机构仅预测当前至12月市场或修复，虽提及估值回落、ETF净流入及回购，但未建立家电行业向整体指数的明确传导，资金信号亦有分歧。",
+        "evidence": [
+          "板块逆市上涨而重点宽基ETF由净申购转为净赎回，说明资金正在流向“稳定回报型板块”。\n财通证券\n则从性价比角度给出佐证：相对债券看，当前股息-利率仍处在长周期性价比水平，高股息方向有望补涨；相对股市看，红利资产的配置思路可从周期金融延伸至已充分出清的消费制造领域，寻找Alpha机会。\n在\n长城证券\n看来，2026年\n小家电\n行业稳步扩容，产品迭代加速，全球清洁电器市场持续增长，预计2024—2029年CAGR约5%，国内吸尘器与扫地\n机器人",
+          "零售额均保持正增长且均价上行，出口呈现量价齐升态势，反映国内厂商产品竞争力持续增强。\n中金公司\n在最新策略报告中表示，当前至12月，市场有望迎来修复行情：整体估值已回落至历史均值以下，换手率由年中6%以上的高点降至3.6%，ETF净流入与上市公司回购较为积极，强势板块补跌等见底辅助信号已经出现。\n融资客本月大举抢筹\n阳光照明\n东方财富\n行业板块显示，目前A股市场有103股属于家电行业，合计总市值超2万亿元。\n美的集团\n体量遥遥领先，\n格力电器\n、\n海尔智家"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.88,
+          "reason": "10月家电出口量、额分别同比增14.1%、20.9%，23只家电股前三季度净利为正且同比增长，地产后周期需求亦边际改善；四季度出口增长仍是预测。",
+          "evidence": [
+            "尤其当指数缩量调整、高位题材波动加大，具备业绩支撑与稳定回报预期的家电龙头，自然成为防御型资金的优先配置方向。\n与此同时，10月份各线城市商品住宅销售价格同比降幅继续收窄，个别一线城市低总价的房价已企稳回升，地产后周期需求的边际改善，为家电内需提供了一定支撑。\n出口数据的高景气也进一步夯实了基本面逻辑。海关总署数据显示，2026年10月，我国家电\n出口量达4.02亿台，同比增长14.1%\n；出口金额达89.56亿美元，同比增长20.9%。",
+            "板块逆市上涨而重点宽基ETF由净申购转为净赎回，说明资金正在流向“稳定回报型板块”。\n财通证券\n则从性价比角度给出佐证：相对债券看，当前股息-利率仍处在长周期性价比水平，高股息方向有望补涨；相对股市看，红利资产的配置思路可从周期金融延伸至已充分出清的消费制造领域，寻找Alpha机会。\n在\n长城证券\n看来，2026年\n小家电\n行业稳步扩容，产品迭代加速，全球清洁电器市场持续增长，预计2024—2029年CAGR约5%，国内吸尘器与扫地\n机器人",
+            "市值均超2000亿元，\n三花智控\n市值亦在千亿元以上。\n11月以来，家电板块走势较好，日K线已收获四连阳，52股上涨、22股下跌。\n辰奕智能\n月内狂飙65%居首，\n九阳股份\n、\n日出东方\n、\n阳光照明\n、\n北鼎股份\n涨幅均在40%上下，\n石头科技\n、\n极米科技\n、\n小熊电器\n、\n长虹美菱\n等多股均显著走强。\n从业绩角度看，共有23只家电股前三季度归母净利润为正且同比实现正增长。\n其中，\n朗迪集团\n前三季度净利11.52亿元，同比大增5.5倍，\n海立股份\n净利同比增逾3倍，"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "四季度出口延续增长及小家电扩容属于机构预测，尚需后续订单与销售数据验证。",
+        "地产改善仅体现为价格降幅收窄和个别城市企稳，未披露销售量、库存及向家电需求传导的规模。",
+        "红利资金回流与市场修复属于策略判断；美的回购拟注销是公司安排，不能外推至其他家电企业。"
+      ],
+      "usage": {
+        "total_tokens": 7267,
+        "prompt_tokens": 2312,
+        "completion_tokens": 4955
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "e51040d5f462cf8c58799da2b6c01ca5dedd5717bd0cb1acf14ced67ee614dd3",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1795,
+      "scored_at": "2026-11-18T12:38:54.189320+08:00"
+    },
+    "503f6edb05473fecef009a8d779c8d47caff831fa6e6d5b4ad89dcb62a6df1d0": {
+      "summary": "广东“十五五”规划提出布局跨境算力走廊，AMD三季度数据中心营收同比增长97%，算力租赁板块活跃；文章同时提示资产过剩、租赁降价和高杠杆风险。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.78,
+        "reason": "材料主要涉及概念板块、个股表现及算力产业趋势，未提供对宏观经济、通胀或主要指数的明确传导。",
+        "evidence": [
+          "市场虽弱，亮点仍有！\n早盘，算力\n租赁\n概念表现活跃，\n美利云\n于早上10:05封死涨停，涨停板最大封单超过9.4亿元。\n广脉科技\n、\n证通电子\n、\n真视通\n、\n常山北明\n涨幅皆超10%，\n城地香江\n、\n大位科技\n、\n首都在线\n、优刻得跟涨，板块指数逆市上涨近1%。\n消息面上，有两大利好驱动：\n一是，广东省人民政府印发《数字广东建设“十五五”规划》。《规划》提出，加快“数字湾区”建设。拓展“湾区标准”，加强数智规则与标准衔接。",
+          "业务营收85.5亿美元，同比大增97%，占总营收约64%。AMD预计，2027年其\n数据中心\n业务营收占比将突破80%，该板块将成为公司营收与利润增长的核心引擎。分析认为，AMD\n数据中心\n业务的增长，对国内算力\n租赁\n行业具备直接正面拉动，同时对国内相关产业链具备中长期战略意义。\n从现状来看，中国算力\n租赁\n行业未来3—5年仍然具有较大的发展空间，过去市场主要讨论大模型训练需要多少GPU；未来则要更多关注\nAI应用\n每天消耗多少Token。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.88,
+          "reason": "跨境算力走廊、AMD数据中心增长及推理需求支撑算力租赁空间，但资产过剩、租赁价下降、低利用率和高杠杆风险限制盈利改善。",
+          "evidence": [
+            "推进粤港澳网间宽带扩容、数智应用服务平台互通，布局跨境算力走廊。推进粤港澳\n智慧城市\n群建设，深化“\n跨境通\n办”合作，优化“湾事通”平台，完善“湾区注册”服务机制。推动粤港澳三地跨境跨部门治理联动。深化粤港澳\n人工智能\n领域合作，推进粤港澳大湾区共建数字产业集群。建设粤港澳大湾区数据特区，搭建粤港澳大湾区应用场景发布厅，实施“全球英才汇湾区”行动，推进数据、技术应用、人才等资源集聚与融合。\n二是，AMD第三季度营收133.8亿美元，同比增长45%；其中\n数据中心",
+            "业务营收85.5亿美元，同比大增97%，占总营收约64%。AMD预计，2027年其\n数据中心\n业务营收占比将突破80%，该板块将成为公司营收与利润增长的核心引擎。分析认为，AMD\n数据中心\n业务的增长，对国内算力\n租赁\n行业具备直接正面拉动，同时对国内相关产业链具备中长期战略意义。\n从现状来看，中国算力\n租赁\n行业未来3—5年仍然具有较大的发展空间，过去市场主要讨论大模型训练需要多少GPU；未来则要更多关注\nAI应用\n每天消耗多少Token。",
+            "训练可能是阶段性的，但推理是持续性的。当AIAgent、智能客服、智能制造、自动驾驶辅助系统、企业AI助手等应用真正规模化以后，推理算力有机会成为\n算力租赁\n市场更加稳定的需求来源。\n不过，整个行业已经开始从高速扩张阶段进入优胜劣汰阶段。长期看好算力需求，短期也要警惕算力资产过剩、租赁价格下降和高杠杆经营风险。一些行业报告显示，2026年，一方面AI算力需求快速增长，另一方面部分智算中心的设备利用率并不高。虽然这些报告属于行业研究机构的市场统计和预测，但也值得关注。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.68,
+          "reason": "规划明确推进粤港澳网间宽带扩容、数智平台互通和跨境算力走廊，带来网络基础设施需求线索，但未披露投资额或订单。",
+          "evidence": [
+            "推进粤港澳网间宽带扩容、数智应用服务平台互通，布局跨境算力走廊。推进粤港澳\n智慧城市\n群建设，深化“\n跨境通\n办”合作，优化“湾事通”平台，完善“湾区注册”服务机制。推动粤港澳三地跨境跨部门治理联动。深化粤港澳\n人工智能\n领域合作，推进粤港澳大湾区共建数字产业集群。建设粤港澳大湾区数据特区，搭建粤港澳大湾区应用场景发布厅，实施“全球英才汇湾区”行动，推进数据、技术应用、人才等资源集聚与融合。\n二是，AMD第三季度营收133.8亿美元，同比增长45%；其中\n数据中心"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "规划未披露投资规模、项目清单、订单及建设时点，需求能否转化为企业收入尚不明确。",
+        "AMD对2027年的预计、未来3—5年发展空间及推理需求成为稳定来源均属预测或分析。",
+        "低利用率与算力过剩数据来自行业机构统计和预测，且未披露各概念公司的业务敞口、资产质量及杠杆差异。"
+      ],
+      "usage": {
+        "total_tokens": 4624,
+        "prompt_tokens": 1640,
+        "completion_tokens": 2984
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4b0edf1bd2242767414a1a573f1829f81cc0f9fce021e0958b5f5d7f6df66025",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 958,
+      "scored_at": "2026-11-18T12:39:21.895512+08:00"
+    },
+    "51a69311705d6418478c58d87d54959bb087c16e80c1641eee934d4587b277ef": {
+      "summary": "2027年电煤长协签约启动，履约监管扩展至数量、质量、时间和运力，机构认为煤企盈利稳定性提升。测算煤价中枢上移或抬升火电成本，并可能推动电价上调。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "mixed",
+        "confidence": 0.86,
+        "reason": "明确的煤电链传导呈双向分配：机构认为煤企盈利和现金流可预见性改善，但测算煤价中枢上移会抬升火电成本并可能推升电价；文中未涉及整体市场。",
+        "evidence": [
+          "随着2027年签约启动及《办法》实施临近，行业关注点正由短期煤价弹性延伸至盈利确定性和现金流质量。\n长江证券\n11月17日发布的行业周报显示，2026年以来，秦港Q5500\n动力煤\n平仓价\n累计上涨约49%\n，11月年度长协价较1月上涨6%至727元/吨。\n\"每一次调整都是在矫正上一阶段现货煤价的失控，将煤电利益再分配从供需博弈转向制度均衡。\"\n长江证券\n指出，长协定价机制的持续优化，有助于在煤企合理利润与电厂可承受成本之间形成均衡。\n国泰海通",
+          "证券10月30日发布的行业事件快评则聚焦盈利稳定性。《办法》首次将3类能源保供长协纳入统一制度框架，并从量、价、履约层面硬化约束。\"长协制度下，煤炭企业未来盈利稳健性、可预见性提高，叠加高分红，红利属性愈发凸显。\"\n国泰海通\n证券认为，这有助于熨平煤价大幅波动，推动上下游盈利更趋稳健。\n煤电联动也提供了另一观察维度。\n华泰证券\n10月20日发布的行业专题报告测算，若2026年底\n电力",
+          "年度长协谈判参考的煤价中枢为850元/吨，较2025年均价高约150元/吨，对应用煤成本上升1.5分至4.2分/千瓦时，或支撑2027年电价上涨5%至10%。\n\"电、煤长协机制改革均在提高现货价格因子权重，煤电联动效果增强，\n动力煤\n供给成为火电出力新约束。\"\n华泰证券\n指出。\n高股息+低估值名单出炉\n东方财富\nChoice数据显示，A股有超30只煤炭概念股。\n估值方面，\n中煤能源\n以9.77倍居首，\n新集能源\n以10.35倍位居次席，\n电投能源\n以11.36倍紧随其后；"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.91,
+          "reason": "2027年长协签约及量、质、时、运力硬约束有助于提高销量兑现和价格稳定性；机构据此判断煤企盈利与现金流可预见性增强，但并非已兑现结果。",
+          "evidence": [
+            "2027年电煤长协签约启动，履约监管进一步硬化。煤价高位叠加长协\n入规\n，\n煤炭\n股红利价值再获关注。\n2027年电煤合同签约窗口开启\n11月13日，国家发展改革委办公厅印发《关于做好2027年电煤保供中长期合同签订和履约工作的通知》，2027年电煤长协签约正式启动。\n中国\n煤炭\n市场网11月18日发布的政策对比显示，发电企业80%签约比例、\n煤炭\n企业75%资源保障比例、80%合同纳入重点监管台账等要求延续，\n签约录入截止时间提前至12月5日\n，煤矿报量提前至11月18日。",
+            "履约要求由单一数量考核扩展至\n数量、质量、时间、运力四个维度\n，履约情况需按月公示并报送。价格机制继续采用\"基准价+浮动价\"，产地合同需建立月度调整机制，铁路运力合同则新增三方盖章确认。\n此次年度通知与《能源保供中长期合同管理办法（试行）》形成衔接。上述《办法》共6章45条，将电煤、\n电力\n、\n天然气\n3类保供长协纳入统一制度框架，自12月1日起施行，并明确\"企业主责、政府监管、分级负责\"的责任链条。\n供给端，国家统计局数据显示，10月规上工业原煤产量3.8亿吨，",
+            "随着2027年签约启动及《办法》实施临近，行业关注点正由短期煤价弹性延伸至盈利确定性和现金流质量。\n长江证券\n11月17日发布的行业周报显示，2026年以来，秦港Q5500\n动力煤\n平仓价\n累计上涨约49%\n，11月年度长协价较1月上涨6%至727元/吨。\n\"每一次调整都是在矫正上一阶段现货煤价的失控，将煤电利益再分配从供需博弈转向制度均衡。\"\n长江证券\n指出，长协定价机制的持续优化，有助于在煤企合理利润与电厂可承受成本之间形成均衡。\n国泰海通"
+          ],
+          "sector_code": "801950.SI",
+          "sector_name": "煤炭",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.84,
+          "reason": "券商测算若2026年底长协煤价中枢为850元/吨，火电成本将增加1.5—4.2分/千瓦时，或支撑电价上涨5%—10%；最终合同价与传导比例未定，成本压力与对冲并存。",
+          "evidence": [
+            "证券10月30日发布的行业事件快评则聚焦盈利稳定性。《办法》首次将3类能源保供长协纳入统一制度框架，并从量、价、履约层面硬化约束。\"长协制度下，煤炭企业未来盈利稳健性、可预见性提高，叠加高分红，红利属性愈发凸显。\"\n国泰海通\n证券认为，这有助于熨平煤价大幅波动，推动上下游盈利更趋稳健。\n煤电联动也提供了另一观察维度。\n华泰证券\n10月20日发布的行业专题报告测算，若2026年底\n电力",
+            "年度长协谈判参考的煤价中枢为850元/吨，较2025年均价高约150元/吨，对应用煤成本上升1.5分至4.2分/千瓦时，或支撑2027年电价上涨5%至10%。\n\"电、煤长协机制改革均在提高现货价格因子权重，煤电联动效果增强，\n动力煤\n供给成为火电出力新约束。\"\n华泰证券\n指出。\n高股息+低估值名单出炉\n东方财富\nChoice数据显示，A股有超30只煤炭概念股。\n估值方面，\n中煤能源\n以9.77倍居首，\n新集能源\n以10.35倍位居次席，\n电投能源\n以11.36倍紧随其后；"
+          ],
+          "sector_code": "801160.SI",
+          "sector_name": "公用事业",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "850元/吨煤价中枢、1.5—4.2分/千瓦时成本增量及5%—10%电价涨幅均为机构测算或条件性预测，并非最终结果。",
+        "2027年长协最终签约规模、价格及实际履约情况尚待签约和后续监管验证。",
+        "10月原煤产量同比下降，后续供给恢复程度与煤价路径未在文中明确。"
+      ],
+      "usage": {
+        "total_tokens": 8291,
+        "prompt_tokens": 2312,
+        "completion_tokens": 5979
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "c86b8bed215f20f8be37db0a5b9f1b34f388b5929df485078dcdfe1a12ee341c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1785,
+      "scored_at": "2026-11-18T12:39:58.990923+08:00"
+    },
+    "b0029299540ba96e43f79d3c7ae9d807f30b1b0abf0948d7984981a982aa87ee": {
+      "summary": "中信建投研报称，百胜中国3Q26营收、净利双增，餐厅及经营利润率提升；研报肯定全产业链壁垒、盈利韧性和股东回报吸引力，但材料仅指向单家公司。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "材料仅涉及百胜中国单家公司，未提供对餐饮行业、宏观需求或主要指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，中信建投发布关于百胜中国（09987）的研报。公司3Q26营收净利双增，餐厅及经营利润率提升。新模型表现强劲，全产业链壁垒支撑扩张，盈利能力韧性强且股东回报具吸引力，基本面持续向好。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "百胜中国业绩及利润率改善对自身餐饮经营偏正面，但缺少行业需求、同业表现及传导数据，不能判定社会服务行业整体方向。",
+          "evidence": [
+            "财联社11月18日电，中信建投发布关于百胜中国（09987）的研报。公司3Q26营收净利双增，餐厅及经营利润率提升。新模型表现强劲，全产业链壁垒支撑扩张，盈利能力韧性强且股东回报具吸引力，基本面持续向好。"
+          ],
+          "sector_code": "801210.SI",
+          "sector_name": "社会服务",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "研报未披露3Q26具体财务数值及同店销售、客流等经营指标",
+        "“新模型表现强劲”和扩张判断缺少量化进度及实现时间",
+        "单家公司业绩不足以证明餐饮行业整体需求或盈利改善"
+      ],
+      "usage": {
+        "total_tokens": 4193,
+        "prompt_tokens": 1069,
+        "completion_tokens": 3124
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "196893972e7ac1bf3fbc017f2d7edae5c1db6b92291eb3a1797f0768bcd32580",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 102,
+      "scored_at": "2026-11-18T12:40:25.727340+08:00"
+    },
+    "d122ed426a32b4c05984b22fa7d83aeb06ecfd4476aa7ad6fa52434d9fd099a7": {
+      "summary": "英伟达盘中跌幅由近4%收窄至不足1%，股价波动有所缓和；报道未提供公司经营、行业需求或盈利变化依据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅披露英伟达盘中股价表现，未说明宏观因素或明确的市场传导路径。",
+        "evidence": [
+          "财联社11月18日电，英伟达股价继续收窄跌幅，最新下跌不到1%，此前一度跌近4%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.95,
+          "reason": "单一公司股价波动不等同于行业需求、订单或盈利变化，报道不足以判断电子行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，英伟达股价继续收窄跌幅，最新下跌不到1%，此前一度跌近4%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "报道未说明英伟达股价下跌及跌幅收窄的原因",
+        "缺少业绩、订单、需求及盈利变化信息，不能据单一公司行情外推A股电子行业"
+      ],
+      "usage": {
+        "total_tokens": 1726,
+        "prompt_tokens": 1052,
+        "completion_tokens": 674
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bdf7999d752c1ecc48e2e6e0ba77205f23d60c3dbf54805f5b36ef7e659d7ebc",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 41,
+      "scored_at": "2026-11-18T12:40:34.092693+08:00"
+    },
+    "36824cee01de59135461a8ad486f14748b1647a9e7e32fa54b5748fbc27ae2f7": {
+      "summary": "黄仁勋表示将配合英伟达董事会调查；调查内容、范围及结果均未披露，暂无法判断对相关产业经营的明确影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "仅披露将配合调查，未说明调查事项、范围、结果或宏观传导，无法判断指数影响。",
+        "evidence": [
+          "财联社11月18日电，黄仁勋表示，将致力于配合英伟达董事会的调查。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "材料仅涉及英伟达管理层配合董事会调查，未披露调查事项或经营变化；单一公司事件不足以外推至电子行业整体。",
+          "evidence": [
+            "财联社11月18日电，黄仁勋表示，将致力于配合英伟达董事会的调查。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "调查的具体起因、范围及法律性质未披露",
+        "是否涉及业务、财务、合规或监管责任未知",
+        "是否影响英伟达经营及上下游需求尚无证据"
+      ],
+      "usage": {
+        "total_tokens": 1966,
+        "prompt_tokens": 1040,
+        "completion_tokens": 926
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "ab285d2636205daf8d8646d4c3b43af53abc60c4ffa5a740c252d9b7464b48be",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 33,
+      "scored_at": "2026-11-18T12:40:43.500371+08:00"
+    },
+    "2ed0d1c68fbaa9f4f9a4c4dae90deda27ed2d029e31b84454033d667d0ed1389": {
+      "summary": "美国10年期国债收益率年内已有27个交易日收于5%以上，接近2007年29日纪录；交易员完全计入12月9日加息25基点，并将截至2027年9月的累计紧缩预期由约50基点上修至超80基点，美元融资条件趋紧。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.68,
+        "reason": "美债收益率高位与加息预期上修指向美元融资条件收紧，可能压低全球风险偏好并抬高资产折现率；但文中未提供对中国股市的直接传导证据。",
+        "evidence": [
+          "财联社11月18日电，随着投资者押注美联储将在通胀持续高企之际进一步加息，美国10年期国债收益率位于5%以上的时间正在接近近20年以来的最长。美国借贷成本的这一基准，今年势将第27个交易日收于5%以上距离2007年录得的29个交易日仅一步之遥。交易员目前已完全计入美联储在12月9日会议上加息25个基点的可能性，并预计到2027年9月累计收紧幅度将超过80个基点；而在上周之前，市场预期约为50个基点。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.48,
+          "reason": "若高美债收益率及加息路径延续，全球融资成本上升可能压制跨境地产融资与购房需求；但文中未提供国内地产企业美元融资敞口，传导较为间接。",
+          "evidence": [
+            "财联社11月18日电，随着投资者押注美联储将在通胀持续高企之际进一步加息，美国10年期国债收益率位于5%以上的时间正在接近近20年以来的最长。美国借贷成本的这一基准，今年势将第27个交易日收于5%以上距离2007年录得的29个交易日仅一步之遥。交易员目前已完全计入美联储在12月9日会议上加息25个基点的可能性，并预计到2027年9月累计收紧幅度将超过80个基点；而在上周之前，市场预期约为50个基点。"
+          ],
+          "sector_code": "801180.SI",
+          "sector_name": "房地产",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.42,
+          "reason": "利率上行可能带来息差改善，同时增加融资成本、信用风险及跨境资本流动压力；美联储政策不等同于中国银行经营环境，文中亦无相关敞口数据。",
+          "evidence": [
+            "财联社11月18日电，随着投资者押注美联储将在通胀持续高企之际进一步加息，美国10年期国债收益率位于5%以上的时间正在接近近20年以来的最长。美国借贷成本的这一基准，今年势将第27个交易日收于5%以上距离2007年录得的29个交易日仅一步之遥。交易员目前已完全计入美联储在12月9日会议上加息25个基点的可能性，并预计到2027年9月累计收紧幅度将超过80个基点；而在上周之前，市场预期约为50个基点。"
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "12月9日加息及截至2027年9月累计紧缩幅度是交易员预期，并非美联储已作出的决定。",
+        "文中未说明美债收益率上升由实际利率、通胀预期还是期限溢价主导。",
+        "未提供中国地产和银行行业的跨境融资敞口，国内政策对冲效果亦不明确。"
+      ],
+      "usage": {
+        "total_tokens": 7794,
+        "prompt_tokens": 1128,
+        "completion_tokens": 6666
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "f66b57c86ba0f1761d4c0c26ac424d48686ae3597de6dcc5f6854c59600b4f5f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 201,
+      "scored_at": "2026-11-18T12:41:27.321931+08:00"
+    },
+    "b748fc0785928d6f5800925adf6857c81904681997f4504446c665879fff9992": {
+      "summary": "米尔伯恩报告提议未来五年将21—24岁雇主国民保险缴费门槛由£5,000升至£10,000，并补贴招募失学失业青年。零售与酒店业认为可降本，但保证工时改革可能抵消部分利好，政策尚未落地。",
+      "tone": "mixed",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "材料聚焦英国青年用工政策及企业意见，未提供对整体指数或资产定价的明确传导证据。",
+        "evidence": []
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.84,
+          "reason": "若提高21—24岁国民保险门槛并落实青年招聘补贴，零售企业用工成本可能下降；但均为提案，且保证工时制度可能增加约束并削弱招聘。",
+          "evidence": [
+            "The Milburn report proposes NI thresholds could be raised over the next five years, from £5,000 to £10,000 for those aged 21 to 24, and suggests prioritising the retail and hospitality sectors.",
+            "Employers who take on any young person who has been Neet - not in education, employment or training - for six months should receive a £3,000 payment, and small businesses - with less than 50 employees - that do so should receive an extra £2",
+            "Much of the detail is yet to be finalised but the Employment Rights Act is due to be enacted next year.\nMilburn is concerned that the changes could cause problems \"at a time when the youth labour market is already weak'.'"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.83,
+          "reason": "酒店餐饮企业称利润受挤压且青年用工成本高，降费与补贴有助缓解成本；但保证工时改革可能带来额外约束，政策落地及净影响未定。",
+          "evidence": [
+            "We simply cannot justify the extra cost to put on an extra staff member to train someone up for three months,\" he says.\n\"In hospitality our margins have been squeezed and squeezed and squeezed\"",
+            "At a glance: Key proposals from Milburn's Neets report\nPublished\n15 hours ago\nAllen Simpson, chief executive of UKHospitality, says the recommendation to raise  the threshold is \"the right one\" and \"would be an immediate shot in the arm for",
+            "Much of the detail is yet to be finalised but the Employment Rights Act is due to be enacted next year.\nMilburn is concerned that the changes could cause problems \"at a time when the youth labour market is already weak'.'"
+          ],
+          "sector_code": "801210.SI",
+          "sector_name": "社会服务",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "降费、补贴及零售和酒店业优先安排均为建议，采纳时间、预算和执行细则未明确。",
+        "保证工时制度细节尚未敲定，其对青年招聘的实际影响不确定。",
+        "现金补贴能否带来新增而非替代招聘，以及政策是否扩大至其他行业，均无定论。"
+      ],
+      "usage": {
+        "total_tokens": 5840,
+        "prompt_tokens": 2704,
+        "completion_tokens": 3136
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "63ecf9ae0e0deece043b8578aa85f1493b8a0ed73113918f21d53c62732dd1e7",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 5861,
+      "scored_at": "2026-11-18T12:41:57.511375+08:00"
+    },
+    "ddcf7fea65bc7c25f856ed638014bb8331d2685309fc86779d66bc0c71a837e6": {
+      "summary": "美国多家大型银行周一因疑似软件缺陷出现登录、查询、转账及ATM服务障碍，至晚间故障报告回落；Chase称事件临时且非系统性。联合航空故障和FAA全国地面停飞亦扰动航班。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "银行故障被称临时且非系统性，晚间报告数下降；正文未给出对宏观增长、通胀或主要指数的明确传导。",
+        "evidence": [
+          "It added the issue was \"temporary\" and not \"systemic\" or \"cyber-related\".\nProblems appeared to be easing for many customers by early Monday evening.\nThe issue comes after a string of unrelated technical problems, including",
+          "As of 18:00 EST (23:00 GMT), Chase, Bank of America and US Bank had seen a fall in the number of reported outages."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.94,
+          "reason": "美国多家大行出现服务访问故障及交易延迟；但账户和资金仍可访问，傍晚报告数下降，未见持续损失证据。",
+          "evidence": [
+            "Thousands of customers at major US banks, including JP Morgan Chase, Wells Fargo and Bank of America, have reported trouble accessing services.",
+            "Microsoft outage 'stark reminder' of how much we rely on tech\nPublished\n3 days ago\nChase Bank told its customers that \"some transactions are taking longer than usual to complete\" but they still had \"access to their accounts and funds\".",
+            "As of 18:00 EST (23:00 GMT), Chase, Bank of America and US Bank had seen a fall in the number of reported outages."
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "today"
+        },
+        {
+          "direction": "negative",
+          "confidence": 0.89,
+          "reason": "联合航空技术故障影响航班起飞，FAA因通信与网络升级问题全国停飞逾4小时并留有拥堵余波；前者数小时内恢复。",
+          "evidence": [
+            "Just as the banking issue affected US customers on Monday, United Airlines confirmed a \"widespread system outage\", which it described as \"a technology issue affecting departing flights\".\nThat issue resolved within a few hours.",
+            "the one that hit the US Federal Aviation Administration (FAA)\n, but comes as other industries report different outages around the US.",
+            "On Friday, the FAA issued a rare nationwide a ground stop, halting all US air travel due to a telecommunication and network upgrade issues.\nThe halt lasted just over four hours, but the knock-on effect continues to snarl US air travel."
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "Chase所称硬件系统“软件缺陷”的确切性质、影响范围及持续时间仍不清楚。",
+        "正文未披露银行或航空公司的财务损失、监管处理及对A股公司的直接业务暴露。",
+        "FAA、联合航空与银行故障被说明为彼此独立，不能认定更广泛技术基础设施同时失灵。"
+      ],
+      "usage": {
+        "total_tokens": 5867,
+        "prompt_tokens": 2150,
+        "completion_tokens": 3717
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "780d358700659acbc45eae0eb10feb5444d42c60d462da2c56c8ed983ea4e52d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 4098,
+      "scored_at": "2026-11-18T12:42:26.545016+08:00"
+    },
+    "cc13270b61b636b5b6a5fc69d5b8d155639b6e07afe7f34dd61d7820b0f7c1c8": {
+      "summary": "耐克公布2027至2031财年累计约120亿美元股息返还计划，并明确并非股票回购；该安排仅涉及公司资本回报，未提供行业经营变化证据。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "材料主要披露耐克个案的分红计划，缺少向宏观盈利、流动性或六大指数传导的证据，无法判断整体市场影响。",
+        "evidence": [
+          "财联社11月17日电，耐克在投资者日公布“Full Stride Ahead”战略及2031财年财务框架，2027至2031财年，公司计划通过股息累计向股东返还约120亿美元。注意，这是股息返还计划，不是股票回购金额。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "120亿美元为耐克未来五年股息计划，非股票回购；仅体现个案资本安排，未披露品牌经营、终端需求或产业链盈利变化，不能外推至行业。",
+          "evidence": [
+            "财联社11月17日电，耐克在投资者日公布“Full Stride Ahead”战略及2031财年财务框架，2027至2031财年，公司计划通过股息累计向股东返还约120亿美元。注意，这是股息返还计划，不是股票回购金额。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "正文未披露“Full Stride Ahead”战略及2031财年财务框架的具体内容。",
+        "120亿美元为计划金额，未来实际支付节奏及条件未说明。",
+        "缺少耐克经营数据及对终端需求、供应商订单和行业盈利影响的信息。"
+      ],
+      "usage": {
+        "total_tokens": 3233,
+        "prompt_tokens": 1064,
+        "completion_tokens": 2169
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "dc55512674816aca8bb4a303f20ff3fb7093e3e712e4184856b19965eb4e9f8d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 109,
+      "scored_at": "2026-11-18T12:43:00.809845+08:00"
+    },
+    "f7e67d3132367bbe0c78e6025560f38617837442e2ee1bd7e19f2ee095a9a171": {
+      "summary": "耐克公布2031财年框架：2027—2028财年继续增长投入，2028财年收入降幅收窄；预计2029财年恢复市场平均增速、2030—2031财年超过市场，新增收入约50亿美元，其中运动表现约40亿美元。",
+      "tone": "positive",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "内容为耐克单一公司的财务框架与预测，未提供可明确传导至六大指数的宏观影响。",
+        "evidence": [
+          "财联社11月17日电，耐克在投资者日公布2031财年财务框架，预计2027和2028财年仍处于增长投资阶段，2028财年收入降幅将收窄，2029财年恢复至市场平均收入增速，2030和2031财年收入增速将超过市场。公司预计，到2031财年新增收入约50亿美元，其中运动表现业务贡献约40亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.82,
+          "reason": "耐克预计中长期收入恢复增长，其中运动表现业务贡献主要新增收入；若兑现，将改善运动服饰细分收入预期，但不能外推至全行业。",
+          "evidence": [
+            "财联社11月17日电，耐克在投资者日公布2031财年财务框架，预计2027和2028财年仍处于增长投资阶段，2028财年收入降幅将收窄，2029财年恢复至市场平均收入增速，2030和2031财年收入增速将超过市场。公司预计，到2031财年新增收入约50亿美元，其中运动表现业务贡献约40亿美元。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "2029—2031财年增速及新增收入均为公司预测，兑现存在不确定性。",
+        "“市场平均收入增速”的比较对象与统计口径未披露。",
+        "增长投资阶段的投入规模及其对利润和现金流的净影响未披露。"
+      ],
+      "usage": {
+        "total_tokens": 2590,
+        "prompt_tokens": 1108,
+        "completion_tokens": 1482
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d68bf4e6c499aa400a6ec59e1fa044d92c9325796d30f92669c0e685ff4e1d06",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 147,
+      "scored_at": "2026-11-18T12:43:13.545552+08:00"
+    },
+    "e0941cce92333f72e4da73ad748913d18558abfd659c7ef11f6a2a3977c513f5": {
+      "summary": "本田计划投资4.62亿美元扩建美国阿拉巴马州汽车工厂，预计新增200个岗位并提升整车及混合动力发动机产能；影响集中于公司经营与当地就业，尚无证据表明行业需求普遍改善。",
+      "tone": "positive",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "事件属于单一车企在美国的产能投资，未提供对相关指数盈利、需求或流动性的明确传导。",
+        "evidence": [
+          "财联社11月17日电，本田汽车计划投资4.62亿美元扩建其位于美国阿拉巴马州的汽车工厂，预计创造200个就业岗位。此次投资将用于提升汽车产能及混合动力发动机生产能力。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.75,
+          "reason": "扩建计划将提升本田整车及混动发动机产能，对公司相关业务构成计划性利好；但不能据此推断汽车行业整体需求或盈利改善。",
+          "evidence": [
+            "财联社11月17日电，本田汽车计划投资4.62亿美元扩建其位于美国阿拉巴马州的汽车工厂，预计创造200个就业岗位。此次投资将用于提升汽车产能及混合动力发动机生产能力。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "投资尚处计划阶段，实施进度、投产时间及最终效果未披露。",
+        "200个就业岗位为预计值，实际人数存在不确定性。",
+        "未披露供应商、采购安排或产品去向，不能外推至A股汽车、机械设备或宽基指数。"
+      ],
+      "usage": {
+        "total_tokens": 3134,
+        "prompt_tokens": 1060,
+        "completion_tokens": 2074
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "433b47a7624efa35524e2a7b699d54e586cdcea999c4a02a4d9a5689c39ac7f6",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 83,
+      "scored_at": "2026-11-18T12:43:28.114695+08:00"
+    },
+    "70e81cb53c047f796202b422c1bb5398235173ac5cb33936facb6d2dd6571fa6": {
+      "summary": "耐克提出以2027财年为基准、到2031财年新增约50亿美元收入、营业利润率达12%-14%，并预计2027至2031财年累计现金分红约120亿美元。公司拟将六类运动业务及23个重点国家作为超90%增量收入来源，但均为前瞻性目标。",
+      "tone": "positive",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "材料仅披露耐克公司层面的战略与财务目标，未说明对消费总量、企业盈利、通胀或六大指数的明确传导，宏观方向未知。",
+        "evidence": [
+          "财联社11月17日电，耐克在投资者日公布“Full Stride Ahead”战略及2031财年财务框架，目标是以2027财年为基准，到2031财年实现约50亿美元增量收入，营业利润率达到12%至14%，调整后每股收益达到3至3.50美元。公司预计，2027至2031财年累计通过现金股息向股东返还约120亿美元，并重申2027财年业绩指引。新战略将重点聚焦跑步、训练、全球足球、篮球、户外运动及运动休闲业务，预计上述领域及23个重点国家将贡献超过90%的收入增长。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "耐克的增长框架直接对应运动服饰相关细分，但仅为单一公司目标，文章未给出行业需求、订单、份额或同业盈利数据，不能外推为板块整体改善。",
+          "evidence": [
+            "财联社11月17日电，耐克在投资者日公布“Full Stride Ahead”战略及2031财年财务框架，目标是以2027财年为基准，到2031财年实现约50亿美元增量收入，营业利润率达到12%至14%，调整后每股收益达到3至3.50美元。公司预计，2027至2031财年累计通过现金股息向股东返还约120亿美元，并重申2027财年业绩指引。新战略将重点聚焦跑步、训练、全球足球、篮球、户外运动及运动休闲业务，预计上述领域及23个重点国家将贡献超过90%的收入增长。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "2031财年财务目标、90%以上增量收入来源及120亿美元股东回报均属公司预计，尚无兑现结果。",
+        "文章未披露2027财年业绩指引具体数值、目标基期财务数据及实现路径。",
+        "未提供行业需求、渠道、供应链或宏观市场数据，无法量化外溢影响。"
+      ],
+      "usage": {
+        "total_tokens": 5083,
+        "prompt_tokens": 1146,
+        "completion_tokens": 3937
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d8a5f6746773bf42aaf4b02ff1a4c19204119f064e868019ef022e9fdc7bd33d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 233,
+      "scored_at": "2026-11-18T12:44:40.092510+08:00"
+    },
+    "0d20aeafb20191002ccf34023b628dbe09969b3b0de1feb28a283edff602cef5": {
+      "summary": "消息称Anthropic据悉将把IPO定价推至区间上限或更高，但未披露发行规模、募资用途或时间，无法确认对A股相关产业的经营影响。",
+      "tone": "positive",
+      "fact_status": "rumor",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "仅有IPO定价传闻，未提供明确宏观传导路径，不能据此判断六大指数或整体市场方向。",
+        "evidence": [
+          "财联社11月17日电，Anthropic据悉将把首次公开募股（IPO）的定价推向区间上限或更高水平。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.35,
+          "reason": "Anthropic定价传闻可能影响AI相关标的估值情绪，但文章未提供A股计算机企业的订单、收入、成本或资本传导证据。",
+          "evidence": [
+            "财联社11月17日电，Anthropic据悉将把首次公开募股（IPO）的定价推向区间上限或更高水平。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "“据悉”表述未获公司或交易所确认，定价是否达到区间上限或更高仍不确定",
+        "未披露发行规模、募资用途、上市时间及财务数据",
+        "缺少事件向A股计算机产业链订单或盈利传导的证据"
+      ],
+      "usage": {
+        "total_tokens": 2480,
+        "prompt_tokens": 1056,
+        "completion_tokens": 1424
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6dbf666c69d04df568d91838dd1b119abd38607a9d3b3659a195a26b7e425ed2",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 50,
+      "scored_at": "2026-11-18T12:44:51.903263+08:00"
+    },
+    "6a4fc15f06f9cb36dc6ee1a96c369cea16c7b2ced18c710619442cbd8fbd6710": {
+      "summary": "南京新百全资境外公司拟出售两家以色列公司100%股权，基础股权价值4.1亿新谢克尔（折合人民币约9亿元）；完成后不再并表。财务影响取决于标的贡献、处置损益及交割结果。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "事件仅涉及单家公司拟处置境外子公司，未提供对宏观经济、六大指数或行业总量的明确影响。",
+        "evidence": [
+          "财联社11月17日电，南京新百(600682.SH)公告称，公司全资控股的境外公司NataliHealthcare拟将其全资持有的ASNursing和ASOne两家公司100%股权出售给以色列上市公司Danel，基础股权价值4.1亿新谢克尔(折合人民币约9亿元)。本次交易完成后，上述两家公司不再纳入公司合并报表范围。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "南京新百拟出售两家子公司股权并在完成后不再并表，可能改变合并范围；但标的经营贡献、处置损益及交割结果未披露，无法判断对收入、利润和现金流的净影响，亦不能外推至行业。",
+          "evidence": [
+            "财联社11月17日电，南京新百(600682.SH)公告称，公司全资控股的境外公司NataliHealthcare拟将其全资持有的ASNursing和ASOne两家公司100%股权出售给以色列上市公司Danel，基础股权价值4.1亿新谢克尔(折合人民币约9亿元)。本次交易完成后，上述两家公司不再纳入公司合并报表范围。"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未披露标的公司的经营业绩、资产规模及其对南京新百营收和利润的贡献。",
+        "未披露交易费用、税费、交割条件及最终处置损益。",
+        "单一上市公司的股权出售不足以推导商贸零售行业整体影响。"
+      ],
+      "usage": {
+        "total_tokens": 2657,
+        "prompt_tokens": 1090,
+        "completion_tokens": 1567
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b370e31fa0bae94d8220b11c4e8333b1778eb1d20f3674d9dfbc28eef92b0ff8",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 159,
+      "scored_at": "2026-11-18T12:45:02.485271+08:00"
     }
   },
   "failures": {
