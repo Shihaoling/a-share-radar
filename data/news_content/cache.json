@@ -3437,6 +3437,289 @@
       "reason": "source_unavailable",
       "attempted_at": "2026-11-18T14:42:41.694971+08:00",
       "retry_after": "2026-11-19T14:42:41.694971+08:00"
+    },
+    "57e8169081551a068f35cf0d69a6033bfdc8d90721b3a4e6184bc7e70a9d2491": {
+      "url": "https://finance.eastmoney.com/a/202611183933886030.html",
+      "status": "complete",
+      "full_text": "北京时间11月18日凌晨，美股盘后交易时段科技板块迎来上行行情，芯片产业链表现亮眼。\n英伟达\n发布\n超市\n场预期的季度财报后，股价盘后明显走高；\n存储芯片\n同步跟涨，\n美光科技\n、\n西部数据\n等盘后均有可观涨幅；算力及射频芯片标的同步走强，\n博通\n、AMD、\n阿斯麦\nADR盘后集体上扬；\n特斯拉\n、谷歌A、Meta等其余头部科技股亦跟随走高，AI算力硬件板块整体情绪回暖。\n此前\n英伟达\n披露2027财年第三季度财报，业绩表现亮眼，单季营收1158亿美元，同比增长103%；净利润653亿美元，同比增长105%，核心的\n数据中心\n业务营收1076亿美元，同比增幅110%，公司同时给出第四财季营收指引，营收、利润及业绩指引均超出市场一致预期，AI算力需求持续释放。\n周二早些时候，\n英伟达\n创始人黄仁勋在社交媒体公开表态称，如果董事会认定，我的回归符合我们股东、员工、公司以及美国的最大利益，我将十分荣幸地响应这些呼声，重返首席执行官的岗位。目前相关事项仍待公司董事会进一步评估。\n放眼国内市场，AI算力、\n半导体\n产业链上市公司三季报业绩持续兑现，算力芯片、光模块、服务器等环节不少企业营收、利润保持较快增长，产业基本面稳步改善。海外头部科技企业的业绩表现、产业动向，容易对国内相关板块形成情绪外溢。市场人士认为，海内外AI产业链景气方向具备共通性，但A股科技板块走势更多依托自身订单落地、技术迭代以及产业政策推进节奏，业绩兑现度仍是主线，投资者宜理性看待海外事件扰动，聚焦国内企业基本面变化。\n（文章来源：证券日报）",
+      "text_hash": "8327410a1386276d492796efb7a080e9fb47451b1766bffd74fd3a7b55d9c881",
+      "fetched_at": "2026-11-18T15:07:47.721333+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933886030.html",
+      "published_at": "2026-11-18T12:54:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:07:47.721354+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933886030.html",
+        "checked_at": "2026-11-18T15:07:47.721354+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:54"
+      }
+    },
+    "f888f3b620b952e7bc638c0381c0bb65359ab4d0fad8e159664259a92d7468da": {
+      "url": "https://finance.eastmoney.com/a/202611183933898595.html",
+      "status": "complete",
+      "full_text": "11月16日国新办发布会披露的10月经济运行数据显示，工业生产尤其是制造业生产维持较快增长。东方金诚首席宏观分析师王青在给《每日经济新闻》记者（以下简称每经记者）的分析中称，这主要受出口高增以及新动能领域生产持续较快增长拉动。\n哪些品类支撑出口增长？在采访调研中，每经记者注意到，拆开看，制造业较快增长的深层逻辑集中在三条线上：集成电路出口金额翻倍，背后是AI（\n人工智能\n）存储涨价周期与加工贸易的驱动；\n铝\n材等品类“量增价更强”，背后是海外供给刚性缺口与\n新能源\n外需释放；家电急单频出，背后是欧洲能源危机倒逼出的场景化、方案化出海能力。三条逻辑共同指向一个变化：制造业出口的增长动力，正从单纯的价格周期红利和供给缺口红利，向产业链配套与体系化能力迁移。\n集成电路出口的绝对主力是存储器\n从公布数据的细分品类出口金额看，集成电路、\n自动数据处理\n设备及其零部件对出口拉动作用最大，出口额均超过1.5万亿元。上述品类今年前10个月累计，分别比去年同期增长101.9%、53.6%。另根据海关统计月报《出口主要商品目录》，高新技术产品的商品范围与目录中其他商品范围有交叉，暂不纳入比较。\n图片来源：海关总署官网\n什么“扛起”了集成电路的出口额？“增长并非出货量的系统性扩张。”长沙市高层次人才促进会先进计算与\nAI应用\n专委会副主任郭昱在接受每经记者采访时表示，“集成电路前10个月出口额同比增长101.9%，但出口量仅增长3.2%。”\n“\n驱动力\n是AI基础设施扩张引发的存储涨价周期，而非中国芯片产能份额的抬升。三大原厂将产能集中转向HBM（高带宽存储器）和先进制程，通用DRAM（动态随机存取存储器）/NAND（闪存）供给持续偏紧。2026年第一季度通用DRAM合约价环比涨90%以上，NAND涨55%~60%；2026年第二季度DRAM再涨58%~63%，NAND涨70%~75%。单颗芯片均价从2025年的0.58美元升至2026年上半年的0.99美元，2026年6月单月突破1.2美元。”\n从出口品类来说，“绝对主力是存储器，处理器及控制器几乎不增长。”郭昱给出数据：2026年9月，存储器出口额333.8亿美元，占当月芯片出口额的74.1%，同比增速高达277.3%；同期处理器及控制器出口额同比仅增长3.3%。存储类芯片出口量只占集成电路总出口量的约9%，却贡献了约72%的出口额。\n需求来自哪里？郭昱进一步表示，需求核心来自东盟及东亚AI供应链节点。2026年1—8月，集成电路出口前五目的地为中国香港、越南、韩国、中国台湾、马来西亚，合计占比约85%，中国香港承担转口枢纽功能。\n郭昱同时提醒，需注意加工贸易的统计放大效应：出口主力产地集中在江苏（\nSK海力士\n无锡DRAM厂、三星苏州封测）和陕西（三星西安NAND基地），两省合计占全国\n存储芯片\n出口额八成以上，模式以进料/来料加工为主，“两头在外”。金额计入中国出口，但价值链归属并不等同于国产芯片的全面突破。\n铝\n材出口“量增、价更强”\n从出口量来看，\n汽车\n（包括底盘）、未锻轧\n铝\n及铝材增长显著，液晶平板显示模组、\n家用电器\n稳步增长，前10月出口量同比分别增长49.6%、17.8%、8.9%和8.0%。\n未锻轧铝及铝材的出口用途一般是什么？兰格\n钢铁\n研究中心主任王国清向每经记者拆解，未锻轧铝及铝材是大类海关品名，包含铝锭、铝合金坯料、铝板带、铝型材、铝箔、铝棒等，下游应用集中在几大方向：一是\n新能源\n赛道，光伏支架、储能散热、\n新能源\n汽车\n轻量化结构件、\n电池\n铝箔坯料；二是海外电网、\n电力\n基建，输电铝杆、导电型材；三是包装、3C（\n计算机\n、\n通信\n、\n消费电子\n）\n电子\n、家电、\n汽车\n轮毂；还有一部分用于海外建筑、船舶、通用机械制造等领域。\n出口量显著增加的原因是什么？“前10个月出口量增，且出口额增速明显高于出口量，核心是多重因素共振。”王国清进一步拆解，“第一，海外供给存在刚性缺口。欧美能源成本偏高，本土电解铝复产缓慢，叠加部分区域供应扰动，海外原生铝供给不足，需要从中国采购铝材补缺口；我国铝加工产业链完整、交付稳定，承接了这部分转移订单；第二，全球新能源、轻量化外需持续释放。东南亚、拉美、中东等新兴市场光伏、新能源汽车、电网投资提速，带动铝板带、合金型材需求放量，是增量主力；第三，内外比价驱动出口盈利改善，伦铝价格偏强、内外价差打开窗口，企业出口积极性提升；第四，出口结构升级，高附加值的板带、高端合金占比提升，带动出口均价上行，所以出现‘量增、价更强’的特点，也就是出口额增速远高于出口量增速。”\n新能源汽车、中国家电成海外“新宠”\n与能源密切相关的，还有汽车和家电出口。\n国泰基金基金经理付涵告诉每经记者，根据中汽协数据，10月汽车出口106.6万辆，同比增长60.2%，其中新能源出口60.6万辆、同比增长1.4倍，是核心拉动力。\n受能源危机影响，欧洲能源价格居高不下，当地家庭逐步告别传统燃气锅炉，热泵成为采暖新宠。“用燃气炉一年采暖大概要花2600欧元，换成热泵之后，一年只要700欧元到900欧元，省钱效果非常可观。”海尔大暖通海外热泵总监宋德跃告诉每经记者。\n能源危机也激活了欧洲制冷需求。“眼下欧洲家庭\n空调\n普及率还不足两成，遭遇酷暑天气，订单会骤然爆发。”\n海尔智家\n欧洲暖通副总经理杨海军对每经记者说，“今年夏天曾经接到过追加7万台的急单，国内工厂抓紧排产，为了赶交付直接走中欧班列。”\n热泵产品也存在类似急单，宋德跃介绍，中欧班列运费相比海运几乎翻倍，\n物流\n成本达到热泵货值的10%，“但经销商要赶安装工期，多出来的\n物流\n成本，他们愿意自己承担”。\n摆在欧洲消费者面前的现实困境十分突出：家电买得起，却“装不起、用不起”。\n“用电成本高，人工费贵。\n空调\n买过来一千多欧元，安装费就要1500多欧元。”杨海军感慨，“中国家电企业的创新能力走在世界前列，不仅开发简易安装机型，还把家电和光伏、储能打包为一体化方案。欧洲峰谷电价价差很大，整套方案能实实在在帮用户降低用能负担，当地接受度很高。”\n东南亚、中东、非洲对中国家电的需求同样在增大。“中东、非洲室外温度能冲到五六十摄氏度，普通\n空调\n到那边直接停机。”宋德跃告诉每经记者，“针对风沙、停电频繁等不同的困境，中国家电也都研发出对应的解决方案。”\n支撑还将继续？\n这些支撑出口及制造业增长的品类，后续走势如何？\n集成电路方面，国泰基金基金经理李星全告诉每经记者，价格端，当前涨价预期主要集中在HBM，其余产品合约价后续涨价幅度或收敛至10%左右或个位数百分比。但是由于当前海外厂商长期协议锁定了较多产能，价格波动幅度相较以往周期有所衰减，因此即便后续价格开始回落，过程有望被极大拉长。\n郭昱认为，短期金额仍有支撑，但“量”的弹性有限，2027年增速大概率放缓。数量端3.2%的增速本身就说明，这轮扩张建立在价格周期之上。核心跟踪变量是DRAM/NAND合约价的环比走势，以及301调查在2027年前的实质性进展——\n半导体\n仍是中美贸易摩擦的重点领域，关税不确定性会持续压制下游备货节奏。\n铝材方面，王国清认为，价格方面，铝价是内外盘联动定价，短期大概率维持高位震荡、波动加大格局，单边持续大涨或者大跌的概率都不大。价格核心观察指标是LME（伦敦金属交易所）库存、内外盘价差、海外终端订单持续性。\n“出口走势上，高增很难一直维持，后续大概率从高速增长转向韧性增长、结构分化；有利支撑包括，全球光伏、\n新能源车\n、\n电力\n基建的中长期需求没有逆转，新兴市场空间还在；国内加工配套优势短期内难以替代。风险点则在于，一是海外本土铝产能逐步修复后，缺口收窄，订单会回落；二是欧美贸易壁垒持续加码，反倾销、碳边境相关规则抬升门槛；三是一旦内外价差收窄甚至倒挂，出口利润压缩，企业出口意愿会快速回落。”\n王国清进一步从结构上分析，“低端初级铝坯出口容易随价差波动；光伏、\n新能源车\n、储能配套的高端板带、特种合金型材，需求韧性更强，会成为出口的核心增量方向。整体来看，出口将继续是国内铝产业重要的需求缓冲池，但很难持续维持前10月接近18%的高增速”。\n汽车出口方面，付涵认为，往后看，新能源产品力与成本优势尚未被替代，中欧电动汽车案“软着陆”也降低了欧盟市场的政策不确定性，汽车“出海”的支撑因素仍在。但需注意三个约束：一是基数效应，根据中汽协数据，2026年前10个月出口累计927万辆，高基数下同比增速可能收敛；二是贸易壁垒与本地化要求抬升，欧盟关税、多国本地制造门槛正在压缩纯整车出口的边际空间；三是2027年4月1日新能源汽车增值税出口退税率下降，可能会影响出口。\n“总体来看，后续出口的增量将更多来自‘体系出海’而非单纯产品外销，具备海外产能布局、售后与合规能力的企业更占优，纯依赖国内整车出口的车企面临的不确定性更大。”\n家电方面，预计海外市场需求仍将持续。宋德跃告诉每经记者，“据欧洲热泵协会测算，预计到2030年，欧洲热泵市场年复合增长率可达15%~18%”。\n（文章来源：每日经济新闻）",
+      "text_hash": "ffec48ceac157c536f530c5f3bf2526626d2a33af7c51beb2a432a736edb4939",
+      "fetched_at": "2026-11-18T15:08:08.289310+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933898595.html",
+      "published_at": "2026-11-18T13:51:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:08:08.289330+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933898595.html",
+        "checked_at": "2026-11-18T15:08:08.289330+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:51"
+      }
+    },
+    "6a6db326694c1aae62535a457805aefd5c6a39b22ee828286681ba6a3d42b959": {
+      "url": "https://finance.eastmoney.com/a/202611183933895083.html",
+      "status": "complete",
+      "full_text": "减负有力度服务有温度让企业轻装上阵谋发展\n——国务院减轻企业负担部际联席会议办公室负责人就减轻企业负担工作答记者问\n近日，第十五届全国减轻企业负担政策宣传周活动启动。围绕今年以来减轻企业负担工作成效、2026年全国企业负担调查报告、本届宣传周活动安排以及2027年减负工作谋划等话题，国务院减轻企业负担部际联席会议办公室负责人接受了记者书面采访。\n一、今年以来，国务院减轻企业负担部际联席会议围绕落实党中央、国务院决策部署开展了哪些工作，取得了什么成效？\n党中央、国务院高度重视减轻企业负担工作。今年以来，联席会议各成员单位组织各地区落实落细2026年全国减轻企业负担工作实施方案确定的各项任务，为激发经营主体活力、稳定宏观经济运行、实现“十五五”良好开局提供了有力支撑。可以说，减的是负担，增的是信心，添的是动力，稳的是预期。今年前三季度，国内生产总值同比增长4.6%，规模以上工业增加值增长5.3%，高技术制造业增加值同比增长14.3%；前8个月全国新设经营主体1550.2万户，市场活力持续增强。成效主要体现在三个方面：\n一是聚焦深化惠企政策落实，助力企业降本增效取得新成效。\n减税降费政策红利持续释放，财政部、税务总局等部门认真落实研发费用税前加计扣除、高新技术企业所得税优惠等结构性减税降费政策，上半年支持科技创新和制造业发展的主要政策减税降费及退税达1.91万亿元。金融支持实体经济力度不断加大，金融监管总局持续深化支持小微企业融资协调工作机制，三季度末普惠型小微企业贷款余额38.83万亿元，同比增长6.37%，高于各项贷款增速1.46个百分点；中国人民\n银行\n、工业和信息化部、国家发展改革委等不断提升金融支持\n新型工业化\n的强度和精度，指导主要\n银行\n做好制造业重点项目清单服务对接，三季度末本外币工业中长期贷款余额同比增长5.6%。全社会\n物流\n成本稳步下降，国家发展改革委、\n交通运输\n部联合印发《\n物流\n网建设实施方案》，深化“一单制”“一箱制”试点，前三季度社会\n物流\n总费用与GDP的比率降至13.8%，比上年同期回落0.2个百分点，全社会物流成本节约超过2100亿元。\n二是聚焦规范涉企行政行为，营商环境建设取得新进展。\n《行政执法监督条例》自今年2月1日起施行，涉企执法监督步入法治化轨道。规范涉企行政执法专项行动圆满收官，一年来全国共查纠涉企行政执法突出问题6.6万多件，为企业挽回经济损失307亿元，行政检查总量同比下降34%，查处违规收费案件5900多件、退还企业13亿多元。公安部组织全国公安机关开展规范涉企执法专项行动，共查纠涉企执法问题5.7万个，累计解除查封财物价值13.8亿元、返还扣押资金22.2亿元，依法变更或者解除冻结账户19.9万个、释放资金89.8亿元。市场监管总局牵头开展清理规范涉企收费政策措施专项行动，接续开展反垄断执法护企专项行动。国家发展改革委完善企业信用状况\n综合\n评价体系，健全信用修复制度。财政部建立地方财政补贴负面清单管理机制，接续开展政府采购违法违规行为专项整治。民政部加强行业协会商会会费收费监管。调查显示，反映制度性交易成本负担重的企业占比较上年下降5个百分点。\n三是聚焦企业“急难愁盼”，帮扶企业工作水平实现新提升。\n工业和信息化部深入推进加快加力清理拖欠企业账款行动，建好用好全国违约拖欠中小企业款项投诉平台，多措并举提高清偿质量、坚决遏制新增拖欠。国务院国资委督促中央企业带头不违约拖欠、带头及时支付，严禁新开6个月以上账款凭证。海关总署会同有关部门深入开展2026年跨境贸易便利化专项行动，出台29项便利化措施，持续释放企业主动披露政策红利。工业和信息化部、国家发展改革委、国务院国资委等部门健全常态化政企沟通交流机制，定期召开制造业企业座谈会、中小企业圆桌会、民营企业座谈会，针对企业反映的问题诉求形成清单台账、逐项推动解决。联席会议办公室组织开展全国企业负担调查，继续开展“服务企业在基层”典型案例征集，促进地区间、部门间交流互鉴。这些工作把服务送到企业身边，让企业有了更多实实在在的获得感。\n二、本次宣传周发布了2026年全国企业负担调查报告。从调查情况看，当前企业负担有哪些新变化？企业还面临哪些困难问题？\n近期，国务院减轻企业负担部际联席会议（以下简称联席会议）委托第三方机构对工业企业负担情况进行了调查评估。调查显示，今年以来，结构性减税降费政策红利持续释放、要素成本稳中有降、涉企收费和执法行为趋于规范，企业负担总体感受有所减轻。但受地缘冲突导致的关键海运通道受阻、员工薪酬社保刚性上涨等因素影响，企业原材料和人工成本负担感受较上年有所加重。同时，企业还反映资金流动性紧张、部分领域产业链供应链稳定压力较大、有效需求不足、惠企政策服务“下沉”不够等问题，亟待统筹协调解决。\n一是减负政策效应持续显现，企业成本负担感受总体减轻。\n今年以来，各有关部门和地区持续落实结构性减税降费政策，规范涉企收费和行政执法行为，取得积极成效。国家在延续“十四五”期间大规模减税降费的基础上，进一步提升政策精准性，上半年现行支持科技创新和制造业发展的主要政策减税降费及退税1.91万亿元。涉企收费治理从“运动式清理”转向“制度化约束”，涉企收费目录清单实现全覆盖，“清单之外无收费”，多头检查、重复检查和趋利性执法的制度性摩擦大幅下降，企业办事便利化水平有效提升。调查显示，反映负担总体感受重的企业占比较上年下降4个百分点，物流、用能、制度性交易等成本负担感受均不同程度减轻。\n二是融资成本负担感受减轻，但资金流动性紧张问题较为突出。\n今年以来，央行下调各类结构性货币政策工具利率0.25个百分点，单设1万亿元民营企业再贷款，科技创新和技术改造再贷款额度扩至1.4万亿元，社会融资成本总体保持下降趋势，9月企业新发放贷款加权平均利率较上年同期降低约0.2个百分点。调查显示，反映融资成本负担感受重的企业占比较上年下降10个百分点。虽然融资成本总体保持下降趋势，但企业现金流压力仍然较大。调查显示，近四成的企业反映资金流动性紧张，采购成本激增、销售收入减少、应收账款回款期较长是造成资金紧张的主要原因。\n三是原材料、人工成本负担有所加重，部分领域产业链供应链稳定压力较大。\n今年以来，国际原油价格大幅上涨，石化产业链成本自上而下传导并扩散到关联行业，同时\n人工智能\n与算力需求爆发带动“算力金属”、\n存储芯片\n、\n电子\n元器件价格大幅上涨，相关企业成本负担加重。调查显示，反映原材料成本负担重的企业占比较上年上升5个百分点。社保费用、住房公积金（“五险一金”）成本增加和职工薪酬增长等因素加重企业人工成本负担。调查显示，反映人工成本负担感受重的企业占比较上年上升2个百分点。部分企业反映，霍尔木兹海峡等\n航运\n持续受阻影响硫磺、化肥等关键产品供给，\n人工智能\n与算力需求爆发造成部分\n电子\n材料供应紧张，产业链供应链稳定压力加大。\n四是国内有效需求不足，政策服务下沉不够。\n调查显示，超五成的企业反映有效需求不足是当前面临的最突出问题。部分企业拿不到足够订单，导致开工率下降、库存压力上升，但厂房设备折旧、人员薪酬、仓储费用、租金和财务费用等刚性支出仍居高不下，企业生产经营负担加重。调查显示，惠企政策“免申即享”覆盖面仍需扩大，政策兑现便利度有待提升；调查中还有企业反映，有的惠企服务还停在表面，“运动式”服务居多，一企一策精准帮扶还不够到位。\n三、全国减轻企业负担政策宣传周已连续举办多届，是减负战线服务企业的重要品牌。请问本届宣传周有哪些重点安排，组织上有哪些特点？\n全国减轻企业负担政策宣传周活动已连续举办十五届。本届宣传周通过信息发布、在线访谈、现场咨询、政策巡讲、地方集中宣传等多种形式开展全面宣传，总的要求是既要把政策讲清楚，更要把问题解决好，让宣传周既“有声”更“有为”。重点是以下三点：\n一是主动靠前服务。\n把负担调查和日常走访发现的问题作为宣传周服务企业的重点，集中解决一批政策知晓度不高、落实不到位的问题，核实处理一批企业反映的乱收费、乱罚款、乱检查等突出问题，加大科技创新、数智化转型等政策支持力度，帮助企业解难题提质效。\n二是改进宣传方式。\n组织政策制定部门、执行部门和服务机构深入园区、走进企业，统筹用好政务网站、中小企业服务平台和新媒体，以企业听得懂、用得上的方式讲政策、讲流程、讲案例，并运用\n人工智能\n等新技术手段，让惠企政策找得到、看得懂、用得上。\n三是加强协同配合。\n注重发挥各方合力，引导各成员单位、各地区结合实际开展走基层、走园区等形式多样的政策宣传活动，组织好“工信厅长谈减负”系列访谈活动，动员协会、专家等社会力量广泛参与，共同营造关心实体经济、帮扶企业发展的舆论氛围。\n四、本次宣传周发布了“服务企业在基层”典型案例集，这已是连续第三年发布。请问今年的案例征集各地区有哪些新亮点？\n今年的典型案例征集重点围绕“降成本、优环境、强服务”，鼓励聚焦当前企业反映较为强烈的突出问题，找准“小切口”着力推动解决；优先推荐在制度设计、政策支持、服务模式等方面具有首创性、突破性的典型案例，引导各地区互学互鉴，因地制宜创新方式方法，不断提高企业服务能力和水平，全方位、全周期、全链条服务企业发展。\n案例征集工作启动后，各地区积极响应，申报和推荐了一批好经验、好做法。经专家评审并向社会公示，共确定十佳案例和90个优秀案例。入围案例围绕协调生产要素保障、优化企业营商环境、畅通产业链供应链等方面，坚持问题导向，从细节入手、向痛点发力，切实回应和解决了企业各类急难愁盼问题。比如，在协调生产要素保障方面，成都市锦江区人民政府聚焦企业反映强烈的员工“租房难、租房贵、短租无门”三大痛点，以改革思维将住房配套从“福利品”转化为“生产要素”，创新构建“一张床、一间房、一套房”梯次化住房保障体系，匹配“一线员工普惠安居、企业骨干定向配租、领军人才择优配供”三层精准供给，全覆盖员工“过渡周转—成长安居—深度扎根”全生命周期居住需求，真正实现“入职即入住、成长有升级、扎根有保障”。在优化企业营商环境方面，扬州市工业和信息化局针对中小企业惠企政策“信息分散、多头申报、资料繁琐、到账延迟”等堵点，建设“一企来办·易申报”平台，重塑政策归集、申报、审核、兑付、服务全过程，实现全市一个平台查询政策、申报项目、兑现资金，政策兑现“一网通办”“直达快享”。在畅通产业链供应链方面，杭州海关联合地方政府在原有“\n一带一路\n”海运、\n铁路运输\n通道基础上，打通TIR国际公路运输新通道，实现出口货物从国内工厂到欧洲目的地“一次申报”“一车直达”“一证到底”，并创新叠加“TIR+市场采购”“TIR+\n跨境电商\n”“TIR+保税”等模式，为企业降低运输风险、拓展业务领域、压缩物流成本提供有力支撑。\n这些案例都是来自基层一线的鲜活实践，可复制、可推广。希望通过典型案例的宣传推广，促进地区间、部门间交流互鉴，带动更多地方把服务送到企业身边，把问题解决在企业门口。\n五、2027年是实施“十五五”规划承上启下的重要一年，请问联席会议对下一步减轻企业负担工作有哪些部署和安排？\n当前外部环境复杂多变，国内供强需弱矛盾突出，不少受访企业反映国内有效需求不足；一些领域账款拖欠问题仍然突出，乱收费、乱罚款、乱检查等问题在个别地方和领域仍有发生，政策落实“最后一公里”仍需打通。企业的困难在哪里，减负工作的着力点就在哪里。联席会议将围绕中心、服务大局，重点做好三个方面工作：\n一是围绕降本增效，进一步完善惠企减负政策运行机制。\n保持适当的减税降费力度，加快明确到期政策后续安排，让惠企政策接续有力、企业预期稳定可期。支持工业大省挑大梁，持续加大科技创新和先进制造业发展支持力度。发展供应链金融。进一步推进有效降低全社会物流成本，到2027年社会物流总费用与GDP的比率力争降至13.5%左右。深化“高效办成一件事”改革，持续降低制度性交易成本。\n二是围绕规范涉企事项和法治建设，进一步优化企业发展环境。\n推动全国\n统一大市场\n建设条例出台实施，完善民营经济促进法配套法规政策，加快推进价格法修订，从法律和制度上保障各类企业平等使用生产要素、公平参与市场竞争、有效保护合法权益。落实涉企收费违法违规行为处理办法，推进“\n综合\n查一次”等联合执法方式，切实将涉企行政行为关进制度的笼子，让企业放下包袱、轻装前行。\n三是围绕提升服务企业水平，进一步健全企业\n综合\n服务体系。\n全面实施《促进中小企业发展“十五五”规划》，实施优质企业梯度培育、大中小企业协同融通发展、中小企业融资促进三年行动方案。推动人工智能与企业服务深度融合，扩大“免申即享”覆盖面，推行“一企一策”精准帮扶，变“企业跑腿”为“部门跑腿”。印发实施《涉企服务提升工作指引（试行）》，指导地方持续健全企业综合服务体系。\n（文章来源：工信微报）",
+      "text_hash": "0c41d6859750944459d394cc7b7532aecdfdb0724e90cbcb15a6d89d7603fb15",
+      "fetched_at": "2026-11-18T15:08:29.634076+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933895083.html",
+      "published_at": "2026-11-18T12:15:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:08:29.634095+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933895083.html",
+        "checked_at": "2026-11-18T15:08:29.634095+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 12:15"
+      }
+    },
+    "cf53ed552a8476a2a130e60364ffbff402fba6c3b1823424fa037c34be0ac240": {
+      "url": "https://finance.eastmoney.com/a/202611183933900348.html",
+      "status": "complete",
+      "full_text": "21财经11月18日电，\n泰和新材\n在投资者关系活动中表示，芳纶新增应用方面，\n新能源\n围绕电车，\n电池\n是一方面，还有复合材料，即安全解决方案；第二个方向是建筑方面的安全屋；此外还有\n电子\n信息产业，类似\nPCB\n等。\n（文章来源：南方财经网）",
+      "text_hash": "37d07593970e596605df7fe7dc88fe1ef4a952f23b9b5a2466f878ecf07ee750",
+      "fetched_at": "2026-11-18T15:08:50.168277+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933900348.html",
+      "published_at": "2026-11-18T13:56:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:08:50.168298+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933900348.html",
+        "checked_at": "2026-11-18T15:08:50.168298+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:56"
+      }
+    },
+    "626ef702e1d2470a35e3b6a7c59cf53a12baf86e12dde60740f9ec79a08971b2": {
+      "url": "https://finance.eastmoney.com/a/202611183933900797.html",
+      "status": "complete",
+      "full_text": "21财经11月18日电，\n泰和新材\n在投资者关系活动中表示，公司芳纶体量大，不仅高端要做，低端也要做。靠低端压制别人，靠高端来赚钱，这是大方向。同时，国内市场市占率很高了，但是国外还不高，要往外走。\n（文章来源：南方财经网）",
+      "text_hash": "dc4d6ce0503477a1fe5a646aff2e890eed2bdf871845f23c7936a719ecc93c42",
+      "fetched_at": "2026-11-18T15:09:11.308608+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933900797.html",
+      "published_at": "2026-11-18T13:54:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:09:11.308628+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933900797.html",
+        "checked_at": "2026-11-18T15:09:11.308628+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:54"
+      }
+    },
+    "5de2502fb734fb2ec6e030931078038021d29e0caf00329aad6263e131fc9b7e": {
+      "url": "https://finance.eastmoney.com/a/202611183933899894.html",
+      "status": "complete",
+      "full_text": "【导读】昨日股票ETF资金净流入约160亿元\n11月17日，A股主要股指呈现宽幅震荡走势，\n半导体\n板块逆市上涨。全市场股票ETF资金净流入达160亿元，其中，宽基ETF“吸金”超191亿元，沪深300指数、创业板指数、\n中证500\n指数、中证1000指数等相关宽基ETF产品成为“吸金”主力。\n昨日股票ETF资金净流入达160亿元\n11月17日，上证指数跌0.5%，\n半导体\n板块局部走强，\n银行\n、保险等板块同样涨幅领先，\n传媒\n、光伏、地产等板块跌幅靠前。\n11月17日，全市场股票ETF（含跨境ETF）资金净流入达160亿元。\n从大类型来看，上一交易日，宽基ETF与港股市场ETF净流入居前，分别达191.56亿元与8.63亿元。\n具体到指数维度，11月17日，沪深300指数相关ETF单日净流入居前，达115.76亿元。从5日角度观测，近期资金流入沪深300指数相关ETF超159亿元，流入创业板指数相关ETF超98亿元。\n头部基金公司方面，昨日，易方达基金ETF最新规模达7089.6亿元。其中，沪深300ETF易方达规模为1045.82亿元，净流入19.42亿元；创业板ETF易方达规模为1081.33亿元，净流入15.21亿元；证券保险ETF易方达规模为144.01亿元，净流入1.97亿元；中概互联网ETF易方达规模为350.42亿元，净流入1.94亿元；成长ETF易方达规模为59.40亿元，净流入1.35亿元。\n华夏基金ETF方面，上一交易日，沪深300ETF华夏和\n恒生科技ETF\n华夏单日净流入居前，分别为26.87亿元和11.57亿元，最新规模分别为704.9亿元和366.29亿元，对应跟踪指数近一月日均成交额分别为20.72亿元和23.32亿元；恒生互联网ETF华夏净流入超4亿元。\n南方基金宽基ETF方面，中证A500ETF南方单日净流入1.15亿元，近1月净流入47.62亿元，当前规模为333.37亿元；中证1000ETF南方单日净流入17.75亿元，近1月净流入252.69亿元，当前规模为443.95亿元；\n中证500\nETF南方单日净流入24.39亿元，近1月净流入238.01亿元，当前规模为597.68亿元。\n主题ETF方面，红利低波50ETF南方单日净流入3.23亿元，近5日净流入4.73亿元，近1月净流入4.27亿元，当前规模为213.06亿元；科创材料ETF南方单日净流入0.29亿元，近5日净流入0.35亿元；创业板\n人工智能\nETF南方近5日净流入0.51亿元；科创芯片ETF南方近5日净流入0.47亿元；\n银行\nETF南方近5日净流入0.63亿元，近1月净流入0.98亿元；金ETF南方5日净流入0.10亿元，近1月净流入0.47亿元。\n沪深300指数、创业板指数、\n中证500\n指数、中证1000指数等\n宽基ETF产品成为“吸金”主力\n11月17日，沪深300ETF华泰柏瑞、创业板ETF广发、沪深300ETF华夏、中证500ETF南方、沪深300ETF易方达、中证1000ETF南方、沪深300ETF嘉实等多只宽基ETF产品资金净流入居前。\n与此同时，多只红利低波ETF、券商ETF、\n机器人\nETF、\n传媒\nETF等热门主题ETF资金净流出居前。\n展望后市，国泰基金表示，总体来看，当前位置已经具备一定修复条件，但要形成较大力度的修复仍需要新增产业催化、盈利预期改善及资金重新形成正反馈。配置机会上，重点在“微观结构健康”+“预期能够上修”的方向，考虑维持“AI主线+风格适度平衡”的策略，以震荡筑底中的结构性修复为主。事件端关注\n新能源\n与\n创新药\n，\n黄金\n股逢调整考虑做配置，红利或可逐步止盈，关注央企地产、\n军工\n等品种和\nAI应用\n等主题。\n博时基金表示，后市A股以震荡消化为基准判断，结构重于方向。配置上，“杠铃”框架仍具有合理性：一端以\n银行\n、\n公用事业\n、\n煤炭\n等红利资产作为防御底仓，对冲海外利率与风险偏好收缩；另一端科技方向需从“超跌博弈”转向“出清验证”，优先观察国产算力、\n半导体\n设备材料等与海外资本开支叙事关联度较低的环节，等待筹码与资金面的边际信号同步改善后再作考量，而非在负反馈进程中左侧布局。整体以控制仓位暴露应对磨底期的不确定性。\n（文章来源：中国基金报）",
+      "text_hash": "5d7dfc97adfb06b2070b2cd389e4aa88d5ded9d59d25ddaeb4c28ef8f3eeeca0",
+      "fetched_at": "2026-11-18T15:09:31.021583+08:00",
+      "extraction_method": "html:#ContentBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.eastmoney.com/a/202611183933899894.html",
+      "published_at": "2026-11-18T13:53:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:09:31.021603+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.eastmoney.com/a/202611183933899894.html",
+        "checked_at": "2026-11-18T15:09:31.021603+08:00",
+        "method": ".infos > .item",
+        "source_value": "2026年11月18日 13:53"
+      }
+    },
+    "d9b2e60825e852bcb37fbaafe2d488f26ee1207d530df9ca599e69795fab99c4": {
+      "url": "https://www.etoday.co.kr/news/view/2649561",
+      "status": "complete",
+      "full_text": "▲엔비디아 로고 (로이터연합뉴스)\n젠슨 황 최고경영자(CEO)가 물러난 뒤 처음 공개된 엔비디아 분기 실적이 시장 예상을 상회했다. 차후 분기 및 내년 실적도 긍정적으로 제시했다. 이에 시간 외 거래에서 주가는 2% 안팎의 강세를 띠고 있다.\n17일(현지시간) 블룸버그통신에 따르면 엔비디아는 이날 뉴욕증시 마감 후 2027 회계연도 3분기(8∼10월) 매출이 전년 동기 대비 103%, 전분기보다 20% 늘어난 1158억달러(약 155조원)라고 공시했다.\n이는 시장조사기관 런던증권거래소그룹(LSEG)이 집계한 시장 전망치 1091억달러를 웃돈다. 이로써 엔비디아는 2023년 5~7월부터 14분기 연속으로 사상 최대 매출 기록을 경신했다.\n같은 기간 일회성 비용 등을 조정한 주당순이익(EPS)도 2.68달러로, 월가 예상치인 2.47달러보다 높았다. 순이익은 653억달러로 105% 급증했다. 매출과 이익 모두 시장의 눈높이를 넘어선 것이다.\n호실적의 주요 배경은 그래픽처리장치(GPU) 등 AI 데이터센터 반도체 판매가 급증한 것이다. 실제 해당 매출은 1076억달러를 기록해 전체 매출의 약 93%를 차지했다. 성장률도 전년 동기 대비 110%, 직전 분기 대비 21%에 이른다. 3분기에 시작된 차세대 연산 플랫폼인 ‘베라 루빈 NVL72’의 양산과 출하가 시작된 영향이 주효했다는 분석이다.\n콜레트 크레스 엔비디아 임시 최고경영자(CEO)는 “베라 루빈은 폭발적인 출발을 했고, 계획은 정상 궤도에 있다”며 구글·마이크로소프트(MS)·오라클·코어위브·네비우스 등에서 이미 해당 시스템이 가동 중이라고 강조했다.\n자동차나 로봇 등 피지컬AI 기기용 제품인 ‘에지 연산’ 부문 매출은 전년보다 42%, 전분기보다 14% 증가한 82억달러로 집계됐다.\n다음 분기도 가파른 성장세를 예고했다. 4분기 매출은 1300억달러(±3%)가 될 것이라고 전망했다. 애널리스트들의 평균 예상치는 1253억달러였다. 단 회사는 이 전망에 중국에서 발생하는 데이터센터용 반도체 매출을 반영하지 않았다고 설명했다.\n블룸버그는 이번 실적과 전망이 최근 몇 주간 주가 하락으로 불안해진 투자자들에게 안도감을 줬다고 평가했다. 엔비디아 주가는 이날 뉴욕증시 마감 후 시간외거래에서 2% 안팎의 강세를 띠고 있다. 정규장에서는 0.44% 하락 마감했다.\n이번 실적 발표는 콜레트 크레스 임시 CEO 겸 최고재무책임자(CFO)가 진행했다. 엔비디아 창립 이래 33년 만에 처음으로 황 전 CEO 없이 이뤄진 것이다. 앞서 황 전 CEO는 중국 스파이로 의심받는 인물인 앨리스 황을 포함해 잇따른 혼외 관계가 드러난 이후 12일 사임했다.\n크레스는 2028 회계연도 매출이 전년 대비 약 75% 증가할 것으로 예상했다. 엔비디아는 8월 실적 발표 자리에서 해당 연도 매출 증가율을 70%로 전망했는데 이를 상향 조정한 것이다. 엔비디아의 현 회계연도는 2027년 1월 말에 끝난다. 따라서 이번 75% 성장 전망은 2028년 1월 말에 끝나는 회계연도를 지칭한다.\n크레스는 “사업 측면에서는 평소와 다름없이 운영되고 있다”며 “고객, 공급업체, 파트너들과 소통하고 있으며, 모두 우리를 전적으로 지지하고 있다”고 말했다. 그는 또 “현재 우리가 직면한 수요와 추가로 확보한 공급 물량 모두에 자신이 있다”고 언급하기도 했다.\n그러면서 그는 “계속 증가하는 수요와 다양한 고객에게 제공할 수 있는 추가 공급 물량을 면밀히 검토하는 데 많은 시간을 들였다”면서 “이 두 가지가 맞물려 성장 기회가 계속 확대되고 있다”고 덧붙였다.",
+      "text_hash": "91d3a5bf27db0fa8ed6ad18882c25aae570241b68a2187eba4dbd9e2ec0e23fc",
+      "fetched_at": "2026-11-18T15:09:53.050942+08:00",
+      "extraction_method": "html:[itemprop=\"articleBody\"]",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.etoday.co.kr/news/view/2649561",
+      "published_at": "2026-11-18T07:55:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:09:53.050985+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.etoday.co.kr/news/view/2649561",
+        "checked_at": "2026-11-18T15:09:53.050985+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:55:00+09:00"
+      }
+    },
+    "493ecfe00c6d1cdb78eb0bfe147399427693bd1a7ae4a1081300126767042cc8": {
+      "url": "https://www.thehindu.com/news/morning-digest-november-18-2026/article71714311.ece",
+      "status": "complete",
+      "full_text": "Ex-Nvidia CEO Jensen Huang acknowledges ‘mistakes,’ signals interest in return if company chooses Former Nvidia CEO Jensen Huang has signalled his interest in returning to lead the AI computer chip company in his first public statement since he abruptly left the company last week following revelations of an extramarital affair with an alleged Chinese spy. “If the Board of Directors decides that my return is in the best interest of our shareholders, our employees, the company, and America, I would be honoured to answer these calls and return as CEO,” he said in a social media post. Ex-Nvidia CEO Jensen Huang acknowledges ‘mistakes,’ signals interest in return if company chooses storyline 1 World needs peace, stability, predictability: Modi in Manila Prime Minister Narendra Modi on Tuesday (November 17, 2026) called for “peace, stability, and predictability” in the world as he attended the ASEAN-India Summit, the East Asia Summit, and the Quad Leaders’ Summit in Manila, Philippines. He made a number of proposals aimed at maritime security, protecting critical minerals supply chains, and enhancing trade. The Quad Summit, which was being held for the first time in a non-member country, was hosted by U.S. President Donald Trump and was also attended by Australian Prime Minister Anthony Albanese and Japanese Prime Minister Sanae Takaichi, apart from Mr. Modi. The leaders issued a joint statement opposing economic and maritime “coercion” in the Indo-Pacific, and Mr. Modi announced that India would host the first Quad Business Forum in Mumbai in 2027. World needs peace, stability, predictability: Modi in Manila storyline 1 Prince William says Gen Z is the torchbearer of the global movement for change Young people from around the world are not waiting for someone else to find the solution, they are the torchbearers of the global movement for change, Britain’s Prince William said in Mumbai on Tuesday (November 17, 2026). He was speaking at the 2026 Earthshot Prize Awards Ceremony, which was held in India for the first time. “India is a nation of extraordinary innovation and ambition, facing immense environmental pressures, yet moving ahead with determination. Not because the challenge is simple, not because the path is easy. But because millions of people have decided that progress simply cannot wait,” said Prince William. Prince William says Gen Z is the torchbearer of the global movement for change storyline 1 Congress-SP talks on U.P. seat-sharing deferred after Rahul Gandhi and Akhilesh meet A meeting that had been scheduled for Tuesday (November 17, 2026) for the Congress and the Samajwadi Party (SP) to discuss seat-sharing in the Uttar Pradesh Assembly elections has been deferred following talks between the top leadership of the two parties. No fresh date has been set for the meeting, with sources saying that it is expected to take place “in a few days”. Sources indicated that the Leader of Opposition in the Lok Sabha, Rahul Gandhi, and SP president Akhilesh Yadav had a word on the sidelines of the launch event of Congress Parliamentary Party chairperson Sonia Gandhi’s memoir, Belonging: A Journey of Love, held in Delhi on Monday (November 16). Congress-SP talks on U.P. seat-sharing deferred after Rahul, Akhilesh meet storyline 1 Nearly 75 lakh names added to draft SSR voter lists in 13 States and UTs Months after final voter lists were published following the contentious special intensive revision (SIR) of electoral rolls, nearly 75 lakh more names have been added in draft voter lists published in 13 States and Union Territories via a special summary revision process (SSR). The combined size of the electorate in these States before the SIR was 49.61 crore, which shrunk to 45.22 crore after the SIR and has now increased to 45.96 crore in the draft SSR list. This means there has been a cumulative increase of 1.64 %. Nearly 75 lakh names added in draft SSR voters lists in 13 States and UTs storyline 1 Thirupparankundram row: T.N. government pushes for stay of High Court order to avoid breach of peace The Tamil Nadu government urged the Supreme Court on Tuesday to stay a Madras High Court decision of January 2026 which confirmed its earlier order to the Arulmigu Subramaniswamy Temple devasthanam or management body to light the Karthigai Deepam on a stone pillar located atop the Thirupparankundram Hill. The Division Bench of the High Court in January had upheld the earlier Single Judge order, while brushing aside fears expressed by the State that such an action would be a sure recipe for “disturbance of public tranquility and peace”, given the fact that the stone pillar was proximate to a dargah. The High Court had dismissed the fears as an “imaginary ghost”. Thirupparankundram row: T.N. govt pushes for stay of HC order to avoid breach of peace storyline 1 Opposition, OBC group voice concerns on 287 ‘other’ religions in the Census Opposition leaders and the All India Other Backward Classes Students’ Association on Tuesday (November 17, 2026) raised questions about the way in which the 2027 Census is being conducted, reacting to The Hindu’s report on the self-enumeration portal listing as many as 287 options in a drop-down box for “Other” religions, including ‘ISKCON’, ‘Ramkrishna Paramhansa’, Shia, Sunni, and ‘Pentacostal’. This list vanished from the portal within hours of The Hindu’s queries about it, posed to the Union Ministry of Home Affairs.   Opposition, OBC group voice concerns on 287 ‘other’ religions in the Census storyline 1 India cannot dictate terms on Hasina’s return to Bangladesh: PM’s adviser Bangladesh Prime Minister Tarique Rahman’s Information Adviser Zahed Ur Rahman on Tuesday (November 17, 2026) said that India or any other country could not dictate terms over deposed Prime Minister Sheikh Hasina’s return home. “Neither India nor any other country can dictate terms on this,” Mr. Zahed said during a media briefing when asked for comments on a media report saying New Delhi had hinted at two conditions for handing over Hasina. India cannot dictate terms on Hasina’s return to Bangladesh: PM’s adviser storyline 1 U.K. hands NATO-assigned American soldier accused of Russia spying to U.S. A senior American soldier assigned to NATO who was arrested in Britain last week on suspicion of spying for Russia has been transferred to U.S. military custody, U.K. police said on Tuesday (November 17, 2026). The espionage case, the latest involving suspected Kremlin agents in Britain and elsewhere in Europe, comes amid heightened tensions between Moscow and various European capitals after Russia’s 2022 full-scale invasion of Ukraine. A U.S. Army official has named the detained soldier as 41-year-old Lieutenant Colonel Brandon Tyner. U.K. hands NATO-assigned American soldier accused of Russia spying to U.S. storyline 1 Russian military transport plane crashes in Siberia, killing 19: Defence Ministry A Russian military transport plane crashed in western Siberia on Tuesday (November 17, 2026), killing all 19 people on board, the Defence Ministry said. Preliminary findings pointed to equipment failure. The An-12 aircraft went down in an unpopulated area near the city of Kemerovo, about 3,000 kilometres (about 1,860 miles) east of Moscow. Air force experts were investigating the cause of the crash. The An-12 typically has a crew of six. Russian military transport plane crashes in Siberia, killing 19: Defence Ministry storyline 1 Bangladesh connects first nuclear power plant to national grid Bangladesh’s first nuclear power plant at Rooppur in the country’s northwest Pabna district began supplying electricity to the national grid on a trial basis on Tuesday (November 17, 2026), according to officials. The 2,400 MW Russian-assisted facility is expected to meet more than 10% of Bangladesh's electricity demand once fully operational, helping the country diversify its energy sources. Bangladesh connects first nuclear power plant to national grid storyline 1 Ukraine strikes major Russian bridge with drones and missiles as aerial attacks escalate Ukrainian drones and missiles struck a vital bridge linking Russia to the occupied Crimean Peninsula, Ukrainian President Volodymyr Zelenskyy said on Tuesday (November 17, 2026), calling it an “unprecedented” operation as Russia reported that its forces downed a record number of Ukrainian drones for the second straight day. Ukraine strikes major Russian bridge with drones and missiles as aerial attacks escalate storyline 1",
+      "text_hash": "291910612d2bf90a285e7bb6abf0a0cd16601f36486e0a591223f0f5b2e84e1e",
+      "fetched_at": "2026-11-18T15:10:13.663648+08:00",
+      "extraction_method": "jsonld_articleBody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.thehindu.com/news/morning-digest-november-18-2026/article71714311.ece",
+      "published_at": "2026-11-18T08:49:17+08:00",
+      "published_at_verified_at": "2026-11-18T15:10:13.663667+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.thehindu.com/news/morning-digest-november-18-2026/article71714311.ece",
+        "checked_at": "2026-11-18T15:10:13.663667+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T06:19:17+05:30"
+      }
+    },
+    "9017bce92d54d9637faa24c7e2c0523067f7925911dc0ac01651386c3b70416c": {
+      "url": "https://www.beursduivel.be/Nieuws/885559/Wall-Street-sluit-lager-in-aanloop-naar-cijfers-Nvidia.aspx",
+      "status": "unavailable",
+      "reason": "restricted_article",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "38fca686a5b767b72cf6dd12ec53e32171fc7843c4f86429f0f8d9ea4747f5c4": {
+      "url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexi1216746.shtml",
+      "status": "complete",
+      "full_text": "专题：中长期盈利预期向好 机构：具备阶段博弈反弹条件\n来源：中国基金报\n原标题：集体公告，停牌1小时\n【导读】多家基金公司发布旗下QDII产品停牌公告\n中国基金报记者 闫军\n11月17日晚间，海外ETF溢价公告再次密集发布。据记者统计，当晚有超过20只QDII ETF发布了高溢价风险提示公告。其中，有近10只ETF在提示风险的同时公告称，因二级市场出现较大幅度溢价，11月18日开市起停牌一小时，自10\n：\n30起复牌。\n20多只产品提示高溢价风险\n近10只停牌一小时\n从公告来看，易方达、华安、博时、华泰柏瑞、景顺长城、大成、国泰、华夏、广发、汇添富、嘉实、招商、南方等十余家基金公司旗下QDII基金出现高溢价风险，涵盖了纳指ETF、纳斯达克ETF、标普500ETF、中韩半导体ETF、美国50ETF以及全球半导体芯片等行业主题ETF。\n20余份公告的落点高度一致，均称旗下产品“二级市场交易价格明显高于基金份额参考净值（IOPV）”，出现较大幅度溢价，并提醒投资者审慎决策，如盲目投资可能遭受重大损失。\n其中，明确附带停复牌一小时安排的近10只产品，包括纳指ETF易方达、纳指ETF广发、纳斯达克100ETF招商、纳指ETF汇添富、纳指ETF嘉实、纳斯达克100ETF大成、纳斯达克ETF华安、全球芯片LOF、纳指科技ETF景顺等。\n价格与净值的偏离程度，从各家公告披露的数据中可见一斑。以11月17日收盘价与当日收盘时的份额参考净值对比来看，9只产品的溢价幅度普遍落在13.9%至39.7%的区间，其中纳指科技ETF景顺以约39.7%居首，景顺长城全球芯片LOF以约23.1%次之。\n公告同时给出了停牌预案，若11月18日二级市场交易价格溢价幅度未有效回落，基金管理人有权向交易所申请盘中临时停牌、延长停牌时间乃至连续停牌；停牌期间，赎回业务照常办理。\n场内溢价高企，并非单纯的情绪推动，而是受QDII投资外汇额度的刚性约束。跨境ETF平抑溢价的常规路径，是套利资金“场外按净值申购、再在场内卖出”逻辑，但一旦场外通道受限，场内价格便失去了向净值回归的约束。\n于是，增量资金只能竞价争夺存量筹码，溢价被供需缺口持续推高。\n基金公司手中额度不足是溢价的主因。截至2026年10月末，全市场累计获批QDII额度约\n‌\n1830亿美元\n‌\n，年内已新增超120亿美元。监管表示将常态化发放额度并向公募产品倾斜，但自9月以来部分热门QDII基金出现限购或暂停申购。近期，多只产品再次收紧额度至完全“闭门谢客”，\n限额低于10元的产品接近20只。\n事实上，美股四季度以来表现并不稳定。截至11月16日，近一个月120只上市QDII中逾八成净值下挫。QDII ETF在10月获得70亿元资金净流入后，到了11月，资金流向掉头净流出，截至11月17日净流出超9亿元。\n机构看美股后市\nAI叙事切换，通胀仍是关键变量\n当前美股在高位震荡，科技“七姐妹”多次上演“深V”调整再反弹。对于美股后市，基金公司也给出了最新的解读与分析。\n博时基金认为，美股或正经历AI叙事从“中心化”向“多元化”的结构切换。AI主线内部出现显著再分配，英伟达创较大跌幅，但费城半导体指数反弹，博通相对英伟达的强弱创历史极值。这说明市场并未否定AI需求本身，而是在从“英伟达中心化叙事”切向“多元算力、替代芯片、已有客户与现金流更清晰的受益者”。\n“黄仁勋辞职可能会削弱英伟达长期享有的创始人协调优势、全球化商业推进能力和产业链资源整合能力，但竞争格局有望边际改善。”博时基金指出，客户出于供应链安全和议价能力考虑，可能加速引入AMD GPU、自研ASIC乃至Google TPU体系，AMD、博通、Intel的战略价值因此被重新计价。同时，AI融资体系的脆弱性被重新讨论。\n此外，部分机构明确指出，英伟达不仅是芯片供应商，也是AI生态大量资本循环的关键一环，若其自由现金流再投资行为出现暂停或弱化，生态系统中可能被抽走500亿美元以上流动性。\n国泰基金则指出，往后看，美国通胀压力尚未明显缓解，美联储短期维持紧缩立场的可能性较高。能源价格与需求韧性可能继续支撑生产端通胀，企业成本向终端价格传导则面临阻力，利润率或受到挤压。后续重点关注美国CPI、PCE及就业数据对美联储政策路径的影响，若通胀持续高企，利率上行压力可能继续压制美股估值及全球风险偏好。\n海量资讯、精准解读，尽在新浪财经APP\n责任编辑：宋雅芳",
+      "text_hash": "01187b5389060dafb4387432d2acf688eef8a029ddddf51ccffb89559cad9ff9",
+      "fetched_at": "2026-11-18T15:10:57.747332+08:00",
+      "extraction_method": "html:#artibody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexi1216746.shtml",
+      "published_at": "2026-11-18T08:30:22+08:00",
+      "published_at_verified_at": "2026-11-18T15:10:57.747352+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexi1216746.shtml",
+        "checked_at": "2026-11-18T15:10:57.747352+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:30:22+08:00"
+      }
+    },
+    "600232d963e455f8359f210f63063ec422468704cea1fd948deea037cad6c369": {
+      "url": "https://www.hani.co.kr/arti/economy/global/1287867.html",
+      "status": "complete",
+      "full_text": "본문\n경제\n글로벌워치\n엔비디아, 분기 매출 1158억달러…전년 동기 대비 103%↑\n서혜미\n기자\n수정\n2026-11-18 09:55\n0:00\nYour browser does not support the\naudio\nelement.\n엔비디아 로고. 로이터 연합뉴스\n광고\n젠슨 황 최고경영자(CEO)가 사임한 엔비디아가 시장 예상을 뛰어넘는 최대 매출을 냈다.\n미국 인공지능 반도체 팹리스 업체인 엔비디아는 17일(현지시각) 회계연도 3분기 매출이 1158억4천만달러로, 지난해 같은 기간과 견줘 103% 증가했다고 공시했다. 직전 분기와 비교해 20% 증가했다. 앞서 발표한 2분기 매출 증가율(전년 동기 대비 106%)에 이어 두 분기 연속 100%를 웃도는 성장세다. 시장조사기관 런던증권거래소그룹(LSEG)이 집계한 시장전망치 1091억달러를 50억달러 이상 뛰어넘었다. 주당순이익(EPS)은 2.68달러로 월가 예상치인 2.47달러를 웃돌았다.\n실적 성장은 인공지능(AI) 데이터센터 사업이 이끌었다. 해당 부문 매출은 1076억달러를 기록해 전체 매출의 약 92.9%를 차지했다. 엔비디아는 3분기에 차세대 연산 플랫폼인 베라 루빈의 양산과 출하를 시작했으며, 첫 분기에만 약 200억달러의 매출을 올렸다고 밝혔다.\n광고\n엔비디아는 향후 실적 전망도 높였다. 2028회계연도 매출 성장률 전망치는 기존 70%에서 75%로 상향 조정했다. 4분기 매출은 1300억달러에 이를 것으로 예상했다. 이는 중국 데이터센터 연산 매출은 반영하지 않은 것이다.\n서혜미 기자\nham@hani.co.kr",
+      "text_hash": "d42687046b65059819ef6be2141ca4755d66eb41eb308f7b2bc445a7a123d870",
+      "fetched_at": "2026-11-18T15:11:19.448407+08:00",
+      "extraction_method": "html:article",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://www.hani.co.kr/arti/economy/global/1287867.html",
+      "published_at": "2026-11-18T08:40:00+08:00",
+      "published_at_verified_at": "2026-11-18T15:11:19.448426+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://www.hani.co.kr/arti/economy/global/1287867.html",
+        "checked_at": "2026-11-18T15:11:19.448426+08:00",
+        "method": "jsonld:datePublished",
+        "source_value": "2026-11-18T09:40:00+09:00"
+      }
+    },
+    "5db965855b4491286c97fbdb05ec570663c0c658bd0d367110901d8e61c566f8": {
+      "url": "https://www.guardian-series.co.uk/news/national/26735858.ukraine-strikes-major-russian-bridge-aerial-attacks-escalate/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "942a25cb0e2148ebfdcb1e9d23c7177d3ff4c9571af6c61b07cba91bb968ad62": {
+      "url": "https://www.wyomingnewsnow.tv/news/national/44-cool-finds-for-holiday-hosting-that-make-entertaining-easier/article_8c592b45-0c09-5ad2-9996-ed3728b2143b.html",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "5a0ea3a556e262af2a8d05dbd4bbe25644320d216621bb8eab727998257b46ab": {
+      "url": "https://akhbaregy.com/2026/11/18/%D8%A5%D9%86%D9%81%D9%8A%D8%AF%D9%8A%D8%A7-%D8%AA%D8%AD%D8%B3%D9%85-%D8%A7%D9%84%D8%AC%D8%AF%D9%84-%D9%84%D8%A7-%D8%B9%D9%88%D8%AF%D8%A9-%D9%84%D8%AC%D9%86%D8%B3%D9%86-%D9%87%D9%88%D8%A7%D9%86/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "aaae943333f3bb8f14f2e6bd1c32b5116c087a4cfcf33ac12d9ca774999349d1": {
+      "url": "https://www.yasstribune.com.au/story/9393804/trump-to-meet-marcos-in-manila-before-china-talks/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "e6b4d4c02832c9bc3097382444d387419ece4e0c1a090f38d49b5d39169d3fa5": {
+      "url": "https://news.ltn.com.tw/news/world/breakingnews/5644418",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "c52cfd4b6ad77fff024ae3e65106520491434be57968548f529d535ebc03bbae": {
+      "url": "https://www.foxbusiness.com/markets/nvidia-releases-quarterly-earnings-after-jensen-huangs-resignation-ceo",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "29f5bb704a7f9c7367ac38aad890f84e0e641b11977081c1f0c94ddd2484f8e8": {
+      "url": "https://www.newsweekjapan.jp/articles/-/340476",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "da18cfab5f45747c5e5ab7b238ef58e31746715da2310bc428888f67c55ba948": {
+      "url": "https://www.thisiswiltshire.co.uk/news/national/26735858.ukraine-strikes-major-russian-bridge-aerial-attacks-escalate/",
+      "status": "unavailable",
+      "reason": "source_unavailable",
+      "attempted_at": "2026-11-18T15:07:24.702700+08:00",
+      "retry_after": "2026-11-19T15:07:24.702700+08:00"
+    },
+    "e3952f1002950f781b2f8c7c16637715dcc8557f48ef16f14319d35d53f3524b": {
+      "url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexp7113600.shtml",
+      "status": "complete",
+      "full_text": "财联社11月18日讯（记者 林坚）\n近期，美股等海外市场科技板块出现较大波动，A股科技板块随之被置于“跟跌还是脱钩”的追问之下。这轮波动的性质是什么，又将如何传导至A股？综合财联社调研、多家券商研究观点以及深市公司业绩情况来看，影响主要来自情绪面，不能简单等同于我国科技产业基本面也发生了变化。\n就波动本身而言，海外调整更多是对监管环境、融资成本与资本开支回报的再定价；落到国内科技板块，更应关注全球市场背后的需求变化，而非简单将其定性为对海外市场的强依附关系。需把“北美资本开支映射”与“国产算力、自主制造”两条线索分开梳理，后者的走向更多取决于国内需求、技术进展与供应链建设水平。\n目前来看，中国科技产业正依托本土需求、国产供给与应用反馈，形成相对独立的成长闭环。\n关注点一：海外市场为何出现明显波动？\n如何看待近期海外市场，尤其是美股科技板块的深度调整？\n触发点主要是在于美国中期选举结果出炉后，投资者担心数据中心建设面临更严格的审批与监管，进而拖慢项目建设及芯片采购节奏；与此同时，高融资成本和较大的资本开支，使市场更加关注AI投入能否及时转化为盈利，此前较为乐观的增长预期和估值因此受到冲击。\n这更像一次针对“北美特定投资模式”的再定价，而不是对人工智能产业趋势的否定。\n兴业证券\n提到，以GPT-4早期版本的能力为基准，同等能力模型的最低推理价格已从2023年3月的37.5美元/百万词元降至2025年2月的0.18美元，降幅超过99%。成本曲线如此陡峭地下行，既压缩了模型供给端的利润，也在把AI推向教育、医疗、工业、办公等更广阔的场景。\n换句话说，估值在收缩，应用在扩散，两者并不矛盾。\n关注点二：应避免将外部预期变化泛化为国内科技需求转弱\n美股AI回调会不会影响A股科技的行情？这是市场最关注的问题，其实本身也是在关注A股科技板块的定价，究竟锚在北美云厂商的资本开支上，还是锚在国内的订单、产线与国产化率上。\n综合券商观点来看，应该避免将外部预期变化泛化为国内需求的转弱，这轮调整是估值重定价，不是产业逆转。\n长江证券\n研究观点提出，对国内科技板块应区分两条线索：一条是“北美资本开支映射”，对海外云厂商投资和全球风险偏好较为敏感；另一条是国产算力与自主制造，更多取决于国内需求、技术进展和供应链建设。\n天风证券\n研究明确提示，应依据国内订单、替代进展与盈利兑现评估成长性，避免将北美资本开支预期变化泛化为国内科技需求转弱。\n开源证券策略首席分析师韦冀星也持相近判断。他表示，近期海外半导体板块波动加大，主要受到美国数据中心建设约束、AI资本开支可持续性等因素影响，\n对国内科技板块形成一定情绪扰动，“但海外市场的短期调整不能简单等同于我国科技产业基本面的变化”。\n他认为，全球AI产业的长期发展趋势并未发生根本改变，我国在电力基础设施、产业链配套、应用场景及超大规模市场等方面具有自身优势，国产算力、半导体设备及核心软硬件的自主可控需求仍有较大发展空间。从市场层面看，前期科技板块交易较为集中，近期调整有助于消化估值和拥挤度压力，推动关注点回归技术突破、订单落地和盈利兑现。\n基本面数据也在印证这一点。国家统计局数据显示，2026年前三季度规模以上高技术制造业增加值同比增长14.3%，集成电路、工业\n机器人\n产量分别增长23.3%和29.1%。上市公司层面，第三季度单季申万电子行业营业收入、归母净利润同比分别增长34.0%和59.0%；其中半导体行业分别增长22.8%和82.5%，电子化学品分别增长26.0%和49.9%，自动化设备分别增长30.8%和52.9%。\n收入保持两位数增长、利润增速快于收入，说明芯片、设备、材料等关键环节不仅在扩规模，盈利水平也在同步改善。\n关注点三：科技“国产国用”的基本面稳定\n国内科技基本面延续向好还可以从更多微观的细节来观察。长江证券认为，国产科技的独立叙事已转向订单、收入、利润与产能利用率的实际验证。财联社注意到，这一转向在深市企业身上体现得更为具体，国产企业独立增长逻辑正持续凸显，科技“国产国用”的基本面稳定。\n从收入结构看，2026年上半年，深市2909家披露境外业务收入的公司合计实现营业收入11.44万亿元，境外业务收入2.57万亿元，占营业收入的22.48%。这一比重较2025年半年报的20.01%提升2.47个百分点，较2024年半年报的18.56%提升3.92个百分点。不过，平均数之下结构差异明显。境外收入占比的中位数仅为3.86%，1041家公司境外收入为零，占比35.8%；境外收入占比不超过10%的有1746家，占60.0%；不超过30%的有2276家，占78.2%。\n分行业看，电子行业263家公司境外收入占比50.85%，为深市主要行业最高；消费电子二级行业达64.0%，电子化学品仅为9.6%。通信行业82家为23.85%，中位数8.60%；计算机行业221家为13.89%，中位数归零，63.8%的公司没有境外收入。计算机行业有营业收入的221家公司中，77.8%境外收入占比不足10%。\n这意味着，深市科技资产的主体定价依据来自国内政企与行业需求。\n更值得注意的是，承担“国产国用”叙事的，恰恰多是内销型环节。\n北方华创\n2026年上半年境外业务收入为零，前三季度营业收入同比增长15.26%；\n江丰电子\n前三季度营业收入44.65亿元、归母净利润8.11亿元，同比增长35.67%和102.38%；\n粤芯半导体\n前三季度营业收入30.15亿元，同比增长69.45%，经营活动现金流净额14.53亿元，同比增长378.92%；\n大普微\n前三季度营业收入98.35亿元，同比增长678.13%，归母净利润25.43亿元，实现扭亏。\n算力链条的兑现更集中。2026年前三季度，\n海光信息\n、\n寒武纪\n营业收入分别为149.55亿元和95.26亿元，同比增长57.58%和106.76%；五家A股国产算力芯片公司合计营收329.26亿元，同比增长97.66%，在原材料与代工成本上涨背景下仍多数保持约50%的毛利率。封测端，\n长电科技\n营业收入309.52亿元、归母净利润16.17亿元，同比增长7.96%和69.58%，其中运算电子营收增长54%；\n华虹宏力\n第三季度销售收入9.871亿美元，可比口径增长19.9%，产能利用率达102.9%。\n上述表现，用天风证券的研究框架来理解，可以概括为“需求牵引—国产供给—应用反馈—技术迭代”的循环。落到企业层面，这一循环就是一次次具体的采购与验证动作。\n比如粤芯对国产供应链“应试尽试、能采必采”，硅片、化学品、特气等原材料与刻蚀、薄膜沉积等核心工序均已引入国产供应商；江丰电子沿着“客户需求—技术攻关—批量验证—迭代升级”打磨先进制程靶材；大普微则提到，企业级SSD进入数据中心供应体系通常需要6至18个月的性能、可靠性与兼容性验证。\n产业层面的兑现之外，政策端也仍在加力。10月9日国务院发布的《关于发展新质生产力的意见》提出全面实施“人工智能+”行动，强化算力、算法、数据等高效供给；随着AI工作负载从训练转向训练与推理并重，政务、金融、运营商、制造等行业对数据安全、私有化部署和供应连续性的要求，会继续为国产算力和国产模型提供明确场景。\n韦冀星提示，全球科技产业链正在出现新的结构分化，部分具备真实需求、技术竞争力和盈利改善能力的国内企业有望体现相对韧性。\n海量资讯、精准解读，尽在新浪财经APP",
+      "text_hash": "97ba12606e35b3153c9b6a56962750e6a71f6b6b0f7a060cb3979f10e77d0810",
+      "fetched_at": "2026-11-18T15:11:28.064085+08:00",
+      "extraction_method": "html:#artibody",
+      "collector_version": "article-html-v1",
+      "resolved_url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexp7113600.shtml",
+      "published_at": "2026-11-18T08:50:20+08:00",
+      "published_at_verified_at": "2026-11-18T15:11:28.064106+08:00",
+      "publication_verification": {
+        "status": "verified",
+        "parser_version": "publisher-labelled-time-v2",
+        "source_url": "https://finance.sina.com.cn/jjxw/2026-11-18/doc-inizcexp7113600.shtml",
+        "checked_at": "2026-11-18T15:11:28.064106+08:00",
+        "method": "meta[property=\"article:published_time\"]",
+        "source_value": "2026-11-18T08:50:20+08:00"
+      }
     }
   },
   "hosts": {
@@ -3457,7 +3740,15 @@
     "www.asiaone.com": "2026-11-19T14:42:41.694971+08:00",
     "www.hometownregister.com": "2026-11-19T14:42:41.694971+08:00",
     "jang.com.pk": "2026-11-19T14:42:41.694971+08:00",
-    "udn.com": "2026-11-19T14:42:41.694971+08:00"
+    "udn.com": "2026-11-19T14:42:41.694971+08:00",
+    "www.guardian-series.co.uk": "2026-11-19T15:07:24.702700+08:00",
+    "www.wyomingnewsnow.tv": "2026-11-19T15:07:24.702700+08:00",
+    "akhbaregy.com": "2026-11-19T15:07:24.702700+08:00",
+    "www.yasstribune.com.au": "2026-11-19T15:07:24.702700+08:00",
+    "news.ltn.com.tw": "2026-11-19T15:07:24.702700+08:00",
+    "www.foxbusiness.com": "2026-11-19T15:07:24.702700+08:00",
+    "www.newsweekjapan.jp": "2026-11-19T15:07:24.702700+08:00",
+    "www.thisiswiltshire.co.uk": "2026-11-19T15:07:24.702700+08:00"
   },
   "protocol_migration": {
     "host": "finance.eastmoney.com",
