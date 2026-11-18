@@ -555,6 +555,226 @@
       "attempt_version": "daily-news-digest-v3",
       "error_code": "input_over_budget",
       "retry_after": "2026-11-19T03:24:23.021141+08:00"
+    },
+    "2026-11-18": {
+      "input_hash": "c402656488f19f47431d8045445dad43173a6d110efa6bf73971225be6c5ecfd",
+      "result": {
+        "summary": "今日主线是英伟达财报超预期与全球AI算力需求：其Q3营收1158亿美元、数据中心营收1076亿美元，同比增103.1%和110%，云产业未交订单升至2.5万亿美元，GPU租赁及转签价格走强。国内有昇腾超节点商用、AI眼镜出货增长、晶圆代工提价、长鑫称四季度DRAM供给偏紧、6G试点、数字广东规划和动力电池回收政策；双十一首轮家电销售居前也带来家电、零售短期需求线索，但利润转化未明。映射至A股，主要是AI芯片、设备材料、光通信、算力系统、智能眼镜、通信及环保回收链，但须以A股公司取得订单、政策落地和成本传导为前提。风险集中于代工涨价挤压芯片设计毛利、GPU涨价抬升应用成本、先进半导体限制、利率高位、AI资本开支预期分化、基金清盘预警及个别公司治理。英伟达CEO人选、浑水做空和部分海外计划仍待核实或验证。",
+        "positives": [
+          {
+            "text": "英伟达Q3营收1158亿美元、数据中心营收1076亿美元，同比分别增103.1%和110%，Q4指引高于预期；云产业未交订单升至2.5万亿美元，GPU租赁及转签价格走强。对A股仅属AI芯片、设备材料、光通信和算力系统的需求映射，成立条件是相关公司已进入供应链并取得量产订单。",
+            "article_ids": [
+              "stock-api-news-07c7be3d691e6295de62ff3a",
+              "stock-api-news-1152a04174d09c9115c03ee7",
+              "stock-api-news-a73a124942294a348468ab73",
+              "stock-api-news-bba9693d60da5e2629041419",
+              "stock-api-news-d5e3d75cb40fe41a69f55507"
+            ]
+          },
+          {
+            "text": "国内晶圆代工据业内消息上调10%至逾20%，长鑫科技预计四季度DRAM供给紧缺延续且毛利率稳定；A股设备、材料、测试、代工及存储链获得需求与价格支撑。中信建投称前三季度电子营收、归母净利同比增41%、186%，但调价执行、扩产及新品迭代仍需订单验证。",
+            "article_ids": [
+              "stock-api-news-3764e4ee538fc502600877c8",
+              "stock-api-news-395c091f096571785080571c",
+              "stock-api-news-d5de73635951292f0f08141e"
+            ]
+          },
+          {
+            "text": "国内多个昇腾超节点集群已落地商用，卖方研报认为其与国内大模型合作正由推理转向训练，利好国产算力系统、互联、光通信及模型服务的潜在需求。当前依据主要是研报共识，集群规模、订单和收入贡献尚未披露。",
+            "article_ids": [
+              "stock-api-news-3764e4ee538fc502600877c8",
+              "stock-api-news-d5de73635951292f0f08141e"
+            ]
+          },
+          {
+            "text": "全球AI眼镜上半年出货同比增长263%，三星与谷歌拟合作推出全系列智能眼镜，A股光学、模组、整机及代工环节获得产业映射。但不能由海外需求自动等同A股订单；瀛通通讯披露智能眼镜相关收入占比不足1%，显示题材映射与实际贡献可能错位。",
+            "article_ids": [
+              "stock-api-news-74a7d9d3a56a304ef722ec9e",
+              "stock-api-news-3764e4ee538fc502600877c8",
+              "stock-api-news-e8d3bded210cf451e4ef4740"
+            ]
+          },
+          {
+            "text": "工信部同意8省市开展6G部省协同试点，广东“十五五”规划提出壮大集成电路、先进封测并培育光通信、光传感芯片；九部门意见加强动力电池和机动车回收。相关方向分别利好通信、电子及环保回收链，但许可、项目和盈利尚未落地。",
+            "article_ids": [
+              "stock-api-news-d5de73635951292f0f08141e",
+              "stock-api-news-74a7d9d3a56a304ef722ec9e"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "text": "台积电等代工调价10%至逾20%，若芯片设计端不能同步提价，业内估算毛利率或受压4至5个百分点。受损方向为议价能力弱、依赖代工且客户传导不足的芯片设计企业；调价执行范围、销量变化及实际传导比例仍不明。",
+            "article_ids": [
+              "stock-api-news-3764e4ee538fc502600877c8"
+            ]
+          },
+          {
+            "text": "英伟达各代GPU租赁价全面上涨，Hopper重签最高达原价两倍、B300涨超60%。外租算力的AI云及模型应用运营成本可能上升，净影响取决于利用率和成本转嫁；不能据海外涨价直接判断A股软件或AI应用公司利润受损。",
+            "article_ids": [
+              "stock-api-news-1152a04174d09c9115c03ee7",
+              "stock-api-news-bf2d5344f4390ced78727b63",
+              "stock-api-news-d5de73635951292f0f08141e"
+            ]
+          },
+          {
+            "text": "美方限制远程获取先进半导体，商务部表示反对并称必要时反制，但适用主体、范围、生效时间及中方方案未明。相关企业获取先进半导体和后续经营的不确定性上升；不能把政策表态视为反制已落地，也不宜断言整个电子行业受损。",
+            "article_ids": [
+              "stock-api-news-d5de73635951292f0f08141e"
+            ]
+          },
+          {
+            "text": "美国通胀仍高，纽约联储主席称不需重大行动，但交易员已完全计入12月加息25基点并预期继续收紧；10年期美债收益率多日高于5%，全球高估值科技资产面临利率与风险偏好压力。中概指数当日走弱，A股AI硬件基金出现清盘预警。",
+            "article_ids": [
+              "stock-api-news-8607c124ae72f6075553ceaa",
+              "stock-api-news-8c33405c364dc0cd7eac142d",
+              "stock-api-news-2f5fb6536a09cf623ce7395d",
+              "stock-api-news-1b511af259a5c48c3b5f12e1",
+              "stock-api-news-e8d3bded210cf451e4ef4740"
+            ]
+          },
+          {
+            "text": "经营与治理风险集中于个案：10月仅生产新能源车企业库存升至98万辆，后续去库可能加大促销和利润压力；荣盛发展股价低于1元存在终止上市可能；三丰智能董事被留置，微博、名创优品利润亦下滑，不能直接外推为全行业趋势。",
+            "article_ids": [
+              "stock-api-news-e8d3bded210cf451e4ef4740",
+              "stock-api-news-d5de73635951292f0f08141e"
+            ]
+          }
+        ],
+        "watch": [
+          {
+            "text": "英伟达Q4营收指引在报道间存在冲突：一组为1261亿—1339亿美元，另一组为1274亿—1326亿美元，需以公司正式文件核对。2028年营收增75%、需求延续至2028年及2.5万亿美元未交订单均属公司预测或待交付规模，兑现节奏、数据中心延期及担保条件变化需观察。",
+            "article_ids": [
+              "stock-api-news-07c7be3d691e6295de62ff3a",
+              "stock-api-news-125ebed45a7a1bd76d0758e1",
+              "stock-api-news-c9195147b845a509902d5d84",
+              "stock-api-news-1152a04174d09c9115c03ee7",
+              "stock-api-news-a73a124942294a348468ab73"
+            ]
+          },
+          {
+            "text": "英伟达董事会明确无意让黄仁勋复职，正式CEO尚未任命，黄仁勋称将配合调查；Muddy Waters宣布做空是市场立场，不等于违规已获证实。分析师关于2028年后TPU供应及采购量的说法仍属预测，需与正式订单区分。",
+            "article_ids": [
+              "stock-api-news-e432dd79352fa5f531016ae6",
+              "stock-api-news-e6941d39050d1fe7cbeca697",
+              "stock-api-news-44f925eac328c4f1a395b0b3",
+              "stock-api-news-e659dce471b6aac7d878804e",
+              "stock-api-news-2f5fb6536a09cf623ce7395d"
+            ]
+          },
+          {
+            "text": "6G试点、广东数字产业规划及动力电池回收意见均提供方向性支持，但6G商业应用仍需经营许可，规划的芯片集群建设、回收细则修订、项目投入与盈利贡献均未披露。后续以正式细则、试点项目、招投标及上市公司订单验证，不能将政策发布等同业绩兑现。",
+            "article_ids": [
+              "stock-api-news-d5de73635951292f0f08141e",
+              "stock-api-news-74a7d9d3a56a304ef722ec9e",
+              "stock-api-news-e8137cfadd3388c2bfb3ab3e"
+            ]
+          },
+          {
+            "text": "AI需求信号存在分歧：英伟达称云订单和GPU价格走强、Vera Rubin已量产，但52%受访基金经理预计未来6个月超大规模厂商可能削减资本开支，多只重仓AI硬件基金出现清盘预警；后者只是调查预期，尚非实际削减，需继续验证订单与资金面。",
+            "article_ids": [
+              "stock-api-news-1152a04174d09c9115c03ee7",
+              "stock-api-news-e8d3bded210cf451e4ef4740",
+              "stock-api-news-bba9693d60da5e2629041419"
+            ]
+          },
+          {
+            "text": "海外事件与中概反馈并存：Anthropic拟于当日IPO定价，SpaceX据报道拟发债采购AI芯片，阿里将披露财报，均属待发生事项；机构三季度持仓披露显示部分中概股获增持，但当日中概指数及京东、腾讯、阿里等下跌，前述持仓存在滞后。",
+            "article_ids": [
+              "stock-api-news-e8137cfadd3388c2bfb3ab3e",
+              "stock-api-news-2f5fb6536a09cf623ce7395d",
+              "stock-api-news-7cb6a4238a89b3ccb333d485",
+              "stock-api-news-1b511af259a5c48c3b5f12e1"
+            ]
+          }
+        ],
+        "usage": {
+          "total_tokens": 30636,
+          "prompt_tokens": 19876,
+          "completion_tokens": 10760
+        },
+        "status": "ready",
+        "date": "2026-11-18",
+        "model": "MiniMax-M3.1-Flash",
+        "generated_at": "2026-11-18T09:24:42.375399+08:00",
+        "article_ids": [
+          "stock-api-news-01ad76db4506c3ff8b67f6cf",
+          "stock-api-news-052956f6e5a3d8486be4bf5b",
+          "stock-api-news-07c7be3d691e6295de62ff3a",
+          "stock-api-news-07d13ed9e5efa4811c278c53",
+          "stock-api-news-1152a04174d09c9115c03ee7",
+          "stock-api-news-11a4b18e6d1255c2a9e5b88e",
+          "stock-api-news-125ebed45a7a1bd76d0758e1",
+          "stock-api-news-1b511af259a5c48c3b5f12e1",
+          "stock-api-news-1e00b4044c9b4197b392d4e6",
+          "stock-api-news-1fea9a729bc85cfd5c54f45e",
+          "stock-api-news-2848ce9d7b9e876ebaa964c3",
+          "stock-api-news-2c7983cba45f44202c30158b",
+          "stock-api-news-2cc3117fc0ba1575330d3bd0",
+          "stock-api-news-2d22f4af111f08297e71b966",
+          "stock-api-news-2d719afdb3589a7c2062bb20",
+          "stock-api-news-2f5fb6536a09cf623ce7395d",
+          "stock-api-news-3011116f01d5bd8cbbefdc17",
+          "stock-api-news-321a571391be708fccee65a4",
+          "stock-api-news-34bfb87f7201ddc23882bb30",
+          "stock-api-news-3764e4ee538fc502600877c8",
+          "stock-api-news-395c091f096571785080571c",
+          "stock-api-news-4492412aab06e18133fdc6af",
+          "stock-api-news-44f925eac328c4f1a395b0b3",
+          "stock-api-news-4d231aaf5d3589e4ff0534a0",
+          "stock-api-news-4dfd808dc89a747464d5e7ff",
+          "stock-api-news-50ff9d708fb9f81b0f49b635",
+          "stock-api-news-56452a268e45f14d0b9e8312",
+          "stock-api-news-5dcbc73d51639453aab76410",
+          "stock-api-news-66bfc786febea8b76106553e",
+          "stock-api-news-74a7d9d3a56a304ef722ec9e",
+          "stock-api-news-7ca34e0518f626fee3110235",
+          "stock-api-news-7cb6a4238a89b3ccb333d485",
+          "stock-api-news-8281a6f3a2463766eefca4e3",
+          "stock-api-news-8607c124ae72f6075553ceaa",
+          "stock-api-news-8c33405c364dc0cd7eac142d",
+          "stock-api-news-8f68154225c03da2e99da453",
+          "stock-api-news-9252bb7fb29491042ae9e2cb",
+          "stock-api-news-98233d0b2d589cbbe1376f23",
+          "stock-api-news-a159c475eec470cceef130e9",
+          "stock-api-news-a207bfcfe66e833396736ca7",
+          "stock-api-news-a615b7cf5959708e0a1b1143",
+          "stock-api-news-a73a124942294a348468ab73",
+          "stock-api-news-aa7e5e582ba31b81053d0f19",
+          "stock-api-news-b15009403c381169f638aac0",
+          "stock-api-news-b4c9a0d65a7672cc53c812a3",
+          "stock-api-news-bba9693d60da5e2629041419",
+          "stock-api-news-bed57267637b6128d7f60c1f",
+          "stock-api-news-bf2d5344f4390ced78727b63",
+          "stock-api-news-c3e6dfd6dcbee5b27a7062c8",
+          "stock-api-news-c9195147b845a509902d5d84",
+          "stock-api-news-d1500f1d372f18463bcd1260",
+          "stock-api-news-d3f2597ff03c7c839370b60f",
+          "stock-api-news-d48a0fe9ad845043903c6449",
+          "stock-api-news-d4f65c0aa89f5ced4372af9c",
+          "stock-api-news-d52bcbbf6cc4d6a4299fbe72",
+          "stock-api-news-d5de73635951292f0f08141e",
+          "stock-api-news-d5e3d75cb40fe41a69f55507",
+          "stock-api-news-d86d30131fb88957c55638f5",
+          "stock-api-news-d9d89b263ff5642c1e6a3afb",
+          "stock-api-news-dab26c1480573514f0c5fb88",
+          "stock-api-news-e432dd79352fa5f531016ae6",
+          "stock-api-news-e659dce471b6aac7d878804e",
+          "stock-api-news-e6941d39050d1fe7cbeca697",
+          "stock-api-news-e8137cfadd3388c2bfb3ab3e",
+          "stock-api-news-e8d3bded210cf451e4ef4740",
+          "stock-api-news-eb4b621aa4dcb5a897fde171",
+          "stock-api-news-f3f46cd8ec5a10103c6e098b",
+          "stock-api-news-f5cd3192f41e965cd687e56b",
+          "stock-api-news-ff1c08a2ec9646bb1e3c5aa6"
+        ],
+        "article_count": 69,
+        "fulltext_analysis_count": 10,
+        "fulltext_source_count": 59,
+        "input_hash": "c402656488f19f47431d8045445dad43173a6d110efa6bf73971225be6c5ecfd",
+        "prompt_version": "daily-news-digest-v3"
+      },
+      "next_update": "2026-11-18T09:51:40.294736+08:00"
     }
   }
 }

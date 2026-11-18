@@ -418,5 +418,41 @@
       "label_accuracy": null,
       "note": "仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。"
     }
+  },
+  "2026-11-18": {
+    "date": "2026-11-18",
+    "evaluated_at": "2026-11-18T09:24:42.439250+08:00",
+    "timezone": "Asia/Shanghai",
+    "issued_count": 0,
+    "settled_count": 0,
+    "pending_count": 0,
+    "abstained_count": 37,
+    "direction_accuracy": null,
+    "mae_pct": null,
+    "baseline_mae_pct": null,
+    "skill_pct": null,
+    "evaluation_cohort": "目标日为今天；每标的、每任务取最后一条预测。不同任务分列；不等同独立交易日样本。",
+    "by_sector": [],
+    "by_task": [],
+    "sentiment": {
+      "positive": 15,
+      "negative": 3,
+      "neutral": 1,
+      "uncertain": 50,
+      "labels": {
+        "mixed": 4,
+        "positive": 15,
+        "negative": 3,
+        "neutral": 1,
+        "unknown": 46
+      },
+      "excluded_count": 0,
+      "rumor_count": 0,
+      "alignment_count": 0,
+      "alignment_rate": null,
+      "method": "financial-tone-rules-v2+minimax_full_text",
+      "label_accuracy": null,
+      "note": "仅统计今日首次采集消息；传言排除。走势一致性仅比较盘前语气与当日最终涨跌，并非情绪标签准确率或因果检验；人工真值尚未建立。"
+    }
   }
 }
