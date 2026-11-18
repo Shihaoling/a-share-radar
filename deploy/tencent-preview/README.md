@@ -20,7 +20,7 @@
 
 ## 历史新闻范围与导出
 
-SXData 限流时，历史采集暂停到冷却结束。`collection_priority_days` 中指定的日期先补采，再处理此前尝试过的日期及其拆分窗口。补采队列全部处理后才查询尚未开始的日期。连续收到限流时，按 1、2、4、8、15 分钟退避，并遵循数据源返回的更长等待时间。共享冷却拦截的调度不计入日期请求次数。看板逐秒显示冷却剩余时间，待采集用浅紫色，正在等待源回包用深紫色。
+SXData 限流时，历史采集暂停到冷却结束。`collection_priority_days` 中指定的日期先补采，再处理此前尝试过的日期及其拆分窗口。补采队列全部处理后才查询尚未开始的日期。连续收到限流时，按 1、2、4、8、15 分钟退避，并遵循数据源返回的更长等待时间。共享冷却拦截的调度不计入日期请求次数。看板逐秒显示冷却剩余时间。
 
 历史标注每次发起一个 MiniMax 请求，优先处理较早日期的首标及重试条目。批量模式使用 `MiniMax-M3.1-Flash` 的 `low` 思考档位，每篇按独立 ID 返回结构化 JSON。解析时将证据编号还原为本篇原文并校验，无法归类的影响期限记录为 `uncertain`。批量结果的 `label.annotation_prompt` 标记为 `fulltext-sw31-impact-v2-refs+structured-batch-v4`。整批格式错误等待 2 分钟重试，两次未通过的条目逐条重试。传输超时后至少等待 5 分钟，再将重试批量减半，最少 1 篇。成功后恢复正常批量。看板显示近 10 分钟实际入库速率，点击日期可查看待首次标注、待重试和待复核条数。
 
@@ -32,7 +32,7 @@ SXData 限流时，历史采集暂停到冷却结束。`collection_priority_days
 | `/var/lib/ashare-radar-preview/training-news/export/news.jsonl.gz` | 可转移至另一台机器的压缩 JSON Lines 数据 |
 | `/var/lib/ashare-radar-preview/training-news/export/manifest.json` | 导出范围、条数、完成状态及压缩文件的 SHA-256 |
 | `/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/` | 180 天复核与全部标注完成后，定时任务自动发布通过 SHA-256 和记录数校验的正式数据与清单 |
-| `/training-progress/` | 网站进度看板，显示每日覆盖和聚合计数 |
+| `/training-progress/` | 采集与标注各有月历，点击日期查看两个阶段的状态、条数和待处理明细 |
 
 每条导出记录包括稳定 ID、来源、原始发布时间 `published_at`、实际采集时间 `received_at`、实际标注时间 `labelled_at`、标题、正文、正文散列和标注状态。标签包含文字摘要、语气、事实状态、市场及行业影响、传导方向、置信度、观察期、证据和不确定性。模型版本和提示版本随记录保留。
 

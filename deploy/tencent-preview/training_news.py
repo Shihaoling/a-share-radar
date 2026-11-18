@@ -453,6 +453,9 @@ def progress(db):
     for row in db.execute("""SELECT substr(w.begin_at,1,10) AS day,count(*) AS windows,
         sum(w.state='complete') AS complete_windows,sum(w.state IN ('capped','unverified')) AS incomplete_windows,
         sum(w.state='pending' AND w.outcome='rate_limited') AS limited_windows,
+        sum(w.state='complete' AND audit.begin_at IS NOT NULL) AS verified_windows,
+        sum(w.state='pending' AND w.retry_at!='' AND w.outcome NOT IN ('split_at_limit','response_too_large'))
+            AS collection_retry_windows,
         max(w.checked_at) AS updated,sum(w.rows_received) AS returned,count(audit.begin_at) AS audited_windows,
         sum(audit.in_window_rows) AS valid_rows,sum(audit.same_time_copies) AS same_time_copies
         FROM windows w LEFT JOIN window_audit audit ON w.begin_at=audit.begin_at GROUP BY 1"""):
@@ -463,6 +466,7 @@ def progress(db):
     for row in db.execute("""SELECT day,count(*) AS collected,count(label) AS labelled,
             sum(label IS NULL AND length(body)>0 AND tries=0) AS label_first_pending,
             sum(label IS NULL AND length(body)>0 AND tries BETWEEN 1 AND 5) AS label_retry_pending,
+            sum(label IS NULL AND length(body)=0) AS label_missing_body,
             sum(label IS NULL AND tries>=6) AS label_review_pending
             FROM articles GROUP BY day"""):
         days[row["day"]].update({key:row[key] for key in row.keys() if key!="day"})
