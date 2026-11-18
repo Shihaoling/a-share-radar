@@ -18836,6 +18836,875 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 108,
       "scored_at": "2026-11-18T15:49:16.580843+08:00"
+    },
+    "20167d094352464f18b0930ee716b59ba700718a7c2199157631cef1e78c6b5f": {
+      "summary": "文章汇总44款节日待客与赠礼用品，覆盖厨房小电、餐厨用品、茶酒咖啡及家居纺织品，并披露多项黑五等折扣。文章仅反映消费场景与单品推广，未提供销量、订单或行业需求数据，难以推导整体景气变化。",
+      "tone": "positive",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "全文属于节日待客用品导购与编辑推荐，虽有促销安排，但未提供宏观需求、价格或盈利数据，无法外推大盘影响。",
+        "evidence": [
+          "This guide rounds up holiday hosting finds that make entertaining easier, along with a few hostess gifts for anyone who'd rather not show up empty-handed.\nSome products featured in this guide were provided for editorial review.",
+          "Nobody needs everything on this list to throw a good party, and most hosts will tell you the guests matter more than the gear.",
+          "A couple of well-chosen pieces aimed at whatever part of hosting you dread most will do more than a cart full of extras.\nProduct images courtesy of the brands featured."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.58,
+          "reason": "热饮机、刨冰机和扫地机器人等被作为节日待客场景重点推荐，可提升相关品牌曝光；但未披露销量、订单或行业需求，不能外推家电整体景气。",
+          "evidence": [
+            "Hotel Chocolat Velvetiser Intro Pack\nHot chocolate brings out the kid in nearly everyone, and the Velvetiser serves the grown-up version without a packet in sight.",
+            "Ninja's SLUSHi Twist freezes two flavors at the same time, then swirls them into a single drink, which turns any holiday party into a build-your-own slushie stand.",
+            "Shark Navigator 2-in-1 Robot Vacuum and Mop\nThe Shark Navigator vacuums and mops the kitchen floor on its own, picking up cracker crumbs and spilled cider after the last guest leaves."
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.56,
+          "reason": "茶、咖啡、葡萄酒及零食礼盒获得专题推荐和部分折扣，可能促进相关单品转化；但无成交或需求数据，不能据此判断行业整体增长。",
+          "evidence": [
+            "develops its teas with input from 12 Ayurvedic practitioners and packs them in plastic-free, biodegradable tea bags, with no caffeine, added sugar or \"natural flavors\" in the blend. Readers can take 10% off the Feast & Focus Duo with",
+            "Available on\nAyurvedist\n7. Roederer Estate 2019 L'Ermitage Gift Set\nWine Enthusiast gave the 2019 L'Ermitage Brut a perfect 100 points, making it the first American sparkling wine to earn that score, and this set pairs it with the Brut Rosé",
+            "Dolly Parton named this coffee after a lyric from \"9 to 5\" and worked with Louisiana-based Community Coffee to develop it in three roasts."
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.54,
+          "reason": "砧板、餐具和餐厨收纳用品获得集中展示及促销，有利于相关细分产品曝光；未提供销量、订单或行业数据，无法确认整体经营变化。",
+          "evidence": [
+            "Each board below looks good enough to set in front of guests and works just as hard on the counter during prep.\nCategory Spotlight: Elihome\nElihome",
+            "The brand's newer collections pair that heritage with clean, modern shapes that suit both a holiday dinner and an ordinary Tuesday night. Its Black Friday and Cyber Monday sale takes\nup to 70% off Nov. 25-28\n.\n16.",
+            "KES 6-Tier Freestanding Pot Rack\nStockpots and Dutch ovens eat up a lot of cabinet space, and this six-tier freestanding rack gives them a place to live in plain sight."
+          ],
+          "sector_code": "801140.SI",
+          "sector_name": "轻工制造",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.48,
+          "reason": "布餐巾、亚麻餐巾和盖毯等被纳入节日家居推荐，可能增加相关细分关注度；文章无销售或需求数据，不能推断行业景气。",
+          "evidence": [
+            "Printed questions on these reusable cloth napkins give quiet guests an easy way into the conversation and give phones a reason to stay in pockets.",
+            "Each linen napkin in this set carries an embroidered gift from \"The 12 Days of Christmas,\" so the table matches without every place setting looking the same.",
+            "Harbor House Living grew out of a Michelin-recognized inn on the California coast, and this throw brings a bit of that hotel comfort to the guest room."
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "部分产品被提供用于编辑评审，选品与评价可能存在推广偏向。",
+        "文章未披露各品牌销量、订单、市场份额或复购数据，曝光能否转化为收入与利润无法验证。",
+        "促销安排不等同于实际成交，44款分散推荐也不足以代表行业需求变化。"
+      ],
+      "usage": {
+        "total_tokens": 15406,
+        "prompt_tokens": 8020,
+        "completion_tokens": 7386
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3b8b91e3990503e2e2800ce625badea3f932479b2addd6a75098e925ac392d8f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 24076,
+      "scored_at": "2026-11-18T16:15:18.106779+08:00"
+    },
+    "d696112e8c40770e19e2554145cb35a11952b4719c01feb509bcbec36c0e0964": {
+      "summary": "截至午间收盘，两市ETF成交额3055.36亿元，较昨日同期增加282.38亿元，增量主要来自债券型ETF，股票型和QDII型成交额下降。材料未显示明确市场或产业基本面方向。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "ETF成交额及结构变化仅反映交易活跃度，缺少净申购、指数价格和宏观传导证据，不能推断整体市场方向。",
+        "evidence": [
+          "财联社11月18日电，据财联社盯盘数据显示，截至午间收盘，ETF两市成交额报3055.36亿元，较昨日此时增加282.38亿元。 分类型来看，股票型ETF成交额768.20亿元，减少284.07亿元；债券型ETF成交额1646.71亿元，增加656.37亿元；货币型ETF成交额185.09亿元，增加23.21亿元；商品型ETF成交额58.49亿元，增加8.02亿元；QDII型ETF成交额355.61亿元，减少114.07亿元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.67,
+          "reason": "ETF总成交额上升通常对应更多交易并可能提升券商经纪佣金收入，但未披露佣金率、市场份额及成交渠道，且仅为半日数据。",
+          "evidence": [
+            "财联社11月18日电，据财联社盯盘数据显示，截至午间收盘，ETF两市成交额报3055.36亿元，较昨日此时增加282.38亿元。 分类型来看，股票型ETF成交额768.20亿元，减少284.07亿元；债券型ETF成交额1646.71亿元，增加656.37亿元；货币型ETF成交额185.09亿元，增加23.21亿元；商品型ETF成交额58.49亿元，增加8.02亿元；QDII型ETF成交额355.61亿元，减少114.07亿元。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "科创半导体ETF成交居前仅代表产品交易活跃，材料未提供半导体订单、价格、产能或盈利变化，不能外推电子行业经营利好。",
+          "evidence": [
+            "其中，成交额最高的股票型ETF分别是科创半导体ETF华夏、科创50ETF华夏、创业板ETF易方达，成交额分别为52.03亿元、48.79亿元、46.27亿元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "数据截至午间收盘，不能代表全天成交情况。",
+        "ETF成交额不等于资金净流入，材料未披露申购赎回及持仓变化。",
+        "缺少券商佣金率、市场份额及半导体行业经营数据。"
+      ],
+      "usage": {
+        "total_tokens": 3895,
+        "prompt_tokens": 1189,
+        "completion_tokens": 2706
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "71af4223115a20b9c4e4b175a26a7e5344de88980b239089b4c84b422bfff75f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 295,
+      "scored_at": "2026-11-18T16:15:51.119610+08:00"
+    },
+    "eb9af9447daa8353f77c1115b702fb3a88d5e9c8d504a49c31f408637c2a1aba": {
+      "summary": "派杰投资将英伟达目标价降至230美元，属于研究观点调整而非经营数据变化；原文未披露需求、订单或供应链信息，无法外推电子行业基本面。",
+      "tone": "negative",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "目标价调整仅反映研究观点变化，原文没有宏观变量或行业供需传导证据，不能据此判断指数影响。",
+        "evidence": [
+          "财联社11月18日电，派杰投资将英伟达目标价从300美元下调至230美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.95,
+          "reason": "英伟达目标价下调不等于经营恶化；原文未提供订单、需求、产品、供应链或财务变化，不能推广至电子行业。",
+          "evidence": [
+            "财联社11月18日电，派杰投资将英伟达目标价从300美元下调至230美元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未说明下调目标价所依据的盈利预测、估值假设或触发因素。",
+        "未提供英伟达经营数据及该观点对行业供需的传导证据。",
+        "未披露目标价的适用期限及后续调整安排。"
+      ],
+      "usage": {
+        "total_tokens": 4206,
+        "prompt_tokens": 1046,
+        "completion_tokens": 3160
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6d3ea02e4dca103db55817bc92567a1641fae6852ccf01ca5e1b65dd9666692f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 37,
+      "scored_at": "2026-11-18T16:16:47.576904+08:00"
+    },
+    "83f4b4f79cf9bb29dbf9b6620fc02b914b7df85588d2b76bed64a93f7a6a50c6": {
+      "summary": "特朗普赴深圳参加APEC峰会，拟与习近平、普京讨论乌克兰、核武和伊朗战事；美方多系统中断凸显AI与网络安全风险。分析人士预计三方会谈难有实质突破。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.84,
+        "reason": "报道明确称伊朗战争推升通胀并拖慢全球增长，能源价格随冲突升级和暂停反复，构成全球宏观逆风；但未给出对中国六大指数的直接传导证据。",
+        "evidence": [
+          "lt them.”\nBoth Russia and China have provided support to Iran after Trump launched a war there in late February to halt that country's development of nuclear weapons.",
+          "The war has pushed up inflation and slowed global growth as energy prices have swung in response to each escalation and every pause in the conflict."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.76,
+          "reason": "能源价格随伊朗战事反复：若油价上行，上游开采受益而炼化成本承压；若局势缓和则方向相反。报道未给出油价路径及企业敞口。",
+          "evidence": [
+            "lt them.”\nBoth Russia and China have provided support to Iran after Trump launched a war there in late February to halt that country's development of nuclear weapons.",
+            "The war has pushed up inflation and slowed global growth as energy prices have swung in response to each escalation and every pause in the conflict.",
+            "Trump has said he intends to talk about the Iran war and efforts to reduce nuclear weapons. He said he does not plan to bring up Taiwan, a self-governing island that China claims as its own."
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.52,
+          "reason": "航空系统中断显示运营连续性风险，能源价格反复也可能改变燃油成本；但前者是美国单一系统事件，后者方向不定，净影响无法确认。",
+          "evidence": [
+            "Trump had been nonchalant on his first day on the ground in Asia about the outages that left people in the United States worried about accessing their email, checking their bank accounts or safely flying on an airplane.",
+            "The war has pushed up inflation and slowed global growth as energy prices have swung in response to each escalation and every pause in the conflict."
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "mixed",
+          "confidence": 0.58,
+          "reason": "多机构中断及漏洞需持续补丁，或增加网络安全和运维升级需求；AI安全风险也抬高应用与合规成本，运维细分受益和应用受扰并存，但无订单证据。",
+          "evidence": [
+            "But the outages involving Microsoft, the Federal Aviation Administration, JPMorgan Chase and the National Security Agency's communications network are starting to overshadow Trump's visit.",
+            "They raised the specter that artificial intelligence can disrupt daily life, as new cyber vulnerabilities identified require software to be constantly upgraded to fix flaws or other security holes, known as patching, which is supposed to i",
+            "The technology is viewed as key to unlocking faster economic growth, but its rapid development has meant it poses national security risks and could evolve in ways that put AI beyond human control."
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.68,
+          "reason": "台湾是先进芯片主要制造地，美方内部对是否进一步限制对华芯片存在分歧；会谈未形成新管制或供应安排，供给及国产链需求方向均不确定。",
+          "evidence": [
+            "Beijing has denied that she was a spy, yet the affair raised concerns about how China has been able to access Nvidia computer chips to develop its own AI models that are competing with the U.S.\nWhen asked this week why the U.S.",
+            "had not been more aggressive in cutting off China's access to advanced computer chips, Trump said there were differences of opinion inside his administration and that “We have a very good relationship with China, and you don’t want to insu",
+            "Taiwan is the leading manufacturer of advanced computer chips, including those designed by U.S. companies.\nStill, Trump expects that Xi will push him on Taiwan's sovereignty.\n“I’m sure he’ll raise it,\" Trump said."
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.72,
+          "reason": "仅提及摩根大通账户访问受中断，未给出银行业务损失、恢复成本或行业扩散证据，不能将单一公司事件外推为行业影响。",
+          "evidence": [
+            "Trump had been nonchalant on his first day on the ground in Asia about the outages that left people in the United States worried about accessing their email, checking their bank accounts or safely flying on an airplane.",
+            "But the outages involving Microsoft, the Federal Aviation Administration, JPMorgan Chase and the National Security Agency's communications network are starting to overshadow Trump's visit."
+          ],
+          "sector_code": "801780.SI",
+          "sector_name": "银行",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.46,
+          "reason": "拟讨论限制核武、结束乌克兰战争及伊朗战事，理论上可能影响地缘风险与军工需求；但会谈结果、军费及订单传导均无证据。",
+          "evidence": [
+            "Trump said he plans to talk with Xi and Putin about limiting nuclear weapons and bringing an end to the war in Ukraine, which began in 2022 with Russia’s invasion.",
+            "Analysts are not expecting substantive breakthroughs, despite the unprecedented nature of the meeting.\nBefore the trip, Trump's aides had told reporters that the war in Ukraine would not be part of the trilateral meeting.",
+            "Trump has said he intends to talk about the Iran war and efforts to reduce nuclear weapons. He said he does not plan to bring up Taiwan, a self-governing island that China claims as its own."
+          ],
+          "sector_code": "801740.SI",
+          "sector_name": "国防军工",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "美中及美俄会谈尚未形成确定安排，分析人士预计难有实质突破。",
+        "美方对进一步限制中国先进芯片存在内部分歧，尚无新政策或供应安排。",
+        "技术中断与AI的因果仅有官员描述，且无证据显示其与敌对国家、黑客或犯罪者有关。"
+      ],
+      "usage": {
+        "total_tokens": 10898,
+        "prompt_tokens": 3123,
+        "completion_tokens": 7775
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "ff166329269f4fa73136e61f962793dc3d81d26e3a16b5b422e7c0e86f410b93",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 7808,
+      "scored_at": "2026-11-18T16:17:41.657697+08:00"
+    },
+    "101a6548118bb0ac63b08c60a30690f5d47fcc862508e11d1d60e98ee631f6eb": {
+      "summary": "报道称普京赴深圳出席亚太经合组织峰会前称赞中国河运效率；当地媒体据此推测俄罗斯或调整运输战略，但无具体政策落地，A股产业影响尚不明确。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "报道仅包含领导人表态及媒体对俄罗斯运输战略的猜测，未提供宏观政策、项目规模或需求变化，无法映射指数。",
+        "evidence": [
+          "Владимир Путин упомянул Китай в ходе диалога с новым главой Минтранса Дмитрием Ядровым. Президент указал на высокую эффективность КНР в использовании речного транспорта. Издание заявило, что всё дело в новой стратегии России.",
+          "Журналисты отметили, что страна богата энергетическими и минеральными ресурсами. Игнорирование дешевых водных путей авторы материала назвали нелогичным. «Это звучит как случайное упоминание, но нельзя игнорировать две детали.",
+          "Во-первых, замечание было сделано незадолго до вылета в Шэньчжэнь. Во-вторых, президент фактически похвалил чужую страну в присутствии своего же чиновника», — сказано в статье. Российский лидер вечером 17 ноября прибыл в Китай."
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.76,
+          "reason": "河运效率被提及且媒体猜测俄方战略调整，但无政策、运量或项目证据，无法判断对航运、港口等细分领域的经营影响。",
+          "evidence": [
+            "Владимир Путин упомянул Китай в ходе диалога с новым главой Минтранса Дмитрием Ядровым. Президент указал на высокую эффективность КНР в использовании речного транспорта. Издание заявило, что всё дело в новой стратегии России.",
+            "Журналисты отметили, что страна богата энергетическими и минеральными ресурсами. Игнорирование дешевых водных путей авторы материала назвали нелогичным. «Это звучит как случайное упоминание, но нельзя игнорировать две детали."
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "所谓俄罗斯“新战略”仅为当地媒体判断，未见官方政策内容。",
+        "报道未提供河运项目、投资规模、运量变化及执行时间。",
+        "尚无证据表明相关表态将影响中国交通运输企业的订单、成本或盈利。"
+      ],
+      "usage": {
+        "total_tokens": 3154,
+        "prompt_tokens": 1414,
+        "completion_tokens": 1740
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "85adebaf73f1b0667c88401226d0f0a3d8d9c2d104b86f9110c9b47724a9adda",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 965,
+      "scored_at": "2026-11-18T16:18:01.323604+08:00"
+    },
+    "98678787ae28e2083c58cad1bf3071371ed9a5f9dea2a96e27f44e54ff00436a": {
+      "summary": "乌克兰以无人机和导弹击毁克里米亚大桥中央道路段，公路交通暂停、铁路仅部分恢复，俄军补给通道受扰。克里姆林宫称将重建大桥，但正文未量化油价、运价及中国企业业绩影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "正文仅披露克里米亚大桥局部交通及俄军补给受扰，未提供油价、运价、供需变化或中国上市公司业绩传导证据，无法判断宏观市场方向。",
+        "evidence": [
+          "Ukraine struck the Kerch Bridge linking Russia to occupied Crimea on Tuesday, destroying its central road section and sending part of the structure crashing into the sea.",
+          "The attack, carried out using drones and missiles, has disrupted a key supply route for Russian forces and comes two days before President Vladimir Putin is due to meet the leaders of China and the US.Footage show that the bridge's main ro",
+          "ad arch had collapsed into the sea, leaving a large gap in the structure. Russian officials said road traffic had been suspended, while rail services had partly resumed.The damage has disrupted a direct supply route to Crimea, increasing Ru"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.76,
+          "reason": "大桥公路交通暂停、铁路仅部分恢复，跨海运输能力直接受损；但影响限于俄占克里米亚，且未显示A股运输企业敞口，不能外推行业整体盈利。",
+          "evidence": [
+            "Ukraine struck the Kerch Bridge linking Russia to occupied Crimea on Tuesday, destroying its central road section and sending part of the structure crashing into the sea.",
+            "ad arch had collapsed into the sea, leaving a large gap in the structure. Russian officials said road traffic had been suspended, while rail services had partly resumed.The damage has disrupted a direct supply route to Crimea, increasing Ru",
+            "shut it down permanently. The latest attack has damaged a key section and disrupted road traffic, while rail services have only partly resumed.Kyiv has also been targeting Russian oil refineries and depots to increase the economic cost of t"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "today"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "乌方持续打击俄炼油厂和油库，但正文未披露减产规模、停运时长、油价或炼化利润变化，无法判断上游受益或下游成本压力。",
+          "evidence": [
+            "shut it down permanently. The latest attack has damaged a key section and disrupted road traffic, while rail services have only partly resumed.Kyiv has also been targeting Russian oil refineries and depots to increase the economic cost of t"
+          ],
+          "sector_code": "801960.SI",
+          "sector_name": "石油石化",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "公路交通恢复时间及铁路全面恢复时间未明确。",
+        "大桥重建仅为克里姆林宫表态，缺少时间表、资金来源和招标安排。",
+        "缺少油价、运价、粮食运输量及A股相关公司业务敞口数据。"
+      ],
+      "usage": {
+        "total_tokens": 4650,
+        "prompt_tokens": 1856,
+        "completion_tokens": 2794
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6bbb11854149475b049ef8992c03abcd67cc803668b8c40f039c40263d092d75",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3222,
+      "scored_at": "2026-11-18T16:18:22.671174+08:00"
+    },
+    "c5f130714eb543efcab016d80bd54be98d8f19e83207ecbc97eec4748e8d9959": {
+      "summary": "黄仁勋表示若董事会认为符合各方利益，愿重新出任英伟达CEO；公司员工和特朗普公开支持其回归。相关消息后，美股科技股由急跌转深V，英伟达与费城半导体指数同步反弹。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "positive",
+        "confidence": 0.93,
+        "reason": "黄仁勋发声后纳指由开盘急跌转为深V，英伟达与费城半导体指数同步拉升，体现美股科技板块风险偏好回升；该单次盘面反应不能外推中国六大指数。",
+        "evidence": [
+          "【导读】黄仁勋“救市”了！\n大家好啊，今晚太震撼！泰勒稿子撕了好几回了！\n今晚的美股开盘之后不久就直线跳水，科技股集体暴跌，但是随后黄仁勋劲爆消息传来，上演深“V”走势，整个纳指直接反转！大家直接看图吧！\n费城\n半导体\n指数也是深“V”走势。\n英伟达\n股价也是直线爆拉！\n长话短说，美股开盘之后的暴跌，泰勒找不到原因，但是深“V”，就是黄仁勋发声了！\n黄仁勋表示，如果董事会要求，他愿意重新出任\n英伟达\n首席执行官。这是他自上周辞职以来首次公开发表声明。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "费半反弹仅证明半导体风险偏好改善；回归仍待董事会决定，正文也无订单、供货、资本开支或盈利变化，不能将单一公司治理事件推广为A股电子经营利好。",
+          "evidence": [
+            "【导读】黄仁勋“救市”了！\n大家好啊，今晚太震撼！泰勒稿子撕了好几回了！\n今晚的美股开盘之后不久就直线跳水，科技股集体暴跌，但是随后黄仁勋劲爆消息传来，上演深“V”走势，整个纳指直接反转！大家直接看图吧！\n费城\n半导体\n指数也是深“V”走势。\n英伟达\n股价也是直线爆拉！\n长话短说，美股开盘之后的暴跌，泰勒找不到原因，但是深“V”，就是黄仁勋发声了！\n黄仁勋表示，如果董事会要求，他愿意重新出任\n英伟达\n首席执行官。这是他自上周辞职以来首次公开发表声明。",
+            "黄仁勋在一份简短声明中表示：“自从我离职以来，我看到\n英伟达\n员工、投资者、商业伙伴和客户纷纷呼吁我重新担任首席执行官。如果董事会认为，让我回归符合股东、员工、公司以及美国的最大利益，我将非常荣幸能够回应这些呼声，重新出任首席执行官。”\n此前，有关他存在多段婚外情的消息曝光。\n黄仁勋的首次公开表态，为过去一周这场沸沸扬扬的风波暂时画上了一个阶段性句号。在这一周里，数千名英伟达员工、知名投资者、埃隆·马斯克等科技界亿万富豪，甚至美国总统特朗普，都纷纷就黄仁勋的去留发表了看法。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.8,
+          "reason": "AI市场依赖黄仁勋领导力的说法仅是英伟达员工评价，未给出计算机企业订单、合作项目或盈利变化；CEO能否回归亦未定，不能据此判断行业经营方向。",
+          "evidence": [
+            "黄仁勋在一份简短声明中表示：“自从我离职以来，我看到\n英伟达\n员工、投资者、商业伙伴和客户纷纷呼吁我重新担任首席执行官。如果董事会认为，让我回归符合股东、员工、公司以及美国的最大利益，我将非常荣幸能够回应这些呼声，重新出任首席执行官。”\n此前，有关他存在多段婚外情的消息曝光。\n黄仁勋的首次公开表态，为过去一周这场沸沸扬扬的风波暂时画上了一个阶段性句号。在这一周里，数千名英伟达员工、知名投资者、埃隆·马斯克等科技界亿万富豪，甚至美国总统特朗普，都纷纷就黄仁勋的去留发表了看法。",
+            "特朗普周一在接受记者采访时表示，他支持黄仁勋重新出任英伟达首席执行官。\n特朗普说：“如果看到他回来，我当然不会介意。”他还表示，相信黄仁勋已经“吸取了一个深刻的教训”。\n同样是在周一，一名英伟达高级别员工向董事会主席哈维·琼斯写了一封信。这封信在英伟达高管层广泛流传，公开呼吁黄仁勋重新担任首席执行官。\n英伟达开发者技术总监纳德·哈利勒写道，整个先进计算生态系统和\n人工智能\n市场，都依赖于黄仁勋富有远见的领导力。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文未给出董事会决定或黄仁勋回归的时间表。",
+        "婚外情相关消息对应的治理与声誉风险是否完全消除，正文未说明。",
+        "正文没有提供产业链经营数据，且称美股开盘急跌原因不明，行情反转的持续性无法判断。"
+      ],
+      "usage": {
+        "total_tokens": 8985,
+        "prompt_tokens": 1591,
+        "completion_tokens": 7394
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bbc17f219c9d0a9c2ed92a63b704aeecfbadcb99dc68094a4d68e48e4821c4eb",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 894,
+      "scored_at": "2026-11-18T16:19:33.864004+08:00"
+    },
+    "318f81f10d79d787940762f08bd210b7c050f97811f5fa03d5111b455e59ea4e": {
+      "summary": "Klarna三季度收入10.1亿美元，高于9.642亿美元预期；四季度营收指引10.2亿至11.0亿美元，低于11.3亿美元预估，业绩与指引信号分化。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露单一支付公司的收入与指引，未提供影响宏观经济、流动性或六大指数的明确传导。",
+        "evidence": [
+          "财联社11月17日电，瑞典数字支付公司Klarna第三季度收入为10.1亿美元，预计为9.642亿美元；第四季度营收预计为10.2亿至11.0亿美元，预估为11.3亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.88,
+          "reason": "数字支付细分出现三季度收入超预期、四季度指引低于预估的分化信号，但单一公司表现不足以推断非银金融行业整体。",
+          "evidence": [
+            "财联社11月17日电，瑞典数字支付公司Klarna第三季度收入为10.1亿美元，预计为9.642亿美元；第四季度营收预计为10.2亿至11.0亿美元，预估为11.3亿美元。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "四季度营收为公司预计值，尚未实际实现。",
+        "材料未披露利润、成本、用户及市场份额变化，无法判断经营质量。",
+        "Klarna个例不能直接外推至A股非银金融板块。"
+      ],
+      "usage": {
+        "total_tokens": 2617,
+        "prompt_tokens": 1094,
+        "completion_tokens": 1523
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b109fc7861097e4a983fa30fa94542ee2d0206ed430a0a1a4e1c858b74c804be",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 86,
+      "scored_at": "2026-11-18T16:19:48.450689+08:00"
+    },
+    "b1a94e05bc7b315a2b130b23f3886afffa48400afbbb3c2bac2e6f5f83c970c9": {
+      "summary": "美商务部已发布限制远程获取先进半导体的措施，中方称其干涉正常贸易并冲击全球半导体产业链供应链；若美方继续，中方将采取反制措施。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "材料仅明确半导体产业链供应链稳定性受到冲击，未显示影响已传导至整体市场、通胀或六大指数，不作泛化。",
+        "evidence": [
+          "财联社11月17日电，商务部新闻发言人就美商务部发布限制远程获取先进半导体相关措施答记者问。问：11月16日，美国商务部发布限制远程获取先进半导体相关措施。请问中方对此有何评论？ 答：中方注意到有关情况。美方泛化国家安全概念，滥用出口管制，对中国企业与其他国家企业正常贸易合作横加干涉。美方做法背离两国元首达成的重要共识，破坏市场规则和国际经贸秩序，冲击全球半导体产业链供应链稳定。中方对此强烈不满，坚决反对。中方希望美方能够与中方相向而行，回到协商合作解决分歧的正确轨道上来。",
+          "若美方一意孤行，中方将采取反制措施，坚定维护国家主权、安全、发展利益。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.94,
+          "reason": "限制先进半导体远程获取并干涉正常贸易合作，直接增加电子产业供应链稳定及经营协作的不确定性，但具体覆盖范围和执行时间未披露。",
+          "evidence": [
+            "财联社11月17日电，商务部新闻发言人就美商务部发布限制远程获取先进半导体相关措施答记者问。问：11月16日，美国商务部发布限制远程获取先进半导体相关措施。请问中方对此有何评论？ 答：中方注意到有关情况。美方泛化国家安全概念，滥用出口管制，对中国企业与其他国家企业正常贸易合作横加干涉。美方做法背离两国元首达成的重要共识，破坏市场规则和国际经贸秩序，冲击全球半导体产业链供应链稳定。中方对此强烈不满，坚决反对。中方希望美方能够与中方相向而行，回到协商合作解决分歧的正确轨道上来。",
+            "若美方一意孤行，中方将采取反制措施，坚定维护国家主权、安全、发展利益。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "美方措施覆盖的半导体品类、远程获取定义、适用主体及执行时间未提供。",
+        "中方反制仍是条件性表态，具体工具、时间和范围尚未公布。",
+        "材料未提供具体公司经营数据或下游需求影响，无法识别明确受益方。"
+      ],
+      "usage": {
+        "total_tokens": 3111,
+        "prompt_tokens": 1181,
+        "completion_tokens": 1930
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bb2b0b3f8a5ef7bb723a00019e6c1059b6b740d3e53005bed6264d52542ecc53",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 274,
+      "scored_at": "2026-11-18T16:20:11.074679+08:00"
+    },
+    "495142b7b01cca1db14c714059a698b54016aa081811191e15b178178bd8ee72": {
+      "summary": "美国商务部发布限制远程获取先进半导体的措施，中方称其冲击全球半导体供应链稳定并强烈反对；若美方继续，中方将采取反制措施。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "材料仅涉及先进半导体贸易限制及中方反制表态，未提供对六大指数的明确宏观传导证据。",
+        "evidence": [
+          "财联社11月17日电，商务部新闻发言人就美商务部发布限制远程获取先进半导体相关措施答记者问。问：11月16日，美国商务部发布限制远程获取先进半导体相关措施。请问中方对此有何评论？ 答：中方注意到有关情况。美方泛化国家安全概念，滥用出口管制，对中国企业与其他国家企业正常贸易合作横加干涉。美方做法背离两国元首达成的重要共识，破坏市场规则和国际经贸秩序，冲击全球半导体产业链供应链稳定。中方对此强烈不满，坚决反对。中方希望美方能够与中方相向而行，回到协商合作解决分歧的正确轨道上来。",
+          "若美方一意孤行，中方将采取反制措施，坚定维护国家主权、安全、发展利益。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "negative",
+          "confidence": 0.86,
+          "reason": "限制远程获取先进半导体将压缩相关技术获取和贸易合作空间，增加电子行业半导体供给及经营不确定性，具体范围与期限未披露。",
+          "evidence": [
+            "财联社11月17日电，商务部新闻发言人就美商务部发布限制远程获取先进半导体相关措施答记者问。问：11月16日，美国商务部发布限制远程获取先进半导体相关措施。请问中方对此有何评论？ 答：中方注意到有关情况。美方泛化国家安全概念，滥用出口管制，对中国企业与其他国家企业正常贸易合作横加干涉。美方做法背离两国元首达成的重要共识，破坏市场规则和国际经贸秩序，冲击全球半导体产业链供应链稳定。中方对此强烈不满，坚决反对。中方希望美方能够与中方相向而行，回到协商合作解决分歧的正确轨道上来。",
+            "若美方一意孤行，中方将采取反制措施，坚定维护国家主权、安全、发展利益。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "美国措施的具体适用对象、技术范围、实施日期及执行期限未披露。",
+        "中方反制以美方继续执行为前提，尚未实际发生，具体措施未知。",
+        "材料未说明对各电子细分领域、不同企业及供应链环节的实际影响程度。"
+      ],
+      "usage": {
+        "total_tokens": 2395,
+        "prompt_tokens": 1195,
+        "completion_tokens": 1200
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bb2b0b3f8a5ef7bb723a00019e6c1059b6b740d3e53005bed6264d52542ecc53",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 274,
+      "scored_at": "2026-11-18T16:20:27.262091+08:00"
+    },
+    "6e402dedcba50c0a022abca4e62b49e964cd8e94c22a9c80bbc94280442322aa": {
+      "summary": "惠城环保连续两日收盘价跌幅偏离值累计超30%，控股股东、实控人兼董事张新功被留置，公司治理不确定性上升；公司称无应披露未披露重大事项，目前生产经营正常。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "事件仅涉及单一公司的交易异常及股东留置，正文未提供宏观政策、行业供需或指数传导依据。",
+        "evidence": [
+          "财联社11月17日电，惠城环保(300779.SZ)公告称，公司股票于11月16日、17日连续2个交易日收盘价跌幅偏离值累计超过30%，属于股票交易异常波动。经核查，公司不存在应披露而未披露的重大事项。公司控股股东、实际控制人、董事张新功被实施留置，公司尚未知悉进展及结论，目前生产经营正常。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "留置事件仅涉及惠城环保，公司目前生产经营正常且留置进展及结论未知，不足以推断环保行业需求、成本或盈利变化。",
+          "evidence": [
+            "财联社11月17日电，惠城环保(300779.SZ)公告称，公司股票于11月16日、17日连续2个交易日收盘价跌幅偏离值累计超过30%，属于股票交易异常波动。经核查，公司不存在应披露而未披露的重大事项。公司控股股东、实际控制人、董事张新功被实施留置，公司尚未知悉进展及结论，目前生产经营正常。"
+          ],
+          "sector_code": "801970.SI",
+          "sector_name": "环保",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "张新功被留置的进展、原因及结论尚未知悉。",
+        "公司称目前生产经营正常，但未说明后续是否受留置事项影响。",
+        "材料仅涉及单一公司，不能外推至环保行业整体经营或六大指数。"
+      ],
+      "usage": {
+        "total_tokens": 3682,
+        "prompt_tokens": 1096,
+        "completion_tokens": 2586
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "903bcf828982f57574e575138f467b4aa4a3bde5580c7aa861b5254048bd8c3c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 146,
+      "scored_at": "2026-11-18T16:20:45.915865+08:00"
+    },
+    "6952bb71946d96e93fc39cf7a483d18453f972a25c656157d05a1bc9bf9ef23d": {
+      "summary": "StoneX将百度目标价由150美元下调至125美元，构成估值观点下修信号，但未提供百度经营或行业基本面变化依据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "目标价下调属于机构估值观点调整，正文未披露经营、盈利、需求或宏观政策变化，无法确认实际市场影响。",
+        "evidence": [
+          "财联社11月17日电，StoneX将百度目标价从150美元下调至125美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "事件仅涉及百度目标价下调，未说明流量、收入、利润或政策环境变化，不能据此判断传媒行业经营受益或受损。",
+          "evidence": [
+            "财联社11月17日电，StoneX将百度目标价从150美元下调至125美元。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "StoneX未披露下调目标价的具体理由",
+        "未提供百度经营、业绩或行业需求变化信息",
+        "目标价调整对相关公司实际盈利及行业供需的影响无法确认"
+      ],
+      "usage": {
+        "total_tokens": 1995,
+        "prompt_tokens": 1042,
+        "completion_tokens": 953
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bd615584b7dd2c6c1a1c7f76b836f9e26348cd7b2903a75f9d638c2159ccdf17",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 38,
+      "scored_at": "2026-11-18T16:20:55.324975+08:00"
+    },
+    "3d50599312701d5112fcce69211476fca23358dd72325d38befe1fc1a9dc0d99": {
+      "summary": "《新闻联播》披露96.45%的统筹地区已支持以医保共济资金代缴参保费，并明确将加快再生资源回收体系建设；神舟二十四号已转运、拟近日择机发射，但相关行业订单与盈利增量均未披露。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "再生资源回收政策未给出总量投资或盈利数据，医保、航天、司法等新闻也未形成对六大指数的明确盈利或估值传导。",
+        "evidence": [
+          "财联社11月17日电，今天《新闻联播》主要内容有： 1、习近平会见越共中央总书记、国家主席苏林； 2、习近平会见墨西哥总统； 3、习近平会见秘鲁总统； 4、习近平会见智利总统； 5、习近平会见加拿大总理； 6、习近平会见巴布亚新几内亚总理； 7、习近平对人民法院工作作出重要指示强调 加快建设公正高效权威的社会主义司法制度 以高质量司法更好保障高质量发展和高水平安全； 8、央视快评：以高质量司法更好保障高质量发展和高水平安全； 9、习近平致电祝贺波黑新一届主席团成员就职； 10",
+          "、奋力开创粤港澳大湾区高质量发展新局面——习近平总书记在广东中山考察时的重要讲话引发广大干部群众热烈反响； 11、【学习贯彻党的二十届五中全会精神】中央宣讲团在各地宣讲党的二十届五中全会精神； 12、APEC“中国年”取得丰硕成果； 13、我国将加快推进再生资源回收体系建设； 14、神舟二十四号船箭组合体转运至发射区 计划近日择机发射； 15、《地理标志保护和运用“十五五”规划》公布； 16、全国96.45%统筹地区支持医保共济资金代缴参保费； 17、巴称加沙遭空袭 以军称打",
+          "击哈马斯人员； 18、俄称俄美乌三方谈判将继续举行； 19、伊朗外长：多国对“两日计划”表示支持。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.78,
+          "reason": "“将加快推进”属于政策计划，方向上利好再生资源回收利用相关细分需求；但缺少资金规模、时间表和盈利机制，不能外推全行业利润增量。",
+          "evidence": [
+            "、奋力开创粤港澳大湾区高质量发展新局面——习近平总书记在广东中山考察时的重要讲话引发广大干部群众热烈反响； 11、【学习贯彻党的二十届五中全会精神】中央宣讲团在各地宣讲党的二十届五中全会精神； 12、APEC“中国年”取得丰硕成果； 13、我国将加快推进再生资源回收体系建设； 14、神舟二十四号船箭组合体转运至发射区 计划近日择机发射； 15、《地理标志保护和运用“十五五”规划》公布； 16、全国96.45%统筹地区支持医保共济资金代缴参保费； 17、巴称加沙遭空袭 以军称打"
+          ],
+          "sector_code": "801970.SI",
+          "sector_name": "环保",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "转运及拟发射仅说明航天任务进展，未披露订单、交付、产能或收入变化，无法据此判断行业经营影响。",
+          "evidence": [
+            "、奋力开创粤港澳大湾区高质量发展新局面——习近平总书记在广东中山考察时的重要讲话引发广大干部群众热烈反响； 11、【学习贯彻党的二十届五中全会精神】中央宣讲团在各地宣讲党的二十届五中全会精神； 12、APEC“中国年”取得丰硕成果； 13、我国将加快推进再生资源回收体系建设； 14、神舟二十四号船箭组合体转运至发射区 计划近日择机发射； 15、《地理标志保护和运用“十五五”规划》公布； 16、全国96.45%统筹地区支持医保共济资金代缴参保费； 17、巴称加沙遭空袭 以军称打"
+          ],
+          "sector_code": "801740.SI",
+          "sector_name": "国防军工",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "医保共济资金代缴参保费有助于缴费，但未说明诊疗需求、医保支付范围或药企收入变化，不能据此判定医药行业受益。",
+          "evidence": [
+            "、奋力开创粤港澳大湾区高质量发展新局面——习近平总书记在广东中山考察时的重要讲话引发广大干部群众热烈反响； 11、【学习贯彻党的二十届五中全会精神】中央宣讲团在各地宣讲党的二十届五中全会精神； 12、APEC“中国年”取得丰硕成果； 13、我国将加快推进再生资源回收体系建设； 14、神舟二十四号船箭组合体转运至发射区 计划近日择机发射； 15、《地理标志保护和运用“十五五”规划》公布； 16、全国96.45%统筹地区支持医保共济资金代缴参保费； 17、巴称加沙遭空袭 以军称打"
+          ],
+          "sector_code": "801150.SI",
+          "sector_name": "医药生物",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "再生资源回收体系建设的资金来源、实施时间表和覆盖范围未披露。",
+        "神舟二十四号仅称拟近日择机发射，具体时间及任务结果存在不确定性。",
+        "医保共资代缴对医疗需求和企业盈利的增量作用未量化，海外冲突亦未给出明确供给或价格传导。"
+      ],
+      "usage": {
+        "total_tokens": 4876,
+        "prompt_tokens": 1357,
+        "completion_tokens": 3519
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "accc201f27ff0e55ffcb04af42d5cf991ba546e1f15a4892cf65e17bcc5cd7e7",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 529,
+      "scored_at": "2026-11-18T16:21:27.340978+08:00"
+    },
+    "35a575e6c92aad8338ff45f9767d0175225d0aee1d8cb07d7bffab084fe85210": {
+      "summary": "法院已批准*ST中基重整草案；按方案总股本将增至15.43亿股，5.61亿股由重整投资人有条件受让、2.10亿股用于偿债，普通债权30万元以下现金清偿、超出部分按6元/股以股抵债。影响限于公司资本结构和债务安排，正文未显示行业经营变化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "文章仅披露单一上市公司的重整及债务清偿安排，未提供对宏观总量或六大指数的明确传导路径。",
+        "evidence": [
+          "财联社11月17日电，*ST中基(000972.SZ)公告称，公司重整计划草案已获法院裁定批准。根据方案，公司以总股本7.71亿股为基数，按每10股转增10股比例实施资本公积金转增股票，共计转增7.71亿股，转增后总股本增至15.43亿股。转增股票不向原股东分配，其中5.61亿股由重整投资人有条件受让，剩余2.10亿股用于清偿债务。产业投资人新业集团以1.91元/股受让2.76亿股，财务投资人以2.52元/股合计受让2.85亿股。",
+          "普通债权30万元以下部分全额现金清偿，超过部分以6元/股价格以股抵债。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.45,
+          "reason": "重整仅涉及*ST中基的股本扩充、投资人受让及债务清偿；正文未披露行业供需或成本变化，无法据此判断食品饮料行业经营方向。",
+          "evidence": [
+            "财联社11月17日电，*ST中基(000972.SZ)公告称，公司重整计划草案已获法院裁定批准。根据方案，公司以总股本7.71亿股为基数，按每10股转增10股比例实施资本公积金转增股票，共计转增7.71亿股，转增后总股本增至15.43亿股。转增股票不向原股东分配，其中5.61亿股由重整投资人有条件受让，剩余2.10亿股用于清偿债务。产业投资人新业集团以1.91元/股受让2.76亿股，财务投资人以2.52元/股合计受让2.85亿股。",
+            "普通债权30万元以下部分全额现金清偿，超过部分以6元/股价格以股抵债。"
+          ],
+          "sector_code": "801120.SI",
+          "sector_name": "食品饮料",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "法院批准的是重整计划草案，后续股份转增、受让及债务清偿的完成时点和执行结果未披露。",
+        "5.61亿股有条件受让的具体条件未披露，转增股份不向原股东分配后的控制权及流动性影响尚不明确。",
+        "正文未披露公司具体主营业务及行业经营数据，缺乏申万行业层面的传导证据。"
+      ],
+      "usage": {
+        "total_tokens": 6235,
+        "prompt_tokens": 1200,
+        "completion_tokens": 5035
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b8461f0eb8bb295b57fd1f3c547950432ce33e5316f499074c2782e95fab53f4",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 252,
+      "scored_at": "2026-11-18T16:22:30.169366+08:00"
+    },
+    "f020d52030cf92b271f0d6790fdadcbf15705376598520d8d361e7d10aef26f4": {
+      "summary": "Stonex将Rivian目标价从25美元下调至20美元，属机构估值观点调整；原文未披露销量、成本或政策变化，无法据此判断汽车行业经营影响。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.9,
+        "reason": "仅有个股目标价下调，缺少基本面变化及宏观传导证据，不能外推至整体市场或六大指数。",
+        "evidence": [
+          "财联社11月17日电，Stonex将美国电动车企业Rivian目标价从25美元下调至20美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "目标价下调或反映对Rivian预期偏弱，但无销量、盈利或成本数据，且单一公司观点不能代表新能源汽车行业经营变化。",
+          "evidence": [
+            "财联社11月17日电，Stonex将美国电动车企业Rivian目标价从25美元下调至20美元。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "Stonex下调目标价的具体理由未提供",
+        "未披露Rivian的订单、交付、成本或盈利变化",
+        "无法确认该观点是否具有行业普遍性"
+      ],
+      "usage": {
+        "total_tokens": 1756,
+        "prompt_tokens": 1050,
+        "completion_tokens": 706
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "02505ce5d1d3acbe61a39a1c8491d45a0a8f045c2f00e63a09139091e961bb4f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 47,
+      "scored_at": "2026-11-18T16:22:37.115375+08:00"
+    },
+    "9bc6805df0b68c3dc2b57efdc0d1e4ab559c5d56e98aa0a6c7ecd7087e8b1372": {
+      "summary": "北鼎股份自查及问询控股股东、实控人后称无应披露未披露重大信息；截至11月17日市盈率高于同业均值，异常上涨后的风险提示增强。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "材料仅涉及公司个股异常波动及估值风险，未提供对宏观增长、通胀或流动性的明确传导。",
+        "evidence": [
+          "财联社11月17日电，北鼎股份(300824.SZ)公告称，公司股票于2026年11月16日、17日连续2个交易日收盘价格涨幅偏离值累计超过30%，属于股票交易异常波动。经自查及问询控股股东和实际控制人，不存在应披露而未披露的重大信息。截至11月17日，公司股票收盘价为9.98元/股，换手率17.89%，滚动市盈率33.62倍，高于同行业平均水平。公司提醒投资者注意投资风险。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.94,
+          "reason": "材料仅涉及北鼎股份交易异常及估值风险，未披露需求、成本、收入或盈利变化，无法据此判断家电行业经营方向。",
+          "evidence": [
+            "财联社11月17日电，北鼎股份(300824.SZ)公告称，公司股票于2026年11月16日、17日连续2个交易日收盘价格涨幅偏离值累计超过30%，属于股票交易异常波动。经自查及问询控股股东和实际控制人，不存在应披露而未披露的重大信息。截至11月17日，公司股票收盘价为9.98元/股，换手率17.89%，滚动市盈率33.62倍，高于同行业平均水平。公司提醒投资者注意投资风险。"
+          ],
+          "sector_code": "801110.SI",
+          "sector_name": "家用电器",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "异常波动的具体驱动因素未披露，无法判断交易情绪能否持续。",
+        "公司自查结论不能排除未发现或后续出现的经营变化。",
+        "仅有截至11月17日的交易与估值数据，缺少后续经营和财务信息。"
+      ],
+      "usage": {
+        "total_tokens": 2371,
+        "prompt_tokens": 1125,
+        "completion_tokens": 1246
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "b45753c66d00e16c65f49c1b16abf49c0a5dbd701c8697b2786d22aa532006f8",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 189,
+      "scored_at": "2026-11-18T16:22:49.141976+08:00"
     }
   },
   "failures": {
