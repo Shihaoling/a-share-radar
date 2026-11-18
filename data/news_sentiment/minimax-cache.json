@@ -8590,6 +8590,725 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 34,
       "scored_at": "2026-11-18T09:49:01.296974+08:00"
+    },
+    "a0364b54ba6a53e427b4cc44448b1c944f8f4b4eec41a5dc7af40c796ebbbd8d": {
+      "summary": "英伟达财报带动美股AI硬件板块盘后走高，SK海力士、泰瑞达涨近2%，闪迪涨超2%，Lumentum涨超3%；该信息仅显示相关标的交易情绪，尚无订单或盈利传导证据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "正文仅披露美股AI硬件个股盘后上涨，未提供宏观需求、流动性或六大指数传导证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达财报带动美股AI硬件板块盘后走高，SK海力士、泰瑞达涨近2%，闪迪涨超2%，Lumentum涨超3%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.86,
+          "reason": "相关半导体及光通信标的上涨仅表明AI硬件风险偏好回升；正文没有需求、订单、价格或资本开支数据，无法确认电子行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，英伟达财报带动美股AI硬件板块盘后走高，SK海力士、泰瑞达涨近2%，闪迪涨超2%，Lumentum涨超3%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文未披露英伟达财报的收入、利润、指引或AI需求数据。",
+        "仅有海外个股盘后涨跌幅，缺少订单、价格、产能利用率等经营指标。",
+        "海外市场情绪能否传导至A股及相关产业经营尚无证据。"
+      ],
+      "usage": {
+        "total_tokens": 3906,
+        "prompt_tokens": 1088,
+        "completion_tokens": 2818
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "479e571a5ed1a99f1cf88fcea7f1c1ab7b40d812f1c22635e7d7db4ce099c33f",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 65,
+      "scored_at": "2026-11-18T10:10:03.549098+08:00"
+    },
+    "40dff710fc97b05516600cdcff7e6ab69bd69d4cc9d02dcbedd3dae65ef8d595": {
+      "summary": "英伟达称新云协议总额达320亿美元，CoreWeave、Nebius盘后均涨超5%。消息强化AI新云需求预期，但协议期限、口径及收入兑现节奏未披露。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "消息仅涉及美股AI新云公司及英伟达协议规模，缺少对六大指数盈利、流动性或宏观需求的明确传导。",
+        "evidence": [
+          "财联社11月18日电，美股AI新云（Neocloud）公司CoreWeave、Nebius盘后均涨超5%。消息面上，英伟达称新云协议总额达320亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.85,
+          "reason": "320亿美元新云协议对AI云服务及算力基础设施需求形成正向信号，但协议执行范围、期限和兑现节奏不明。",
+          "evidence": [
+            "财联社11月18日电，美股AI新云（Neocloud）公司CoreWeave、Nebius盘后均涨超5%。消息面上，英伟达称新云协议总额达320亿美元。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.7,
+          "reason": "英伟达披露新云协议规模，指向AI算力硬件需求；电子行业仅AI芯片等直接环节可能受益，供货与收入确认未披露。",
+          "evidence": [
+            "财联社11月18日电，美股AI新云（Neocloud）公司CoreWeave、Nebius盘后均涨超5%。消息面上，英伟达称新云协议总额达320亿美元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "协议具体对手方、期限及收入确认方式未披露",
+        "320亿美元总额的合同约束力和执行范围不明",
+        "未提供对中国相关产业链的订单或利润映射"
+      ],
+      "usage": {
+        "total_tokens": 3852,
+        "prompt_tokens": 1088,
+        "completion_tokens": 2764
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "23cc79852c9a9b538ea5d06449ee5f3e31c22fae7f0245998258d97808435f61",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 76,
+      "scored_at": "2026-11-18T10:10:47.339141+08:00"
+    },
+    "280c97fb5cac6bf0beeed544bd3d77ba3bd72b613492a0563a122962ae11532b": {
+      "summary": "英伟达称Vera Rubin平台环比新增近200亿美元营收，超大规模客户与ACIE贡献强劲且多元，显示该平台商业化兑现，但尚无证据表明影响已扩散至全行业。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露单一平台营收及客户贡献，未建立对六大指数或宏观盈利的明确传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达表示，Vera Rubin平台环比新增近200亿美元营收，超大规模客户和ACIE均贡献强劲且多元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.88,
+          "reason": "Vera Rubin平台营收环比大幅增加且客户贡献多元，支持相关电子及算力硬件需求判断；但信息仅涉及英伟达单一平台，不能外推整个行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达表示，Vera Rubin平台环比新增近200亿美元营收，超大规模客户和ACIE均贡献强劲且多元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "未披露环比比较基期及“新增近200亿美元营收”的具体口径。",
+        "未披露超大规模客户与ACIE各自的贡献金额、后续订单或指引。",
+        "单一平台数据不足以证明电子行业整体需求和利润同步改善。"
+      ],
+      "usage": {
+        "total_tokens": 2410,
+        "prompt_tokens": 1066,
+        "completion_tokens": 1344
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d7635b2bfcda30a9e33282b824d2da3cf5a981ef708a6fdcbc2422ad93b3ea0d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 63,
+      "scored_at": "2026-11-18T10:11:14.614528+08:00"
+    },
+    "1ca8f374c92e590c95a828b227558c1683332f3664c23dc659e3c3ceb1e3e57f": {
+      "summary": "英伟达董事会批准新增1500亿美元股票回购计划，属已披露的公司资本安排；材料未提供回购执行节奏及其对经营或行业的影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "仅涉及英伟达董事会的回购批准，材料未提供明确的宏观传导路径，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，英伟达董事会批准增加1500亿美元股票回购计划。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.9,
+          "reason": "回购计划直接关联英伟达公司资本安排，但材料未显示电子行业供需、盈利或资本开支发生变化，不能外推至全行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达董事会批准增加1500亿美元股票回购计划。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "回购的具体执行期限、节奏及完成情况未披露。",
+        "对英伟达现金流、每股收益及估值的影响未量化。",
+        "材料未显示对电子行业经营基本面的传导。"
+      ],
+      "usage": {
+        "total_tokens": 2220,
+        "prompt_tokens": 1038,
+        "completion_tokens": 1182
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "e59f3f2b4331bf6f6812ff98315689504ac053afba4f1c3f89e251b5e89f8a29",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 35,
+      "scored_at": "2026-11-18T10:11:44.739593+08:00"
+    },
+    "332faa93b9acde3d1ba3458abd2b6af493875d763c0f1c487c2e927c19ca5ae6": {
+      "summary": "英伟达董事会批准增加1500亿美元股票回购计划，剩余回购授权额度为2273亿美元。该安排属于公司资本回报决策，材料未显示对行业经营或宏观市场的明确影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "材料仅披露单一公司的股票回购授权，缺少对行业供需、盈利或宏观经济的明确传导证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达董事会批准增加1500亿美元股票回购计划，剩余股票回购授权额度为2273亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "回购仅涉及英伟达资本回报安排，未提供芯片订单、供需、价格或行业盈利变化证据，不能外推至电子行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达董事会批准增加1500亿美元股票回购计划，剩余股票回购授权额度为2273亿美元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "2273亿美元为剩余授权额度，实际回购规模与执行节奏未披露",
+        "未说明回购资金来源、执行期限及对股本的影响",
+        "材料未提供行业经营或宏观市场传导证据"
+      ],
+      "usage": {
+        "total_tokens": 1977,
+        "prompt_tokens": 1058,
+        "completion_tokens": 919
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "a42fa45dc12252a1906e666e4dc99eb56e734e5c6e39744946ef3055313886b2",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 54,
+      "scored_at": "2026-11-18T10:11:56.681744+08:00"
+    },
+    "062373fa0c0f355659f8c0504f6db2f5abb16658b2373bc4fb5b4ccf836a6426": {
+      "summary": "英伟达连续第15个季度营收超出预估上限，当期商业兑现好于预期；临时CEO称路线图按计划，属管理层表态，电子行业相关芯片细分预期偏正，但行业订单外溢尚无证据。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅涉及英伟达单家公司的业绩和路线图状态，未明确说明对六大指数盈利、估值或流动性的传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达连续第15个季度营收超出预估上限。英伟达临时CEO称路线图按计划进行。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.78,
+          "reason": "英伟达营收超预估上限且称路线图按计划，提升电子行业相关芯片环节的景气与产品兑现预期；证据仅覆盖单家公司，无法确认行业订单和盈利同步改善。",
+          "evidence": [
+            "财联社11月18日电，英伟达连续第15个季度营收超出预估上限。英伟达临时CEO称路线图按计划进行。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "未披露营收增速、利润率、订单或具体产品数据，无法量化景气强度。",
+        "“路线图按计划”仅为临时CEO表态，具体节点及后续兑现存在不确定性。",
+        "单家公司业绩不能证明电子全行业或A股相关公司的订单、盈利同步改善。"
+      ],
+      "usage": {
+        "total_tokens": 2908,
+        "prompt_tokens": 1062,
+        "completion_tokens": 1846
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "d201fc7dcadc83f9233542dc6150cf1d1f74147a2070a411441ad64027e8b7f5",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 49,
+      "scored_at": "2026-11-18T10:12:17.459163+08:00"
+    },
+    "e61b32c3c6ae13eda0890df314579350e5dd7d34055b1e8b1e52a5f6d9120d33": {
+      "summary": "英伟达预计第四季度营收1274亿至1326亿美元，高于市场预期，盘后股价涨超2%。公司收入指引积极，但不足以推断半导体全行业或大盘方向。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.96,
+        "reason": "仅披露英伟达业绩指引及股价反应，缺少对六大指数的明确宏观传导证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达股价盘后涨超2%。公司预计第四季度营收1274亿至1326亿美元，高于市场预期。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "英伟达营收指引高于预期对公司构成积极信号，但缺少订单、利润率及同业数据，无法外推至电子行业整体。",
+          "evidence": [
+            "财联社11月18日电，英伟达股价盘后涨超2%。公司预计第四季度营收1274亿至1326亿美元，高于市场预期。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "第四季度营收为预计值，尚未兑现",
+        "缺少订单、利润率及客户结构信息",
+        "单一公司数据不足以判断电子行业整体景气"
+      ],
+      "usage": {
+        "total_tokens": 2100,
+        "prompt_tokens": 1066,
+        "completion_tokens": 1034
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "097399db70de5bf3d57f00ff00488f5626aced3967ee406087f66a6ef8de688e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 54,
+      "scored_at": "2026-11-18T10:12:28.436142+08:00"
+    },
+    "19796b577cfbfa7bae24d1b4b967a0bd5a87cafc77af99d97cb439a2896dfa59": {
+      "summary": "英伟达预计第四季度营收1261亿至1339亿美元，高于市场预期，盘后股价涨超2%；正面信号集中于芯片细分，尚不足以推断全行业或大盘影响。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "消息仅涉及英伟达业绩指引及盘后股价，未提供对宏观经济或主要指数的明确传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达股价盘后涨超2%。公司预计第四季度营收1261亿至1339亿美元，高于市场预期。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.9,
+          "reason": "英伟达营收指引高于预期，为芯片板块提供正面业绩信号；但仅为单家公司指引，不能外推至电子全行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达股价盘后涨超2%。公司预计第四季度营收1261亿至1339亿美元，高于市场预期。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "第四季度营收为公司预计，最终实现值仍存在不确定性。",
+        "正文未提供产品结构、利润率或客户需求数据，无法判断业绩质量及细分影响。",
+        "单一公司指引不足以证明电子全行业需求改善或形成宏观传导。"
+      ],
+      "usage": {
+        "total_tokens": 2685,
+        "prompt_tokens": 1066,
+        "completion_tokens": 1619
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "54564cfe065c0959074c363abe6e7ddfb8818d0281db1172a68c84f815b88d16",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 54,
+      "scored_at": "2026-11-18T10:12:47.332195+08:00"
+    },
+    "fbbcc022e62aa407f42cdce8883c84afb5416f4495ecf98d53d45c6cd774fcd3": {
+      "summary": "英伟达第三季度营收1158亿美元、同比增103.1%，数据中心收入1076亿美元，均超预期；第四季度营收指引1274亿至1326亿美元亦高于预期，强化电子行业相关硬件景气预期。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "正文仅披露英伟达单家公司业绩与指引，未提供向宏观需求、通胀或企业盈利广泛传导的证据。",
+        "evidence": [
+          "财联社11月18日电，英伟达第三季度营收1158亿美元，环比长20.3%，同比增103.1%，预期1093.3亿美元。其中数据中心营收1076亿美元，预期1018.7亿美元。调整后毛利率74.9%。英伟达预计第四季度营收1274亿至1326亿美元，预期1252.5亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.9,
+          "reason": "数据中心收入和总营收超预期，且四季度指引高于预期，直接强化半导体及算力硬件需求与盈利预期；外溢至全行业仍待验证。",
+          "evidence": [
+            "财联社11月18日电，英伟达第三季度营收1158亿美元，环比长20.3%，同比增103.1%，预期1093.3亿美元。其中数据中心营收1076亿美元，预期1018.7亿美元。调整后毛利率74.9%。英伟达预计第四季度营收1274亿至1326亿美元，预期1252.5亿美元。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "第四季度数据为公司指引而非已实现业绩，正文未给出达成条件。",
+        "正文仅涉及英伟达一家公司，不能据此确认电子行业整体订单与利润同步改善。",
+        "正文未提供明确宏观传导或产业链采购变化，无法判断整体市场方向。"
+      ],
+      "usage": {
+        "total_tokens": 2752,
+        "prompt_tokens": 1094,
+        "completion_tokens": 1658
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "61e542b1dd897c379dd75bccc6a04637f69f3bb058ca94236f61c5417b0a506d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 136,
+      "scored_at": "2026-11-18T10:13:01.652816+08:00"
+    },
+    "d2f7af93d10ce53fec8772b6f14bd71de89a9fb3d5078f56df8aecb638fc724b": {
+      "summary": "英伟达第三财季营收1158亿美元、数据中心营收1076亿美元，均高于文中预期；公司预计第四财季营收1261亿至1339亿美元，亦高于预期，第三财季调整后毛利率为74.9%。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露英伟达业绩与指引，未给出对六大指数盈利或宏观流动性的明确传导。",
+        "evidence": [
+          "财联社11月18日电，英伟达第三季度营收1158亿美元，环比增长20.3%，同比增长103.1%，预期1093.3亿美元。其中数据中心营收1076亿美元，环比增长21%，同比增长110%，预期1018.7亿美元。调整后毛利率74.9%。英伟达预计第四季度营收1261亿至1339亿美元，预期1252.5亿美元。英伟达预计第四季度GAAP和非GAAP毛利率在71.0%至72.0%之间。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.84,
+          "reason": "英伟达业绩及数据中心收入超预期、下一季指引高于预期，表明其高性能计算相关业务景气；但仅为单一公司，不能外推至消费电子等全行业。",
+          "evidence": [
+            "财联社11月18日电，英伟达第三季度营收1158亿美元，环比增长20.3%，同比增长103.1%，预期1093.3亿美元。其中数据中心营收1076亿美元，环比增长21%，同比增长110%，预期1018.7亿美元。调整后毛利率74.9%。英伟达预计第四季度营收1261亿至1339亿美元，预期1252.5亿美元。英伟达预计第四季度GAAP和非GAAP毛利率在71.0%至72.0%之间。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "第四财季营收及毛利率均为公司预测，实际结果可能偏离指引。",
+        "材料未说明数据中心业务增长能否持续至更长期。",
+        "单一公司表现对电子行业其他细分及六大指数的传导未披露。"
+      ],
+      "usage": {
+        "total_tokens": 2630,
+        "prompt_tokens": 1123,
+        "completion_tokens": 1507
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "422cd89344da536752ce2158714a5e025c705f58f56c90e4fe26b8ed32692114",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 192,
+      "scored_at": "2026-11-18T10:13:18.203049+08:00"
+    },
+    "10a0caa505ad8ca701745b00a7fc5c3601e6cec63c34237af6991fe4d47eed17": {
+      "summary": "Credo与Marvell已就有源电缆专利权达成协议，但协议条款、许可费用及后续经营影响均未披露，暂无法判断净影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "公司层面的专利权协议缺乏明确宏观传导，不能据此判断大盘或主要指数影响。",
+        "evidence": [
+          "财联社11月18日电，Credo宣布与Marvell就有源电缆专利权利达成协议。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.4,
+          "reason": "协议涉及相关科技企业的有源电缆专利权，可能影响法律确定性，但条款及成本、许可收入变化未披露，不能外推行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，Credo宣布与Marvell就有源电缆专利权利达成协议。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "协议是否包含专利许可、转让或诉讼终止安排未披露",
+        "对相关公司收入、成本及产品竞争格局的影响未披露"
+      ],
+      "usage": {
+        "total_tokens": 2304,
+        "prompt_tokens": 1043,
+        "completion_tokens": 1261
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "a69e40b24ad8738bd02c0dce576f080b4c15561f4cda936543f2681a59ffa474",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 40,
+      "scored_at": "2026-11-18T10:13:48.122401+08:00"
+    },
+    "38e7c074648df18db59ae55d531e34d846e916356e863eb2c17686601a349ead": {
+      "summary": "纳斯达克100 ETF QQQ于11月18日盘后上涨0.3%，反映该时段美股相关资产价格走强；正文未说明驱动因素及其对A股的传导。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "仅披露QQQ盘后涨幅，未提供驱动因素、持续性或向A股指数及行业盈利传导的明确证据。",
+        "evidence": [
+          "财联社11月18日电，纳斯达克100 ETF QQQ盘后上涨0.3%。"
+        ]
+      },
+      "sector_impacts": [],
+      "uncertainties": [
+        "盘后涨幅是否持续至下一交易时段未知",
+        "上涨驱动因素未披露",
+        "对A股行业基本面及指数的传导缺乏证据"
+      ],
+      "usage": {
+        "total_tokens": 1732,
+        "prompt_tokens": 1040,
+        "completion_tokens": 692
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "028dadba33174d6f83883167fb28f5daf4a51345a1b5b99f932c033930bac7a7",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 35,
+      "scored_at": "2026-11-18T10:13:54.837266+08:00"
+    },
+    "739c9b117d4ad477097c61fdaebdaddb0aff4914767472b103bcb3c304da70df": {
+      "summary": "京东收跌7.7%，腾讯、阿里均跌4.4%，KWEB和CQQQ分别跌2.1%和1.5%。材料仅反映中概资产价格波动，未披露经营或宏观基本面变化。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅披露热门中概股及ETF价格下跌，未给出宏观政策、需求或成本传导证据，无法判断整体市场影响。",
+        "evidence": [
+          "财联社11月18日电，热门中概股里，京东初步收跌7.7%，腾讯跌4.4%，阿里跌4.4%。ETF中，KWEB跌2.1%，CQQQ跌1.5%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.92,
+          "reason": "京东与阿里股价下跌仅属行情表现，材料未披露电商需求、履约成本或盈利变化，不能据此判定行业经营方向。",
+          "evidence": [
+            "财联社11月18日电，热门中概股里，京东初步收跌7.7%，腾讯跌4.4%，阿里跌4.4%。ETF中，KWEB跌2.1%，CQQQ跌1.5%。"
+          ],
+          "sector_code": "801200.SI",
+          "sector_name": "商贸零售",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "腾讯收跌仅反映互联网公司股价表现，材料未提供广告、游戏、内容业务或监管变化，不能据此判定传媒经营受损。",
+          "evidence": [
+            "财联社11月18日电，热门中概股里，京东初步收跌7.7%，腾讯跌4.4%，阿里跌4.4%。ETF中，KWEB跌2.1%，CQQQ跌1.5%。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "报道为初步收盘表现，最终数据可能存在差异",
+        "未说明股价下跌的触发因素",
+        "缺少公司经营、行业需求及宏观传导证据"
+      ],
+      "usage": {
+        "total_tokens": 3883,
+        "prompt_tokens": 1062,
+        "completion_tokens": 2821
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0ad930509b6f10502e8e41baad6a63843bbbfc9e4d1483cabd478ca89f46cc4d",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 70,
+      "scored_at": "2026-11-18T10:14:18.228526+08:00"
+    },
+    "f239157eb3099d4b8527301158077e5e027f9296ffe6d1ecba162cd292f790d3": {
+      "summary": "美股三大指数集体收跌，芯片股多数走弱但博通逆势上涨，光通信股多数上扬，呈现大盘承压下的结构分化。材料未披露订单、成本或盈利变化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "negative",
+        "confidence": 0.99,
+        "reason": "美股三大指数同步收跌，已发生的是美国股市当日整体承压；光通信股上涨属于局部例外。",
+        "evidence": [
+          "财联社11月18日电，美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%；博通涨超2%。光通信股逆势上扬，Coherent涨超3%，Lumentum、Ciena、Credo、康宁涨超2%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.96,
+          "reason": "材料仅显示台积电、美光、英伟达下跌而博通上涨，反映芯片个股股价分化，未披露需求、产能、成本或盈利变化。",
+          "evidence": [
+            "财联社11月18日电，美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%；博通涨超2%。光通信股逆势上扬，Coherent涨超3%，Lumentum、Ciena、Credo、康宁涨超2%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.95,
+          "reason": "光通信相关美股多数上涨，但材料未提供订单、需求、价格或盈利证据，不能据此认定通信行业经营受益。",
+          "evidence": [
+            "财联社11月18日电，美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%；博通涨超2%。光通信股逆势上扬，Coherent涨超3%，Lumentum、Ciena、Credo、康宁涨超2%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "耐克股价大跌仅是单家公司市场表现，材料未说明销售、渠道、成本或利润变化，不能外推至纺织服饰行业。",
+          "evidence": [
+            "财联社11月18日电，美股三大股指集体收跌，道琼斯指数跌1.64%，标普500指数跌1.02%，纳斯达克综合指数跌0.74%。芯片股尾盘拉升跌幅收窄，台积电跌近4%，美光科技跌近1%，英伟达跌0.48%；博通涨超2%。光通信股逆势上扬，Coherent涨超3%，Lumentum、Ciena、Credo、康宁涨超2%。其他个股方面，SpaceX涨超3%，耐克跌超6%，谷歌跌超1%。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "材料仅覆盖美股单日行情，未提供任何产业经营数据。",
+        "未说明指数及个股涨跌的原因或是否可持续。",
+        "未提供相关海外行情向A股及六大指数传导的证据。"
+      ],
+      "usage": {
+        "total_tokens": 3572,
+        "prompt_tokens": 1136,
+        "completion_tokens": 2436
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "4ce356944c3749ea0e2521095cf0e1e064dd974fc5f02a3b2e79d1c3ccd97ea4",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 191,
+      "scored_at": "2026-11-18T10:14:47.241594+08:00"
+    },
+    "45074e5248477de3da6559dfaa04aaa25e4b991d550c19fcf97c6a8324ddff07": {
+      "summary": "消息人士称，AppLovin正参与可能收购广告科技公司Criteo的洽商；目前仅确认潜在交易讨论，尚无协议、条款或落地结果。",
+      "tone": "neutral",
+      "fact_status": "rumor",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.7,
+        "reason": "事件涉及单一公司潜在并购，正文无交易条款或明确宏观传导，无法判断市场影响。",
+        "evidence": [
+          "财联社11月18日电，消息人士称，AppLovin是正在洽谈可能收购广告科技公司Criteo的公司之一。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.6,
+          "reason": "Criteo被描述为广告科技公司，潜在收购或影响广告技术竞争格局；但交易尚在洽谈且无条款，不能判断行业经营受益或受损。",
+          "evidence": [
+            "财联社11月18日电，消息人士称，AppLovin是正在洽谈可能收购广告科技公司Criteo的公司之一。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "消息人士身份及信息来源可靠性未披露",
+        "交易能否达成及是否签署正式协议未知",
+        "交易金额、融资方式和业务整合安排均未披露"
+      ],
+      "usage": {
+        "total_tokens": 2108,
+        "prompt_tokens": 1058,
+        "completion_tokens": 1050
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "1b0a4bc1dee5c46caeafa99c0295216797c11eedec911d2ff7800f7445b22a68",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 52,
+      "scored_at": "2026-11-18T10:14:58.465469+08:00"
+    },
+    "77bac760b1b829d651bbf69a5a6a23c56e306825bfa0708df9bb099f7b65e025": {
+      "summary": "耐克股价跌幅扩大至7%，体现公司层面的负面市场表现，但正文未提供经营基本面变化或行业传导依据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.97,
+        "reason": "仅披露耐克股价下跌，未显示明确宏观传导路径，不能据此判断六大指数方向。",
+        "evidence": [
+          "财联社11月18日电，耐克股价跌幅扩大至7%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.93,
+          "reason": "耐克股价下跌不等同于行业需求、成本或盈利恶化，单一公司股价表现不足以外推至纺织服饰行业经营。",
+          "evidence": [
+            "财联社11月18日电，耐克股价跌幅扩大至7%。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "正文未披露股价下跌原因",
+        "缺少耐克经营、订单或财务数据",
+        "无法判断事件是否会影响运动服饰行业整体"
+      ],
+      "usage": {
+        "total_tokens": 1989,
+        "prompt_tokens": 1028,
+        "completion_tokens": 961
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "3c21f3f117b9e3c86e8d79de08a4da0715574d77b42c7445f7b6e5ea0259fbda",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 23,
+      "scored_at": "2026-11-18T10:15:06.603885+08:00"
     }
   },
   "failures": {

@@ -2153,6 +2153,48 @@
       "reason": "article_body_not_found",
       "attempted_at": "2026-11-18T09:38:39.766567+08:00",
       "retry_after": "2026-11-19T09:38:39.766567+08:00"
+    },
+    "a1bdb43bd9d916d69fc532198431f330e030a9551ff767123481f3c69fdc0156": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68225",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "a148fadf946c26c24b7555539175825eba31e89f511e2b4ba35d455054bf4cda": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68224",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "becfb45a459ae5cb357f40c49f32be45cd3c5df1983f862294cd3b563c962be2": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68204",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "fcdc5fa84a432ec44f7e11a9c7d1422ba1405225ad4bd06921e6d5ad55294e03": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68184",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "e0e70cabf6c7a7a03e02d9a50ecd5d514db3cc8bcd6b2042450f1d69b91c6409": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68164",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
+    },
+    "d5b166b152066e00b9e30d77ae4de69b6c7dc4f752ced61543134d8ab7ad11a8": {
+      "url": "https://www.eia.gov/todayinenergy/detail.php?id=68144",
+      "status": "unavailable",
+      "reason": "article_body_not_found",
+      "attempted_at": "2026-11-18T10:07:29.800583+08:00",
+      "retry_after": "2026-11-19T10:07:29.800583+08:00"
     }
   },
   "hosts": {
