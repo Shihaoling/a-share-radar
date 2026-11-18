@@ -3,7 +3,7 @@ Description=Label and resume historical news batches
 
 [Timer]
 Unit=ashare-training-news@label.service
-OnCalendar=*-*-* 00..08,16..23:00/2:43 Asia/Shanghai
+OnCalendar=*-*-* 00..08,16..23:00/3:43 Asia/Shanghai
 OnCalendar=*-*-* 09..15:00/6:43 Asia/Shanghai
 AccuracySec=2s
 Persistent=true

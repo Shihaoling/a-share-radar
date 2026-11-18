@@ -27,6 +27,8 @@ ROOT = STATE / "training-news"
 SOURCE = "SXData / 财联社快讯"
 OUTPUT = STATE / "training-status/progress.json"
 VERSION = "historical-news-v2"
+MIN_LABEL_BATCH_GAP = timedelta(seconds=60)
+LABEL_TRANSPORT_RETRY_DELAY = timedelta(minutes=5)
 BATCH_PROMPT = system_prompt() + """
 这次输入是多篇独立快讯。每项按上面的单篇结构分析，增加该项输入 id。
 整体输出 {"articles":[{"id":"N1",...}, {"id":"N2",...}]}。每篇须单独判断，
@@ -286,6 +288,12 @@ def label(db, now, limit):
     stamp = now.isoformat(timespec="seconds")
     if metadata(db, "label_pause_until") > stamp:
         return
+    last_attempt = db.execute("SELECT at,attempted,outcome FROM usage ORDER BY id DESC LIMIT 1").fetchone()
+    if last_attempt and now < datetime.fromisoformat(last_attempt["at"]) + MIN_LABEL_BATCH_GAP:
+        print(json.dumps({"label": "inter_batch_wait"}), flush=True)
+        return
+    if last_attempt and last_attempt["outcome"] == "transport_error":
+        limit = min(limit, max(1, last_attempt["attempted"] // 2))
     rows = db.execute("""SELECT * FROM articles WHERE label IS NULL AND length(body)>0 AND retry_at<=?
                           AND tries<6 ORDER BY tries, published_at LIMIT ?""", (stamp, limit)).fetchall()
     if not rows:
@@ -305,8 +313,9 @@ def label(db, now, limit):
         response = label_batch(rows, key)
     except ModelFailure as error:
         with db:
-            delay = max(60, min(error.retry, 86400))
-            retry = (shanghai_now()+timedelta(seconds=delay)).isoformat(timespec="seconds")
+            delay = (LABEL_TRANSPORT_RETRY_DELAY if error.code == "transport_error"
+                     else timedelta(seconds=max(60, min(error.retry, 86400))))
+            retry = (shanghai_now()+delay).isoformat(timespec="seconds")
             if error.code.startswith(("invalid_", "input_over_budget", "incomplete_response")):
                 db.executemany("UPDATE articles SET tries=tries+1,retry_at=?,error=? WHERE id=?",
                                ((retry, error.code, row["id"]) for row in rows))
@@ -424,7 +433,9 @@ if __name__ == "__main__":
         if args.job=="collect":
             collect(db,now)
         elif args.job=="label":
-            label(db,now,args.batch_size)
+            with (ROOT/"label.lock").open("a") as lock:
+                fcntl.flock(lock,fcntl.LOCK_EX)
+                label(db,shanghai_now(),args.batch_size)
         elif args.job=="export":
             export(db)
         with (ROOT/"progress.lock").open("a") as lock:
