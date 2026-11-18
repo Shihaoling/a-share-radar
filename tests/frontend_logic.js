@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -132,6 +132,26 @@ function runFrontendChecks(source) {
     eq(partial.news,d.news);eq(partial.market[0].id,'fresh-index');eq(partial.unavailable_sections[0],'资讯');
     const cold=api.validateSnapshot(next,null);eq(cold.news,undefined);eq(cold.market[0].id,'fresh-index');
     eq(api.validateSnapshot({...next,news:[]},partial).unavailable_sections,undefined);
+  });
+
+  check('exchange breadth and rankings compare one observed date while preserving older reference prices',()=>{
+    const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date());
+    const yesterday=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const sector=(id,day,change)=>({id,name:id,taxonomy:'SSE',provider:'stock_api',price:100,change_pct:change,
+      timestamp_quality:'source_reported',quote_date:day,quote_timestamp:day+'T00:00:00+08:00'});
+    const stale=sector('昨日领涨',yesterday,8),now=sector('今日小跌',today,-1);
+    const pending={id:'pending',name:'尚无行情',taxonomy:'SSE'};
+    const pre={...d,sectors:[stale,pending]};
+    eq(api.sectorComparison(pre.sectors).day,yesterday);
+    eq(api.sourceCoverage(pre).today,0);eq(api.sourceCoverage(pre).quoted,1);
+    ok(text(api.leadersPanel(pre)).includes('昨日领涨'));
+    const part={...d,sectors:[stale,now,pending]},comparison=api.sectorComparison(part.sectors);
+    eq(comparison.day,today);eq(comparison.ranked.length,1);eq(comparison.rows[0].sector.id,now.id);
+    eq(comparison.label,today+' 涨跌幅覆盖 1 / 3');eq(api.sourceCoverage(part).today,1);eq(api.sourceCoverage(part).quoted,2);
+    ok(text(api.marketBreadth(part)).includes('0 涨'));ok(text(api.marketBreadth(part)).includes('1 跌'));
+    ok(!text(api.leadersPanel(part)).includes(stale.name));ok(text(api.leadersPanel(part)).includes(now.name));
+    ok(text(api.heatmap(part)).includes(yesterday+' 参考'));ok(!text(api.heatmap(part)).includes('+8.00%'));
+    eq(api.relayIntraday({trade_date:yesterday,series:{[stale.id]:[[stale.quote_timestamp,100]]}},stale,stale,today).length,0);
   });
 
   const closeForecast={schema_version:1,status:'ready',model_id:'daily-research-20261117',issued_at:'2026-11-17T01:00:00+08:00',trained_at:'2026-11-17T00:50:00+08:00',target_date:'2026-11-18',target:'next_close_return_pct',unit:'percentage_points',mae_target:.1,

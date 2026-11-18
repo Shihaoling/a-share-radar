@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timedelta
 from hashlib import sha256
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -179,6 +180,57 @@ def restore_gate_cooldowns(schedule, now):
             schedule.paused_until[batch] = max(schedule.paused_until.get(batch, 0), until)
 
 
+def read_saved_quotes(path, groups, allowed, now):
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(payload, dict) or payload.get("source") != "sxdata_relay":
+        return {}
+    result = {}
+    for group in groups:
+        rows = payload.get(group)
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            code, stamp, price = row.get("id"), row.get("quote_timestamp"), row.get("price")
+            if (not isinstance(code, str) or code not in allowed or not isinstance(stamp, str)
+                    or row.get("quote_date") != stamp[:10] or row.get("provider") != "stock_api"
+                    or type(price) not in (int, float) or not math.isfinite(price) or price <= 0):
+                continue
+            try:
+                observed = datetime.fromisoformat(stamp)
+            except ValueError:
+                continue
+            if observed.tzinfo is None or observed > now or stamp <= result.get(code, {}).get("quote_timestamp", ""):
+                continue
+            result[code] = {k: row[k] for k in ("id", "name", "previous_close", "timestamp_quality", *FIELDS) if k in row}
+    return result
+
+
+def restore_industry_samples(history, latest, now):
+    # One reverse lookup per exchange index on the (id, minute) primary key at startup.
+    for code in INDUSTRIES:
+        stored = history.execute("""SELECT source_stamp,price,change_pct FROM samples
+            WHERE id=? AND minute<=? AND source_stamp<=? AND price>0 ORDER BY minute DESC LIMIT 1""",
+            (code, now.isoformat()[:16], now.isoformat())).fetchone()
+        if not stored:
+            continue
+        stamp, price, change = stored
+        if stamp <= latest.get(code, {}).get("quote_timestamp", ""):
+            continue
+        latest[code] = {"id": code, "price": price, "change_pct": change, "quote_timestamp": stamp,
+                        "quote_date": stamp[:10], "provider": "stock_api", "timestamp_quality": "source_reported"}
+
+
+def dated_quote(quote, day):
+    if quote and quote["quote_date"] < day:
+        return {**quote, "stale": True}
+    return quote
+
+
 def publish_intraday(path, history, day, entity_ids):
     series = {}
     for entity_id in sorted(entity_ids):
@@ -221,18 +273,10 @@ def start(args):
     intraday_output = output.with_name("today-intraday.json")
     stocks_output = output.with_name("stock-quotes.json")
     entity_ids = universe["rt_idx_k"].values()
-    quotes = {batch: {} for batch in conf["batches"]}
-    if output.is_file():
-        old = json.loads(output.read_text(encoding="utf-8"))
-        if old.get("source") == "sxdata_relay":
-            for kind in ("market", "sectors"):
-                quotes["rt_idx_k"].update({quote["id"]: quote for quote in old.get(kind, [])
-                                           if quote["id"] in entity_ids})
-    if stocks_output.is_file() and "rt_k" in quotes:
-        old = json.loads(stocks_output.read_text(encoding="utf-8"))
-        if old.get("source") == "sxdata_relay":
-            quotes["rt_k"].update({quote["id"]: quote for quote in old.get("stocks", [])
-                                    if quote["id"] in universe["rt_k"]})
+    restored_at = shanghai_now()
+    quotes = {"rt_idx_k": read_saved_quotes(output, ("market","sectors"), set(entity_ids), restored_at)}
+    if "rt_k" in conf["batches"]:
+        quotes["rt_k"] = read_saved_quotes(stocks_output, ("stocks",), universe["rt_k"], restored_at)
     schedule = QuoteSchedule(conf)
     close_batches = iter(conf["batches"]) if args.close_snapshot else None
     if close_batches is not None and market_session()["phase"] != "post_close":
@@ -249,6 +293,7 @@ def start(args):
         history.execute("""CREATE TABLE IF NOT EXISTS retries (
             api TEXT, minute TEXT, due TEXT, error TEXT, status TEXT, PRIMARY KEY(api, minute)
         ) WITHOUT ROWID""")
+        restore_industry_samples(history, quotes["rt_idx_k"], restored_at)
         reconcile_retry_history(history, entity_ids)
         history.commit()
         for batch, due in history.execute("SELECT api, max(due) FROM retries WHERE status='awaiting_retry' GROUP BY api"):
@@ -310,8 +355,8 @@ def start(args):
 
             if day != history_day or batch == "rt_k":
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
-                                        "stocks": [q for q in quotes.get("rt_k", {}).values()
-                                                   if q["quote_date"] == day],
+                                        "stocks": [dated_quote(q, day) for q in quotes.get("rt_k", {}).values()
+                                                   if q["id"] in universe["rt_k"]],
                                         "board_estimates": board_estimates(data["sectors"], quotes.get("rt_k", {}), day)})
             if day != history_day or sample_changed:
                 publish_intraday(intraday_output, history, day, set(entity_ids) | sector_ids)
@@ -322,10 +367,9 @@ def start(args):
                        "collector": {"status": next(iter(status.values())), "session": phase,
                                      "batches": status.copy(),
                                      "min_gap_seconds": conf["min_gap_seconds"]},
-                       "market": [q for symbol, q in index_quotes.items() if symbol not in INDUSTRIES],
-                       "sectors": [{"id": code, "name": name, "taxonomy": "SSE", "basis": "index",
-                                    "reference": weights.get(code, {}),
-                                    **(index_quotes[code] if index_quotes.get(code, {}).get("quote_date") == day else {})}
+                       "market": [dated_quote(q, day) for symbol, q in index_quotes.items() if symbol not in INDUSTRIES],
+                       "sectors": [{"id": code, "name": name, **dated_quote(index_quotes.get(code, {}), day),
+                                    "taxonomy": "SSE", "basis": "index", "reference": weights.get(code, {})}
                                    for code, name in INDUSTRIES.items()]}
             if payload != fingerprint:
                 fingerprint = payload.copy()
