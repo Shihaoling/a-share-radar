@@ -28,7 +28,8 @@ def latest_news_factors(now):
     groups = {}
     for article in feed["articles"]:
         analysis = article.get("llm_analysis") or {}
-        if analysis.get("status") != "ready":
+        if (analysis.get("status") != "ready" or analysis.get("fact_status") == "rumor"
+                or article.get("credibility") == "rumor"):
             continue
         for row in analysis.get("sector_impacts", []):
             direction = row.get("direction")

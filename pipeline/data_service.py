@@ -1,5 +1,6 @@
 """Fixed user-authorized data destination, token channels and shared rate gate."""
 import hashlib,hmac,json,os,time
+from contextlib import contextmanager
 from pathlib import Path
 
 ENDPOINT='http://tus.sxdata.top/tu_share/'
@@ -28,13 +29,52 @@ def _save(state):
     if path:
         path.parent.mkdir(parents=True,exist_ok=True)
         temporary=path.with_suffix('.tmp');temporary.write_text(json.dumps(state));temporary.replace(path)
+@contextmanager
+def _edit_gate():
+    path = _gate_path()
+    if path is None:
+        yield {}
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # The worker's network lock is separate. Only serialize the brief file update.
+    with path.with_suffix('.update.lock').open('a+b') as lock:
+        if os.name == 'nt':
+            import msvcrt
+            lock.seek(0)
+            msvcrt.locking(lock.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(lock, fcntl.LOCK_EX)
+        state = _read()
+        yield state
+        _save(state)
+
+
+def gate_state(api):
+    state = _read()
+    now = time.time()
+    host_until = state.get('host_until', 0)
+    api_until = state.get('apis', {}).get(api, 0)
+    reason = (state.get('host_code') if host_until >= api_until
+              else state.get('api_codes', {}).get(api))
+    return max(0, max(host_until, api_until)-now), max(0, 6-(now-state.get('last', 0))), reason or 'rate_limited'
+
+
 def gate_delay(api):
-    state=_read();now=time.time()
-    return max(0,state.get('host_until',0)-now,state.get('apis',{}).get(api,0)-now),max(0,6-(now-state.get('last',0)))
+    return gate_state(api)[:2]
+
+
 def sent():
-    state=_read();state['last']=time.time();_save(state)
-def failed(api,seconds=60,host=False):
-    state=_read();until=time.time()+max(60,seconds)
-    state.setdefault('apis',{})[api]=until
-    if host:state['host_until']=until
-    _save(state)
+    with _edit_gate() as state:
+        state['last'] = time.time()
+
+
+def failed(api, seconds=60, host=False, *, code='rate_limited'):
+    until = time.time() + max(60, seconds)
+    with _edit_gate() as state:
+        deadlines = state.setdefault('apis', {})
+        if until >= deadlines.get(api, 0):
+            deadlines[api] = until
+            state.setdefault('api_codes', {})[api] = code
+        if host and until >= state.get('host_until', 0):
+            state.update(host_until=until, host_code=code)

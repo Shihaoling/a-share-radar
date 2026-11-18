@@ -6,7 +6,7 @@ const rateFormat = new Intl.NumberFormat('zh-CN', {maximumFractionDigits: 1});
 const dateFormat = new Intl.DateTimeFormat('zh-CN', {dateStyle: 'full', timeZone: 'UTC'});
 const monthFormat = new Intl.DateTimeFormat('zh-CN', {year: 'numeric', month: 'long', timeZone: 'UTC'});
 const fmt = value => numberFormat.format(value ?? 0);
-const dateTime = value => value ? value.slice(0, 19).replace('T', ' ') : '等待';
+const dateTime = value => typeof value === 'string' && value ? value.slice(0, 19).replace('T', ' ') : '等待';
 const dateFromKey = key => new Date(key + 'T00:00:00Z');
 
 const legends = {
@@ -22,6 +22,9 @@ const legends = {
 
 let snapshot = null;
 let version = null;
+let loading = false;
+let failures = 0;
+let retryAt = 0;
 let view = 'collection';
 let daysByMonth = new Map();
 let month = '';
@@ -36,9 +39,10 @@ function verifiedWindows(day) {
 }
 
 function collectionState(day, inFlight) {
-  if (day.day === inFlight) return {tone: 'active', label: '等待源回包'};
+  if (day.day === inFlight) return {tone: 'active', label: '采集请求处理中'};
   if (day.limited_windows) return {tone: 'retry', label: '限流待重试'};
   if (day.collection_retry_windows) return {tone: 'retry', label: '采集待重试'};
+  if (day.verification_retry_windows) return {tone: 'retry', label: '窗口待重新核验'};
   if (day.incomplete_windows || day.complete_windows > verifiedWindows(day)) {
     return {tone: 'review', label: '待核验'};
   }
@@ -72,8 +76,9 @@ function showCollectionCooldown() {
   status.hidden = !Number.isFinite(deadline);
   if (status.hidden) return;
   const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  const cause = !snapshot.collection_pause_reason || snapshot.collection_pause_reason === 'rate_limited' ? '限流' : '接口';
   status.textContent = seconds
-    ? `SXData 限流冷却剩余 ${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`
+    ? `SXData ${cause}冷却剩余 ${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`
     : 'SXData 冷却已结束，等待采集调度';
 }
 
@@ -126,6 +131,7 @@ function renderDetail(day, inFlight) {
   if (day.limited_windows) sources.push(`${fmt(day.limited_windows)} 个窗口限流`);
   const otherRetries = (day.collection_retry_windows || 0) - (day.limited_windows || 0);
   if (otherRetries > 0) sources.push(`${fmt(otherRetries)} 个窗口待重试`);
+  if (day.verification_retry_windows) sources.push(`${fmt(day.verification_retry_windows)} 个窗口待重新核验`);
   showDetailLine('collection-detail', sources);
 
   get('label-summary').textContent = `已标注 ${fmt(day.labelled)} / ${fmt(day.collected)} 条`;
@@ -225,7 +231,8 @@ function show(data) {
   daysByMonth = grouped;
   if (!daysByMonth.has(month)) {
     const recent = [...grouped.values()].flat().reverse().find(day => day.updated);
-    selectedDay = inFlightDay(data) || recent?.day || data.days[0].day;
+    const inFlight = inFlightDay(data);
+    selectedDay = data.days.some(day => day.day === inFlight) ? inFlight : recent?.day || data.days[0].day;
     month = selectedDay.slice(0, 7);
   }
   if (!daysByMonth.get(month).some(day => day.day === selectedDay)) {
@@ -238,18 +245,56 @@ function show(data) {
   get('metrics').hidden = get('coverage').hidden = false;
 }
 
+function validSnapshot(data) {
+  const dateKey = value => {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const time = dateFromKey(value);
+    return Number.isFinite(time.getTime()) && time.toISOString().slice(0, 10) === value;
+  };
+  return data?.schema_version === 1 && data.usage && Array.isArray(data.days) && data.days.length > 0
+    && dateKey(data.start_day) && dateKey(data.end_day_exclusive) && typeof data.generated_at === 'string'
+    && Number.isFinite(Date.parse(data.generated_at)) && Number.isInteger(data.total_days)
+    && data.total_days === data.days.length && Number.isInteger(data.audited_days)
+    && Number.isInteger(data.collected) && Number.isInteger(data.labelled)
+    && data.days.every(day => dateKey(day?.day) && day.day >= data.start_day
+      && day.day < data.end_day_exclusive && Number.isInteger(day.windows) && day.windows > 0)
+    && new Set(data.days.map(day => day.day)).size === data.days.length;
+}
+
 async function refresh() {
+  if (loading || Date.now() < retryAt) return;
+  loading = true;
+  let serverDelay = 0;
   try {
     const response = await fetch('../data/training-progress.json', {cache: 'no-cache', signal: AbortSignal.timeout(6000)});
-    if (!response.ok) throw new Error('unavailable');
+    if (!response.ok) {
+      if ([429, 503].includes(response.status)) {
+        const value = response.headers.get('retry-after');
+        if (value) serverDelay = /^\d+$/.test(value) ? Number(value) * 1000 : Date.parse(value) - Date.now();
+      }
+      throw new Error('unavailable');
+    }
     const etag = response.headers.get('etag');
-    if (etag && etag === version) return;
-    const data = await response.json();
-    if (data.schema_version !== 1 || !Array.isArray(data.days) || !data.days.length) throw new Error('invalid');
-    show(data);
-    version = etag;
+    if (etag && etag === version) {
+      if (failures) get('message').textContent = `更新于 ${dateTime(snapshot.generated_at)} 北京时间`;
+    } else {
+      const data = await response.json();
+      if (!validSnapshot(data) || (snapshot && Date.parse(data.generated_at) < Date.parse(snapshot.generated_at))) {
+        throw new Error('invalid');
+      }
+      show(data);
+      version = etag;
+    }
+    failures = 0;
+    retryAt = 0;
   } catch {
-    get('message').textContent = '进度暂不可读取，页面会自动重试。';
+    failures = Math.min(5, failures + 1);
+    retryAt = Date.now() + Math.max(15000 * 2 ** (failures - 1), Number.isFinite(serverDelay) ? serverDelay : 0);
+    get('message').textContent = snapshot
+      ? `刷新失败，当前显示 ${dateTime(snapshot.generated_at)} 北京时间的进度，页面会自动重试。`
+      : '进度暂不可读取，页面会自动重试。';
+  } finally {
+    loading = false;
   }
 }
 

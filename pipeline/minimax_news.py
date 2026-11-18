@@ -1,11 +1,13 @@
 """Full-text, evidence-grounded industry impact with a server-only MiniMax key."""
 from copy import deepcopy
+from contextlib import closing
 from datetime import timedelta
 import json
 import math
 import os
 from pathlib import Path
 import re
+import sqlite3
 import time
 import urllib.error
 import urllib.request
@@ -13,6 +15,7 @@ import urllib.request
 from .calendar import shanghai_now
 from .news_content import text_hash
 from .sentiment import SW2021, _timestamp
+from .stock_api import _retry_after
 
 ROOT = Path(__file__).resolve().parents[1]
 PROMPT_VERSION = 'fulltext-sw31-impact-v2-refs'
@@ -112,7 +115,8 @@ def validate_analysis(value, body):
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *args, **kwargs): raise ValueError('redirect_blocked')
+    def redirect_request(self, *args, **kwargs):
+        return None
 
 
 class ModelFailure(Exception):
@@ -120,6 +124,37 @@ class ModelFailure(Exception):
 
 
 def infer_article(article, config, key, *, prompt=None, validator=None):
+    path = os.environ.get("RADAR_MINIMAX_COOLDOWN_DB")
+    if not path:
+        return _infer_article(article, config, key, prompt=prompt, validator=validator)
+    # Live and archive workers share credentials. Keep network I/O outside
+    # the transaction so slow historical labels cannot block the live feed.
+    try:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        with closing(sqlite3.connect(path, timeout=3)) as db:
+            db.execute("CREATE TABLE IF NOT EXISTS cooldown (id INTEGER PRIMARY KEY, until REAL NOT NULL)")
+            row = db.execute("SELECT until FROM cooldown WHERE id=1").fetchone()
+            if row and (remaining := math.ceil(row[0] - time.time())) > 0:
+                raise ModelFailure("shared_model_cooldown", remaining)
+    except (sqlite3.Error, OSError):
+        raise ModelFailure("shared_model_cooldown", 60) from None
+    try:
+        return _infer_article(article, config, key, prompt=prompt, validator=validator)
+    except ModelFailure as error:
+        if (error.code == "redirect_blocked" or re.match(r"^http_(?:429|503|401|403)(?:_|$)", error.code) or
+                re.search(r"provider_(?:code_)?(?:1002|1004|1008|1039)(?:_|$)", error.code)):
+            try:
+                with closing(sqlite3.connect(path, timeout=3)) as db, db:
+                    db.execute("""INSERT INTO cooldown VALUES(1, ?)
+                                ON CONFLICT(id) DO UPDATE SET until=MAX(until,excluded.until)""",
+                               (time.time() + max(1, error.retry),))
+            except sqlite3.Error:
+                # Each worker also persists the original refusal in its own queue.
+                pass
+        raise
+
+
+def _infer_article(article, config, key, *, prompt=None, validator=None):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
     spans = evidence_segments(body)
@@ -149,6 +184,9 @@ def infer_article(article, config, key, *, prompt=None, validator=None):
         analysis['usage'] = {k: v for k, v in result.get('usage', {}).items() if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int}
         return analysis
     except urllib.error.HTTPError as e:
+        if 300 <= e.code < 400:
+            e.close()
+            raise ModelFailure("redirect_blocked", 3600) from None
         suffix = ''
         try:
             # Inspect only a bounded error payload and emit a fixed category or
@@ -163,7 +201,11 @@ def infer_article(article, config, key, *, prompt=None, validator=None):
             elif any(term in text for term in ('套餐', 'subscription', 'plan limit', 'quota')):
                 suffix += '_plan_or_quota'
         except Exception: pass
-        raise ModelFailure('http_'+str(e.code)+suffix, 86400 if e.code in (401,403) else 3600) from None
+        finally: e.close()
+        retry = 86400 if e.code in (401, 403) else 3600
+        if e.code in (429, 503) and e.headers and e.headers.get('Retry-After'):
+            retry = _retry_after(e.headers, shanghai_now())
+        raise ModelFailure('http_'+str(e.code)+suffix, retry) from None
     except ModelFailure: raise
     except (urllib.error.URLError, TimeoutError, OSError): raise ModelFailure('transport_error') from None
     except ValueError as e:

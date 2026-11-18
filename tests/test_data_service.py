@@ -3,6 +3,10 @@ import hashlib,json,os,unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch,Mock
+from contextlib import nullcontext
+from urllib.error import HTTPError
+from pipeline.equity_data import DailyClient
+from pipeline.funds import _Client as FundClient
 from pipeline.data_service import token_for_api,credential_matches,gate_delay,failed,ENDPOINT
 from pipeline.stock_api import _Client,_Failure,_rows,_news_records
 from pipeline.news_content import enrich_full_text
@@ -12,6 +16,59 @@ from pipeline.publish import publish_view
 from pipeline.sources import fetch_data
 
 NOW=datetime.fromisoformat('2026-11-17T13:00:00+08:00')
+
+
+class SharedCooldownTests(unittest.TestCase):
+    def test_transport_errors_are_shared_across_workers_with_their_original_scope(self):
+        clients = [
+            ("news", lambda: _Client("test", {}, NOW), ("news", {})),
+            ("daily", lambda: DailyClient("test", now=NOW), ("2026-11-16",)),
+            ("fund_daily", lambda: FundClient("test", {}, NOW), ("fund_daily", {})),
+        ]
+        for api, create, args in clients:
+            for status, expected, seconds, host in [
+                (401, "authorization_denied", 86400, True),
+                (403, "authorization_denied", 86400, True),
+                (503, "http_error", 7200, True),
+                (500, "http_error", 3600, False),
+                (200, "invalid_payload", 900, False),
+            ]:
+                with self.subTest(api=api, status=status), TemporaryDirectory() as directory, patch.dict(
+                        os.environ, {"RADAR_SERVICE_GATE_FILE": str(Path(directory) / "gate.json")}, clear=True):
+                    client = create()
+                    client.opener = Mock()
+                    if status == 200:
+                        response = Mock(status=200, headers={})
+                        response.geturl.return_value = ENDPOINT
+                        response.read.return_value = b"broken json"
+                        client.opener.open.return_value = nullcontext(response)
+                    else:
+                        client.opener.open.side_effect = HTTPError(ENDPOINT, status, "", {"Retry-After": "7200"}, None)
+                    with self.assertRaises(_Failure) as caught:
+                        client.request(*args)
+                    self.assertEqual((caught.exception.code, caught.exception.retry_seconds), (expected, seconds))
+                    self.assertGreater(gate_delay(api)[0], seconds-1)
+                    self.assertEqual(gate_delay("other")[0] > 0, host)
+                    later = create()
+                    later.opener = Mock()
+                    with self.assertRaises(_Failure) as blocked:
+                        later.request(*args)
+                    self.assertEqual(blocked.exception.code, expected)
+                    self.assertTrue(blocked.exception.deferred)
+                    self.assertEqual(later.count, 0)
+                    later.opener.open.assert_not_called()
+
+    def test_shorter_subsequent_failure_preserves_old_style_host_and_api_deadlines(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "gate.json"
+            path.write_text(json.dumps({"apis": {"daily": 600}, "host_until": 800}))
+            with patch.dict(os.environ, {"RADAR_SERVICE_GATE_FILE": str(path)}), patch("pipeline.data_service.time.time", return_value=100):
+                failed("daily", 60, host=True, code="http_error")
+                self.assertEqual(gate_delay("daily")[0], 700)
+                saved = json.loads(path.read_text())
+                self.assertEqual((saved["apis"]["daily"], saved["host_until"]), (600, 800))
+
+
 class DataServiceTests(unittest.TestCase):
  def test_channels_and_credential_destination_guard(self):
   key='synthetic-channel-key'

@@ -1,7 +1,7 @@
 """Post-close research using read-only model assets and confirmed SXData rows."""
 
 from copy import deepcopy
-from datetime import time, timedelta
+from datetime import time
 import json
 import math
 import os
@@ -18,6 +18,7 @@ from pipeline.review import daily_review
 from pipeline.stock_api import FIELDS, _Failure, _attach_members, _members
 from pipeline.validation import validate_prices
 from market_daily import merge_daily, read_daily
+from market_reference import due_references, failed_reference
 from relay_common import STATE, relay_client, relay_guard
 from relay_quotes import SOURCE, publish
 
@@ -50,25 +51,29 @@ def history_directory():
 
 
 def refresh_members(dashboard, token, now, cache):
-    cutoff = (now.date()-timedelta(days=18)).isoformat()
-    order = sorted(dashboard["sectors"], key=lambda s: cache.get(s["id"], {}).get("checked_at", ""))
-    for sector in order[:2]:
-        code = sector["id"]
+    sectors = {s["id"]: s for s in dashboard["sectors"] if s.get("taxonomy") == "SW2021"}
+    due = due_references(sectors, cache, now, 18, "records", "fetched_at")
+    for code in due[:2]:
         old = cache.get(code, {})
-        if sector.get("taxonomy")!="SW2021" or old.get("checked_at", "")[:10]>=cutoff:
-            continue
         try:
-            with relay_client(token,timeout=8) as client:
-                rows = client.request("index_member_all", {"l1_code":code,"is_new":"Y"})
+            with relay_client(token, timeout=8) as client:
+                rows = client.request("index_member_all", {"l1_code": code, "is_new": "Y"})
             quality = {}
-            members = _members(rows,code,token,now.isoformat(),quality)
-            cache[code] = {"checked_at":now.isoformat(),"fetched_at":now.isoformat(),
-                           "records":members,"complete":len(rows)<2000 and quality["complete"]}
+            members = _members(rows, code, token, now.isoformat(), quality)
+            complete = len(rows) < 2000 and quality["complete"]
+            if not complete:
+                if not old.get("records") and not sectors[code].get("constituents"):
+                    old = {**old, "records": members, "fetched_at": now.isoformat(), "complete": False}
+                raise _Failure("partial_membership")
+            cache[code] = {"checked_at": now.isoformat(), "last_attempt_at": now.isoformat(),
+                           "fetched_at": now.isoformat(), "records": members, "complete": True}
         except _Failure as error:
-            print(json.dumps({"membership":code,"status":error.code}),flush=True)
-            if error.code == "rate_limited":
+            print(json.dumps({"membership": code, "status": error.code}), flush=True)
+            if error.deferred:
                 break
-            cache[code] = {**old,"checked_at":now.isoformat()}
+            cache[code] = failed_reference(old, now, error)
+            if error.host or error.code == "rate_limited":
+                break
     for sector in dashboard["sectors"]:
         current = cache.get(sector["id"], {})
         if current.get("records"):
@@ -167,10 +172,9 @@ def main():
     memberships = cache.get("memberships",{})
     refresh_members(dashboard,token,now,memberships)
     equity_root = history_directory()
-    with relay_guard():
-        dashboard["equity_collection"] = collect_equity_history(dashboard, config, now, output_dir=equity_root)
-    with relay_guard():
-        dashboard = enrich_funds(dashboard,config,now)
+    dashboard["equity_collection"] = collect_equity_history(
+        dashboard, config, now, output_dir=equity_root, request_guard=relay_guard)
+    dashboard = enrich_funds(dashboard, config, now, request_guard=relay_guard)
     stock_codes = {stock.get("ts_code") for sector in dashboard["sectors"] for stock in sector.get("stocks",[])}
     flows = fetch_flows(token,now,cache.get("flows",{}),stock_codes)
     publish(PRIVATE/"inputs.json",{"memberships":memberships,

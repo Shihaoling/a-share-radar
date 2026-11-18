@@ -33,6 +33,17 @@ class FrontendContracts(unittest.TestCase):
         self.assertGreaterEqual(payload['passed'], 40)
         self.assertEqual(payload['failures'], [], json.dumps(payload['failures'], ensure_ascii=False))
 
+    @unittest.skipUnless(shutil.which('node'), 'Node required for asynchronous polling checks')
+    def test_refresh_recovery(self):
+        script = (ROOT / 'tests/frontend_logic.js').read_text() + """
+const fs = require('node:fs');
+runRefreshChecks(fs.readFileSync('web/app.js','utf8'))
+    .catch(error => {console.error(error);process.exitCode=1;});
+"""
+        result = subprocess.run([shutil.which('node')], cwd=ROOT, input=script, text=True,
+                                capture_output=True, timeout=45)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()

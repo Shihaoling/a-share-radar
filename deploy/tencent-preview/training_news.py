@@ -89,6 +89,9 @@ def open_dataset():
             begin_at TEXT PRIMARY KEY, raw_rows INTEGER NOT NULL, parsed_rows INTEGER NOT NULL,
             in_window_rows INTEGER NOT NULL, same_time_copies INTEGER NOT NULL, checked_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS window_rechecks (
+            begin_at TEXT PRIMARY KEY, failures INTEGER NOT NULL
+        );
         CREATE TABLE IF NOT EXISTS usage (
             id INTEGER PRIMARY KEY, at TEXT NOT NULL, attempted INTEGER NOT NULL, accepted INTEGER NOT NULL,
             input_tokens INTEGER, output_tokens INTEGER, total_tokens INTEGER, outcome TEXT NOT NULL
@@ -206,7 +209,9 @@ def add_article(db, row, begin, end, received):
 
 def split_window(db, window, begin, end, checked, reason):
     middle = begin + timedelta(seconds=int((end-begin).total_seconds()//2))
-    db.execute("""UPDATE windows SET end_at=?, state='pending',rows_received=NULL,
+    db.execute("DELETE FROM window_audit WHERE begin_at=?", (window["begin_at"],))
+    db.execute("DELETE FROM window_rechecks WHERE begin_at=?", (window["begin_at"],))
+    db.execute("""UPDATE windows SET end_at=?, state='pending',rows_received=NULL,retry_at='',
                   attempts=attempts+1, checked_at=?, outcome=?
                   WHERE begin_at=?""", (middle.isoformat(), checked, reason, window["begin_at"]))
     db.execute("INSERT OR IGNORE INTO windows(begin_at,end_at) VALUES (?,?)",
@@ -226,31 +231,40 @@ def collect(db, now):
                              ELSE 2 END AS priority
             FROM windows w
             LEFT JOIN window_audit audit ON audit.begin_at=w.begin_at
+            LEFT JOIN window_rechecks rechecks ON rechecks.begin_at=w.begin_at
             LEFT JOIN started_days started ON started.day=substr(w.begin_at,1,10)
             LEFT JOIN json_each(?) preferred ON preferred.value=substr(w.begin_at,1,10)
             WHERE w.state='pending' OR w.state='complete' AND audit.begin_at IS NULL
+               OR w.state='unverified' AND coalesce(rechecks.failures,0)<3
+               OR w.state='capped' AND datetime(w.end_at)>datetime(w.begin_at,'+1 second')
         )
         SELECT * FROM candidates
-        WHERE retry_at<=? AND (priority<2 OR NOT EXISTS(SELECT 1 FROM candidates WHERE priority<2))
+        WHERE retry_at<=? AND (priority<2 OR NOT EXISTS(
+            SELECT 1 FROM candidates WHERE priority<2 AND state!='unverified'))
         ORDER BY priority,attempts,begin_at LIMIT 1""", (priority_days,checked)).fetchone()
     if not window:
         return
-    token = credential("sxdata-token")
     begin, end = (datetime.fromisoformat(window[key]) for key in ("begin_at", "end_at"))
-    client, waiting = None, False
+    if window["state"] == "capped":
+        with db:
+            split_window(db, window, begin, end, checked, "split_at_limit")
+        return
+    token = credential("sxdata-token")
+    client = None
+    waiting = gate_delay("news")[0] <= 0
+    if waiting:
+        with db:
+            set_meta(db, "collection_inflight_day", begin.date().isoformat())
+            set_meta(db, "collection_inflight_until",
+                     (shanghai_now()+timedelta(seconds=COLLECTION_TIMEOUT_SECONDS+7)).isoformat())
+        # Computing the calendar can scan many articles. Keep the shared quote/API lock free.
+        publish_progress(db)
     try:
         with relay_client(token, timeout=COLLECTION_TIMEOUT_SECONDS) as client:
-            if gate_delay("news")[0] <= 0:
-                waiting = True
-                with db:
-                    set_meta(db, "collection_inflight_day", begin.date().isoformat())
-                    set_meta(db, "collection_inflight_until",
-                             (shanghai_now()+timedelta(seconds=COLLECTION_TIMEOUT_SECONDS+7)).isoformat())
-                publish_progress(db)
             rows = client.request("news", {"src": "cls", "start_date": begin.strftime("%F %T"),
                           "end_date": (end-timedelta(seconds=1)).strftime("%F %T"), "limit": 1500})
     except _Failure as error:
-        deferred = error.code == "rate_limited" and client is not None and client.count == 0
+        deferred = error.deferred or (error.code == "rate_limited" and client is not None and client.count == 0)
         delay = max(60, min(86400, error.retry_seconds or 60))
         with db:
             if error.code == "rate_limited":
@@ -259,9 +273,15 @@ def collect(db, now):
                     streak = min(5, int(metadata(db, "collection_rate_limit_streak", "0"))+1)
                     set_meta(db, "collection_rate_limit_streak", str(streak))
                     delay = max(delay, min(900, 60*2**(streak-1)))
+            if deferred or error.code == "rate_limited":
                 set_meta(db, "collection_pause_until", (shanghai_now()+timedelta(seconds=delay)).isoformat())
-            if error.code == "response_too_large" and end-begin > timedelta(minutes=2):
-                split_window(db, window, begin, end, checked, error.code)
+                set_meta(db, "collection_pause_reason", error.code)
+            if error.code == "response_too_large" and not deferred:
+                if end-begin > timedelta(seconds=1):
+                    split_window(db, window, begin, end, checked, error.code)
+                else:
+                    db.execute("""UPDATE windows SET state='capped',attempts=attempts+1,checked_at=?,outcome=?
+                                  WHERE begin_at=?""", (checked, error.code, window["begin_at"]))
             elif not deferred:
                 db.execute("""UPDATE windows SET retry_at=?, attempts=attempts+1, outcome=?, checked_at=?
                     WHERE begin_at=?""", ((shanghai_now()+timedelta(seconds=delay)).isoformat(), error.code,
@@ -275,15 +295,22 @@ def collect(db, now):
                 set_meta(db, "collection_inflight_until", "")
     with db:
         set_meta(db, "collection_pause_until", "")
+        set_meta(db, "collection_pause_reason", "")
         set_meta(db, "collection_rate_limit_streak", "0")
-    if len(rows) >= 1500 and end-begin > timedelta(minutes=2):
+    if len(rows) >= 1500 and end-begin > timedelta(seconds=1):
         with db:
             split_window(db, window, begin, end, checked, "split_at_limit")
         return
     # Use the historical window end for the parser's relative age guard.
     # The capture stamp always reflects actual backfill availability.
     received = now_text()
-    parsed = _news_records(rows, end, received, token)
+    parsed = []
+    for raw in rows:
+        try:
+            parsed.extend(_news_records([raw], end, received, token))
+        except (_Failure, KeyError, TypeError):
+            # Keep the other records and leave this window open for verification.
+            continue
     in_window = [row for row in parsed if begin<=datetime.fromisoformat(row["published_at"])<end]
     instances = {(content_id(datetime.fromisoformat(row["published_at"]),row["title"],row["full_text"]),
                   row["published_at"]) for row in in_window}
@@ -291,15 +318,19 @@ def collect(db, now):
         count = sum(add_article(db, row, begin, end, received) for row in in_window)
         state = "complete" if len(rows) < 1500 else "capped"
         outcome = "empty" if not rows else "partial_parse" if len(in_window)!=len(rows) else "ok"
-        if len(in_window)!=len(rows):
+        previous_rows = window["rows_received"] or 0
+        if len(rows)<previous_rows:
+            outcome = "recheck_less_than_original"
+        retry_at = ""
+        if state != "capped" and (len(in_window)!=len(rows) or len(rows)<previous_rows):
             state = "unverified"
-        if window["state"]=="complete" and len(rows)<(window["rows_received"] or 0):
-            db.execute("""UPDATE windows SET retry_at=?,attempts=attempts+1,outcome=?,checked_at=?
-                          WHERE begin_at=?""", ((shanghai_now()+timedelta(minutes=30)).isoformat(),
-                          "recheck_less_than_original",received,window["begin_at"]))
-            return
-        db.execute("""UPDATE windows SET state=?,rows_received=?,outcome=?,checked_at=?,attempts=attempts+1
-                      WHERE begin_at=?""", (state, len(rows), outcome, received, window["begin_at"]))
+            db.execute("""INSERT INTO window_rechecks VALUES (?,1)
+                          ON CONFLICT(begin_at) DO UPDATE SET failures=failures+1""", (window["begin_at"],))
+            retry_at = (shanghai_now()+timedelta(minutes=30)).isoformat(timespec="seconds")
+        else:
+            db.execute("DELETE FROM window_rechecks WHERE begin_at=?", (window["begin_at"],))
+        db.execute("""UPDATE windows SET state=?,rows_received=?,outcome=?,checked_at=?,attempts=attempts+1,retry_at=?
+                      WHERE begin_at=?""", (state, max(len(rows), previous_rows), outcome, received, retry_at, window["begin_at"]))
         db.execute("INSERT OR REPLACE INTO window_audit VALUES (?,?,?,?,?,?)",
                    (window["begin_at"],len(rows),len(parsed),len(in_window),len(in_window)-len(instances),received))
     print(json.dumps({"begin":window["begin_at"],"end":window["end_at"],"inserted":count,
@@ -409,9 +440,15 @@ def label(db, now, limit):
     try:
         response = label_batch(rows, key)
     except ModelFailure as error:
+        if error.code == "shared_model_cooldown":
+            retry = (shanghai_now()+timedelta(seconds=error.retry)).isoformat(timespec="seconds")
+            with db:
+                set_meta(db, "label_pause_until", retry)
+                set_meta(db, "label_error", error.code)
+            return
         format_error = error.code.startswith("invalid_") or error.code == "incomplete_response"
         with db:
-            delay = timedelta(seconds=max(60, min(error.retry, 86400)))
+            delay = timedelta(seconds=max(60, error.retry))
             if format_error:
                 delay = LABEL_FORMAT_RETRY_DELAY
             elif error.code == "transport_error":
@@ -430,6 +467,7 @@ def label(db, now, limit):
     completed = now_text()
     valid = response["results"]
     usage = response.get("usage", {})
+    retry_at = (datetime.fromisoformat(completed) + LABEL_FORMAT_RETRY_DELAY).isoformat(timespec="seconds")
     with db:
         for row in rows:
             output = valid.get(row["id"])
@@ -439,7 +477,8 @@ def label(db, now, limit):
                 db.execute("UPDATE articles SET label=?,labelled_at=?,tries=tries+1,error=NULL WHERE id=?",
                            (json.dumps(output, ensure_ascii=False), completed, row["id"]))
             else:
-                db.execute("UPDATE articles SET tries=tries+1,error='invalid_batch_item' WHERE id=?", (row["id"],))
+                db.execute("UPDATE articles SET tries=tries+1,retry_at=?,error='invalid_batch_item' WHERE id=?",
+                           (retry_at, row["id"]))
         db.execute("""INSERT INTO usage(at,attempted,accepted,input_tokens,output_tokens,total_tokens,outcome)
                        VALUES (?,?,?,?,?,?,?)""", (completed, len(rows), len(valid), usage.get("prompt_tokens"),
                        usage.get("completion_tokens"), usage.get("total_tokens"), "ok" if len(valid)==len(rows) else "partial"))
@@ -453,12 +492,14 @@ def progress(db):
     for row in db.execute("""SELECT substr(w.begin_at,1,10) AS day,count(*) AS windows,
         sum(w.state='complete') AS complete_windows,sum(w.state IN ('capped','unverified')) AS incomplete_windows,
         sum(w.state='pending' AND w.outcome='rate_limited') AS limited_windows,
+        sum(w.state='unverified' AND coalesce(rechecks.failures,0)<3) AS verification_retry_windows,
         sum(w.state='complete' AND audit.begin_at IS NOT NULL) AS verified_windows,
         sum(w.state='pending' AND w.retry_at!='' AND w.outcome NOT IN ('split_at_limit','response_too_large'))
             AS collection_retry_windows,
         max(w.checked_at) AS updated,sum(w.rows_received) AS returned,count(audit.begin_at) AS audited_windows,
         sum(audit.in_window_rows) AS valid_rows,sum(audit.same_time_copies) AS same_time_copies
-        FROM windows w LEFT JOIN window_audit audit ON w.begin_at=audit.begin_at GROUP BY 1"""):
+        FROM windows w LEFT JOIN window_audit audit ON w.begin_at=audit.begin_at
+        LEFT JOIN window_rechecks rechecks ON w.begin_at=rechecks.begin_at GROUP BY 1"""):
         days[row["day"]] = dict(row)
     result = db.execute("""SELECT count(*) AS collected,count(label) AS labelled,
                             sum(length(body)=0) AS missing_body,sum(tries>=6 AND label IS NULL) AS exhausted
@@ -497,6 +538,7 @@ def progress(db):
             "label_rate": {"articles": recent_labels, "minutes": LABEL_RATE_WINDOW_MINUTES},
             "collection_attempts":window_count,"latest_collection":dict(latest) if latest else None,
             "collection_retry_at":metadata(db,"collection_pause_until"),
+            "collection_pause_reason":metadata(db,"collection_pause_reason"),
             "collection_inflight_day":metadata(db,"collection_inflight_day") if inflight_until>generated_at else "",
             "collection_inflight_until":inflight_until,
             "label_error":metadata(db,"label_error"),"label_retry_at":metadata(db,"label_pause_until"),
@@ -507,7 +549,10 @@ def progress(db):
 def publish_progress(db):
     with (ROOT/"progress.lock").open("a") as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
-        publish(OUTPUT,progress(db))
+        with db:
+            db.execute("BEGIN")
+            snapshot = progress(db)
+        publish(OUTPUT,snapshot)
 
 
 def export(db):
@@ -558,6 +603,7 @@ if __name__ == "__main__":
         if args.job=="collect":
             collect(db,now)
         elif args.job=="label":
+            os.environ.setdefault("RADAR_MINIMAX_COOLDOWN_DB", str(STATE / "news/minimax-cooldown.sqlite3"))
             with (ROOT/"label.lock").open("a") as lock:
                 fcntl.flock(lock,fcntl.LOCK_EX)
                 label(db,shanghai_now(),args.batch_size)

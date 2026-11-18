@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from contextlib import nullcontext
 from datetime import date, datetime, time as clock, timedelta
 import gzip
 import json
@@ -22,8 +23,8 @@ import urllib.request
 from zoneinfo import ZoneInfo
 
 from pipeline.stock_api import (
-    ENDPOINT, _service_before, token_for_api, credential_matches, failed, _Failure, _NoRedirect, _provider_reason, _reject_constant,
-    _retry_after, _stock_code,
+    ENDPOINT, _service_before, token_for_api, credential_matches, _Failure, _NoRedirect, _provider_reason, _reject_constant,
+    _http_failure, _service_errors, _stock_code,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -257,17 +258,13 @@ class DailyClient:
             "User-Agent": "A-share-radar/equity-history"})
         self.count += 1
         self.last = time.monotonic()
-        try:
+        with _service_errors("daily", self.now, transport_retry=900, redirect_retry=86400):
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 86400)
                 status = getattr(response, "status", 200)
-                if status == 429:
-                    raise _Failure("rate_limited", _retry_after(response.headers, self.now))
-                if status in (401, 403):
-                    raise _Failure("authorization_denied", 86400)
                 if status != 200:
-                    raise _Failure("http_error", 3600)
+                    raise _http_failure(status, response.headers, self.now, 86400)
                 size = response.headers.get("Content-Length") if response.headers else None
                 if size and (not str(size).isdigit() or int(size) > MAX_BYTES):
                     raise _Failure("response_too_large", 3600)
@@ -277,22 +274,6 @@ class DailyClient:
                 if self.remaining() <= 0:
                     raise _Failure("budget_exhausted")
             return _parse_payload(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), day)
-        except urllib.error.HTTPError as exc:
-            if exc.code == 429:
-                failed("daily",_retry_after(exc.headers,self.now),host=True)
-                raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
-            if exc.code in (401, 403):
-                raise _Failure("authorization_denied", 86400) from None
-            if 300 <= exc.code < 400:
-                raise _Failure("redirect_blocked", 86400) from None
-            raise _Failure("http_error", 3600) from None
-        except _Failure as failure:
-            failed("daily",max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
-            raise
-        except (TimeoutError, urllib.error.URLError, OSError):
-            raise _Failure("transport_error", 900) from None
-        except Exception:
-            raise _Failure("invalid_payload", 900) from None
 
 
 def _read_batch(path):
@@ -339,7 +320,7 @@ def _future(value, now):
         return False
 
 
-def collect_equity_history(dashboard, config=None, now=None, max_requests=None, output_dir=None):
+def collect_equity_history(dashboard, config=None, now=None, max_requests=None, output_dir=None, *, request_guard=nullcontext):
     """Collect only missing complete dates; persist after each request for resume."""
     now = _now(now)
     config = config or {}
@@ -398,19 +379,21 @@ def collect_equity_history(dashboard, config=None, now=None, max_requests=None, 
             break
         try:
             try:
-                rows, quality, complete = client.request(day)
+                with request_guard():
+                    rows, quality, complete = client.request(day)
             except _Failure as transient:
                 # At most ONE extra request in the entire bounded batch. Never
                 # retry authentication, permission or explicit frequency errors.
                 retryable = transient.code == 'transport_error' or transient.provider_reason == 'provider_error'
-                if not retryable or transient_retries >= 1 or client.count >= client.max_requests or client.remaining() <= 60:
+                if transient.deferred or not retryable or transient_retries >= 1 or client.count >= client.max_requests or client.remaining() <= 60:
                     raise
                 transient_retries += 1
                 if cfg.get('progress', False):
                     print(json.dumps({'equity_retry_date': day, 'reason': transient.code,
-                                      'provider_code': transient.provider_code, 'wait_seconds': 30}), flush=True)
+                                      'provider_code': transient.provider_code, 'wait_seconds': 60}), flush=True)
                 time.sleep(60)
-                rows, quality, complete = client.request(day)
+                with request_guard():
+                    rows, quality, complete = client.request(day)
             fetched_at = _now().isoformat()
             batch = {"schema_version": 1, "trade_date": day, "fetched_at": fetched_at,
                      "complete": complete, "source": "stock_api", "service_endpoint":ENDPOINT, "upstream_provider": "unknown",

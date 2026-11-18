@@ -1,4 +1,5 @@
 """Daily universe history transport/checkpoint contracts; no live requests."""
+from contextlib import contextmanager
 from datetime import datetime
 import gzip
 import json
@@ -216,6 +217,28 @@ class EquityDataTests(unittest.TestCase):
         sleep.assert_called_once_with(60)
         self.assertEqual(result['provider_code'], -1)
         self.assertEqual(result['status'], 'unavailable')
+
+    def test_shared_guard_releases_for_retry_wait_and_checkpoint(self):
+        events = []
+        @contextmanager
+        def guard():
+            events.append("lock")
+            try:
+                yield
+            finally:
+                events.append("unlock")
+
+        def request(client, day):
+            events.append("request")
+            client.count += 1
+            raise _Failure("transport_error", 60)
+
+        with tempfile.TemporaryDirectory() as folder, patch.dict("os.environ", {"STOCK_API_TOKEN": SECRET}), \
+             patch.object(DailyClient, "request", request), \
+             patch("pipeline.equity_data.time.sleep", side_effect=lambda seconds: events.append(seconds)), \
+             patch("pipeline.equity_data._atomic_json", side_effect=lambda *args: events.append("checkpoint")):
+            collect_equity_history(dashboard(), {}, NOW, max_requests=2, output_dir=folder, request_guard=guard)
+        self.assertEqual(events, ["lock", "request", "unlock", 60, "lock", "request", "unlock", "checkpoint"])
 
     def test_explicit_permission_error_never_retries(self):
         with tempfile.TemporaryDirectory() as temporary, patch.dict('os.environ', {'STOCK_API_TOKEN': SECRET}), \

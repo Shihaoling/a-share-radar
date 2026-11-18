@@ -17,13 +17,14 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from contextlib import contextmanager
 from datetime import date, datetime, time as clock, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous_trading_day, shanghai_now
 
-from .data_service import ENDPOINT,token_for_api,credential_matches,gate_delay,sent,failed
+from .data_service import ENDPOINT,token_for_api,credential_matches,gate_state,sent,failed
 MAX_BYTES = 4 * 1024 * 1024
 MIN_HISTORY_BARS = 181
 ROW_PARSER_VERSION = 2
@@ -45,10 +46,12 @@ PB_DEFINITION = "供应商PB：总市值/（净资产减其他权益工具）；
 class _Failure(Exception):
     """Only fixed local codes may cross the transport boundary."""
 
-    def __init__(self, code, retry_seconds=0, *, provider_code=None, provider_reason=None):
+    def __init__(self, code, retry_seconds=0, *, provider_code=None, provider_reason=None, deferred=False, host=False):
         super().__init__(code)
         self.code = code
         self.retry_seconds = retry_seconds
+        self.deferred = deferred
+        self.host = host
         # Optional probe diagnostics never retain the untrusted provider message.
         self.provider_code = provider_code if type(provider_code) is int and abs(provider_code) <= 1000000 else None
         reasons = {'rate_limited', 'authorization_denied', 'points_insufficient',
@@ -129,6 +132,38 @@ def _retry_after(headers, now):
 
 def _reject_constant(_value):
     raise _Failure("invalid_number")
+
+
+def _http_failure(status, headers, now, redirect_retry):
+    if status == 429:
+        return _Failure("rate_limited", _retry_after(headers, now), host=True)
+    if status in (401, 403):
+        return _Failure("authorization_denied", 86400, host=True)
+    if status == 503:
+        return _Failure("http_error", _retry_after(headers, now), host=True)
+    if 300 <= status < 400:
+        return _Failure("redirect_blocked", redirect_retry)
+    return _Failure("http_error", 3600)
+
+
+@contextmanager
+def _service_errors(api, now, *, transport_retry=60, redirect_retry=3600):
+    try:
+        yield
+        return
+    except urllib.error.HTTPError as error:
+        failure = _http_failure(error.code, error.headers, now, redirect_retry)
+        error.close()
+    except _Failure as error:
+        failure = error
+    except (TimeoutError, urllib.error.URLError, OSError):
+        failure = _Failure("transport_error", transport_retry)
+    except Exception:
+        failure = _Failure("invalid_payload", 900)
+    limited = failure.code == "rate_limited" or failure.provider_reason == "rate_limited"
+    failed(api, failure.retry_seconds or 60, host=failure.host or limited,
+           code="rate_limited" if limited else failure.code)
+    raise failure from None
 
 
 def _provider_reason(payload):
@@ -212,17 +247,13 @@ class _Client:
             "User-Agent": "A-share-radar/daily-supplement"})
         self.count += 1
         self.last = time.monotonic()
-        try:
+        with _service_errors(api, self.now):
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 3600)
                 status = getattr(response, "status", 200)
-                if status == 429:
-                    raise _Failure("rate_limited", _retry_after(response.headers, self.now))
-                if status in (401, 403):
-                    raise _Failure("authorization_denied", 86400)
                 if status != 200:
-                    raise _Failure("http_error", 3600)
+                    raise _http_failure(status, response.headers, self.now, 3600)
                 length = response.headers.get("Content-Length") if response.headers else None
                 if length and (not str(length).isdigit() or int(length) > MAX_BYTES):
                     raise _Failure("response_too_large")
@@ -232,30 +263,12 @@ class _Client:
                 if self.remaining() <= 0:
                     raise _Failure("budget_exhausted")
             return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
-        except urllib.error.HTTPError as exc:
-            if exc.code == 429:
-                failed(api,_retry_after(exc.headers,self.now),host=True)
-                raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
-            if exc.code in (401, 403):
-                raise _Failure("authorization_denied", 86400) from None
-            if 300 <= exc.code < 400:
-                raise _Failure("redirect_blocked", 3600) from None
-            raise _Failure("http_error", 3600) from None
-        except _Failure as failure:
-            failed(api,max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
-            raise
-        except (TimeoutError, urllib.error.URLError, OSError):
-            failed(api,60)
-            raise _Failure("transport_error", 60) from None
-        except Exception:
-            # Never stringify an exception, request, URL, response body or message.
-            raise _Failure("invalid_payload", 900) from None
 
 
 def _service_before(api,remaining):
-    cooldown,gap=gate_delay(api)
-    if cooldown>0:raise _Failure('rate_limited',max(60,cooldown))
-    if gap>=remaining:raise _Failure('budget_exhausted')
+    cooldown,gap,code=gate_state(api)
+    if cooldown>0:raise _Failure(code,math.ceil(cooldown),deferred=True)
+    if gap>=remaining:raise _Failure('budget_exhausted',deferred=True)
     if gap:time.sleep(gap)
     sent()
 

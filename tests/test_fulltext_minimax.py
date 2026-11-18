@@ -4,6 +4,7 @@ import gzip
 import json
 import io
 import urllib.error
+from urllib.response import addinfourl
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -84,6 +85,19 @@ class FullTextTests(unittest.TestCase):
 
 
 class MiniMaxTests(unittest.TestCase):
+    def test_redirect_defers_both_workers_without_following_or_sending_another_request(self):
+        response = addinfourl(io.BytesIO(), {"Location": "/maintenance"}, "https://example.invalid/chat", 302)
+        response.msg = "Found"
+        with TemporaryDirectory() as d, patch.dict("os.environ", {"RADAR_MINIMAX_COOLDOWN_DB": str(Path(d)/"gate.sqlite3")}), \
+                patch("urllib.request.HTTPSHandler.https_open", return_value=response) as send:
+            with self.assertRaises(ModelFailure) as first:
+                infer_article({"full_text": BODY}, {}, "test-key")
+            self.assertEqual((first.exception.code, first.exception.retry), ("redirect_blocked", 3600))
+            with self.assertRaises(ModelFailure) as second:
+                infer_article({"full_text": BODY}, {}, "test-key")
+            self.assertEqual(second.exception.code, "shared_model_cooldown")
+            send.assert_called_once()
+
     def test_digest_payload_preserves_article_boundaries_and_short_ids(self):
         articles=[{'id':'N0001','summary':BODY},{'id':'N0002','summary':'最后一条来源全文'}]
         requests=[]

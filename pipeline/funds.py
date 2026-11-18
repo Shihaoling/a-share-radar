@@ -14,12 +14,13 @@ import re
 import time
 import urllib.error
 import urllib.request
+from contextlib import nullcontext
 from datetime import time as clock, timedelta
 from pathlib import Path
 
 from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
-from pipeline.stock_api import (_service_before, token_for_api, failed, ENDPOINT, MAX_BYTES, _Client as _BaseClient, _Failure,
-    _bounded, _date, _instant, _provider_reason, _reject_constant, _retry_after)
+from pipeline.stock_api import (_service_before, token_for_api, ENDPOINT, MAX_BYTES, _Client as _BaseClient, _Failure,
+    _bounded, _date, _instant, _provider_reason, _reject_constant, _http_failure, _service_errors)
 
 FIELDS = {
     "etf_basic": "ts_code,csname,cname,index_code,index_name,list_date,list_status,mgr_name,etf_type",
@@ -117,17 +118,13 @@ class _Client(_BaseClient):
             "User-Agent": "A-share-radar/fund-research"})
         self.count += 1
         self.last = time.monotonic()
-        try:
+        with _service_errors(api, self.now, transport_retry=900):
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 3600)
                 status = getattr(response, "status", 200)
-                if status == 429:
-                    raise _Failure("rate_limited", _retry_after(response.headers, self.now))
-                if status in (401, 403):
-                    raise _Failure("authorization_denied", 86400)
                 if status != 200:
-                    raise _Failure("http_error", 3600)
+                    raise _http_failure(status, response.headers, self.now, 3600)
                 length = response.headers.get("Content-Length") if response.headers else None
                 if length and (not str(length).isdigit() or int(length) > MAX_BYTES):
                     raise _Failure("response_too_large", 900)
@@ -137,20 +134,6 @@ class _Client(_BaseClient):
                 if self.remaining() <= 0:
                     raise _Failure("budget_exhausted")
             return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
-        except urllib.error.HTTPError as exc:
-            if exc.code == 429:
-                failed(api,_retry_after(exc.headers,self.now),host=True)
-                raise _Failure("rate_limited", _retry_after(exc.headers, self.now)) from None
-            if exc.code in (401, 403):
-                raise _Failure("authorization_denied", 86400) from None
-            raise _Failure("redirect_blocked" if 300 <= exc.code < 400 else "http_error", 3600) from None
-        except _Failure as failure:
-            failed(api,max(60,failure.retry_seconds),host=failure.code=="rate_limited" or failure.provider_reason=="rate_limited")
-            raise
-        except (TimeoutError, urllib.error.URLError, OSError):
-            raise _Failure("transport_error", 900) from None
-        except Exception:
-            raise _Failure("invalid_payload", 900) from None
 
 
 def _positive(value):
@@ -299,7 +282,7 @@ def _render(result, state, registry, now):
     return result
 
 
-def enrich_funds(dashboard, config=None, now=None):
+def enrich_funds(dashboard, config=None, now=None, *, request_guard=nullcontext):
     """Return a copy with dated fund candidates and resumable fund_state caches.
 
     config.funds: enabled, max_requests (hard <=4), min_interval_seconds (>=3),
@@ -388,7 +371,8 @@ def enrich_funds(dashboard, config=None, now=None):
         endpoint["last_attempt"] = stamp
         params = {"list_status": "L"} if api == "etf_basic" else {"trade_date": target.strftime("%Y%m%d")}
         try:
-            rows = client.request(api, params)
+            with request_guard():
+                rows = client.request(api, params)
             if not rows:
                 raise _Failure("empty_response", 900)
             cleaned = _clean(api, rows, now, registry, token, target)

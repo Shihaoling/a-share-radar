@@ -229,3 +229,107 @@ function runFrontendChecks(source) {
   });
   return {passed, failures};
 }
+
+// Exercise actual poll and refresh entry points against delayed/failed local fixtures.
+async function runRefreshChecks(source) {
+  const assert = require('node:assert/strict');
+  const requests = [], intervals = [], replies = new Map(), doc = {
+    hidden: false,
+    querySelector: () => ({content:'sxdata'}),
+    querySelectorAll: () => [],
+  };
+  let renders = 0;
+  const json = (body, status = 200, headers = {}) => ({
+    status, ok:status >= 200 && status < 300, headers:new Headers(headers), json:async () => body,
+  });
+  function fetcher(url, options) {
+    const file = url.split('/').pop().split('?')[0];
+    requests.push({file,options});
+    return Promise.resolve(replies.get(file) || json(null, 503));
+  }
+  const program = source.replace(/^refresh\(\);$/m, '') + `
+    render=()=>onRender();
+    return {refresh,refreshFeed,feeds,publications,state,normalizeDashboard,baseData,responseError};
+  `;
+  const api = new Function('document','location','history','localStorage','window','setInterval','fetch','onRender', program)(
+    doc,{hash:'#news'},{},{getItem:k=>k==='guanlan.preferences'?'{"autoRefresh":false}':null},
+    {addEventListener(){}},(fn,ms)=>intervals.push({fn,ms}),fetcher,()=>{renders++;});
+  const yesterday = '2026-11-18', today = '2026-11-19';
+  const old = {id:'last-night',title:'夜间更新',published_at:yesterday+'T23:58:00+08:00'};
+  const previous_digest = {date:yesterday,summary:'上一期',generated_at:yesterday+'T23:59:00+08:00'};
+  const news = {schema_version:1,source:'tencent_news',trade_date:today,articles:[],recent_articles:[old],
+    news_digest:{date:today,status:'pending',current_article_count:0},previous_digest};
+  const spec = api.feeds.find(feed=>feed.key==='cloudNews');
+  let release;
+  replies.set('view.json',new Promise(resolve=>{release=resolve;}));
+  replies.set('cloud-news.json',json(news,200,{ETag:'one'}));
+  const pollStart = api.refresh();
+  const simultaneous = api.refresh();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(api.state.loading,true);
+  assert.equal(api.state.cloudNews.articles.length,0);
+  assert.ok(renders>1);
+  assert.equal(requests.filter(r=>r.file==='view.json').length,1);
+  assert.equal(requests.filter(r=>r.file==='live-quotes.json').length,1);
+  assert.ok(requests.filter(r=>r.file==='view.json'||r.file==='cloud-news.json').every(r=>r.options.signal instanceof AbortSignal));
+  release(json({...api.baseData(),generated_at:yesterday+'T12:00:00+08:00',market:[{id:'index'}],
+    news:[{id:old.id,title:'旧版标题',published_at:old.published_at}]}));
+  await Promise.all([pollStart,simultaneous]);
+  assert.ok(api.state.data?.market.length);
+  const page = api.normalizeDashboard(api.state.data);
+  assert.equal(page.news.filter(article=>article.id===old.id).length,1);
+  assert.equal(page.news_digest.date,today);
+  assert.equal(page.news_digest.current_article_count,0);
+  assert.equal(page.previous_news_digest.date,yesterday);
+  const countBefore = requests.length;
+  for(const timer of intervals)timer.fn();
+  assert.equal(requests.length,countBefore);
+
+  const before = api.state.cloudNews;
+  replies.set('cloud-news.json',json(null,429,{'Retry-After':'600'}));
+  const attemptTime = Date.now();
+  await api.refreshFeed(spec);
+  assert.equal(api.state.cloudNews,before);
+  const task = api.publications.get(spec.key);
+  assert.ok(task.retryAt>=attemptTime+600000);
+  const countLimited = requests.length;
+  await api.refreshFeed(spec);
+  assert.equal(requests.length,countLimited);
+  assert.equal(api.responseError(json(null,503,{'Retry-After':'Tue, 01 Jan 2030 00:00:00 GMT'})).retryAt,
+    Date.parse('Tue, 01 Jan 2030 00:00:00 GMT'));
+  task.retryAt=0;
+  const malformed = {...news,articles:[{id:'bad',llm_analysis:{sector_impacts:[null]}}]};
+  replies.set('cloud-news.json',json(malformed,200,{ETag:'invalid'}));
+  await api.refreshFeed(spec);
+  assert.equal(api.state.cloudNews,before);
+  assert.equal(task.failures,2);
+  task.retryAt=0;
+  const current={...old,id:'today',published_at:today+'T00:15:00+08:00'};
+  const recovered={...news,articles:[current],news_digest:{date:today,summary:'新一期',current_article_count:1}};
+  replies.set('cloud-news.json',json(recovered,200,{ETag:'two'}));
+  await api.refreshFeed(spec);
+  assert.equal(task.failures,0);
+  const updated=api.normalizeDashboard(api.state.data);
+  assert.equal(updated.news[0].id,current.id);
+  assert.equal(updated.previous_news_digest,undefined);
+  assert.ok(updated.news.some(article=>article.id===old.id));
+  replies.set('cloud-news.json',json({...news,trade_date:yesterday},200,{ETag:'stale'}));
+  await api.refreshFeed(spec);
+  assert.equal(api.state.cloudNews.version,'two');
+  // A temporarily empty same-day digest preserves the dated successful text and its evidence.
+  replies.set('cloud-news.json',json({...news,news_digest:{date:today,status:'temporarily_unavailable',current_article_count:2}},200,{ETag:'three'}));
+  await api.refreshFeed(spec);
+  assert.equal(api.state.cloudNews.news_digest.summary,'新一期');
+  assert.equal(api.state.cloudNews.news_digest.status,'temporarily_unavailable');
+  assert.equal(api.state.cloudNews.news_digest.current_article_count,2);
+  api.state.cloudNews=news;
+  const sameDayBase=api.normalizeDashboard({...api.state.data,news_digest:{date:today,summary:'当日基线总览',article_count:3}});
+  assert.equal(sameDayBase.news_digest.summary,'当日基线总览');
+  assert.equal(sameDayBase.news_digest.status,'updating');
+  assert.equal(sameDayBase.news_digest.current_article_count,0);
+  replies.set('view.json',json(null,500));
+  const goodDashboard=api.state.data;
+  await api.refresh();
+  assert.equal(api.state.data,goodDashboard);
+  assert.ok(api.publications.get('data').failures>0);
+}

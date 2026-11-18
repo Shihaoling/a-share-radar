@@ -37,14 +37,18 @@ def merge_daily(data, daily, through=None):
             if latest.get("market_cap_cny") is not None:
                 caps = {bar["date"]: bar for bar in entity.get("market_cap_history", [])}
                 caps[date] = {"date": date, "value": latest["market_cap_cny"]}
-                entity.update(market_cap=latest["market_cap_cny"], market_cap_date=date,
-                              market_cap_history=[caps[key] for key in sorted(caps)])
+                entity["market_cap_history"] = [caps[key] for key in sorted(caps)]
+                if date >= (entity.get("market_cap_date") or ""):
+                    entity.update(market_cap=latest["market_cap_cny"], market_cap_date=date)
         cap_history = daily["market_caps"].get(entity["id"], {})
         caps = {day: value for day, value in cap_history.items() if not through or day <= through}
         if caps:
+            history = {bar["date"]: bar for bar in entity.get("market_cap_history", [])}
+            history.update({day: {"date": day, "value": value} for day, value in caps.items()})
+            entity["market_cap_history"] = [history[day] for day in sorted(history)]
             latest = max(caps)
-            entity.update(market_cap=caps[latest], market_cap_date=latest,
-                          market_cap_history=[{"date": day, "value": caps[day]} for day in sorted(caps)])
+            if latest >= (entity.get("market_cap_date") or ""):
+                entity.update(market_cap=caps[latest], market_cap_date=latest)
         for stock in entity.get("stocks", []):
             ref = daily["stocks"].get(stock.get("ts_code"))
             if ref and (not through or ref["quote_date"] <= through) and ref["quote_date"] >= (stock.get("quote_date") or ""):
@@ -66,7 +70,7 @@ def refresh():
     daily.update(schema_version=1, source="sxdata_daily", trade_date=date)
     index_map = {_index_code(item): item["id"] for item in source["market"] if _index_code(item)}
     industry_ids = {i["id"] for i in source["sectors"] if i.get("taxonomy") == "SW2021"}
-    stock_codes = {s.get("ts_code") for i in source["sectors"] for s in i.get("stocks", [])}
+    stock_codes = {s["ts_code"] for i in source["sectors"] for s in i.get("stocks", []) if s.get("ts_code")}
     FIELDS["index_dailybasic"] = "ts_code,trade_date,total_mv"
 
     def request(api, query):
@@ -96,19 +100,35 @@ def refresh():
         if now.time() >= time(18, 30) and any(date not in daily["bars"].get(code, {}) for code in industry_ids):
             rows = request("sw_daily", {"trade_date": api_date})
             if rows:
-                for code, bars in _sw_bars(rows, industry_ids, day, day, stamp, token).items():
-                    for bar in bars:
-                        save(code, bar)
-        if not daily["stocks"] or max(r["quote_date"] for r in daily["stocks"].values()) < date:
+                grouped = {}
+                for row in rows:
+                    if isinstance(row["ts_code"], str) and row["ts_code"] in industry_ids:
+                        grouped.setdefault(row["ts_code"], []).append(row)
+                for code, group in grouped.items():
+                    try:
+                        for bar in _sw_bars(group, {code}, day, day, stamp, token).get(code, []):
+                            save(code, bar)
+                    except _Failure as error:
+                        print(json.dumps({"api": "sw_daily", "symbol": code, "status": error.code}), flush=True)
+        missing_stocks = any(daily["stocks"].get(code, {}).get("quote_date") != date for code in stock_codes)
+        attempts = daily.get("stock_batch_attempts", {})
+        attempts_today = attempts.get("count", 0) if attempts.get("date") == date else 0
+        if missing_stocks and attempts_today < 2:
             rows = request("daily_basic", {"trade_date": api_date})
-            matching = [r for r in rows if r["ts_code"] in stock_codes]
+            matching = [r for r in rows if isinstance(r["ts_code"], str) and r["ts_code"] in stock_codes]
             if matching:
-                for value in _basic_records(matching, day, stamp):
-                    if value["date"] != date or value.get("market_cap_cny") is None or value.get("close") is None:
-                        continue
-                    daily["stocks"][value["ts_code"]] = {"quote_date": date, "price": value["close"], "market_cap_date": date,
-                        "market_cap": value["market_cap_cny"], "timestamp_quality": "daily_close",
-                        "as_of": date+"T15:00:00+08:00", "provider": "stock_api"}
+                try:
+                    values = _basic_records(matching, day, stamp)
+                except _Failure as error:
+                    values = []
+                    print(json.dumps({"api": "daily_basic", "status": error.code}), flush=True)
+                for value in values:
+                    if value.get("market_cap_cny") is not None:
+                        daily["stocks"][value["ts_code"]] = {"quote_date": date, "price": value["close"], "market_cap_date": date,
+                            "market_cap": value["market_cap_cny"], "timestamp_quality": "daily_close",
+                            "as_of": date+"T15:00:00+08:00", "provider": "stock_api"}
+                if values:
+                    daily["stock_batch_attempts"] = {"date": date, "count": attempts_today + 1}
         coverage = {"000001.SH", "399001.SZ", "399006.SZ", "000688.SH", "000905.SH"}
         for code, entity_id in index_map.items():
             if code not in coverage:

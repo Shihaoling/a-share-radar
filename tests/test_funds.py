@@ -85,6 +85,20 @@ def provider(overrides=None):
 
 
 class FundTests(unittest.TestCase):
+    def test_shared_guard_is_acquired_once_for_each_fund_request(self):
+        with provider() as (calls, _, _):
+            spans = []
+            @contextmanager
+            def guard():
+                start = len(calls)
+                try:
+                    yield
+                finally:
+                    spans.append((start, len(calls)))
+
+            enrich_funds(seed(), now=NOW, request_guard=guard)
+        self.assertEqual(spans, [(0, 1), (1, 2), (2, 3)])
+
     def test_abbreviated_domestic_food_and_transport_indices(self):
         self.assertEqual(_match(catalog(index='中证细分食品'))[0], '801120.SI')
         self.assertEqual(_match(catalog(index='中证运输指数'))[0], '801170.SI')
