@@ -11024,6 +11024,764 @@
       "input_scope": "entire_extracted_article_body",
       "input_characters": 58,
       "scored_at": "2026-11-18T11:13:06.373766+08:00"
+    },
+    "029311fb23a9a8ef6a269e2183649914951c72a4c3312d89505b26e4da54480c": {
+      "summary": "亚马逊MGM已确定罗伯特·帕丁森出演新版007，影片计划2028年上映，贝索斯称深度参与选角。知名明星或利于该系列吸引观众，但报道未量化票房、盈利或行业传导。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "事件局限于单一影视IP及选角，未提供票房、盈利或宏观需求数据，不足以判断整体市场影响。",
+        "evidence": []
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.78,
+          "reason": "007选用更具商业号召力的明星，对单项目内容发行偏正面；但好莱坞裁员整合、影院拉新困难构成行业压力，且无财务数据支持行业整体方向。",
+          "evidence": [
+            "But Amazon MGM ultimately went with a household name, choosing a more bankable movie star who is widely seen as a safe pair of hands.\n\"We ran a really tight process and made the final decision on Friday,\" Bezos said.",
+            "The pick comes amid widespread Hollywood cuts and consolidation, with studios struggling to get people into cinemas.",
+            "Hollywood insiders have said Pattinson was viewed as a safe pick to bring audiences in, rather than taking a risk on a new actor who could grow with the franchise.\n\"Maybe he's boring."
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "影片片名和确切上映日期尚未公布，2028年上映仍属后续安排。",
+        "“明星可带来观众”仅为业内评论，对票房和盈利的实际效果未经证实。",
+        "报道未披露制作预算、发行策略及该事件对亚马逊MGM财务的影响。"
+      ],
+      "usage": {
+        "total_tokens": 4791,
+        "prompt_tokens": 2039,
+        "completion_tokens": 2752
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "9596a79cf49d8feb7bf9d8b02e7ce42662232e327c66474b794e5b137d9eff3c",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 3520,
+      "scored_at": "2026-11-18T11:39:38.529506+08:00"
+    },
+    "94d4a5e4c3e0d25109a9e2323e556539c504edb1ae576990192d7a8c02052a13": {
+      "summary": "英伟达2027财年第三财季营收1158.4亿美元、同比增103%，数据中心收入同比增110%，显示AI算力需求强劲；但黄仁勋辞职后的治理、客户融资与订单兑现仍存不确定性。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "材料仅反映英伟达个股股价及分析师预期，未给出对六大指数或宏观基本面的明确传导，不能将公司景气信号泛化至整体市场。",
+        "evidence": [
+          "值得注意的是，克雷斯上调了对截至2028年1月的2028财年营收业绩指引，预计营收增长率将达到75%，该数字此前为70%。她表示，新的业绩指引“\n综合\n考虑了\n数据中心\n的准备情况、终端客户需求的强度及持续性，以及客户获取资金的能力”。\n18日当天，英伟达（Nasdaq：NVDA）股价跌0.44%收于每股155.46美元，总市值3.75万亿美元。今年以来，公司股价已跌超17%。财报发布后，英伟达盘后股价涨超4%。\n投资者正在密切关注，英伟达在创始人黄仁勋离职后将如何发展。",
+          "（Edge Computing）部门进行计算。报告期间，该部门收入为82亿美元，同比增长42%，环比增长14%。\nFactset的数据显示，财报发布前，72名分析师中有56名给予英伟达“买入”或“跑赢大盘”评级，其余15人则给予“持有”评级，还有一人给予“卖出”评级。分析师们给英伟达的平均目标价为280.78美元。\n自11月11日以来，已有至少11家华尔街券商或研究机构下调英伟达的股票评级。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.88,
+          "reason": "英伟达AI芯片与数据中心业务高增，且多年期内存采购承诺上升，构成AI芯片、显存相关细分需求向好的信号；但不能外推消费电子，也未证明A股供应商已获订单。",
+          "evidence": [
+            "处于管理层剧变风波中的AI（\n人工智能\n）芯片龙头\n英伟达\n公布了强劲的季度业绩。\n当地时间11月17日美股盘后，\n英伟达\n（Nasdaq：NVDA）发布了截至10月25日的2027财年第三财季财报，期内实现营收1158.4亿美元，同比增长103%，高于市场预期的1091亿美元；美国通用会计准则（GAAP）下净利润653亿美元，同比大增105%；Non-GAAP下每股摊薄收益为2.68美元，同比大增111%，超出市场预期的2.48美元。公司第三财季毛利率为74.9%。",
+            "截至2027财年第三季度末，英伟达持有的有价证券和非有价证券总额接近1100亿美元，其中，对非上市公司的股权投资较上一季度大幅增加。\n同时，英伟达未来的支出承诺也在不断攀升。公司披露，已承诺为未来供应和产能投入3900亿美元，高于上一季度的2790亿美元。英伟达表示，这一数字上升“主要与多年期内存供应采购协议有关”。\n截至2032年，英伟达对新云厂商的承诺金额达到320亿美元。克雷斯强调：“只有当新云厂商获得融资、能够购买\n数据中心",
+            "基础设施产品，且相关计算能力完成部署、投入运营并通过我们的验收后，我们的相关承诺才会生效。”\n分业务来看，英伟达最受关注的\n数据中心\n业务成绩又一次创下\n历史新高\n，贡献了占总营收近93%的销售额。\n英伟达第三财季数据中心业务营收为1076亿美元，首次站上千亿美元大关，与上年同期相比增长110%，环比增长21%，高于市场预期的1019亿美元。\n另一边，英伟达将游戏与AI PC（个人电脑）业务、专业可视化业务和\n汽车\n与\n机器人\n业务统一放入\n边缘计算"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.6,
+          "reason": "英伟达数据中心收入创新高，客户承诺又以购置、部署并验收基础设施为生效条件，显示算力基础设施需求强；仅直接相关细分受益，融资、部署及验收条件仍带来兑现风险。",
+          "evidence": [
+            "截至2027财年第三季度末，英伟达持有的有价证券和非有价证券总额接近1100亿美元，其中，对非上市公司的股权投资较上一季度大幅增加。\n同时，英伟达未来的支出承诺也在不断攀升。公司披露，已承诺为未来供应和产能投入3900亿美元，高于上一季度的2790亿美元。英伟达表示，这一数字上升“主要与多年期内存供应采购协议有关”。\n截至2032年，英伟达对新云厂商的承诺金额达到320亿美元。克雷斯强调：“只有当新云厂商获得融资、能够购买\n数据中心",
+            "基础设施产品，且相关计算能力完成部署、投入运营并通过我们的验收后，我们的相关承诺才会生效。”\n分业务来看，英伟达最受关注的\n数据中心\n业务成绩又一次创下\n历史新高\n，贡献了占总营收近93%的销售额。\n英伟达第三财季数据中心业务营收为1076亿美元，首次站上千亿美元大关，与上年同期相比增长110%，环比增长21%，高于市场预期的1019亿美元。\n另一边，英伟达将游戏与AI PC（个人电脑）业务、专业可视化业务和\n汽车\n与\n机器人\n业务统一放入\n边缘计算"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.91,
+          "reason": "英伟达与伙伴及客户的数千亿美元融资交易去向未明，新云厂商承诺又以获得融资为前提，提示项目融资风险；但缺少交易对手、损失和行业敞口，无法判断非银金融损益方向。",
+          "evidence": [
+            "据新华社，英伟达公司12日宣布，公司执行副总裁兼首席财务官克雷斯将出任临时首席执行官。公司联合创始人黄仁勋辞去总裁、首席执行官及董事职务，辞职即刻生效。\n就在财报前数小时，黄仁勋在社交平台公开发声称，愿意回归担任CEO。但在财报电话会上，英伟达董事会主席哈维·C·琼斯（Harvey C. Jones）表示，董事会并未考虑让黄仁勋复职。\n这为英伟达留下了诸多问题，包括公司近年来与合作伙伴和客户达成的数千亿美元融资交易将何去何从。",
+            "截至2027财年第三季度末，英伟达持有的有价证券和非有价证券总额接近1100亿美元，其中，对非上市公司的股权投资较上一季度大幅增加。\n同时，英伟达未来的支出承诺也在不断攀升。公司披露，已承诺为未来供应和产能投入3900亿美元，高于上一季度的2790亿美元。英伟达表示，这一数字上升“主要与多年期内存供应采购协议有关”。\n截至2032年，英伟达对新云厂商的承诺金额达到320亿美元。克雷斯强调：“只有当新云厂商获得融资、能够购买\n数据中心",
+            "基础设施产品，且相关计算能力完成部署、投入运营并通过我们的验收后，我们的相关承诺才会生效。”\n分业务来看，英伟达最受关注的\n数据中心\n业务成绩又一次创下\n历史新高\n，贡献了占总营收近93%的销售额。\n英伟达第三财季数据中心业务营收为1076亿美元，首次站上千亿美元大关，与上年同期相比增长110%，环比增长21%，高于市场预期的1019亿美元。\n另一边，英伟达将游戏与AI PC（个人电脑）业务、专业可视化业务和\n汽车\n与\n机器人\n业务统一放入\n边缘计算"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "汽车业务仅与游戏、AI PC、专业可视化及机器人合并披露，边缘计算部门收入增长无法拆分汽车贡献，不能据此判断汽车行业需求或盈利方向。",
+          "evidence": [
+            "基础设施产品，且相关计算能力完成部署、投入运营并通过我们的验收后，我们的相关承诺才会生效。”\n分业务来看，英伟达最受关注的\n数据中心\n业务成绩又一次创下\n历史新高\n，贡献了占总营收近93%的销售额。\n英伟达第三财季数据中心业务营收为1076亿美元，首次站上千亿美元大关，与上年同期相比增长110%，环比增长21%，高于市场预期的1019亿美元。\n另一边，英伟达将游戏与AI PC（个人电脑）业务、专业可视化业务和\n汽车\n与\n机器人\n业务统一放入\n边缘计算",
+            "（Edge Computing）部门进行计算。报告期间，该部门收入为82亿美元，同比增长42%，环比增长14%。\nFactset的数据显示，财报发布前，72名分析师中有56名给予英伟达“买入”或“跑赢大盘”评级，其余15人则给予“持有”评级，还有一人给予“卖出”评级。分析师们给英伟达的平均目标价为280.78美元。\n自11月11日以来，已有至少11家华尔街券商或研究机构下调英伟达的股票评级。"
+          ],
+          "sector_code": "801880.SI",
+          "sector_name": "汽车",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.9,
+          "reason": "机器人业务被并入边缘计算部门披露，82亿美元收入及增速无法拆分其贡献，文章亦未提供机器人客户、订单或产业链利润数据，经营方向无法确定。",
+          "evidence": [
+            "基础设施产品，且相关计算能力完成部署、投入运营并通过我们的验收后，我们的相关承诺才会生效。”\n分业务来看，英伟达最受关注的\n数据中心\n业务成绩又一次创下\n历史新高\n，贡献了占总营收近93%的销售额。\n英伟达第三财季数据中心业务营收为1076亿美元，首次站上千亿美元大关，与上年同期相比增长110%，环比增长21%，高于市场预期的1019亿美元。\n另一边，英伟达将游戏与AI PC（个人电脑）业务、专业可视化业务和\n汽车\n与\n机器人\n业务统一放入\n边缘计算",
+            "（Edge Computing）部门进行计算。报告期间，该部门收入为82亿美元，同比增长42%，环比增长14%。\nFactset的数据显示，财报发布前，72名分析师中有56名给予英伟达“买入”或“跑赢大盘”评级，其余15人则给予“持有”评级，还有一人给予“卖出”评级。分析师们给英伟达的平均目标价为280.78美元。\n自11月11日以来，已有至少11家华尔街券商或研究机构下调英伟达的股票评级。"
+          ],
+          "sector_code": "801890.SI",
+          "sector_name": "机械设备",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "2028财年增长指引属于公司预测，实际表现仍受客户需求与宏观环境影响。",
+        "新云厂商承诺须满足融资、采购、部署及验收条件，不能视为已实现收入。",
+        "黄仁勋辞职后的治理安排尚不清晰，且文章未披露A股产业链订单及利润分配情况。"
+      ],
+      "usage": {
+        "total_tokens": 11791,
+        "prompt_tokens": 2062,
+        "completion_tokens": 9729
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "59b6fbfac99ca955c3de20402ca26239caf2b0b4a45fc560f0a31b2b76d8b067",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1703,
+      "scored_at": "2026-11-18T11:41:17.027514+08:00"
+    },
+    "70b017ec210ae84d11ded507e4b09eb68d01a4e1db271bffb7873d0a3aaae85f": {
+      "summary": "英伟达2027财年三季营收及数据中心业绩均超预期，并上调2028财年销售增速指引至75%，带动美股AI硬件与云公司盘后上涨；但毛利率将至低点、CEO遴选未决。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.88,
+        "reason": "材料仅明确公司财报后的美股个股及指数期货反应，未建立对中国六大指数或宏观基本面的明确传导。",
+        "evidence": [
+          "英伟达\n公布了黄仁勋离职后的首份财报，业绩和展望均超出市场预期。\n北京时间11月18日清晨，美股盘后，受超预期财报推动，\n英伟达\n股价直线拉升，截至发稿涨幅超过5%。\n英伟达\n还带动美股AI硬件板块盘后走高：Lumentum涨超7%，\n闪迪\n涨超6%，\n美光科技\n、\nSK海力士\n、\n希捷科技\n涨超5%，\n康宁\n涨超4%。美股AI新云公司也大幅拉升，Nebius涨超12%，CoreWeave涨超10%。美股股指\n期货\n集体拉升，纳指\n期货\n涨1.52%，标普500指数\n期货",
+          "涨0.85%，道指期货涨0.32%。\n周二盘后，英伟达公布的财报显示，2027财年第三财季（截至10月25日），公司营收为1158亿美元，同比增长103.1%，环比增长20.3%，超出市场预期的1093.3亿美元，也明显高于公司指引中值1080亿美元。该公司已连续17个季度超出华尔街营收预期。\n其中，英伟达第三财季\n数据中心\n营收为1076亿美元，同比增长110%，环比增长21%，超出市场预期的1018.7亿美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.86,
+          "reason": "英伟达数据中心收入同比增长110%，并将2028财年销售增速指引上调至75%，AI硬件股盘后普涨，强化GPU、存储等电子硬件需求预期；A股供应商受益程度未披露。",
+          "evidence": [
+            "英伟达\n公布了黄仁勋离职后的首份财报，业绩和展望均超出市场预期。\n北京时间11月18日清晨，美股盘后，受超预期财报推动，\n英伟达\n股价直线拉升，截至发稿涨幅超过5%。\n英伟达\n还带动美股AI硬件板块盘后走高：Lumentum涨超7%，\n闪迪\n涨超6%，\n美光科技\n、\nSK海力士\n、\n希捷科技\n涨超5%，\n康宁\n涨超4%。美股AI新云公司也大幅拉升，Nebius涨超12%，CoreWeave涨超10%。美股股指\n期货\n集体拉升，纳指\n期货\n涨1.52%，标普500指数\n期货",
+            "涨0.85%，道指期货涨0.32%。\n周二盘后，英伟达公布的财报显示，2027财年第三财季（截至10月25日），公司营收为1158亿美元，同比增长103.1%，环比增长20.3%，超出市场预期的1093.3亿美元，也明显高于公司指引中值1080亿美元。该公司已连续17个季度超出华尔街营收预期。\n其中，英伟达第三财季\n数据中心\n营收为1076亿美元，同比增长110%，环比增长21%，超出市场预期的1018.7亿美元。",
+            "公司首席财务官兼临时CEO克雷斯称，预计第四季度将是毛利率低点，随后在2028财年回升至72%至73%区间。公司仍有望于明年推出Vera Rubin Ultra，并于2028年推出Feynman。\n上述财报表明，尽管英伟达面临的挑战仍在累积，但该公司仍将继续受益于\n人工智能\n算力需求的飙升。\n克雷斯表示，英伟达上调了2028财年展望，目前预计销售额将同比增长75%，高于此前预期的70%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.76,
+          "reason": "英伟达云业务积压订单由2万亿美元升至2.5万亿美元，AI新云公司盘后大涨，显示AI云基础设施需求增强；但未披露国内相关企业业绩弹性。",
+          "evidence": [
+            "英伟达\n公布了黄仁勋离职后的首份财报，业绩和展望均超出市场预期。\n北京时间11月18日清晨，美股盘后，受超预期财报推动，\n英伟达\n股价直线拉升，截至发稿涨幅超过5%。\n英伟达\n还带动美股AI硬件板块盘后走高：Lumentum涨超7%，\n闪迪\n涨超6%，\n美光科技\n、\nSK海力士\n、\n希捷科技\n涨超5%，\n康宁\n涨超4%。美股AI新云公司也大幅拉升，Nebius涨超12%，CoreWeave涨超10%。美股股指\n期货\n集体拉升，纳指\n期货\n涨1.52%，标普500指数\n期货",
+            "公司首席财务官兼临时CEO克雷斯称，预计第四季度将是毛利率低点，随后在2028财年回升至72%至73%区间。公司仍有望于明年推出Vera Rubin Ultra，并于2028年推出Feynman。\n上述财报表明，尽管英伟达面临的挑战仍在累积，但该公司仍将继续受益于\n人工智能\n算力需求的飙升。\n克雷斯表示，英伟达上调了2028财年展望，目前预计销售额将同比增长75%，高于此前预期的70%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "medium_term"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.45,
+          "reason": "材料仅将Lumentum等列入上涨的AI硬件标的，未披露光通信订单、需求或盈利变化，无法确认对通信行业的经营传导。",
+          "evidence": [
+            "英伟达\n公布了黄仁勋离职后的首份财报，业绩和展望均超出市场预期。\n北京时间11月18日清晨，美股盘后，受超预期财报推动，\n英伟达\n股价直线拉升，截至发稿涨幅超过5%。\n英伟达\n还带动美股AI硬件板块盘后走高：Lumentum涨超7%，\n闪迪\n涨超6%，\n美光科技\n、\nSK海力士\n、\n希捷科技\n涨超5%，\n康宁\n涨超4%。美股AI新云公司也大幅拉升，Nebius涨超12%，CoreWeave涨超10%。美股股指\n期货\n集体拉升，纳指\n期货\n涨1.52%，标普500指数\n期货"
+          ],
+          "sector_code": "801770.SI",
+          "sector_name": "通信",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "第四财季毛利率预计为71%至72%，管理层称其将是低点，后续回升尚未验证。",
+        "黄仁勋不会复职，正式CEO尚待遴选，战略执行存在不确定性。",
+        "材料主要反映海外公司需求及股价反应，未披露A股相关企业的订单、产能和业绩敞口。"
+      ],
+      "usage": {
+        "total_tokens": 7232,
+        "prompt_tokens": 1785,
+        "completion_tokens": 5447
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "bfce3c3c5d33f4ad8e5fa6289219dcf7c8f34c711e192820cc4852b01f8e41b4",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1199,
+      "scored_at": "2026-11-18T11:43:20.122947+08:00"
+    },
+    "9a60e4e23c5245425473ffb287f3f4e4de5ca3f69fbc028121ccc09c188db382": {
+      "summary": "英伟达营收、盈利及数据中心收入均超预期，数据中心收入同比翻倍，下季营收指引约1300亿美元，显示AI算力需求仍强；但黄仁勋不复职，中国数据中心算力收入未计入展望。",
+      "tone": "mixed",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.94,
+        "reason": "材料仅披露英伟达个案业绩、指引及盘后股价，未建立对中国六大指数或宏观盈利的明确传导。",
+        "evidence": [
+          "美东时间周二盘后，\n英伟达\n披露2027财年第三季度财报，公司营收、盈利双双超出市场预期，同时给出强劲业绩指引。\n这也是\n英伟达\n联合创始人黄仁勋上周突然卸任CEO之后，这家芯片巨头发布的首份财报。在\n英伟达\n财报会一开场，英伟达董事会主席哈维·琼斯已经明确表示，董事会无意让黄仁勋回归CEO岗位。\n截至发稿，该股盘后交易上涨约3%。\n英伟达公布强劲业绩\n英伟达业绩对比LSEG统计的分析师预期表现如下：\n调整后每股收益：2.68美元，市场预期2.48美元",
+          "营收：1158.4亿美元，市场预期1091.0亿美元\n外界最为关注的\n英伟达\n数据中心\n收入\n（包括其向超大规模云服务商及其他\n数据中心\n提供商交付的GPU系统）为1076亿美元，\n高于华尔街一致预期1018.7亿美元，较上年同期增长逾一倍。\n英伟达称，第三季度营收较去年同期570亿美元实现翻倍，核心\n数据中心\n业务依旧保持强劲增长势头。\n公司预计，下一季度营收将同比增长约90%，达到1300亿美元左右，高于分析师1251亿美元的一致预期。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.82,
+          "reason": "英伟达数据中心GPU收入同比翻倍且下季指引高于预期，对电子行业AI芯片细分需求偏正面；但扩产承诺曾压缩毛利率，且未披露A股供应链订单关系。",
+          "evidence": [
+            "营收：1158.4亿美元，市场预期1091.0亿美元\n外界最为关注的\n英伟达\n数据中心\n收入\n（包括其向超大规模云服务商及其他\n数据中心\n提供商交付的GPU系统）为1076亿美元，\n高于华尔街一致预期1018.7亿美元，较上年同期增长逾一倍。\n英伟达称，第三季度营收较去年同期570亿美元实现翻倍，核心\n数据中心\n业务依旧保持强劲增长势头。\n公司预计，下一季度营收将同比增长约90%，达到1300亿美元左右，高于分析师1251亿美元的一致预期。",
+            "投资者一直密切关注英伟达的毛利率，近期由于公司不断增加芯片生产供应承诺，毛利率有所收窄。但周二，英伟达在这一关键指标上超出了华尔街预期：\n其非公认会计准则（GAAP）毛利率达到74.9%，高于华尔街机构预测的74%。\n英伟达首席财务官克雷斯在财报声明中表示，公司的路线图正按计划推进。\n“我们的势头确凿无疑。英伟达是一家卓越的技术领导者，这得益于我们团队持续不断的创新精神，Vera Rubin开局强劲，我们的路线图正走在正确的轨道上，而我们的雄心壮志也从未如此高涨。”"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "下一季营收约1300亿美元属于公司指引，最终业绩仍有不确定性。",
+        "材料未说明英伟达与A股电子产业链的供应商、客户或订单关系，行业传导有限。",
+        "临时CEO安排、黄仁勋离任及华盛顿政策风向变化对经营的影响尚未量化。"
+      ],
+      "usage": {
+        "total_tokens": 5387,
+        "prompt_tokens": 1836,
+        "completion_tokens": 3551
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "dc147bc2bfb335ce54b2c3815b6306174861c349224bfa10d7dbc1faa51627e4",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 1264,
+      "scored_at": "2026-11-18T11:43:58.732532+08:00"
+    },
+    "22fc1f79d2a81b176235695c75e72b7710094a88c50672f0c842f041191fd090": {
+      "summary": "杰富瑞将微博ADR目标价由8.80美元下调至7.10美元，可能反映其对微博估值预期的下调；原文未披露盈利预测或经营变化依据。",
+      "tone": "negative",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "消息仅涉及单一公司ADR目标价调整，未提供宏观政策、跨行业成本或需求传导，无法判断六大指数影响。",
+        "evidence": [
+          "财联社11月18日电，杰富瑞将微博ADR目标价从8.80美元下调至7.10美元。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.85,
+          "reason": "目标价下调仅体现单一机构的估值观点变化，未提供微博广告收入、用户需求或行业经营数据，不能外推至传媒行业。",
+          "evidence": [
+            "财联社11月18日电，杰富瑞将微博ADR目标价从8.80美元下调至7.10美元。"
+          ],
+          "sector_code": "801760.SI",
+          "sector_name": "传媒",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "目标价下调所依据的盈利预测和估值假设未披露。",
+        "事件仅涉及微博ADR，不能据此判断传媒行业整体经营变化。",
+        "未提供可验证的宏观或跨行业传导证据。"
+      ],
+      "usage": {
+        "total_tokens": 2692,
+        "prompt_tokens": 1054,
+        "completion_tokens": 1638
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "ab7158e7f6982ac2f2338e0649d5bb92d5c1a4793ecebb26c53dd00a04a46cf0",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 40,
+      "scored_at": "2026-11-18T11:44:16.516653+08:00"
+    },
+    "638d28a0d25bae6e722bbd4e8b160b6f8501a59ffb6cca1fa4411fe5aa182ee2": {
+      "summary": "据报道，微软正寻求推出更便宜、更专业化的AI模型；价格、发布时间和落地情况未披露，实际产业影响仍待验证。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.18,
+        "reason": "材料仅涉及微软的模型开发目标，未给出明确宏观传导、产业链订单或收入影响，不能据此判断大盘方向。",
+        "evidence": [
+          "财联社11月18日电，据报道，微软力求推出更便宜、更专业化的AI模型。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.46,
+          "reason": "若落地，模型降价可降低AI应用开发和使用成本、扩展需求；专业化竞争也可能压缩通用模型及同质化应用利润，应用端与模型端影响相反，且无A股直接关联证据。",
+          "evidence": [
+            "财联社11月18日电，据报道，微软力求推出更便宜、更专业化的AI模型。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "“据报道”且仅称“力求推出”，项目是否立项或最终发布未确认。",
+        "缺少价格、性能、发布时间及客户采用率等关键数据。",
+        "未说明与A股计算机企业订单、收入或竞争格局的直接关联。"
+      ],
+      "usage": {
+        "total_tokens": 3587,
+        "prompt_tokens": 1038,
+        "completion_tokens": 2549
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "7414dda6ac36f01524056d4f4dc597648d8e7e0d4f871ba52043fd400498ac5e",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 35,
+      "scored_at": "2026-11-18T11:44:38.532864+08:00"
+    },
+    "5ba2a9ad5652bffe41d5d16f2d55fd7dfe2e338d7c78b2584e8ef0116c478960": {
+      "summary": "赛富时与微软宣布推出CopilotForce，将Salesforce客户上下文及销售工作流接入Microsoft Copilot，扩展企业级AI应用场景；正文未披露商业化数据及A股传导。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "产品合作主要涉及企业软件平台，正文未提供行业订单、收入或宏观传导证据，无法判断大盘影响。",
+        "evidence": [
+          "财联社11月18日电，赛富时（Salesforce）与微软宣布推出CopilotForce，将Salesforce的客户上下文和销售工作流引入Microsoft Copilot。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.88,
+          "reason": "CopilotForce属于企业SaaS与生成式AI应用整合，场景落在计算机软件；但仅涉及赛富时与微软，未披露A股厂商适配、订单或收入，产业方向无法确认。",
+          "evidence": [
+            "财联社11月18日电，赛富时（Salesforce）与微软宣布推出CopilotForce，将Salesforce的客户上下文和销售工作流引入Microsoft Copilot。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未披露CopilotForce的定价、上线范围、客户采用量及收入贡献。",
+        "未说明该合作对A股计算机公司的产品适配、订单或竞争关系。",
+        "缺少可验证的行业景气及宏观市场传导数据。"
+      ],
+      "usage": {
+        "total_tokens": 2846,
+        "prompt_tokens": 1063,
+        "completion_tokens": 1783
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "33feae3a8fe287d94dccdd342918235826c32fa720413a0ffe3e9658d12194bc",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 89,
+      "scored_at": "2026-11-18T11:44:59.579624+08:00"
+    },
+    "b8afc37cf3dc79099160c7e6b613c22b1035093442cce93878d9ba28801ac68b": {
+      "summary": "东吴证券115.19亿元收购东海证券83.68%股份获上交所并购重组审核通过，但仍待证监会等批准。2024年以来已有8起券商合并、涉及17家公司，多单落地或过会显示整合提速。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.95,
+        "reason": "正文聚焦券商并购整合及公司经营，未提供向大盘或六大指数传导的明确证据。",
+        "evidence": []
+      },
+      "sector_impacts": [
+        {
+          "direction": "mixed",
+          "confidence": 0.89,
+          "reason": "头部并购整合方有望通过业务归集提升协同和增长空间；文章推测更多中小券商或退出整合，独立经营空间承压，但交易仍待监管批准，影响并非立即兑现。",
+          "evidence": [
+            "11月17日，上交所并购重组审核委员会召开2026年第23次会议，审议\n东吴证券\n发行股份及支付现金购买资产暨关联交易申请。\n东吴证券\n晚间披露的审议结果显示，本次交易符合重组条件和信息披露要求，\n东吴证券\n115.19亿元收购东海证券83.68%股份的交易获审核通过。后续，尚需证监会及其他有权机构批准、核准、同意注册后方可正式实施。\n此单过会并非孤例。2024年以来券商并购重组进入活跃期，行业已有8起合并案例，涉及17家证券公司。随着\n中金公司\n“三合一”完成交割、",
+            "东吴证券副总裁、董事会秘书郭家安回应称，公司将根据不同业务特点和整合难易程度，按照同类业务归集、专业化运营、化解同业竞争、优化股权架构的总体思路，统筹推进全方位整合；公司将通过加快推进与东海证券的战略整合，提升中长期增长空间，持续增强核心竞争力。\n三季报显示，东吴证券前三季度实现营业收入69.74亿元，归母净利润27.08亿元。同一场业绩会上，东吴证券董事长范力表示，三季度市场波动给券商自营带来影响，公司将坚持稳健基调，深化市场趋势研判，优化投资策略布局。",
+            "入主国都证券、\n国信证券\n控股万和证券、\n西部证券\n收购国融证券等6起已落地；\n东方证券\n收购上海证券于10月29日过会，东吴证券收购东海证券于11月17日过会，两单均尚待证监会注册。\n至此，券商并购整体即将进入整合落地、业务融合的全新阶段。而下一单并购已在酝酿之中，未来或有更多中小券商通过并购退出或整合，券商数量将进一步收缩。\n（文章来源：21世纪经济报道）"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "medium_term"
+        }
+      ],
+      "uncertainties": [
+        "交易仍需证监会及其他有权机构批准、核准或同意注册，尚不能正式实施。",
+        "5年过渡期内业务归集、人员安排及信息隔离、利益冲突和关联交易管理如何落地尚不确定。",
+        "交易将新增31.45亿元商誉并使总股本扩大至约61亿股，协同收益、整合安排及股东摊薄影响尚不确定。"
+      ],
+      "usage": {
+        "total_tokens": 7927,
+        "prompt_tokens": 2398,
+        "completion_tokens": 5529
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "c0543b67f91ad8f11e31353ecf7b8680a0602b29a517c723ca3fc9a99dbe29e1",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 2089,
+      "scored_at": "2026-11-18T11:45:40.989962+08:00"
+    },
+    "87c8fed966b5cc37af40e9e282d0f60cacaa6caf93456017877d7697c5dd7593": {
+      "summary": "Meta称AI智能体Muse已在澳大利亚多端上线，并将很快登陆AI眼镜；产品免费且设可选订阅。事件显示海外AI应用分发扩展，但未披露用户、付费及供应链数据，对A股经营影响暂难量化。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "仅涉及Meta在单一海外市场的产品上线，尚无可验证的宏观需求、价格或盈利传导，无法映射至六大指数。",
+        "evidence": [
+          "财联社11月18日电，Meta表示，旗下AI智能体Muse已在澳大利亚的iOS、Android、Muse.ai和Mac应用上线，并将很快登陆AI眼镜。Muse免费提供，另有可选订阅方案。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.38,
+          "reason": "AI智能体多端上线显示应用分发范围扩展，但未披露用户、付费率、收入或A股合作关系，无法确认行业需求与盈利增量。",
+          "evidence": [
+            "财联社11月18日电，Meta表示，旗下AI智能体Muse已在澳大利亚的iOS、Android、Muse.ai和Mac应用上线，并将很快登陆AI眼镜。Muse免费提供，另有可选订阅方案。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.35,
+          "reason": "AI眼镜上线计划提示相关终端形态扩展，但未披露销量、硬件方案、供应商或采购规模，无法判断对电子产业链订单的影响。",
+          "evidence": [
+            "财联社11月18日电，Meta表示，旗下AI智能体Muse已在澳大利亚的iOS、Android、Muse.ai和Mac应用上线，并将很快登陆AI眼镜。Muse免费提供，另有可选订阅方案。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "未披露用户规模、付费率及订阅收入，商业化成效不确定",
+        "未披露AI眼镜的具体上线时间、销量及硬件规格",
+        "未提供供应链合作方或A股相关订单，无法量化产业链影响"
+      ],
+      "usage": {
+        "total_tokens": 2721,
+        "prompt_tokens": 1050,
+        "completion_tokens": 1671
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "65e7719804d777579248b43c0a1ef9d71902c113da2ae12d1c30766bf1d7db6b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 93,
+      "scored_at": "2026-11-18T11:45:58.818321+08:00"
+    },
+    "8d2c568874c07346ed552f612c5d78b4734da02720a833ba3e52a5491eb94abc": {
+      "summary": "消息称SpaceX最快本周启动400亿美元债务融资的部分发行，约40亿美元债券或数日内发售，资金拟用于采购AI芯片。若融资落地将形成芯片需求，但发行及采购细节均未确定。",
+      "tone": "neutral",
+      "fact_status": "rumor",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "单一企业融资及采购计划尚无明确宏观供需传导，不能据此判断宽基指数影响。",
+        "evidence": [
+          "财联社11月18日电，知情人士称，SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购人工智能芯片提供资金。交易由高盛集团和阿波罗全球管理担任承销商。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "positive",
+          "confidence": 0.67,
+          "reason": "拟融资采购AI芯片，若发行及采购落地可带来潜在增量需求；但供应商、采购规模和交付时间均未披露。",
+          "evidence": [
+            "财联社11月18日电，知情人士称，SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购人工智能芯片提供资金。交易由高盛集团和阿波罗全球管理担任承销商。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "positive",
+          "confidence": 0.55,
+          "reason": "文中称高盛与阿波罗拟担任承销人，发行落地可带来承销业务；但费用、发行结果及行业贡献均未披露。",
+          "evidence": [
+            "财联社11月18日电，知情人士称，SpaceX最快可能于本周启动400亿美元债务融资的部分发行，约40亿美元债券可能在数日内发售。这笔融资旨在为其采购人工智能芯片提供资金。交易由高盛集团和阿波罗全球管理担任承销商。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "消息来自知情人士，未说明SpaceX或承销机构是否正式确认。",
+        "约40亿美元仅为可能的部分发行规模，最终金额及发售时间未定。",
+        "AI芯片采购金额、供应商和交付安排未披露，无法量化需求影响。"
+      ],
+      "usage": {
+        "total_tokens": 3366,
+        "prompt_tokens": 1070,
+        "completion_tokens": 2296
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "aff8ba11bb6b1a2c0767f77568c2f70cd0bcabfb20f344239b4fcbd1526c0d5b",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 107,
+      "scored_at": "2026-11-18T11:46:23.000802+08:00"
+    },
+    "d5df75c1b6be5931f3186d46a5b03f71932619a656db7a8aeef715d121724eab": {
+      "summary": "亚马逊CEO重申英伟达是长期重要合作伙伴，并称可预见未来将继续合作；表态未披露订单、投入或产品变化，暂不足以推导产业经营改善。",
+      "tone": "positive",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.25,
+        "reason": "仅有单一公司管理层公开表态，未披露具体业务调整或可验证的宏观传导路径。",
+        "evidence": [
+          "财联社11月18日电，亚马逊CEO在Semafor活动上就英伟达相关风波表示，英伟达长期以来一直是极其重要的合作伙伴，并且在可预见的未来也将一直如此。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.7,
+          "reason": "表态确认双方合作重要性及延续性，但未披露新增采购、订单、产品导入或资本投入，无法推导行业需求与盈利变化。",
+          "evidence": [
+            "财联社11月18日电，亚马逊CEO在Semafor活动上就英伟达相关风波表示，英伟达长期以来一直是极其重要的合作伙伴，并且在可预见的未来也将一直如此。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "“英伟达相关风波”的具体内容及影响范围未披露",
+        "合作是否涉及新增订单、产品或投资变化未披露",
+        "“可预见未来”没有明确期限"
+      ],
+      "usage": {
+        "total_tokens": 2741,
+        "prompt_tokens": 1078,
+        "completion_tokens": 1663
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "cb60f8098a7836b375b9128b2148825ef94067620378cbf7cebc9f3a780292f3",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 75,
+      "scored_at": "2026-11-18T11:46:44.289761+08:00"
+    },
+    "2e0c9248f674d9d471366265dd5fded99753f0e2deac81d6fc302fb8321fcec6": {
+      "summary": "耐克股价由盘初近6%涨幅转为下跌2.5%，短线情绪明显波动；材料未涉及经营基本面，不足以推断行业影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "仅披露耐克个股盘中价格变化，缺少宏观政策、需求、成本或盈利传导依据。",
+        "evidence": [
+          "财联社11月18日电，耐克股价高开低走，最新下跌2.5%，盘初一度涨近6%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.95,
+          "reason": "耐克个股股价高开低走属于市场交易结果，未提供订单、渠道、成本或盈利变化，不能据此判断行业经营影响。",
+          "evidence": [
+            "财联社11月18日电，耐克股价高开低走，最新下跌2.5%，盘初一度涨近6%。"
+          ],
+          "sector_code": "801130.SI",
+          "sector_name": "纺织服饰",
+          "horizon": "today"
+        }
+      ],
+      "uncertainties": [
+        "未说明股价转跌的具体触发因素",
+        "未提供耐克经营基本面或行业需求变化",
+        "单一个股表现无法代表纺织服饰行业整体情况"
+      ],
+      "usage": {
+        "total_tokens": 1893,
+        "prompt_tokens": 1054,
+        "completion_tokens": 839
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "7e24676dd71fab9caff2fcc653b046e0cacfad00a224cf4d9e797fffd3314293",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 38,
+      "scored_at": "2026-11-18T11:47:27.409768+08:00"
+    },
+    "9f850bdba319bb1a76cb482c131f24de5de316961a0ae6b85ccbb6423c12e161": {
+      "summary": "城堡证券聘请来自Uber的Danny Guo担任技术主管；材料未披露职责、任期或经营指标，暂无法判断行业实质影响。",
+      "tone": "neutral",
+      "fact_status": "reported_fact",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.98,
+        "reason": "事件仅为单家公司人事任命，未涉及宏观需求、价格、政策或资金流动，缺乏向六大指数传导的明确路径。",
+        "evidence": [
+          "财联社11月18日电，城堡证券聘请Uber的Danny Guo担任技术主管。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "neutral",
+          "confidence": 0.92,
+          "reason": "城堡证券技术主管任命属于单家公司人事调整，未披露技术投入、业务扩张或风险控制变化，不能外推为证券行业利好。",
+          "evidence": [
+            "财联社11月18日电，城堡证券聘请Uber的Danny Guo担任技术主管。"
+          ],
+          "sector_code": "801790.SI",
+          "sector_name": "非银金融",
+          "horizon": "uncertain"
+        },
+        {
+          "direction": "unknown",
+          "confidence": 0.82,
+          "reason": "材料仅说明Danny Guo来自Uber，未披露其离职对Uber技术研发、运营或行业竞争的影响，无法判断运输行业需求和盈利变化。",
+          "evidence": [
+            "财联社11月18日电，城堡证券聘请Uber的Danny Guo担任技术主管。"
+          ],
+          "sector_code": "801170.SI",
+          "sector_name": "交通运输",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "技术主管的职责范围及正式任职时间未披露",
+        "未提供城堡证券业务、战略或财务指标变化",
+        "未说明Danny Guo离开Uber对相关业务及团队的影响"
+      ],
+      "usage": {
+        "total_tokens": 2738,
+        "prompt_tokens": 1036,
+        "completion_tokens": 1702
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "6d10cf83d7860062a93d8c6d4e04d77eceda9d82f2890b8612e2882c4715d070",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 38,
+      "scored_at": "2026-11-18T11:47:48.175283+08:00"
+    },
+    "2a49f94eaaa5c6ce2d879bf0808b074cd9c81b522ac09c4dabc403abeb43b52a": {
+      "summary": "文件称，Anthropic上市后亚马逊和谷歌将合计持股约28%；上市仍是前提，材料未披露经营或财务影响。",
+      "tone": "neutral",
+      "fact_status": "proposal",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.93,
+        "reason": "材料仅披露拟上市后的持股安排，缺少估值、经营指标及对六大指数的明确传导证据。",
+        "evidence": [
+          "财联社11月18日电，文件显示，Anthropic上市后，亚马逊和谷歌将合计持股约28%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.55,
+          "reason": "事件涉及Anthropic上市及股东持股，但未披露技术合作、订单、收入或A股经营关联，无法判断行业受益或受损。",
+          "evidence": [
+            "财联社11月18日电，文件显示，Anthropic上市后，亚马逊和谷歌将合计持股约28%。"
+          ],
+          "sector_code": "801750.SI",
+          "sector_name": "计算机",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "Anthropic能否及何时完成上市尚未明确",
+        "约28%持股的股份类别、锁定期及形成方式未披露",
+        "未提供估值、募资用途或经营财务影响"
+      ],
+      "usage": {
+        "total_tokens": 3227,
+        "prompt_tokens": 1050,
+        "completion_tokens": 2177
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "60d42d0aa4b42eb86b790e3383c59aa62efd92af7d8eba5466679be4a999f998",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 45,
+      "scored_at": "2026-11-18T11:48:11.763857+08:00"
+    },
+    "c7833adf741365fea4d5a3ec35443082b80d7f6f83967c792694767ba7a096de": {
+      "summary": "AMD首席执行官苏姿丰预计，数据中心业务将占AMD需求的80%，显示其需求结构高度集中于数据中心；材料未说明行业需求增量或盈利变化。",
+      "tone": "neutral",
+      "fact_status": "opinion",
+      "market_effect": {
+        "direction": "unknown",
+        "confidence": 0.92,
+        "reason": "材料仅给出AMD内部需求结构的高管预测，未提供行业供需、价格或宏观传导证据，无法判断指数影响。",
+        "evidence": [
+          "财联社11月18日电，AMD首席执行官苏姿丰表示，数据中心业务将占AMD需求的80%。"
+        ]
+      },
+      "sector_impacts": [
+        {
+          "direction": "unknown",
+          "confidence": 0.84,
+          "reason": "高管预测→AMD需求向数据中心集中，但未说明电子行业整体需求、订单、价格或盈利变化，且预测期限不明。",
+          "evidence": [
+            "财联社11月18日电，AMD首席执行官苏姿丰表示，数据中心业务将占AMD需求的80%。"
+          ],
+          "sector_code": "801080.SI",
+          "sector_name": "电子",
+          "horizon": "uncertain"
+        }
+      ],
+      "uncertainties": [
+        "“将占80%”缺少统计口径、基期及测算依据",
+        "未说明该占比相较当前是提升还是下降",
+        "未披露数据中心业务需求增速、订单、价格及利润率变化"
+      ],
+      "usage": {
+        "total_tokens": 2711,
+        "prompt_tokens": 1044,
+        "completion_tokens": 1667
+      },
+      "status": "ready",
+      "model": "MiniMax-M3.1-Flash",
+      "prompt_version": "fulltext-sw31-impact-v2-refs",
+      "input_hash": "0dcd453410f2069c90336265a41b692fc4b1d5142c4162f72a39bc4ce7c82ad4",
+      "input_scope": "entire_extracted_article_body",
+      "input_characters": 43,
+      "scored_at": "2026-11-18T11:48:26.230659+08:00"
     }
   },
   "failures": {
@@ -11046,6 +11804,10 @@
     "b9b8899c9e9236c8f00d4b140a82732d256f9be08c8a2ed607840206699a00c2": {
       "error_code": "invalid_analysis_invalid_sector_identity",
       "retry_after": "2026-11-19T02:21:01.982242+08:00"
+    },
+    "b7b98185b9085d3eabe5189e2560399b596bf686a0c9929ae7f9474edcb4a8a6": {
+      "error_code": "invalid_analysis_invalid_confidence",
+      "retry_after": "2026-11-19T11:39:11.049358+08:00"
     }
   },
   "credential_refresh": "2026-11-17-subscription-key",
