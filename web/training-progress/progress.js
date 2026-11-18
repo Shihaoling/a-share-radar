@@ -2,6 +2,7 @@
 
 const get = id => document.getElementById(id);
 const format = new Intl.NumberFormat('zh-CN');
+const rateFormat = new Intl.NumberFormat('zh-CN', {maximumFractionDigits: 1});
 const fmt = n => format.format(n || 0);
 const dateTime = value => value ? value.slice(0, 19).replace('T', ' ') : '等待';
 let selected = '';
@@ -27,7 +28,9 @@ function show(data) {
   get('collected').textContent = fmt(data.collected);
   get('missing').textContent = `${fmt(data.missing_body)} 条缺少正文`;
   get('labelled').textContent = fmt(data.labelled);
-  get('pending').textContent = `${fmt(data.collected-data.labelled)} 条未标注 · ${fmt(data.exhausted)} 条待复核`;
+  const rate = data.label_rate;
+  const speed = rate?.minutes ? ` · 近 ${rate.minutes} 分钟 ${rateFormat.format(rate.articles / rate.minutes)} 条/分钟` : '';
+  get('pending').textContent = `${fmt(data.collected-data.labelled)} 条未标注 · ${fmt(data.exhausted)} 条待复核${speed}`;
   get('tokens').textContent = fmt(data.usage.total_tokens);
   get('calls').textContent = `${fmt(data.usage.calls)} 次模型调用记录`;
   const archive = data.final_archived_at
