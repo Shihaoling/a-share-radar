@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-18T09:27:43.443766+08:00",
+  "generated_at": "2026-11-18T09:34:50.810780+08:00",
   "status": "ready",
   "market_session": {
-    "phase": "auction_complete",
-    "label": "开盘竞价结束，等待连续交易",
+    "phase": "morning",
+    "label": "上午交易中",
     "target_date": "2026-11-18",
     "target_kind": "today_close",
     "is_trading_day": true
@@ -1528,7 +1528,7 @@
     "feature_version": "daily-pit-multifactor-v2"
   },
   "sentiment_summary": {
-    "as_of": "2026-11-18T09:27:43.443766+08:00",
+    "as_of": "2026-11-18T09:34:50.810780+08:00",
     "version": "sw2021-news-impact-v4",
     "taxonomy": "SW2021_L1_31",
     "taxonomy_version": "SW2021-L1-official-contract-v2",
@@ -1579,7 +1579,7 @@
     "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。",
     "state": {
       "version": 2,
-      "last_run_at": "2026-11-18T09:27:42+08:00",
+      "last_run_at": "2026-11-18T09:34:49+08:00",
       "requests_this_run": 0,
       "status": "pending",
       "endpoints": {},
@@ -1607,7 +1607,7 @@
     "status": "ready",
     "reason": "收盘后的一交易日预测；历史回溯误差不代表未来保证；强弱排序与数值涨幅独立选模",
     "model_id": "daily-v4-20261116T170316Z",
-    "issued_at": "2026-11-18T09:27:43.443766+08:00",
+    "issued_at": "2026-11-18T09:34:50.810780+08:00",
     "trained_at": "2026-11-16T17:03:16.818488+00:00",
     "target_date": "2026-11-18",
     "target": "next_close_return_pct",
@@ -1638,7 +1638,7 @@
   },
   "equity_summary": {
     "status": "expired",
-    "as_of": "2026-11-18T09:27:43.443766+08:00",
+    "as_of": "2026-11-18T09:34:50.810780+08:00",
     "target_date": "2026-11-18",
     "target_kind": "today_close",
     "reference_date": "2026-11-17",
