@@ -16,6 +16,7 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 import unicodedata
 
 from pipeline.calendar import SHANGHAI, shanghai_now
+from pipeline.data_service import gate_delay
 from pipeline.minimax_news import (
     DEFAULT_MODEL, PROMPT_VERSION, ModelFailure, evidence_segments, infer_article,
     resolve_evidence_references, validate_analysis,
@@ -31,6 +32,7 @@ OUTPUT = STATE / "training-status/progress.json"
 VERSION = "historical-news-v2"
 MIN_LABEL_BATCH_GAP = timedelta(seconds=60)
 LABEL_TRANSPORT_RETRY_DELAY = timedelta(minutes=5)
+COLLECTION_TIMEOUT_SECONDS = 20
 MAX_LABEL_BATCH_SIZE = 32
 LABEL_RATE_WINDOW_MINUTES = 10
 BATCH_PROMPT_VERSION = PROMPT_VERSION + "+structured-batch-v3"
@@ -211,31 +213,58 @@ def split_window(db, window, begin, end, checked, reason):
 
 
 def collect(db, now):
-    token = credential("sxdata-token")
     checked = now.isoformat(timespec="seconds")
+    if metadata(db, "collection_pause_until") > checked:
+        return
     window = db.execute("""SELECT w.* FROM windows w
         LEFT JOIN window_audit audit ON audit.begin_at=w.begin_at
         WHERE (w.state='pending' OR w.state='complete' AND audit.begin_at IS NULL) AND w.retry_at<=?
-        ORDER BY CASE WHEN w.state='complete' THEN 0 ELSE 1 END,w.attempts,w.begin_at LIMIT 1""",
+        ORDER BY CASE WHEN w.state='complete' THEN 0 WHEN w.outcome='rate_limited' THEN 1 ELSE 2 END,
+                 w.attempts,w.begin_at LIMIT 1""",
         (checked,)).fetchone()
     if not window:
         return
+    token = credential("sxdata-token")
     begin, end = (datetime.fromisoformat(window[key]) for key in ("begin_at", "end_at"))
+    client, waiting = None, False
     try:
-        with relay_client(token, timeout=20) as client:
+        with relay_client(token, timeout=COLLECTION_TIMEOUT_SECONDS) as client:
+            if gate_delay("news")[0] <= 0:
+                waiting = True
+                with db:
+                    set_meta(db, "collection_inflight_day", begin.date().isoformat())
+                    set_meta(db, "collection_inflight_until",
+                             (shanghai_now()+timedelta(seconds=COLLECTION_TIMEOUT_SECONDS+7)).isoformat())
+                publish_progress(db)
             rows = client.request("news", {"src": "cls", "start_date": begin.strftime("%F %T"),
                           "end_date": (end-timedelta(seconds=1)).strftime("%F %T"), "limit": 1500})
     except _Failure as error:
+        deferred = error.code == "rate_limited" and client is not None and client.count == 0
+        delay = max(60, min(86400, error.retry_seconds or 60))
         with db:
+            if error.code == "rate_limited":
+                delay = max(60, error.retry_seconds)
+                if not deferred:
+                    streak = min(5, int(metadata(db, "collection_rate_limit_streak", "0"))+1)
+                    set_meta(db, "collection_rate_limit_streak", str(streak))
+                    delay = max(delay, min(900, 60*2**(streak-1)))
+                set_meta(db, "collection_pause_until", (shanghai_now()+timedelta(seconds=delay)).isoformat())
             if error.code == "response_too_large" and end-begin > timedelta(minutes=2):
                 split_window(db, window, begin, end, checked, error.code)
-            else:
-                delay = max(60, min(86400, error.retry_seconds or 60))
+            elif not deferred:
                 db.execute("""UPDATE windows SET retry_at=?, attempts=attempts+1, outcome=?, checked_at=?
                     WHERE begin_at=?""", ((shanghai_now()+timedelta(seconds=delay)).isoformat(), error.code,
                                            checked, window["begin_at"]))
-        print(json.dumps({"begin":window["begin_at"],"status":error.code}),flush=True)
+        print(json.dumps({"begin":window["begin_at"], "status":"source_cooldown" if deferred else error.code,
+                          "retry_seconds":delay, "provider_code":error.provider_code}),flush=True)
         return
+    finally:
+        if waiting:
+            with db:
+                set_meta(db, "collection_inflight_until", "")
+    with db:
+        set_meta(db, "collection_pause_until", "")
+        set_meta(db, "collection_rate_limit_streak", "0")
     if len(rows) >= 1500 and end-begin > timedelta(minutes=2):
         with db:
             split_window(db, window, begin, end, checked, "split_at_limit")
@@ -403,6 +432,7 @@ def progress(db):
     days = {}
     for row in db.execute("""SELECT substr(w.begin_at,1,10) AS day,count(*) AS windows,
         sum(w.state='complete') AS complete_windows,sum(w.state IN ('capped','unverified')) AS incomplete_windows,
+        sum(w.state='pending' AND w.outcome='rate_limited') AS limited_windows,
         max(w.checked_at) AS updated,sum(w.rows_received) AS returned,count(audit.begin_at) AS audited_windows,
         sum(audit.in_window_rows) AS valid_rows,sum(audit.same_time_copies) AS same_time_copies
         FROM windows w LEFT JOIN window_audit audit ON w.begin_at=audit.begin_at GROUP BY 1"""):
@@ -418,6 +448,8 @@ def progress(db):
     usage = db.execute("""SELECT count(*) AS calls,sum(input_tokens) AS input_tokens,
         sum(output_tokens) AS output_tokens,sum(total_tokens) AS total_tokens FROM usage""").fetchone()
     generated = shanghai_now()
+    generated_at = generated.isoformat(timespec="seconds")
+    inflight_until = metadata(db,"collection_inflight_until")
     rate_since = (generated - timedelta(minutes=LABEL_RATE_WINDOW_MINUTES)).isoformat(timespec="seconds")
     recent_labels = db.execute("SELECT coalesce(sum(accepted),0) FROM usage WHERE at>=?", (rate_since,)).fetchone()[0]
     window_count = db.execute("SELECT coalesce(sum(attempts),0) FROM windows").fetchone()[0]
@@ -436,9 +468,18 @@ def progress(db):
             **{key:(value or 0) for key,value in dict(result).items()}, "usage":{k:(v or 0) for k,v in dict(usage).items()},
             "label_rate": {"articles": recent_labels, "minutes": LABEL_RATE_WINDOW_MINUTES},
             "collection_attempts":window_count,"latest_collection":dict(latest) if latest else None,
+            "collection_retry_at":metadata(db,"collection_pause_until"),
+            "collection_inflight_day":metadata(db,"collection_inflight_day") if inflight_until>generated_at else "",
+            "collection_inflight_until":inflight_until,
             "label_error":metadata(db,"label_error"),"label_retry_at":metadata(db,"label_pause_until"),
             "export_at":metadata(db,"export_at"),"final_archived_at":verified_at,
-            "generated_at":generated.isoformat(timespec="seconds"),"days":states}
+            "generated_at":generated_at,"days":states}
+
+
+def publish_progress(db):
+    with (ROOT/"progress.lock").open("a") as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        publish(OUTPUT,progress(db))
 
 
 def export(db):
@@ -494,6 +535,4 @@ if __name__ == "__main__":
                 label(db,shanghai_now(),args.batch_size)
         elif args.job=="export":
             export(db)
-        with (ROOT/"progress.lock").open("a") as lock:
-            fcntl.flock(lock,fcntl.LOCK_EX)
-            publish(OUTPUT,progress(db))
+        publish_progress(db)

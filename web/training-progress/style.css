@@ -16,6 +16,7 @@ h2 { margin: 0; font-size: 1rem; font-weight: 650; }
 p, footer { color: var(--muted); line-height: 1.55; }
 header p { margin: 0; }
 #message { min-height: 1.5rem; margin: 16px 0 10px; }
+#collection-cooldown { margin: 0 0 10px; font-variant-numeric: tabular-nums; }
 #metrics:not([hidden]) { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
 article, .coverage { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 article { padding: 17px; }
@@ -30,6 +31,7 @@ article p { margin: 5px 0 0; font-size: .83rem; }
 #days button { aspect-ratio: 1; min-width: 0; border: 1px solid #d8e4ee; border-radius: 4px; cursor: pointer; }
 #days button[aria-pressed="true"], #days button:focus-visible { outline: 2px solid #152a42; outline-offset: 1px; }
 .waiting { background: #edf1f5; }
+.receiving { background: #cbb4f2; }
 .empty { background: #ecd99b; }
 .partial { background: #95c8ee; }
 .ready { background: #5dbda1; }

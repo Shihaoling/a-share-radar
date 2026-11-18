@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>历史新闻数据集进度 · 观澜</title>
-<link rel="stylesheet" href="./style.css?v=1">
-<script src="./progress.js?v=4" defer></script>
+<link rel="stylesheet" href="./style.css?v=2">
+<script src="./progress.js?v=5" defer></script>
 </head>
 <body>
 <main>
@@ -15,6 +15,7 @@
     <p id="scope">正在读取 180 天采集记录…</p>
   </header>
   <p id="message" role="status"></p>
+  <p id="collection-cooldown" hidden></p>
   <section id="metrics" aria-label="进度统计" hidden>
     <article><h2>查询完成</h2><strong id="queried">—</strong><p id="with-news"></p></article>
     <article><h2>去重后资讯</h2><strong id="collected">—</strong><p id="missing"></p></article>
@@ -25,7 +26,9 @@
     <div class="coverage-head">
       <div><h2>按日覆盖</h2><p>点击日期查看已收录和已标注数量。</p></div>
       <ul class="legend">
-        <li><i class="waiting"></i>待查</li><li><i class="empty"></i>无返回</li>
+        <li><i class="waiting"></i>待查</li>
+        <li><i class="receiving"></i>等待源回包</li>
+        <li><i class="empty"></i>无返回</li>
         <li><i class="partial"></i>采集或标注中</li><li><i class="ready"></i>标注齐全</li>
       </ul>
     </div>

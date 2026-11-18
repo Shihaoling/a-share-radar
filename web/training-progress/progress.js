@@ -7,15 +7,34 @@ const fmt = n => format.format(n || 0);
 const dateTime = value => value ? value.slice(0, 19).replace('T', ' ') : '等待';
 let selected = '';
 let version = null;
+let collectionRetryAt = '';
 
-function detail(day) {
-  const counts = day.audited_windows === day.windows
+function showCollectionCooldown() {
+  const status = get('collection-cooldown');
+  const deadline = Date.parse(collectionRetryAt);
+  status.hidden = !Number.isFinite(deadline);
+  if (status.hidden) return;
+  const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+  status.textContent = seconds
+    ? `SXData 限流冷却剩余 ${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`
+    : 'SXData 限流冷却已结束，等待采集任务调度';
+}
+
+function detail(day, receiving) {
+  const counts = receiving ? '等待源回包'
+    : day.limited_windows ? `数据源限流 · ${fmt(day.limited_windows)} 个窗口待重试`
+    : day.audited_windows === day.windows && day.returned === 0 ? '源接口已返回 0 条'
+    : day.audited_windows === day.windows
     ? `原始 ${fmt(day.returned)} 条 · 同文不同时间 ${fmt((day.occurrences||0)-(day.collected||0))} 条 · 同一秒重复 ${fmt(day.same_time_copies)} 条`
-    : day.returned!=null ? `原始 ${fmt(day.returned)} 条 · 时间戳复核中` : '等待源回包';
+    : day.returned!=null ? `原始 ${fmt(day.returned)} 条 · 时间戳复核中`
+    : day.updated ? '采集窗口待核实' : '待发起采集';
   get('detail').textContent = `${day.day} · ${counts} · 收录 ${fmt(day.collected)} 条 · 已标注 ${fmt(day.labelled)} 条${day.incomplete_windows ? ' · 有未核实窗口' : ''}`;
 }
 
 function show(data) {
+  const inFlightDay = Date.parse(data.collection_inflight_until) > Date.now() ? data.collection_inflight_day : '';
+  collectionRetryAt = inFlightDay ? '' : data.collection_retry_at || '';
+  showCollectionCooldown();
   const end = new Date(Date.parse(data.end_day_exclusive+'T00:00:00Z')-86400000).toISOString().slice(0,10);
   get('scope').textContent = `计划范围 ${data.start_day} 至 ${end} · ${data.total_days} 天 · ${data.source}`;
   get('message').textContent = data.label_error
@@ -41,22 +60,24 @@ function show(data) {
   const controls = [];
   const fragment = document.createDocumentFragment();
   const recent = [...data.days].reverse().find(day => day.updated);
-  if (!selected && recent) selected = recent.day;
+  if (!selected) selected = inFlightDay || recent?.day || '';
   for (const day of data.days) {
     const completed = day.complete_windows === day.windows;
-    const kind = !day.updated ? 'waiting' : completed && !day.collected ? 'empty'
+    const receiving = day.day === inFlightDay;
+    const kind = receiving ? 'receiving' : !day.updated ? 'waiting' : completed && !day.collected ? 'empty'
       : completed && day.labelled === day.collected ? 'ready' : 'partial';
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = kind;
-    btn.title = `${day.day} · ${fmt(day.collected)} 条已收录，${fmt(day.labelled)} 条已标注`;
+    const state = receiving ? '等待源回包' : day.limited_windows ? '限流待重试' : '';
+    btn.title = `${day.day} · ${fmt(day.collected)} 条已收录，${fmt(day.labelled)} 条已标注${state ? ` · ${state}` : ''}`;
     btn.setAttribute('aria-label', btn.title);
     btn.setAttribute('aria-pressed', String(day.day === selected));
-    if (day.day === selected) detail(day);
+    if (day.day === selected) detail(day, receiving);
     btn.addEventListener('click', () => {
       selected = day.day;
       controls.forEach(control => control.setAttribute('aria-pressed', String(control === btn)));
-      detail(day);
+      detail(day, receiving);
     });
     controls.push(btn);
     fragment.append(btn);
@@ -81,4 +102,5 @@ async function refresh() {
 }
 
 refresh();
+setInterval(showCollectionCooldown, 1000);
 setInterval(() => { if (!document.hidden) refresh(); }, 15000);
