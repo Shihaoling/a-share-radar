@@ -1,0 +1,25 @@
+[Unit]
+Description=A-share Radar completed-session research and settlement
+After=network-online.target ashare-preview-daily.service ashare-preview-model.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_ALLOW_TRAINING=false
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+Environment=OMP_NUM_THREADS=1
+Environment=OPENBLAS_NUM_THREADS=1
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/cloud_research.py
+TimeoutStartSec=420
+MemoryMax=1900M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes
+Nice=5

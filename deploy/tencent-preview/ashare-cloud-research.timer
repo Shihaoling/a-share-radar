@@ -1,0 +1,12 @@
+[Unit]
+Description=Compute and settle research after post-close data publication
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 17:26:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 19:38:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 21:22:00 Asia/Shanghai
+AccuracySec=5s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

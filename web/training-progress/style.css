@@ -1,0 +1,42 @@
+:root {
+  color-scheme: light;
+  --ink: #172b43;
+  --muted: #53677d;
+  --line: #dce5ef;
+  --surface: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #f3f6fa;
+  color: var(--ink);
+}
+* { box-sizing: border-box; }
+main { max-width: 1120px; margin: auto; padding: 40px 26px 32px; }
+header a { color: #245b92; font-size: .9rem; }
+h1 { font-size: clamp(1.65rem, 4vw, 2.4rem); margin: 22px 0 8px; }
+h2 { margin: 0; font-size: 1rem; font-weight: 650; }
+p, footer { color: var(--muted); line-height: 1.55; }
+header p { margin: 0; }
+#message { min-height: 1.5rem; margin: 16px 0 10px; }
+#metrics:not([hidden]) { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+article, .coverage { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+article { padding: 17px; }
+article strong { display: block; margin-top: 9px; font-size: clamp(1.2rem, 3vw, 2rem); font-variant-numeric: tabular-nums; }
+article p { margin: 5px 0 0; font-size: .83rem; }
+.coverage { margin: 16px 0 14px; padding: 20px; }
+.coverage-head { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 12px; }
+.coverage-head p { margin: 6px 0 0; font-size: .85rem; }
+.legend { display: flex; flex-wrap: wrap; list-style: none; gap: 7px 13px; padding: 0; margin: 0; font-size: .76rem; color: var(--muted); }
+.legend i { display: inline-block; width: .78rem; height: .78rem; border-radius: 3px; margin-right: 5px; vertical-align: -.05rem; }
+#days { display: grid; grid-template-columns: repeat(24,minmax(0,1fr)); gap: 5px; margin-top: 15px; }
+#days button { aspect-ratio: 1; min-width: 0; border: 1px solid #d8e4ee; border-radius: 4px; cursor: pointer; }
+#days button[aria-pressed="true"], #days button:focus-visible { outline: 2px solid #152a42; outline-offset: 1px; }
+.waiting { background: #edf1f5; }
+.empty { background: #ecd99b; }
+.partial { background: #95c8ee; }
+.ready { background: #5dbda1; }
+#detail { margin-bottom: 0; min-height: 1.5em; font-size: .87rem; }
+footer { font-size: .84rem; }
+@media (max-width: 700px) {
+  main { padding: 22px 14px; }
+  #metrics:not([hidden]) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #days { grid-template-columns: repeat(15,minmax(0,1fr)); }
+}

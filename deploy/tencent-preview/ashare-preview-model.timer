@@ -1,0 +1,9 @@
+[Unit]
+Description=Sample exact-minute inputs and run eligible pre-trained models
+
+[Timer]
+OnCalendar=*-*-* *:00/5:35 Asia/Shanghai
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

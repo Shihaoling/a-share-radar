@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh model inputs after the market close
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 15:41:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 16..20:21,51:00 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

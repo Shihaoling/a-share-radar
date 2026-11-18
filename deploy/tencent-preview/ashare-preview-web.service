@@ -1,0 +1,20 @@
+[Unit]
+Description=A-share Radar private Nginx preview
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+StateDirectory=ashare-radar-preview-nginx
+ExecStartPre=/usr/sbin/nginx -t -p /var/lib/ashare-radar-preview-nginx/ -c /opt/ashare-radar-preview/deploy/tencent-preview/nginx.conf
+ExecStart=/usr/sbin/nginx -p /var/lib/ashare-radar-preview-nginx/ -c /opt/ashare-radar-preview/deploy/tencent-preview/nginx.conf -g 'daemon off;'
+ExecReload=/usr/sbin/nginx -p /var/lib/ashare-radar-preview-nginx/ -c /opt/ashare-radar-preview/deploy/tencent-preview/nginx.conf -s reload
+Restart=on-failure
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

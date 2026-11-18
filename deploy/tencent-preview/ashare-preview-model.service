@@ -1,0 +1,18 @@
+[Unit]
+Description=A-share Radar inference with existing portable models
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/cloud_models.py
+TimeoutStartSec=75
+MemoryMax=500M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

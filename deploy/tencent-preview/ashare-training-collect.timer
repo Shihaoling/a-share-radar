@@ -1,0 +1,12 @@
+[Unit]
+Description=Collect one historical news window at a time
+
+[Timer]
+Unit=ashare-training-news@collect.service
+OnCalendar=*-*-* 00..08,16..23:*:17 Asia/Shanghai
+OnCalendar=*-*-* 09..15:00/10:17 Asia/Shanghai
+AccuracySec=2s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Run the MiniMax worker after new articles are committed
+
+[Path]
+PathChanged=/var/lib/ashare-radar-preview/news/analyze.trigger
+Unit=ashare-preview-news@analyze.service
+
+[Install]
+WantedBy=multi-user.target

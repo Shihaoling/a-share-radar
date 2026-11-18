@@ -17,7 +17,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
+  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
     TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
   let passed = 0;
@@ -198,6 +198,34 @@ function runFrontendChecks(source) {
     const entity={id:'801780.SI',index_code:'801780.SI'},minute=(price,code='801780.SI')=>({price,timestamp:'2026-11-17T14:00:00+08:00',provider:'stock_api',kind:'historical_minute',source_code:code});
     const x={intraday:{'801780.SI':{points:[{price:99,timestamp:'2026-11-17T13:00:00+08:00',provider:'eastmoney_page'},minute(100),{...minute(101),timestamp:'2026-11-17T15:00:00+08:00'}]}}};
     eq(api.intradayFor(x,entity).length,2);eq(api.intradayFor(x,entity)[0].price,100);
+  });
+  check('today chart excludes legacy and lunch samples and does not bridge empty minutes',()=>{
+    const day='2026-11-18',item={id:'idx'};
+    const stamp=t=>`${day}T${t}+08:00`;
+    const state={trade_date:day,series:{idx:[
+      ['2026-11-17T15:00:00+08:00',90],
+      [stamp('11:29:06'),100],[stamp('11:30:03'),101],[stamp('12:03:00'),101],
+      [stamp('13:00:01'),102],[stamp('13:01:01'),103],[stamp('13:04:01'),104],
+    ]}};
+    const latest={quote_date:day,quote_timestamp:stamp('13:04:50'),timestamp_quality:'source_reported',price:105};
+    const ticks=api.relayIntraday(state,latest,item,day);
+    eq(ticks.length,5);eq(ticks.at(-1).price,105);
+    eq(api.relayIntraday(state,latest,item,'2026-11-19').length,0);
+    const graph=api.chart(ticks,{today:true,metric:'intraday',range:null});
+    eq(graph.children.filter(node=>node.attrs.class==='session-line').length,2);
+    eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,1);
+    eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,1);
+    ok(text(graph).includes('11:30'));ok(text(graph).includes('13:00'));
+  });
+  check('clicking anywhere on an index card selects its intraday chart',()=>{
+    const item={id:'second-index',name:'第二指数'};
+    api.state.metric='index';
+    api.state.overviewSelected='some-sector';
+    const card=api.statCard(item,false);
+    eq(card.tag,'button');eq(card.attrs['aria-pressed'],'false');
+    card.events.click();
+    eq(api.state.metric,'intraday');eq(api.state.overviewSelected,null);eq(api.state.marketSelected,item.id);
+    eq(api.overviewEntity({...d,market:[{id:'first-index'},item]}).id,item.id);
   });
   return {passed, failures};
 }

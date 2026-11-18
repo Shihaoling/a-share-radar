@@ -1,8 +1,12 @@
 # 观澜 · 中国 A 股研究工作台
 
-[网站](https://shihaoling.github.io/a-share-radar/) · [自动更新记录](https://github.com/Shihaoling/a-share-radar/actions) · [模型记录与总结](docs/MODEL_RESEARCH_LOG.md)
+[GitHub Pages 历史快照](https://shihaoling.github.io/a-share-radar/) · [旧工作流记录](https://github.com/Shihaoling/a-share-radar/actions) · [模型记录与总结](docs/MODEL_RESEARCH_LOG.md)
 
 接手本机训练、模型上传和整站维护，请先读[完整交接文档](docs/HANDOFF.md)：包含 Windows 命令、真实进度、验证门槛、完整模型包上传、上线验收、架构与当前未完成事项。
+
+腾讯云目前运行行情、资讯、模型推断、盘后研究和复盘。历史新闻的范围、采集进度看板、训练数据导出及校验方式见[腾讯云运行与数据交接](deploy/tencent-preview/README.md)。模型训练和调参使用本地环境。
+
+GitHub 保留代码备份，旧 Actions 保持停用。改动先在腾讯云部署并核对服务、页面及相关数据输出，通过后同步到 `backup/tencent-cloud`。服务器凭据、运行数据库和训练数据留在云端。
 
 研究主体是中国 A 股：沪深大盘、行业与热门主题、A 股成分股。国际信息只作为中国板块的政策、汇率、能源和供应链影响因素。项目不连接交易账户，不自动下单。
 
