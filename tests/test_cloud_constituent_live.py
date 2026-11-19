@@ -56,6 +56,14 @@ class BoardQuoteTests(unittest.TestCase):
             rows = [dict(r,quote_timestamp=at.isoformat()) for r in quotes(at)]
             self.assertEqual(len(live.observed_members(ROSTER,rows,at)[1]),5 if ok else 0)
 
+    def test_expiring_one_member_labels_the_retained_observation(self):
+        rows = quotes(NOW)
+        rows[-1]['quote_timestamp'] = (NOW-timedelta(seconds=179)).isoformat()
+        self.snapshot(rows)
+        latest = self.snapshot(rows, NOW+timedelta(seconds=2))
+        self.assertEqual((latest['status'],latest['quoted_count'],latest['current_quoted_count']),('stale',5,4))
+        self.assertEqual(len(latest['members']),4)
+
     def test_stale_recovery_and_no_fabricated_minutes(self):
         self.snapshot(quotes(NOW))
         later = NOW+timedelta(minutes=4)

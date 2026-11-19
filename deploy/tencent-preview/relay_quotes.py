@@ -417,7 +417,11 @@ def start(args):
                         fresh_ids.intersection_update(universe[batch])
                     status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == expected_count else "partial"
                 except _Failure as failure:
-                    if batch == "rt_k" and not failure.deferred:
+                    # Only evidence about this batch's contents changes its size or cursor.
+                    # Transport and service failures still take the normal scheduler cooldown.
+                    batch_rejected = (failure.code in {"empty_realtime", "response_too_large"}
+                                      or failure.code == "api_denied" and failure.provider_reason == "invalid_parameters")
+                    if batch == "rt_k" and not failure.deferred and batch_rejected:
                         board_watch.finish(now.timestamp(), board_plan, universe[batch], set())
                         if not board_plan.extra and requested_stocks and extras_allowed:
                             watch_retry_at = now.timestamp() + 180

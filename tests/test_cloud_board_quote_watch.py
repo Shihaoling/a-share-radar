@@ -111,6 +111,24 @@ class BoardQuoteWatchTests(unittest.TestCase):
         self.assertFalse(self.watch.tracked_codes)
         self.assertFalse(self.watch.rosters)
 
+    def run_worker(self, relay, source_clock, receive, tick, slots=None):
+        root = self.watch.members_dir
+        (root / "sxdata-token").write_text("fixture")
+        with ExitStack() as stack:
+            stack.enter_context(patch.dict("os.environ", {"CREDENTIALS_DIRECTORY": str(root),
+                "RADAR_EXPECTED_STOCK_KEY_SHA256": sha256(b"fixture").hexdigest()}))
+            stack.enter_context(patch.multiple(relay, STATE=root, SOURCE=root / "view.json"))
+            stack.enter_context(patch("market_daily.read_daily", return_value={}))
+            stack.enter_context(patch("market_daily.merge_daily"))
+            stack.enter_context(patch.object(relay, "shanghai_now", side_effect=source_clock))
+            stack.enter_context(patch.object(relay, "restore_gate_cooldowns"))
+            stack.enter_context(patch.object(relay, "collect", side_effect=receive))
+            if slots is not None:
+                stack.enter_context(patch.object(relay.QuoteSchedule, "admit", side_effect=slots))
+            stack.enter_context(patch.object(relay.time, "sleep", side_effect=tick))
+            with self.assertRaises(StopIteration):
+                relay.start(SimpleNamespace(diagnostic=False, close_snapshot=False))
+
     @unittest.skipIf(sys.platform == "win32", "Tencent worker requires POSIX file locking")
     def test_worker_publishes_real_aging_quotes_and_keeps_core_healthy(self):
         import relay_quotes as relay
@@ -126,7 +144,6 @@ class BoardQuoteWatchTests(unittest.TestCase):
         relay.publish(root / "asset-research/board-watch.json", {"sectors": [[self.board, instant.timestamp()]]})
         relay.publish(public / "sector-members" / (self.board + ".json"), {"code": self.board,
             "source": "sxdata_sector_members", "status": "ready", "members": [{"code": first}, {"code": last}]})
-        (root / "sxdata-token").write_text("fixture")
 
         def quote(code, at):
             return dict(id=code, price=9, change_pct=2, provider="stock_api", quote_date=at.date().isoformat(),
@@ -148,19 +165,7 @@ class BoardQuoteWatchTests(unittest.TestCase):
             if len(snapshots) == 4:
                 raise StopIteration
 
-        with ExitStack() as stack:
-            stack.enter_context(patch.dict("os.environ", {"CREDENTIALS_DIRECTORY": str(root),
-                "RADAR_EXPECTED_STOCK_KEY_SHA256": sha256(b"fixture").hexdigest()}))
-            stack.enter_context(patch.multiple(relay, STATE=root, SOURCE=root / "view.json"))
-            stack.enter_context(patch("market_daily.read_daily", return_value={}))
-            stack.enter_context(patch("market_daily.merge_daily"))
-            stack.enter_context(patch.object(relay, "shanghai_now", side_effect=lambda: instant))
-            stack.enter_context(patch.object(relay, "restore_gate_cooldowns"))
-            stack.enter_context(patch.object(relay, "collect", side_effect=receive))
-            stack.enter_context(patch.object(relay.QuoteSchedule, "admit", side_effect=[None, "rt_k", "rt_k", "rt_k"]))
-            stack.enter_context(patch.object(relay.time, "sleep", side_effect=tick))
-            with self.assertRaises(StopIteration):
-                relay.start(SimpleNamespace(diagnostic=False, close_snapshot=False))
+        self.run_worker(relay, lambda: instant, receive, tick, [None, "rt_k", "rt_k", "rt_k"])
         self.assertEqual(len(calls), 3)
         self.assertEqual(calls[0], {core, direct, first, last})
         self.assertEqual([len(batch) for batch in calls], [4, 3, 3])
@@ -169,3 +174,50 @@ class BoardQuoteWatchTests(unittest.TestCase):
         self.assertGreater(ticks[-1][last], old_stamp.isoformat())
         live = json.loads((public / "live-quotes.json").read_text())
         self.assertEqual(live["collector"]["batches"]["rt_k"], "ok")
+
+    @unittest.skipIf(sys.platform == "win32", "Tencent worker requires POSIX file locking")
+    def test_first_recovered_stock_slot_preserves_watch_after_upstream_failures(self):
+        import relay_quotes as relay
+
+        root = self.watch.members_dir
+        start = instant = datetime.fromisoformat("2026-11-19T13:05:00+08:00")
+        core, direct = stocks(1, 2)
+        members = stocks(100, 81)
+        relay.publish(root / "view.json", {"market": [], "sectors": [
+            {"id": "801780.SI", "stocks": [{"provider": "stock_api", "ts_code": core}]}]})
+        relay.publish(root / "quote-output/sector-members" / (self.board + ".json"), {
+            "code": self.board, "source": "sxdata_sector_members", "status": "ready",
+            "members": [{"code": code} for code in members]})
+
+        def heartbeat():
+            relay.publish(root / "asset-research/live-watch.json", {"stocks": [[direct, instant.timestamp()]]})
+            relay.publish(root / "asset-research/board-watch.json", {"sectors": [[self.board, instant.timestamp()]]})
+
+        failures = [relay._Failure("rate_limited", 60, provider_code=429, host=True),
+                    relay._Failure("transport_error", 60), relay._Failure("http_error", 60, host=True)]
+        calls = []
+
+        def receive(token, api, symbols, gap):
+            if api == "rt_k":
+                calls.append((instant, tuple(symbols)))
+                if len(calls) <= len(failures):
+                    raise failures[len(calls) - 1]
+            return [dict(id=code, price=9, change_pct=2, provider="stock_api", quote_date=instant.date().isoformat(),
+                         quote_timestamp=instant.isoformat(), timestamp_quality="source_reported") for code in symbols]
+
+        def tick(delay):
+            nonlocal instant
+            if len(calls) > len(failures):
+                raise StopIteration
+            instant += timedelta(seconds=5)
+            self.assertLess(instant - start, timedelta(minutes=10))
+            heartbeat()
+
+        heartbeat()
+        self.run_worker(relay, lambda: instant, receive, tick)
+        self.assertEqual(len(calls), 4)
+        self.assertTrue(all(b[0] - a[0] >= timedelta(seconds=60) for a, b in zip(calls, calls[1:])))
+        self.assertTrue(all(symbols == (core, direct, *members) for _, symbols in calls))
+        rows = json.loads((root / "quote-output/stock-quotes.json").read_text())["stocks"]
+        self.assertEqual({r["id"] for r in rows}, {core, direct, *members})
+        self.assertTrue(all(r["quote_timestamp"] == calls[-1][0].isoformat() for r in rows))

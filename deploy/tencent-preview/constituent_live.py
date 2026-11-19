@@ -74,7 +74,8 @@ def summarize(db, code, roster, stocks, now, *, include_points=True):
                   change_pct=None, total_count=total, quoted_count=count, current_quoted_count=count,
                   required_count=required, roster_complete=complete, members=members, points=[])
     if last:
-        result.update(status='ready' if qualifies and last[1] == latest else 'stale', trade_date=last[0],
+        current = qualifies and last[1] == latest and last[4] == count and last[5] == total
+        result.update(status='ready' if current else 'stale', trade_date=last[0],
                       quote_at=last[1], oldest_at=last[2], change_pct=last[3], quoted_count=last[4],
                       total_count=last[5], required_count=math.ceil(last[5]*.8))
         result['points'] = [list(row) for row in db.execute('''SELECT stamp,change FROM constituent_minutes
