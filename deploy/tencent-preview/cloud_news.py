@@ -321,8 +321,10 @@ def collect(db, now):
             queue_recheck(db, start, end, now)
         gap = db.execute("SELECT max(start_at) FROM news_rechecks WHERE terminal=1").fetchone()[0]
         set_checkpoint(db, "unresolved_second", gap or "")
-    if count:
-        publish(STATE / "news/analyze.trigger", {"inserted": count, "at": now.isoformat()})
+        if count:
+            # The worker acknowledges this flag under the same database writer lock.
+            # A committed arrival must always have a wakeup, including across restarts.
+            (STATE / "news/analyze.trigger").touch()
     print(json.dumps({"received": len(received), "added_or_completed": count, "end": end.isoformat(),
                       "lane": lane, "collect": error_code or "ready"}), flush=True)
 
@@ -595,6 +597,28 @@ def publish_news(db):
         project(db, shanghai_now())
 
 
+def process_analysis_event(db, limit):
+    flag = STATE / "news/analyze.trigger"
+    with (flag.parent / "analyze.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if not flag.exists():
+            return
+        if analyze(db, shanghai_now(), limit):
+            publish_news(db)
+        # A collect committing during inference must either be visible here or
+        # recreate the flag after this transaction. Never lock during a model call.
+        with db:
+            db.execute("BEGIN IMMEDIATE")
+            now = shanghai_now()
+            day, stamp = now.date().isoformat(), now.isoformat()
+            if checkpoint(db, "model_pause") <= stamp:
+                if limit and next_article(db, day, stamp)[0]:
+                    return
+                if checkpoint(db, "digest_pause") <= stamp and pending_digest_day(db, day, stamp):
+                    return
+            flag.unlink(missing_ok=True)
+
+
 if __name__ == "__main__":
     os.environ.setdefault("RADAR_MINIMAX_COOLDOWN_DB", str(STATE / "news/minimax-cooldown.sqlite3"))
     parser = argparse.ArgumentParser()
@@ -604,11 +628,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     now = shanghai_now()
     with db_open() as db:
-        if args.mode == "collect":
-            collect(db, now)
-        elif args.mode == "analyze":
-            if not analyze(db, now, args.limit):
-                raise SystemExit(0)
-        elif args.mode == "seed":
-            seed(db, args.seed, now)
-        publish_news(db)
+        if args.mode == "analyze":
+            process_analysis_event(db, args.limit)
+        else:
+            if args.mode == "collect":
+                collect(db, now)
+            elif args.mode == "seed":
+                seed(db, args.seed, now)
+            publish_news(db)

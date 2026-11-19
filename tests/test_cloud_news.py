@@ -200,6 +200,80 @@ class CloudNewsTests(unittest.TestCase):
     def source_row(stamp, content, title="市场最新经济快讯"):
         return {"datetime": stamp.strftime("%F %T"), "content": content, "title": title, "channels": ""}
 
+    @staticmethod
+    def model_answer(article, config, key, **kwargs):
+        if "digest_articles" in article:
+            return kwargs["validator"]({"summary":"当日新增资讯已汇总。", "positives":[], "risks":[], "watch":[]})
+        return {"summary":"根据快讯正文生成摘要", "sector_impacts":[]}
+
+    def test_refresh_calls_model_only_for_new_articles_and_releases_event_after_digest(self):
+        flag = news.STATE / "news/analyze.trigger"
+        rows = []
+        with patch.object(news, "relay_client", return_value=nullcontext(self.mock_source(rows))), \
+             patch.object(news, "infer_article", side_effect=self.model_answer) as infer:
+            news.collect(self.db, NOW)
+            self.assertFalse(flag.exists())
+            news.process_analysis_event(self.db, 8)
+            infer.assert_not_called()
+            rows.append(self.source_row(NOW, "真实新增的完整快讯正文"))
+            news.collect(self.db, NOW+timedelta(minutes=2))
+            self.assertTrue(flag.exists())
+            news.process_analysis_event(self.db, 8)
+            self.assertFalse(flag.exists())
+            self.assertEqual(self.feed()["articles"][0]["llm_status"], "ready")
+            self.assertEqual(self.feed()["news_digest"]["article_count"], 1)
+            news.collect(self.db, NOW+timedelta(minutes=4))
+            self.assertFalse(flag.exists())
+            news.process_analysis_event(self.db, 8)
+            self.assertEqual(infer.call_count, 2)  # One article and one digest.
+
+    def test_arrival_while_analyzing_survives_batch_exit_and_worker_restart(self):
+        flag = news.STATE / "news/analyze.trigger"
+        rows = [self.source_row(NOW, "第一篇消息的正文")]
+        collector = news.db_open()
+        self.addCleanup(collector.close)
+        ids = []
+        def infer(article, config, key, **kwargs):
+            if "digest_articles" not in article:
+                ids.append(article["id"])
+                if len(ids) == 1:
+                    rows.append(self.source_row(NOW, "另外一篇消息的正文"))
+                    news.collect(collector, NOW+timedelta(minutes=2))
+            return self.model_answer(article, config, key, **kwargs)
+        with patch.object(news, "relay_client", return_value=nullcontext(self.mock_source(rows))), \
+             patch.object(news, "infer_article", side_effect=infer):
+            news.collect(collector, NOW)
+            news.process_analysis_event(self.db, 1)
+            self.assertTrue(flag.exists())
+            restarted = news.db_open()
+            self.addCleanup(restarted.close)
+            news.process_analysis_event(restarted, 1)
+            self.assertFalse(flag.exists())
+            self.assertEqual(len(set(ids)), 2)
+            self.assertEqual(self.feed()["news_digest"]["article_count"], 2)
+
+    def test_provider_cooldown_preserves_queue_until_next_new_arrival(self):
+        flag = news.STATE / "news/analyze.trigger"
+        rows = [self.source_row(NOW, "先到的快讯")]
+        with patch.object(news, "relay_client", return_value=nullcontext(self.mock_source(rows))):
+            news.collect(self.db, NOW)
+            with patch.object(news, "infer_article", side_effect=news.ModelFailure("http_429", 600)) as infer:
+                news.process_analysis_event(self.db, 8)
+                infer.assert_called_once()
+            self.assertFalse(flag.exists())
+            later = NOW+timedelta(minutes=11)
+            news.shanghai_now.return_value = later
+            with patch.object(news, "infer_article", side_effect=self.model_answer) as infer:
+                news.collect(self.db, later)
+                news.process_analysis_event(self.db, 8)
+                infer.assert_not_called()
+                rows.append(self.source_row(later, "冷却结束后的新增快讯"))
+                news.collect(self.db, later+timedelta(minutes=1))
+                news.process_analysis_event(self.db, 8)
+                self.assertEqual(infer.call_count, 3)
+            self.assertEqual(self.feed()["news_digest"]["article_count"], 2)
+            self.assertFalse(flag.exists())
+
     def test_three_hour_poll_and_two_hourly_day_sweep_collect_distinct_delayed_stories(self):
         start = NOW.replace(hour=1, minute=30)
         near = self.source_row(start-timedelta(hours=2, minutes=38), "昨日同题的第一份完整快讯")

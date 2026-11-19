@@ -9,12 +9,14 @@
 | 工作 | systemd 单元 | 时刻 |
 | --- | --- | --- |
 | SXData 行情与当日分时 | `ashare-preview-relay.service` | 交易时段每 5 秒最多发起一批，滚动 60 秒最多 12 批。通常 10 批指数与行业、2 批个股，个股约每 30 秒一批 |
-| 即时资讯及 MiniMax | `ashare-preview-news@collect.timer`、`ashare-preview-news.path`、`ashare-preview-news@analyze.timer` | 09:00–16:00 每 2 分钟采集，其他时间每 20 分钟采集。新资讯入库触发分析，分析定时器续处理 |
+| 即时资讯及 MiniMax | `ashare-preview-news@collect.timer`、`ashare-preview-news.path` | 09:00–16:00 每 2 分钟采集，其他时间每 20 分钟采集。收到新条目或补齐正文后唤醒分析，连续分批处理可分析的积压。受限条目留在队列，冷却期结束后的下一次新增可触发补做。 |
 | 日线、成分和已训练模型 | `ashare-preview-daily.timer`、`ashare-preview-reference.timer`、`ashare-preview-model.timer` | 盘后分批采集收盘数据，交易日 07:41 和 08:41 再补上一交易日缺项。日线模型可在开盘前用新到的收盘数据重新推断。盘中每五分钟保存对应分钟的输入，滚动预测今日收盘尚待独立模型 |
 | 盘后研究和复盘 | `ashare-cloud-research.timer` | 工作日 17:26、19:38、21:22，程序再次检查是否为交易日 |
 | 历史快讯采集 | `ashare-training-collect.timer` | 09:00–16:00 每 10 分钟处理一个窗口，其余每分钟一个窗口 |
 | 历史快讯标注 | `ashare-training-label.timer` | 每批结束后等待 1 分钟再处理下一批，每批最多 32 篇 |
 | 私有数据集导出 | `ashare-training-export.timer` | 每小时第 47 分钟 |
+
+从旧版迁移时，用 `systemctl disable --now ashare-preview-news@analyze.timer` 停用即时分析时钟，再用 `systemctl mask ashare-preview-news@analyze.timer` 屏蔽该实例。安装新版程序和路径单元后，执行 `systemctl daemon-reload` 和 `systemctl enable --now ashare-preview-news.path`。已经启用的路径单元用 `systemctl restart ashare-preview-news.path` 重新监听。正在处理的分析批次可以自然结束。
 
 行情调度使用 `relay-active.json`，离线回放也读取此文件。共享额度、慢请求或限流会降低实际采样频率。长请求结束后，错过的个股批次优先使用下一次机会，采集器按正常间隔继续工作。午休和盘后暂停实时行情请求。浏览器在交易时段每 5 秒检查已发布的指数与行业行情，确认午休或收盘后三类行情快照分别每 5 分钟检查一次。资讯使用独立的发布周期。
 
