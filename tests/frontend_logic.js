@@ -17,9 +17,11 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const api = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsSummaryCard,newsItem,overviewEntity,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};')(
-    TestNode, doc, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
+  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsSummaryCard,newsItem,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};');
+  const startDisplay = document => loadDisplay(
+    TestNode, document, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
+  const api = startDisplay(doc);
   let passed = 0;
   const failures = [];
   function check(name, fn) { try { fn(); passed++; } catch (err) { failures.push({name, message: err.message}); } }
@@ -218,10 +220,6 @@ function runFrontendChecks(source) {
     const node=api.newsItem(n,d);eq(node.children[0].className,'news-ai-summary');const out=text(node);ok(out.includes('全文提要'));ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));
     eq(api.newsSummaryCard({summary:'只有摘要'}),null);
   });
-  check('overview sector selection updates its trend without navigation',()=>{
-    const sector={id:'801780.SI',name:'银行',history:[{date:'2026-11-17',close:100}]};api.state.page='overview';api.state.data={...d,sectors:[sector]};api.state.overviewSelected=null;
-    const tiles=api.heatmap({...d,sectors:[sector]});tiles.children[0].events.click();eq(api.state.page,'overview');eq(api.state.overviewSelected,'801780.SI');eq(api.overviewEntity({...d,sectors:[sector]}).id,'801780.SI');ok(text(api.trendPanel({...d,sectors:[sector]})).includes('银行 · 走势'));api.state.overviewSelected=null;
-  });
   check('official minutes replace only the same identity and date',()=>{
     const entity={id:'801780.SI',index_code:'801780.SI'},minute=(price,code='801780.SI')=>({price,timestamp:'2026-11-17T14:00:00+08:00',provider:'stock_api',kind:'historical_minute',source_code:code});
     const x={intraday:{'801780.SI':{points:[{price:99,timestamp:'2026-11-17T13:00:00+08:00',provider:'eastmoney_page'},minute(100),{...minute(101),timestamp:'2026-11-17T15:00:00+08:00'}]}}};
@@ -253,15 +251,135 @@ function runFrontendChecks(source) {
     eq(points.map(p=>p.price).join(','),'101,102,103');eq(points[1].timestamp_quality,'minute_backfill');
     eq(api.relayIntraday(live,null,{id:'a'},day,{...recovery,trade_date:'2026-11-18'}).length,2);
   });
-  check('clicking anywhere on an index card selects its intraday chart',()=>{
-    const item={id:'second-index',name:'第二指数'};
-    api.state.metric='index';
-    api.state.overviewSelected='some-sector';
-    const card=api.statCard(item,false);
-    eq(card.tag,'button');eq(card.attrs['aria-pressed'],'false');
-    card.events.click();
-    eq(api.state.metric,'intraday');eq(api.state.overviewSelected,null);eq(api.state.marketSelected,item.id);
-    eq(api.overviewEntity({...d,market:[{id:'first-index'},item]}).id,item.id);
+  function overviewFixture() {
+    const page = new TestNode('root');
+    const cloud = startDisplay({...doc, querySelector: selector =>
+      selector === 'meta[name="radar-live-quotes"]' ? {content:'sxdata'} : page});
+    const day = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date());
+    const indices = ['上证指数','深证成指','创业板指','沪深300','科创50','中证500'];
+    const ids = ['sh000001','sz399001','sz399006','sh000300','sh000688','sh000905'];
+    const market = indices.map((name,i)=>({id:ids[i],name,provider:'stock_api'}));
+    const sectors = Array.from({length:16},(_,i)=>({
+      id:`0000${32+i}.SH`, name:'行业'+String(i+1).padStart(2,'0'),
+      provider:'stock_api',taxonomy:'SSE',price:i===15?null:100+i,
+      change_pct:i===15?null:i-7,quote_timestamp:day+'T00:00:00+08:00',
+      quote_date:day,timestamp_quality:'source_reported',
+    }));
+    const sw = {id:'801780.SI',name:'申万银行',taxonomy:'SW2021',level:'L1',provider:'stock_api'};
+    cloud.state.data = {...cloud.baseData(),market,sectors:[sw]};
+    const feed = {schema_version:1,source:'sxdata_relay',trade_date:day,market,sectors};
+    const nodes = (node,match) => (match(node)?[node]:[]).concat(
+      node.children.flatMap(child=>nodes(child,match)));
+    function byId(id) {
+      const matches = nodes(page,n=>n.attrs.id===id);
+      eq(matches.length,1);
+      return matches[0];
+    }
+    function buttons(id,predicate) {
+      return nodes(byId(id),n=>n.tag==='button'&&predicate(n));
+    }
+    function select(id,predicate) {
+      const matches = buttons(id,predicate);
+      ok(matches.length>0,'missing control in '+id);
+      matches[0].events.click();
+    }
+    const named = name => n => text(n).includes(name);
+    const chartTitle = id => text(nodes(byId(id),n=>/^h[1-6]$/.test(n.tag))[0]);
+    return {cloud,page,market,sectors,feed,sw,nodes,byId,buttons,select,named,chartTitle};
+  }
+
+  check('delayed industry feed populates only the board below the six market indices',()=>{
+    const f=overviewFixture();
+    f.cloud.render();
+    const boards=f.nodes(f.page,n=>['overview-indices','overview-industries'].includes(n.attrs.id));
+    eq(boards.map(n=>n.attrs.id).join(','),'overview-indices,overview-industries');
+    eq(f.buttons('overview-indices',n=>n.attrs['aria-controls']==='overview-trend').length,6);
+    ok(f.chartTitle('overview-trend').includes(f.market[0].name));
+    ok(!text(f.byId('overview-industries')).includes(f.sw.name));
+    f.cloud.state.liveQuotes=f.feed;
+    f.cloud.render();
+    const industryNames=f.sectors.map(s=>s.name);
+    const tiles=f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile')
+      && n.attrs['aria-controls']==='overview-sector-trend' && n.attrs['aria-pressed']!==undefined);
+    eq(tiles.length,16);
+    for(const name of industryNames) {
+      ok(tiles.some(f.named(name)),name+' missing from industry board');
+      ok(!text(f.byId('overview-indices')).includes(name));
+    }
+    for(const index of f.market)ok(!text(f.byId('overview-industries')).includes(index.name));
+    const missing=text(tiles.find(f.named(f.sectors[15].name)));
+    ok(missing.includes('—'));ok(!missing.includes('0.00%'));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[0].name));
+
+    const day=f.feed.trade_date;
+    const prior=new Date(Date.parse(day+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const older={...f.sectors[1],quote_date:prior,quote_timestamp:prior+'T14:59:00+08:00',change_pct:12};
+    const index={...f.market[0],price:3333,quote_date:day,quote_timestamp:day+'T00:00:00+08:00',timestamp_quality:'source_reported'};
+    f.cloud.state.liveQuotes={...f.feed,market:[index,...f.market.slice(1)],
+      sectors:f.sectors.map(sector=>sector.id===older.id?older:sector)};
+    f.cloud.render();
+    ok(text(f.byId('overview-indices')).includes('3,333.00'));
+    const tile=f.buttons('overview-industries',n=>(n.className||'').includes('heat-tile')&&f.named(older.name)(n))[0];
+    ok(text(tile).includes(prior+' 参考'));ok(!text(tile).includes('+12.00%'));
+  });
+
+  check('industry tiles and rankings do not replace the index or change its chart controls',()=>{
+    const f=overviewFixture();
+    f.cloud.state.liveQuotes=f.feed;f.cloud.render();
+    f.select('overview-indices',f.named(f.market[1].name));
+    f.select('overview-trend',n=>text(n)==='日线');
+    f.select('overview-trend',n=>text(n)==='3M');
+    f.select('overview-industries',n=>n.attrs['aria-pressed']!==undefined&&f.named(f.sectors[2].name)(n));
+    eq(f.cloud.state.page,'overview');
+    ok(f.chartTitle('overview-trend').includes(f.market[1].name));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[2].name));
+    const selectedMode=(label)=>f.buttons('overview-trend',n=>text(n)===label&&n.className==='active').length;
+    eq(selectedMode('日线'),1);eq(selectedMode('3M'),1);
+    f.select('overview-industries',n=>(n.className||'').split(' ').includes('leader-row')&&f.named(f.sectors[14].name)(n));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[14].name));
+    eq(selectedMode('日线'),1);
+    f.select('overview-indices',f.named(f.market[2].name));
+    ok(f.chartTitle('overview-trend').includes(f.market[2].name));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[14].name));
+    const selectedTiles=f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile')
+      && n.attrs['aria-pressed']==='true');
+    eq(selectedTiles.length,1);ok(f.named(f.sectors[14].name)(selectedTiles[0]));
+    f.cloud.state.liveQuotes={...f.feed,sectors:[...f.sectors].reverse()};
+    f.cloud.render();
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[14].name));
+  });
+
+  check('an industry-only publication remains usable while market data is absent',()=>{
+    const f=overviewFixture();
+    f.cloud.state.data=f.cloud.baseData();
+    f.cloud.state.liveQuotes={...f.feed,market:[]};
+    f.cloud.render();
+    f.select('overview-industries',n=>n.attrs['aria-pressed']!==undefined&&f.named(f.sectors[3].name)(n));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[3].name));
+    ok(!text(f.byId('overview-indices')).includes(f.sectors[3].name));
+    f.cloud.state.liveQuotes=f.feed;
+    f.cloud.render();
+    ok(f.chartTitle('overview-trend').includes(f.market[0].name));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[3].name));
+  });
+
+  check('changing industry taxonomy keeps the index and isolates the two charts’ periods',()=>{
+    const f=overviewFixture();
+    f.cloud.state.liveQuotes=f.feed;f.cloud.render();
+    f.select('overview-indices',f.named(f.market[1].name));
+    f.select('overview-trend',n=>text(n)==='日线');
+    f.select('overview-trend',n=>text(n)==='3M');
+    f.select('overview-industries',n=>text(n).includes('申万行业')&&text(n).includes('估算'));
+    ok(f.chartTitle('overview-sector-trend').includes(f.sw.name));
+    ok(!text(f.byId('overview-industries')).includes(f.sectors[0].name));
+    f.select('overview-sector-trend',n=>text(n)==='市值');
+    f.select('overview-sector-trend',n=>text(n)==='1Y');
+    eq(f.buttons('overview-trend',n=>n.className==='active'&&text(n)==='3M').length,1);
+    eq(f.buttons('overview-trend',n=>n.className==='active'&&text(n)==='日线').length,1);
+    ok(f.chartTitle('overview-trend').includes(f.market[1].name));
+    f.select('overview-industries',n=>text(n)==='交易所行业与主题');
+    ok(f.chartTitle('overview-sector-trend').includes(f.sectors[0].name));
+    ok(!text(f.byId('overview-industries')).includes(f.sw.name));
   });
   return {passed, failures};
 }

@@ -143,3 +143,32 @@
   .compact-indices .stat-value{font-size:17px}
   .current-trend .chart-body{padding-inline:11px}
 }
+
+.market-overview .overview-section{min-width:0;margin-bottom:28px}
+.overview-section-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;margin-bottom:13px}
+.overview-section-head h3{margin:0;font-size:19px;letter-spacing:.02em;color:var(--ink)}
+#overview-industries{border-top:1px solid var(--line);padding-top:22px}
+#overview-industries .breadth{flex-wrap:wrap;gap:6px 16px;margin:0 0 14px}
+.industry-board-grid,.overview-research-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.industry-board-grid>*{min-width:0}
+.industry-detail-stack{display:grid;gap:14px;min-width:0}
+.industry-quotes .heatmap{padding:12px;gap:6px;grid-template-columns:repeat(auto-fit,minmax(106px,1fr))}
+.industry-quotes .heat-tile{min-width:0;min-height:91px;align-items:flex-start;gap:3px;padding:10px;border:1px solid transparent}
+.industry-quotes .heat-tile .name{font-size:13px;line-height:1.35}
+.industry-quotes .heat-tile .change{font-size:18px;font-variant-numeric:tabular-nums}
+.industry-quotes .industry-quote,.industry-quotes .industry-stamp{font-size:11px;font-variant-numeric:tabular-nums;line-height:1.4}
+.industry-quotes .industry-stamp{opacity:.87}
+.industry-quotes .selected-sector{outline:2px solid #417ccc;outline-offset:-2px}
+.industry-quotes .heat-tile:focus-visible{outline:3px solid #244e83;outline-offset:1px}
+.overview-section .panel-tools,.overview-section-head .segmented{flex-wrap:wrap}
+@media(max-width:900px){
+ .industry-board-grid,.overview-research-grid{grid-template-columns:1fr}
+ .industry-quotes .heatmap{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}
+}
+@media(max-width:520px){
+ .market-overview .overview-section{margin-bottom:20px}
+ .industry-quotes .heatmap{padding:8px;gap:5px;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .industry-quotes .heat-tile{padding:7px;min-height:84px}
+ .industry-quotes .heat-tile .change{font-size:16px}
+ .overview-section-head .segmented{max-width:100%}
+}
