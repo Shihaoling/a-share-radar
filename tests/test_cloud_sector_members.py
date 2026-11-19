@@ -16,6 +16,7 @@ if sys.platform == "win32":
 ROOT = Path(__file__).resolve().parents[1]
 with patch.object(sys, "path", [str(ROOT / "deploy/tencent-preview"), *sys.path]):
     import sector_directory as directory
+from pipeline import stock_api
 
 DAY = "2026-11-19"
 PRIOR = "2026-11-18"
@@ -209,6 +210,35 @@ class ConstituentsTests(unittest.TestCase):
              patch.object(directory, "shanghai_now", return_value=now), patch("builtins.print"):
             self.store.work("fixture", now)
         return request.call_args.args if request.called else None
+
+    def test_columnless_empty_membership_only_defers_the_single_board(self):
+        self.make_due([PRICE])
+        gate = self.root / "gate.json"
+        body = io.BytesIO(b'{"code":0,"data":{"fields":[],"items":[]}}')
+        body.headers = {}
+        body.geturl = lambda: stock_api.ENDPOINT
+        opener = Mock()
+        opener.open.return_value = body
+        with patch.dict(os.environ, RADAR_SERVICE_GATE_FILE=str(gate)), \
+             patch.object(stock_api.urllib.request, "build_opener", return_value=opener), \
+             patch.object(directory, "shanghai_now", return_value=NOW):
+            self.store.work("fixture", NOW)
+        self.assertEqual(opener.open.call_count, 1)
+        membership = self.constituents(PRICE)
+        self.assertEqual((membership["reason"], membership["members"]), ("no_rows", []))
+        job = self.job(PRICE)
+        self.assertEqual((job["failures"], job["due"]), (0, NOW.timestamp() + directory.PARTIAL_RETRY_SECONDS))
+        usage = json.loads(gate.read_bytes())
+        self.assertEqual(usage["usage"]["apis"]["ths_member"]["outcomes"], {"ok":1})
+        self.assertNotIn("ths_member", usage.get("apis", {}))
+
+    def test_columnless_or_malformed_nonempty_payloads_still_fail_validation(self):
+        for api, data in [("rt_k", {"fields":[], "items":[]}), ("ths_member", {"fields":None, "items":[]}),
+                          ("ths_member", {"fields":[], "items":[[]]}), ("ths_member", {"fields":[], "items":None}),
+                          ("ths_member", {"fields":["ts_code"], "items":[]})]:
+            with self.subTest(api=api, data=data), self.assertRaises(stock_api._Failure) as failure:
+                stock_api._rows({"code":0, "data":data}, api)
+            self.assertEqual(failure.exception.code, "invalid_payload")
 
     @staticmethod
     def ths_row(code, stock):

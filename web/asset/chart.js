@@ -50,7 +50,8 @@ window.AssetChart = (() => {
       ...r, close:positive(r.close)?r.close:null, ma20:positive(r.ma20)?r.ma20:null, x:i, id:r.day
     }));
     const session = tradingSession(key), heat = intraday.measure === 'change_pct';
-    const percent = heat || intraday.measure === 'constituent_change_pct';
+    const weighted = intraday.measure === 'weighted_change_pct';
+    const percent = heat || weighted || intraday.measure === 'constituent_change_pct';
     const maxGap = positive(intraday.max_gap_minutes) ? intraday.max_gap_minutes : heat ? 35 : 3;
     function samples(pairs, signed) {
       const byTime=new Map();
@@ -68,14 +69,17 @@ window.AssetChart = (() => {
           minute<=session.close?'afternoon':'post';
         // Heat rankings are published at real wall-clock times, including during the break.
         if (!heat && phase!=='morning' && phase!=='afternoon') continue;
-        byTime.set(ms,{id:String(ms),time:local.slice(11,19),x:heat?minute:sessionX(minute,session),value,minute,phase});
+        const coverage=intraday.partial && Number.isInteger(pair[2]) && pair[2]>0 &&
+          Number.isInteger(pair[3]) && pair[3]>=pair[2] ? [pair[2],pair[3]] : null;
+        if(intraday.partial && !coverage)continue;
+        byTime.set(ms,{coverage,id:String(ms),time:local.slice(11,19),x:heat?minute:sessionX(minute,session),value,minute,phase});
       }
       const rows=[...byTime.values()].sort((a,b)=>a.x-b.x);
       rows.forEach((r,i)=>{r.gap=i>0 && (r.phase!==rows[i-1].phase || r.minute-rows[i-1].minute>maxGap);});
       return rows;
     }
     return {daily,intraday,dailyRows,minutes:samples(intraday.points,percent),
-      relative:samples(intraday.relative,true),session,heat,percent};
+      relative:samples(intraday.relative,true),session,heat,weighted,percent};
   }
 
   function range(values) {
@@ -109,12 +113,12 @@ window.AssetChart = (() => {
     constructor(host,key) {
       this.host=host; this.key=key; this.name=''; this.mode=null; this.study='momentum20';
       this.anchor={daily:null,intraday:null,members:null}; this.width=0; this.chart=read(null,key);
-      this.hasMembers=key.startsWith('sector/') && key.endsWith('.TI'); this.manualMode=false;
+      this.hasMembers=key.startsWith('sector/') && /\.(?:TI|SI)$/.test(key); this.manualMode=false;
       this.root=el('section','asset-chart-view'); this.root.setAttribute('aria-label','行情走势');
       const header=el('header','ac-head');
       const modes=el('div','ac-controls'); modes.setAttribute('aria-label','行情周期');
       this.modes={};
-      const choices=this.hasMembers?[['members','成分股分时'],['intraday','热榜分时'],['daily','日线']]:[['intraday','分时'],['daily','日线']];
+      const choices=this.hasMembers?[['members','成分股分时'],['intraday',key.endsWith('.TI')?'热榜分时':'权重估算分时'],['daily','日线']]:[['intraday','分时'],['daily','日线']];
       for (const [id,text] of choices) {
         this.modes[id]=control(text,()=>{this.manualMode=true;this.mode=id;this.draw();},'ac-choice');
         modes.append(this.modes[id]);
@@ -171,17 +175,23 @@ window.AssetChart = (() => {
     update(chart,name,members) {
       this.chart=read(chart,this.key); this.name=name||'';
       if (this.hasMembers) {
-        this.memberChart=read({intraday:{measure:'constituent_change_pct',day:members?.trade_date,
-          points:members?.points,max_gap_minutes:3,basis_label:'成分股等权涨跌幅采样'}},this.key);
+        const complete=Array.isArray(members?.points) && members.points.length>0;
+        const partial=Array.isArray(members?.sample_points) && members.sample_points.length>0 &&
+          (!complete || members.sample_trade_date>members.trade_date);
+        const memberDay=partial?members.sample_trade_date:members?.trade_date;
+        this.modes.members.textContent=partial?'部分成分分时':'成分股分时';
+        this.memberChart=read({intraday:{measure:'constituent_change_pct',day:memberDay,partial,
+          points:partial?members.sample_points:members?.points,max_gap_minutes:3,
+          basis_label:partial?'仅代表已有报价的成分股':'成分股等权涨跌幅采样'}},this.key);
         if (!this.manualMode) {
           const newestHeat=this.chart.minutes.length && this.chart.intraday.day;
-          if (this.memberChart.minutes.length && (!newestHeat || members.trade_date>=newestHeat)) this.mode='members';
+          if (this.memberChart.minutes.length && (!newestHeat || memberDay>=newestHeat)) this.mode='members';
           else if (this.chart.minutes.length) this.mode='intraday';
           else if (this.chart.dailyRows.some(row=>positive(row.close))) this.mode='daily';
           else this.mode='members';
         }
-      } else if (!this.mode) {
-        if(this.chart.minutes.length>1)this.mode='intraday';
+      } else if (!this.mode || (this.key.startsWith('sector/') && !this.manualMode)) {
+        if((this.key.startsWith('sector/') && this.chart.minutes.length) || this.chart.minutes.length>1)this.mode='intraday';
         else if(this.chart.dailyRows.some(r=>positive(r.close)))this.mode='daily';
         else if(this.chart.minutes.length)this.mode='intraday';
       }
@@ -212,7 +222,7 @@ window.AssetChart = (() => {
       this.mainGuides=null; this.subGuides=null; this.axes=null;
       this.legend.replaceChildren();
       const dailyPrice=data.daily.basis==='reference_linked'?'收益链收盘':'收盘';
-      const name=daily?dailyPrice:mode==='members'?'成分股等权涨跌幅':data.heat?'热榜涨跌幅':'分时价格';
+      const name=daily?dailyPrice:mode==='members'?(data.intraday.partial?'部分成分平均涨跌幅':'成分股等权涨跌幅'):data.heat?'热榜涨跌幅':data.weighted?'权重股估算涨跌幅':'分时价格';
       this.legend.append(el('span','ac-key ac-price-key',name));
       if(daily && this.rows.some(r=>positive(r.ma20)))this.legend.append(el('span','ac-key ac-average-key','MA20'));
       let baseline=null;
@@ -316,6 +326,7 @@ window.AssetChart = (() => {
         const change=(row.value/data.intraday.previous_close-1)*100;
         context.push('较昨收 '+(change>0?'+':'')+label(change,'%'));
       }
+      if(row?.coverage)context.push(`样本 ${row.coverage[0]}/${row.coverage[1]} 只`);
       this.context.textContent=context.join(' · ');
       let paired=null;
       if(!daily && row && data.relative.length){

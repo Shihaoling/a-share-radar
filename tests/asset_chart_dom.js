@@ -144,4 +144,26 @@ assert.equal(nodes(singlePlot,'ac-dot').length,1);assert.equal(nodes(singlePlot,
 assert.match(singlePlot.attrs['aria-valuetext'],/7.5 点/);
 assert.match(words(one(heatHost,'ac-study-plot')),/样本不足/);
 assert.equal(nodes(singlePlot,'ac-drawdown').length,0);
+const swHost=new Element('div');
+mount(swHost,{daily:dData},{key:'sector/801750.SI',members});
+assert.deepEqual(nodes(swHost,'ac-choice').map(el=>el.textContent),['成分股分时','权重估算分时','日线']);
+assert.equal(nodes(swHost,'ac-choice')[0].attrs['aria-pressed'],'true');
+assert.equal(one(swHost,'ac-main-plot').attrs['aria-valuemax'],'7');
+const tradedHost=new Element('div');
+mount(tradedHost,{daily:dData,intraday:{...iData,points:[iData.points[0]]}},{key:'sector/000010.SH'});
+assert.equal(nodes(tradedHost,'ac-choice')[0].attrs['aria-pressed'],'true');
+const sparseHost=new Element('div');
+const sparseMember={...previousDay,sample_trade_date:'2026-11-19',sample_points:[[at('13:00'),-1.2,2,5],[at('13:01'),-0.8,3,5]]};
+mount(sparseHost,{daily:dData},{key:'sector/801230.SI',members:sparseMember});
+assert.equal(nodes(sparseHost,'ac-choice')[0].textContent,'部分成分分时');
+assert.match(one(sparseHost,'ac-main-plot').attrs['aria-valuetext'],/样本 3\/5 只/);
+assert.match(words(sparseHost),/部分成分平均涨跌幅/);
+mount(sparseHost,{daily:dData},{key:'sector/801230.SI',members:{...sparseMember,...members}});
+assert.equal(nodes(sparseHost,'ac-choice')[0].textContent,'成分股分时');
+assert.ok(!words(sparseHost).includes('部分成分平均涨跌幅'));
+const weightedHost=new Element('div');
+mount(weightedHost,{intraday:{day:'2026-11-19',measure:'weighted_change_pct',points:[[at('13:00'),-1.1],[at('13:01'),0.2]]}},
+  {key:'sector/801230.SI'});
+assert.match(words(weightedHost),/权重股估算涨跌幅/);
+assert.match(one(weightedHost,'ac-main-plot').attrs['aria-valuetext'],/0.2%/);
 console.log('Asset chart DOM checks passed');

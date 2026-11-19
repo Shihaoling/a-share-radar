@@ -102,11 +102,15 @@ class IntradayCharts:
         for kind, group in (("stock","stocks"),("sector","board_estimates")):
             for r in data.get(group, []):
                 source_day = r.get("quote_date")
-                price = observation(r.get("quote_timestamp"), r.get("price"), source_day)
-                if not price or source_day != day or not isinstance(r.get("id"), str):
+                if source_day != day or not isinstance(r.get("id"), str):
                     continue
-                stamp, value = price
-                rows.append((kind,r["id"],day,stamp[:16],stamp,value))
+                series = [(kind, r.get("price"), False)]
+                if kind == "sector" and r.get("basis") == "constituent_estimate":
+                    series.append(("sector_change", r.get("change_pct"), True))
+                for key, value, percent in series:
+                    point = observation(r.get("quote_timestamp"), value, source_day, percentage=percent)
+                    if point and point[0] <= now.isoformat(timespec='seconds'):
+                        rows.append((key,r["id"],day,point[0][:16],*point))
         with closing(self.store.db()) as db, db:
             db.executemany("""INSERT INTO chart_points VALUES(?,?,?,?,?,?)
                 ON CONFLICT(kind,code,day,minute) DO UPDATE SET stamp=excluded.stamp,price=excluded.price
@@ -118,50 +122,74 @@ class IntradayCharts:
         self.seen[path] = version
 
     def render(self, db, kind, code, quote, now):
-        day = quote.get("quote_date") or now.date().isoformat()
+        today = now.date().isoformat()
+        quote_day = quote.get("quote_date")
+        days = [today]
+        if isinstance(quote_day, str) and quote_day < today:
+            days.append(quote_day)
         estimate = kind == "sector" and code.endswith(".SI")
         heat = kind == "sector" and code.endswith(".TI")
-        points = []
+        prices = {day: [] for day in days}
+        changes = {day: [] for day in days}
         if kind == "stock" or estimate:
-            points.extend(db.execute("""SELECT stamp,price FROM chart_points WHERE kind=? AND code=? AND day=?
-                            ORDER BY minute""",(kind,code,day)))
+            for stored_kind, target in [(kind,prices)] + ([("sector_change",changes)] if estimate else []):
+                for day in days:
+                    target[day].extend(db.execute("""SELECT stamp,price FROM chart_points
+                                   WHERE kind=? AND code=? AND day=? ORDER BY minute""",(stored_kind,code,day)))
         elif heat:
             packet = self.store.feed("sector-heat-samples")
-            if packet.get("day") == day:
-                points.extend(packet.get("series",{}).get(code,{}).items())
+            if packet.get("day") in days:
+                changes[packet["day"]].extend(packet.get("series",{}).get(code,{}).items())
         else:
             ident = code[-2:].lower()+code[:6] if kind=="index" else code
             for feed in ("today-intraday","minute-recovery"):
                 packet = self.store.feed(feed)
-                if packet.get("trade_date")==day:
-                    points.extend(packet.get("series",{}).get(ident, []))
+                if packet.get("trade_date") in days:
+                    prices[packet["trade_date"]].extend(packet.get("series",{}).get(ident, []))
             if kind == "sector":
                 path = self.store.out / "sector-intraday" / (code+".json")
                 try:
                     packet=json.loads(path.read_bytes())
-                    if packet.get("id")==code and packet.get("trade_date")==day:
-                        points.extend(packet.get("points",[]))
+                    if packet.get("id")==code and packet.get("trade_date") in days:
+                        prices[packet["trade_date"]].extend(packet.get("points",[]))
                 except (OSError,ValueError,AttributeError):
                     pass
-        if quote:
-            points.append((quote.get("quote_timestamp"),quote.get("change_pct" if heat else "price")))
+        if quote_day in days:
+            if not heat:
+                prices[quote_day].append((quote.get("quote_timestamp"),quote.get("price")))
+            if heat or estimate:
+                changes[quote_day].append((quote.get("quote_timestamp"),quote.get("change_pct")))
+
+        # Prefer any verified current-session series over the prior day's last displayed quote.
+        # Percent-only estimates and genuine point levels keep separate units throughout.
         latest = {}
-        for row in points:
-            if not hasattr(row,"__len__") or len(row)<2:
-                continue
-            point = observation(row[0],row[1],day,percentage=heat)
-            if point and (point[0][:16] not in latest or point[0] >= latest[point[0][:16]][0]):
-                latest[point[0][:16]]=point
-        out=dict(day=day, points=[list(latest[k]) for k in sorted(latest)], measure="change_pct" if heat else "price",
-                 basis="概念热榜涨跌幅快照" if heat else "权重股估算点位" if estimate else "中转站实际行情",
-                 max_gap_minutes=35 if heat else 3)
+        cutoff = now.astimezone(SHANGHAI).isoformat(timespec="seconds")
+        for day in days:
+            for percentage, points in ((False,prices[day]),(True,changes[day])):
+                for row in points:
+                    if not hasattr(row,"__len__") or len(row)<2:
+                        continue
+                    point = observation(row[0],row[1],day,percentage=percentage)
+                    if point and point[0]<=cutoff and (point[0][:16] not in latest or point[0] >= latest[point[0][:16]][0]):
+                        latest[point[0][:16]] = point
+                if latest:
+                    break
+            if latest:
+                break
+        if not latest:
+            percentage = heat
+        weighted_change = estimate and percentage
+        out=dict(day=day, points=[list(latest[k]) for k in sorted(latest)],
+                 measure="change_pct" if heat else "weighted_change_pct" if weighted_change else "price",
+                 basis="概念热榜涨跌幅快照" if heat else "权重股估算涨跌幅" if weighted_change else
+                       "权重股估算点位" if estimate else "中转站实际行情", max_gap_minutes=35 if heat else 3)
         for field in ("previous_close","open","high","low"):
-            out[field] = quote[field] if not heat and finite(quote.get(field)) and quote[field]>0 else None
+            out[field] = quote[field] if not percentage and quote_day == day and finite(quote.get(field)) and quote[field]>0 else None
         benchmark = self.store.live("index","000300.SH")
         bench_points = [(benchmark.get("quote_timestamp"),benchmark.get("price"))]
         for feed in ("today-intraday","minute-recovery"):
             packet = self.store.feed(feed)
             if packet.get("trade_date")==day:
                 bench_points.extend(packet.get("series",{}).get("sh000300",[]))
-        out["relative"] = relative_changes(out["points"],out["previous_close"],heat,benchmark,bench_points,day)
+        out["relative"] = relative_changes(out["points"],out["previous_close"],percentage,benchmark,bench_points,day)
         return out

@@ -483,9 +483,21 @@ function sectorDetailsLink(item,context='preview'){
  return h('a',{class:'directory-details',id:'sector-link-'+context+'-'+item.id,'data-overview-focus':true,href:'./sector/?code='+encodeURIComponent(item.id),
   'aria-label':item.name+'成分与研究详情'},'成分与研究 ↗');
 }
+function boardSample(code,today) {
+ const packet=state.boardLiveSummary;
+ if(!packet || packet.trade_date!==today)return null;
+ const row=packet.items?.[code], at=quoteTime(row?.quote_at);
+ if(!row||at===null||at>Date.now()||chinaDay(at)!==today||!finite(row.change_pct)||
+    !Number.isInteger(row.total_count)||!Number.isInteger(row.quoted_count)||row.total_count<=0||
+    row.quoted_count<Math.ceil(row.total_count*.8)||row.quoted_count>row.total_count)return null;
+ return row;
+}
 function thsSnapshotRows(item){
  const ranking=item.ranking,reference=item.reference;
  const entries=[];
+ const sampled=boardSample(item.id,chinaDay(new Date()));
+ if(sampled)entries.push(['成分股等权涨跌',pct(sampled.change_pct)],['采样覆盖',sampled.quoted_count+'/'+sampled.total_count+' 只'],
+  ['报价时点',chinaClock.format(quoteTime(sampled.quote_at))]);
  if(ranking){
   entries.push(['热榜涨跌',pct(ranking.change_pct)],['热榜点位',finite(ranking.price)&&ranking.price>0?num(ranking.price)+' 点':'待更新']);
   if(finite(ranking.hot))entries.push(['热度',num(ranking.hot,0)]);
@@ -501,7 +513,7 @@ function snapshotTime(hot){
 }
 function thsSectorPanel(item){
  const entries=thsSnapshotRows(item);
- return panel(item.name+' · 行情快照',item.ranking?'同花顺概念热榜 · '+snapshotTime(state.sectorHot):'同花顺 · 收盘参考',
+ return panel(item.name+' · 行情快照',boardSample(item.id,chinaDay(new Date()))?'当日成分股采样':item.ranking?'同花顺概念热榜 · '+snapshotTime(state.sectorHot):'同花顺 · 收盘参考',
   h('div',{class:'directory-snapshot'},entries.length?h('dl',{},entries.map(([label,value])=>[h('dt',{},label),h('dd',{},value)])):
    h('p',{},'已收录该板块，等待中转站返回带日期的行情。')),sectorDetailsLink(item));
 }
@@ -510,13 +522,14 @@ function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=st
  return h('div',{class:'heatmap'},comparison.rows.slice(0,limit).map(({sector:sec,q})=>{
   const ths=sec.taxonomy==='THS',rank=sec.ranking,reference=sec.reference;
   const comparable=Boolean(comparison.day&&q.day===comparison.day&&finite(q.price)&&finite(q.value));
-  const value=ths?(rank?rank.change_pct:reference?.change_pct):comparable?q.value:null;
+  const sampled=(ths || sec.id.endsWith('.SI')) ? boardSample(sec.id,today) : null;
+  const value=sampled?sampled.change_pct:ths?(rank?rank.change_pct:reference?.change_pct):comparable?q.value:null;
   const price=ths?(rank?rank.price:reference?.price):q.price;
   const stamp=q.estimate?sec.intraday_estimate?.quote_timestamp:q.quote?.as_of;
   const time=quoteTime(stamp,q.quote?.daily&&!q.estimate);
-  const when=ths?(rank?'热榜 '+snapshotTime(state.sectorHot):reference?reference.quote_date+' 收盘':'待更新'):
+  const when=sampled?'成分等权 '+chinaClock.format(quoteTime(sampled.quote_at)):ths?(rank?'热榜 '+snapshotTime(state.sectorHot):reference?reference.quote_date+' 收盘':'待更新'):
    !q.day?'待更新':q.day!==today?`${q.day} 参考`:time===null?'时点待确认':q.day.slice(5)+' '+chinaClock.format(time);
-  const basis=q.estimate?'权重股估算':q.proxy?'ETF代理':'';
+  const basis=sampled?'':q.estimate?'权重股估算':q.proxy?'ETF代理':'';
   const selected=selectedId===sec.id;
   const category=ths?'同花顺'+({industry:'行业',concept:'概念',theme:'主题'}[sec.kind]||''):
    sec.directoryEntry?'交易所'+({industry:'行业',theme:'主题'}[sec.kind]||'指数'):'申万一级行业';
@@ -526,7 +539,7 @@ function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=st
    onClick:()=>chooseOverviewIndustry(sec.id),title:[sec.fullname||sec.name,category,basis,when].filter(Boolean).join(' · ')},
    h('span',{class:'name'},rank?h('small',{class:'directory-rank'},'#'+rank.rank):null,sec.name),
    enriched?h('span',{class:'directory-code'},category+' · '+sec.id):null,h('strong',{class:'change'},pct(value)),
-   h('span',{class:'industry-quote'},finite(price)&&price>0?`${num(price)} 点`:'点位待更新'),
+   h('span',{class:'industry-quote'},sampled?`覆盖 ${sampled.quoted_count}/${sampled.total_count} 只`:finite(price)&&price>0?`${num(price)} 点`:'点位待更新'),
    h('span',{class:'industry-stamp'},[basis,when].filter(Boolean).join(' · ')),
    rank&&finite(rank.hot)?h('span',{class:'industry-stamp'},'热度 '+num(rank.hot,0)):null);
   return enriched?h('article',{class:'sector-listing'},tile,h('div',{class:'directory-foot'},
@@ -1085,6 +1098,8 @@ const feeds=[
  {file:'ths-sector-catalog',key:'thsCatalog',label:'同花顺及申万目录',interval:30000,maxAge:3600000,pages:['overview'],directory:'taxonomy',
   valid:p=>records(p.items)&&p.items.length>0&&p.items.every(validThsItem)&&
    (p.sw_items==null||records(p.sw_items)&&p.sw_items.every(x=>/^\d{6}\.SI$/.test(x.code)&&x.kind==='L1'&&typeof x.name==='string'))},
+ {file:'board-live-summary',key:'boardLiveSummary',label:'板块分时采样',interval:15000,pages:['overview'],source:'sxdata_board_summary',
+  valid:p=>dateKey(p.trade_date)&&record(p.items)},
  {file:'sector-reference',key:'sectorReference',label:'同花顺收盘行情',interval:60000,maxAge:300000,pages:['overview'],directory:true,source:'sxdata_sector_reference',
   valid:p=>dateKey(p.trade_date)&&record(p.quotes)&&Object.values(p.quotes).every(q=>q==null||record(q))},
  {file:'sector-hot',key:'sectorHot',label:'同花顺热榜',interval:60000,pages:['overview'],directory:true,source:'sxdata_ths_hot',

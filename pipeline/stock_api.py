@@ -235,6 +235,9 @@ def _rows(payload, api):
     if not isinstance(data, dict):
         raise _Failure("invalid_payload")
     fields, items = data.get("fields"), data.get("items")
+    # The relay omits column names when this membership query has no matches.
+    if api == "ths_member" and fields == [] and items == []:
+        return []
     expected = FIELDS[api].split(",")
     if (not isinstance(fields, list) or not all(isinstance(f, str) for f in fields)
             or len(fields) != len(expected) or set(fields) != set(expected)

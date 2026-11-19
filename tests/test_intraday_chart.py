@@ -56,6 +56,24 @@ class IntradayChartTests(unittest.TestCase):
         self.assertAlmostEqual(paired[0][1],1)
         self.assertEqual(relative_changes(series,None,False,ref,bench,day),[])
 
+    def test_first_open_prefers_archived_current_day_when_last_quote_is_from_yesterday(self):
+        code='000685.SH';stamp='2026-11-19T10:00:02+08:00'
+        publish(self.store.out/'sector-intraday'/(code+'.json'),
+                {'id':code,'trade_date':'2026-11-19','points':[[stamp,123],['2026-11-19T14:00:00+08:00',150]]})
+        old=dict(quote_date='2026-11-18',quote_timestamp='2026-11-18T14:59:58+08:00',price=100,previous_close=80)
+        with closing(self.store.db()) as db:
+            chart=self.store.intraday.render(db,'sector',code,old,NOW)
+        self.assertEqual((chart['day'],chart['points'],chart['previous_close']),('2026-11-19',[[stamp,123]],None))
+
+    def test_sw_percentage_without_index_level_is_saved_and_reopens_independently(self):
+        code='801001.SI';stamp='2026-11-19T10:20:10+08:00'
+        quote=dict(id=code,quote_date='2026-11-19',quote_timestamp=stamp,change_pct=-1.8,basis='constituent_estimate')
+        publish(self.store.out/'stock-quotes.json',{'board_estimates':[quote]})
+        self.store.intraday.capture(NOW)
+        with closing(self.store.db()) as db:
+            chart=self.store.intraday.render(db,'sector',code,{},NOW)
+        self.assertEqual((chart['measure'],chart['points'],chart['previous_close']),('weighted_change_pct',[[stamp,-1.8]],None))
+
     def test_index_series_uses_matching_code_and_date(self):
         published={'trade_date':'2026-11-19','series':{'sh000300':[['2026-11-19T10:05:00+08:00',3901]]}}
         publish(self.store.out/'today-intraday.json',published)

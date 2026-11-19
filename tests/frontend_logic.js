@@ -431,6 +431,13 @@ function runFrontendChecks(source) {
     ok(snapshot.includes('行情快照'));ok(snapshot.includes('+2.28%'));ok(snapshot.includes(older+' 收盘'));ok(snapshot.includes('404.42'));
     const links=f.nodes(board(),n=>n.tag==='a'&&n.attrs.href==='./sector/?code='+concept.code);
     eq(links.length,2);
+    const sampled={change_pct:1.07,quote_at:day+'T00:00:00+08:00',quoted_count:49,total_count:52};
+    state.boardLiveSummary={trade_date:day,items:{[concept.code]:sampled}};
+    f.cloud.render();
+    ok(text(tiles()[0]).includes('+1.07%')&&text(tiles()[0]).includes('覆盖 49/52 只'));
+    ok(text(f.byId('overview-sector-trend')).includes('成分股等权涨跌'));
+    state.boardLiveSummary={trade_date:older,items:{[concept.code]:sampled}};f.cloud.render();
+    ok(text(tiles()[0]).includes('+2.28%')&&!text(tiles()[0]).includes('+1.07%'));
     const composing=f.byId('directory-search');
     composing.events.compositionstart({target:composing});
     composing.value='bandaoti';composing.events.input({target:composing,isComposing:true});eq(tiles().length,10);

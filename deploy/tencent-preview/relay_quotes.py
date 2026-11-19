@@ -18,6 +18,7 @@ from pipeline.data_service import gate_delay, realtime_min_gap
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
 from board_quote_watch import BoardQuoteWatch
+from board_stock_market import StockUniverse, StockMarketBatches, StockBatchArchive
 from quote_schedule import QuoteSchedule
 from sector_quotes import IndexBatches, SectorFeed, catalog_codes
 
@@ -78,7 +79,10 @@ def watched_stocks(path, now):
 def collect(token, api, symbols, min_gap_seconds=6, *, selector=None):
     if not symbols:
         return []
-    with relay_client(token, timeout=5, min_gap_seconds=min_gap_seconds) as client:
+    # A full A-share snapshot contains over 5,500 rows. Let its initial
+    # response arrive during a slower market turn without adding a retry.
+    timeout = 9 if api == "rt_k" and selector == StockMarketBatches.full_selector else 5
+    with relay_client(token, timeout=timeout, min_gap_seconds=min_gap_seconds) as client:
         received = client.request(api, {"ts_code": selector or ",".join(symbols)})
     now = shanghai_now()
     filtered = {}
@@ -88,6 +92,7 @@ def collect(token, api, symbols, min_gap_seconds=6, *, selector=None):
             continue
         try:
             record = _realtime([row], symbols, now, api, token)[code]
+            record["previous_close"] = float(row["pre_close"])
             filtered.setdefault((code, record["quote_timestamp"]), record)
         except _Failure as failure:
             if failure.code not in {"empty_realtime", "invalid_bar", "invalid_number", "invalid_timestamp"}:
@@ -95,7 +100,7 @@ def collect(token, api, symbols, min_gap_seconds=6, *, selector=None):
     if not filtered:
         raise _Failure("empty_realtime", 60)
     return [{"id": symbols[code], "name": record["name"], **{key: record[key] for key in FIELDS},
-             "previous_close": record["price"] / (1 + record["change_pct"] / 100),
+             "previous_close": record["previous_close"],
              "volume_unit": "share" if api == "rt_k" else record["volume_unit"],
              "timestamp_quality": "source_reported"} for (code, _), record in filtered.items()]
 
@@ -310,12 +315,21 @@ def start(args):
     restored_at = shanghai_now()
     stock_watch_file = STATE / "asset-research/live-watch.json"
     board_watch = BoardQuoteWatch(stock_watch_file.with_name("board-watch.json"), output.parent / "sector-members")
+    market_universe = StockUniverse(STATE / "sector-directory/stock-names.json", output.parent / "sector-members")
+    market_batches = StockMarketBatches()
+    batch_archive = StockBatchArchive(STATE / "asset-research/stock-batches")
+    board_output = output.with_name("board-stock-quotes.json")
     requested_stocks = watched_stocks(stock_watch_file, restored_at)
     quotes = {"rt_idx_k": read_saved_quotes(output, ("market","sectors"), set(entity_ids), restored_at)}
     if "rt_k" in conf["batches"]:
         board_watch.refresh(restored_at.timestamp())
         retained = universe["rt_k"].keys() | requested_stocks.keys() | board_watch.tracked_codes
+        market_universe.refresh(restored_at.timestamp())
         quotes["rt_k"] = read_saved_quotes(stocks_output, ("stocks",), retained, restored_at)
+        for code, row in read_saved_quotes(board_output, ("stocks",), retained | market_universe.codes.keys(), restored_at).items():
+            old = quotes["rt_k"].get(code)
+            if old is None or old.get("quote_timestamp", "") < row["quote_timestamp"]:
+                quotes["rt_k"][code] = row
     schedule = QuoteSchedule(conf)
     schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
     close_batches = iter(conf["batches"]) if args.close_snapshot else None
@@ -345,6 +359,7 @@ def start(args):
             now = shanghai_now()
             day = now.date().isoformat()
             sample_changed = False
+            stock_received = False
             if day != history_day:
                 baseline = previous_trading_day(day)
                 if baseline:
@@ -380,7 +395,11 @@ def start(args):
                     if extras_allowed:
                         symbols = {**symbols, **requested_stocks}
                     board_plan = board_watch.choose(symbols, now.timestamp(), allowed=extras_allowed)
-                    symbols = {**symbols, **board_plan.extra}
+                    priority_symbols = {**symbols, **board_plan.extra}
+                    market_universe.refresh(now.timestamp())
+                    market_plan = (market_batches.choose(market_universe.codes, symbols, board_watch.tracked_codes, now.timestamp())
+                                   if close_batches is None else None)
+                    symbols, selector = (market_plan.symbols, market_plan.selector) if market_plan else (priority_symbols, None)
                 rotating = batch == "rt_idx_k" and sector_feed is not None and close_batches is None
                 if rotating:
                     symbols, selector = index_batches.choose(now.timestamp())
@@ -391,8 +410,15 @@ def start(args):
                     observed_ids = {q["id"] for q in fetched}
                     observed_count = len(observed_ids)
                     if batch == "rt_k":
-                        board_watch.finish(now.timestamp(), board_plan, universe[batch], observed_ids)
-                        if (not board_plan.extra and requested_stocks and extras_allowed
+                        stock_received = True
+                        try:
+                            batch_archive.record(fetched, shanghai_now())
+                        except (OSError, ValueError) as error:
+                            print(json.dumps({"event": "stock_batch_archive_delayed", "error": type(error).__name__}), flush=True)
+                        market_batches.finish(market_plan, observed_ids, universe[batch], now.timestamp())
+                        if market_plan is None:
+                            board_watch.finish(now.timestamp(), board_plan, universe[batch], observed_ids)
+                        if (market_plan is None and not board_plan.extra and requested_stocks and extras_allowed
                                 and len(universe[batch].keys() & observed_ids) < len(universe[batch]) * .9):
                             watch_retry_at = now.timestamp() + 180
                     if batch == "rt_idx_k" and sector_feed is not None:
@@ -409,7 +435,8 @@ def start(args):
                                     (estimate["id"], stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
                     history.commit()
                     finished_at = shanghai_now()
-                    observed_quotes = quotes[batch].values() if batch == "rt_idx_k" else fetched
+                    directory_slice = batch == "rt_k" and market_plan is not None and market_plan.kind != "whole"
+                    observed_quotes = quotes[batch].values() if batch == "rt_idx_k" or directory_slice else fetched
                     fresh_ids = {q["id"] for q in observed_quotes
                                  if (finished_at - datetime.fromisoformat(q["quote_timestamp"])).total_seconds() <= 30}
                     expected_count = len(universe[batch])
@@ -421,10 +448,15 @@ def start(args):
                     # Transport and service failures still take the normal scheduler cooldown.
                     batch_rejected = (failure.code in {"empty_realtime", "response_too_large"}
                                       or failure.code == "api_denied" and failure.provider_reason == "invalid_parameters")
-                    if batch == "rt_k" and not failure.deferred and batch_rejected:
-                        board_watch.finish(now.timestamp(), board_plan, universe[batch], set())
-                        if not board_plan.extra and requested_stocks and extras_allowed:
-                            watch_retry_at = now.timestamp() + 180
+                    if batch == "rt_k" and not failure.deferred:
+                        if batch_rejected:
+                            market_batches.finish(market_plan, set(), universe[batch], now.timestamp())
+                            if market_plan is None:
+                                board_watch.finish(now.timestamp(), board_plan, universe[batch], set())
+                                if not board_plan.extra and requested_stocks and extras_allowed:
+                                    watch_retry_at = now.timestamp() + 180
+                        else:
+                            market_batches.unavailable(market_plan, failure.code, now.timestamp())
                     deferred = failure.deferred
                     if deferred:
                         restore_gate_cooldowns(schedule, shanghai_now())
@@ -444,12 +476,19 @@ def start(args):
             if day != history_day or batch == "rt_k":
                 display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks) | board_watch.tracked_codes
                 if "rt_k" in quotes:
-                    quotes["rt_k"] = {c: q for c, q in quotes["rt_k"].items() if c in display_stocks}
+                    all_stock_ids = display_stocks | market_universe.codes.keys()
+                    quotes["rt_k"] = {c: q for c, q in quotes["rt_k"].items() if c in all_stock_ids}
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
                                         "core_stock_ids": sorted(universe.get("rt_k", {})),
                                         "stocks": [dated_quote(q, day) for q in quotes.get("rt_k", {}).values()
                                                    if q["id"] in display_stocks],
                                         "board_estimates": board_estimates(data["sectors"], quotes.get("rt_k", {}), day)})
+                if market_universe.codes and (stock_received or day != history_day):
+                    try:
+                        publish(board_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
+                                               "stocks": [dated_quote(q, day) for q in quotes.get("rt_k", {}).values()]})
+                    except (OSError, ValueError) as error:
+                        print(json.dumps({"event": "board_stock_publication_delayed", "error": type(error).__name__}), flush=True)
             if day != history_day or sample_changed:
                 publish_intraday(intraday_output, history, day, set(entity_ids) | sector_ids)
                 history_day = day

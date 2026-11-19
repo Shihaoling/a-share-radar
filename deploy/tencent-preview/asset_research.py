@@ -2,7 +2,7 @@
 from collections import OrderedDict
 from contextlib import closing
 from functools import lru_cache
-from datetime import date, timedelta
+from datetime import date
 import gzip
 from http.server import BaseHTTPRequestHandler
 import json
@@ -24,6 +24,7 @@ from research_factors import board_breadth, compute
 from factor_chart import build_daily_chart
 from intraday_chart import IntradayCharts
 import constituent_live
+from board_history import BoardHistory
 
 PUBLIC = Path("/srv/ashare-radar-preview/public/data")
 RUNTIME = Path("/opt/ashare-radar-preview/runtime")
@@ -93,11 +94,11 @@ class ResearchStore:
         self.last_view = {}
         self.relay_covered = set()
         self.daily_charts = OrderedDict()
-        self.member_version = None
         with closing(self.db()) as db, db:
             db.executescript(SCHEMA)
             db.execute(constituent_live.SCHEMA)
         self.intraday = IntradayCharts(self)
+        self.boards = BoardHistory(self, publish)
         self.sync_catalogs()
 
     def db(self):
@@ -114,6 +115,7 @@ class ResearchStore:
                 return old[1]
             data = json.loads(path.read_bytes())
             keys = {"live-quotes": ("market",), "stock-quotes": ("stocks", "board_estimates"),
+                    "board-stock-quotes": ("stocks",),
                     "sector-hot": ("items",), "sector-quotes": ("sectors",)}.get(name, ())
             if (not isinstance(data, dict) or any(not isinstance(data.get(k, []), list)
                     or any(not isinstance(row, dict) for row in data.get(k, [])) for k in keys)):
@@ -247,24 +249,7 @@ class ResearchStore:
             return {}
 
     def capture_members(self, now):
-        try:
-            version = (self.out / "stock-quotes.json").stat().st_mtime_ns
-        except OSError:
-            return
-        day = now.date()
-        if self.member_version == (version, day):
-            return
-        stocks = self.feed("stock-quotes").get("stocks", [])
-        with closing(self.db()) as db, db:
-            rows = db.execute("""SELECT code FROM watched WHERE kind='sector' AND code LIKE '%.TI'
-                               AND stamp>=? ORDER BY stamp DESC,code LIMIT 8""", (now.timestamp()-150,))
-            for row in rows.fetchall():
-                code = row[0]
-                if re.fullmatch(r"[0-9]{6}R?\.TI", code):
-                    constituent_live.summarize(db, code, self.roster(code), stocks, now, include_points=False)
-            if self.member_version is None or self.member_version[1] != day:
-                db.execute("DELETE FROM constituent_minutes WHERE day<?", ((day - timedelta(days=10)).isoformat(),))
-        self.member_version = (version, day)
+        self.boards.capture(now)
 
     def live(self, kind, code):
         if kind == "index":
@@ -321,8 +306,10 @@ class ResearchStore:
             breadth = []
             members = self.roster(code) if kind == "sector" else {}
             member_live = None
-            if kind == "sector" and code.endswith(".TI"):
-                member_live = constituent_live.summarize(db, code, members, self.feed("stock-quotes").get("stocks", []), now)
+            if kind == "sector" and code.endswith((".TI", ".SI")):
+                _, observations = self.boards.quotes(now)
+                member_live = constituent_live.summarize(db, code, members, observations, now, normalized=True)
+                self.boards.attach_partial(db, code, member_live, now)
             if kind == "sector" and finished:
                 stock_day = db.execute("""SELECT max(day) FROM coverage WHERE kind='stock' AND complete=1
                                         AND day<=?""", (finished.isoformat(),)).fetchone()[0]

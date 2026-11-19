@@ -105,7 +105,7 @@ function renderConstituentLive(live, failed, expected) {
   else if (hasValue) message = knownTotal && count === total ? '全部成分已有报价' : '按已覆盖成分计算';
   else if (incomplete) message = '正在补齐成分名单' + (knownTotal ? '，按目录总数展示覆盖' : '');
   else if (validCount && count > 0) message = Number.isInteger(live.required_count) && live.required_count > count ?
-    '累计 ' + live.required_count + ' 只有效报价后展示涨跌幅' : '样本覆盖不足，等待更多报价';
+    '近三分钟达到 ' + live.required_count + ' 只有效报价后展示板块涨跌幅' : '样本覆盖不足，等待更多报价';
   else message = '等待有效成分报价';
   id('status').textContent = message;
 }
@@ -150,11 +150,11 @@ async function openDetail() {
       time.textContent = at || '—';
     }
   }
-  if (ths) {
+  if (ths || sw) {
     id('constituent-live').hidden = false;
     for (const field of ['price','change','time']) id('member-' + field + '-column').hidden = false;
   }
-  const onData = ths ? (data, failed) => {
+  const onData = ths || sw ? (data, failed) => {
     const live = data?.constituent_live;
     renderConstituentLive(live, failed, entry.member_count);
     quotesByMember = new Map((Array.isArray(live?.members) ? live.members : []).filter(row => row?.code).map(row => [row.code,row]));
@@ -224,7 +224,7 @@ async function openDetail() {
         } else cell.textContent = value;
         tr.append(cell);
       }
-      if (ths) {
+      if (ths || sw) {
         const cells = ['numeric quote-cell','numeric quote-cell','quote-cell'].map(className => {
           const cell = document.createElement('td');
           cell.className = className;
