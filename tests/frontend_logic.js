@@ -3,6 +3,7 @@ function runFrontendChecks(source) {
   class TestNode {
     constructor(tag) { this.tag = tag; this.children = []; this.attrs = {}; this.events = {}; }
     append(...children) { this.children.push(...children); }
+    insertBefore(child, before) { this.children.splice(this.children.indexOf(before), 0, child); }
     setAttribute(key, value) { this.attrs[key] = value; }
     addEventListener(name, fn) { this.events[name] = fn; }
     replaceChildren(...children) { this.children = children; }
@@ -17,7 +18,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsSummaryCard,newsItem,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};');
+  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};');
   const startDisplay = document => loadDisplay(
     TestNode, document, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
@@ -219,6 +220,43 @@ function runFrontendChecks(source) {
     const n={title:'原油上涨',llm_analysis:{status:'ready',summary:'原油涨价利好开采业务，并增加航空燃油成本。',sector_impacts:[{sector_name:'石油石化',direction:'positive',reason:'收入改善',evidence:['原文依据']}],uncertainties:[]}};
     const node=api.newsItem(n,d);eq(node.children[0].className,'news-ai-summary');const out=text(node);ok(out.includes('全文提要'));ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));
     eq(api.newsSummaryCard({summary:'只有摘要'}),null);
+  });
+  check('news chronology uses release instants before pagination and filters',()=>{
+    const rows=[
+      {id:'unconfirmed',first_seen_at:'2026-11-20T09:00:00+08:00'},
+      {id:'invalid',published_at:'unknown'},
+      {id:'old',published_at:'2026-11-18T23:59:00+08:00',first_seen_at:'2026-11-20T12:00:00+08:00'},
+      {id:'tie-b',published_at:'2026-11-19T15:07:21+08:00'},
+      {id:'tie-a',published_at:'2026-11-19T07:07:21Z'},
+      {id:'latest',published_at:'2026-11-19 15:08:01'},
+      ...Array.from({length:12},(_,i)=>({id:'morning-'+i,published_at:'2026-11-19T10:'+String(i).padStart(2,'0')+':00+08:00'}))
+    ].map(row=>({...row,title:row.id,credibility:row.id==='invalid'?'official':'reliable'}));
+    const ordered=api.normalizeDashboard({...api.baseData(),news:rows});
+    const reversed=api.normalizeDashboard({...api.baseData(),news:[...rows].reverse()});
+    eq(ordered.news.map(n=>n.id).join(),reversed.news.map(n=>n.id).join());
+    eq(ordered.news.slice(0,3).map(n=>n.id).join(),'latest,tie-a,tie-b');
+    eq(ordered.news.slice(-3).map(n=>n.id).join(),'old,invalid,unconfirmed');
+    eq(rows[0].id,'unconfirmed');
+    const walk=node=>[node,...node.children.flatMap(walk)];
+    const list=()=>walk(api.newsPage(ordered)).find(n=>n.className==='news-list');
+    const ids=timeline=>timeline.children.filter(n=>n.className==='news-item').map(n=>n.attrs.id.slice(5));
+    const timeline=list();
+    eq(ids(timeline).join(),ordered.news.slice(0,12).map(n=>n.id).join());
+    timeline.children.find(n=>n.id==='news-load-more').events.click();
+    eq(ids(timeline).join(),ordered.news.map(n=>n.id).join());
+    api.state.newsSearch='tie-';eq(ids(list()).join(),'tie-a,tie-b');api.state.newsSearch='';
+    api.state.newsFilter='官方信息';eq(ids(list()).join(),'invalid');api.state.newsFilter='全部';
+    api.state.newsLimit=12;
+  });
+  check('news cards distinguish the cloud analysis queue from older archived articles',()=>{
+    const n={id:'etf',title:'ETF收盘',published_at:'2026-11-19T15:07:00+08:00',analysis_queue:'tencent_news'};
+    for(const [state,label] of [['pending','MiniMax 分析排队中'],['waiting_body','缺少正文，等待补采'],
+      ['retry','MiniMax 分析等待重试'],['provider_cooldown','MiniMax 服务冷却中']]){
+      const card=text(api.newsItem({...n,llm_status:state,analysis_retry_at:'2026-11-19T16:35:00+08:00'},d));
+      ok(card.includes(label));eq(card.includes('16:35 后可重试'),['retry','provider_cooldown'].includes(state));
+    }
+    ok(!text(api.newsItem({...n,analysis_queue:undefined,llm_status:'pending'},d)).includes('分析排队中'));
+    ok(!text(api.newsItem({...n,llm_status:'pending',llm_analysis:{status:'ready',summary:'已完成的分析'}},d)).includes('分析排队中'));
   });
   check('official minutes replace only the same identity and date',()=>{
     const entity={id:'801780.SI',index_code:'801780.SI'},minute=(price,code='801780.SI')=>({price,timestamp:'2026-11-17T14:00:00+08:00',provider:'stock_api',kind:'historical_minute',source_code:code});
@@ -520,6 +558,7 @@ async function runRefreshChecks(source) {
   assert.ok(api.state.data?.market.length);
   const page = api.normalizeDashboard(api.state.data);
   assert.equal(page.news.filter(article=>article.id===old.id).length,1);
+  assert.equal(page.news.find(article=>article.id===old.id).analysis_queue,'tencent_news');
   assert.equal(page.news_digest.date,today);
   assert.equal(page.news_digest.current_article_count,0);
   assert.equal(page.previous_news_digest.date,yesterday);

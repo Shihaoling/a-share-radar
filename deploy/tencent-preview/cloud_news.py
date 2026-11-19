@@ -387,22 +387,22 @@ def update_digest(db, key, day):
     print(json.dumps({"digest_updated": stamp, "new_articles": len(new)}), flush=True)
 
 
-def article_queue(db, day, stamp, limit):
-    if not limit:
-        return [], False
+def next_article(db, day, stamp):
+    # Three of four turns serve today's feed. One of these protects its oldest
+    # waiting article even while new or late arrivals keep changing the head.
+    # The cursor survives a slow response, a batch boundary and service restarts.
+    cursor = checkpoint(db, "article_queue_turn")
+    turn = int(cursor) if cursor in {"0", "1", "2", "3"} else (
+        3 if checkpoint(db, "previous_article_due") == "1" else 2)
     query = """SELECT id,day,payload FROM articles WHERE analyzed=0 AND retry_after<=?
-        AND length(json_extract(payload, '$.full_text'))>0"""
-    current = db.execute(query+" AND day=? ORDER BY published DESC,id LIMIT 1", (stamp, day)).fetchall()
-    if current and limit > 1:
-        current += db.execute(query+" AND day=? AND id<>? ORDER BY published,id LIMIT ?",
-                              (stamp, day, current[0][0], limit-1)).fetchall()
-    previous = db.execute(query+" AND day<? ORDER BY day DESC,published,id LIMIT ?", (stamp, day, limit)).fetchall()
-    if not current or not previous:
-        return current or previous, False
-    first = [current[0], previous[0]]
-    if checkpoint(db, "previous_article_due") == "1":
-        first.reverse()
-    return (first+current[1:]+previous[1:])[:limit], True
+               AND length(trim(json_extract(payload, '$.full_text')))>0 """
+    current = "AND day=? ORDER BY published " + ("ASC" if turn == 1 else "DESC") + ",id LIMIT 1"
+    earlier = "AND day<? ORDER BY day,published,id LIMIT 1"
+    for ordering in ((earlier, current) if turn == 3 else (current, earlier)):
+        row = db.execute(query+ordering, (stamp, day)).fetchone()
+        if row:
+            return row, str((turn+1) % 4)
+    return None, None
 
 
 def pending_digest_day(db, day, stamp):
@@ -418,20 +418,26 @@ def pending_digest_day(db, day, stamp):
 
 
 def analyze(db, now, limit):
+    """Publish each completed article and return whether a final projection is due."""
     start = time.monotonic()
     day = now.date().isoformat()
     if checkpoint(db, "model_pause") > now.isoformat():
-        return
+        return False
+    row, next_turn = next_article(db, day, now.isoformat()) if limit else (None, None)
+    digest_due = checkpoint(db, "digest_pause") <= now.isoformat()
+    if not row and not (digest_due and pending_digest_day(db, day, now.isoformat())):
+        return False
     key = secret("minimax-key")
-    rows, both_days = article_queue(db, day, now.isoformat(), limit)
-    for position, (article_id, article_day, serialized) in enumerate(rows):
+    publish_needed = False
+    for position in range(limit):
         if time.monotonic()-start > 95:
             break
-        if both_days and (position == 0 or article_day < day):
-            # If a slow or single-slot run can serve only today's report, the next
-            # invocation gives the deferred historical report its reserved slot.
-            with db:
-                set_checkpoint(db, "previous_article_due", "1" if article_day == day else "0")
+        if position:
+            current = shanghai_now()
+            row, next_turn = next_article(db, current.date().isoformat(), current.isoformat())
+        if not row:
+            break
+        article_id, article_day, serialized = row
         article = json.loads(serialized)
         try:
             response = infer_article(article, {}, key)
@@ -439,12 +445,14 @@ def analyze(db, now, limit):
             retry = (shanghai_now()+timedelta(seconds=max(60, error.retry))).isoformat()
             with db:
                 if error.code != "shared_model_cooldown":
+                    set_checkpoint(db, "article_queue_turn", next_turn)
                     db.execute("UPDATE articles SET retry_after=? WHERE id=?", (retry, article_id))
                 if not article_failure(error):
                     set_checkpoint(db, "model_pause", retry)
-            print(json.dumps({"analysis": error.code}), flush=True)
+            publish_needed = True
+            print(json.dumps({"analysis": error.code, "article_id": article_id}), flush=True)
             if checkpoint(db, "model_pause") > now.isoformat():
-                return
+                return True
             continue
         stamp = shanghai_now().isoformat()
         article.update(llm_analysis={**response, "model": DEFAULT_MODEL, "status": "ready", "scored_at": stamp,
@@ -453,15 +461,19 @@ def analyze(db, now, limit):
                        llm_status="ready", analysis_method="minimax_full_text",
                        sector_ids=[x["sector_code"] for x in response["sector_impacts"]])
         with db:
-            db.execute("UPDATE articles SET payload=?, analyzed=1 WHERE id=?", (json.dumps(article, ensure_ascii=False), article_id))
+            db.execute("UPDATE articles SET payload=?, analyzed=1, retry_after='' WHERE id=?", (json.dumps(article, ensure_ascii=False), article_id))
+            set_checkpoint(db, "article_queue_turn", next_turn)
             meter(db, "article", article_id, stamp, response)
             if article_day == stamp[:10]:
                 set_checkpoint(db, "model_revision", stamp)
+        publish_news(db)
+        publish_needed = False
         print(json.dumps({"article_ready": stamp, "tokens": response.get("usage", {}).get("total_tokens")}), flush=True)
-    if checkpoint(db, "digest_pause") <= now.isoformat() and time.monotonic()-start < 270:
+    if digest_due and time.monotonic()-start < 270:
         digest_day = pending_digest_day(db, day, now.isoformat())
         if not digest_day:
-            return
+            return publish_needed
+        publish_needed = True
         try:
             update_digest(db, key, digest_day)
         except ModelFailure as error:
@@ -469,9 +481,13 @@ def analyze(db, now, limit):
                 delay = min(error.retry, 1800) if article_failure(error) else error.retry
                 retry = (shanghai_now()+timedelta(seconds=max(60, delay))).isoformat()
                 set_checkpoint(db, "digest_pause:"+digest_day, retry)
-                if not article_failure(error):
+                if error.code == "transport_error":
+                    # Long digest requests may time out while shorter article calls still succeed.
+                    set_checkpoint(db, "digest_pause", retry)
+                elif not article_failure(error):
                     set_checkpoint(db, "model_pause", retry)
             print(json.dumps({"digest": error.code}), flush=True)
+    return publish_needed
 
 
 def article_failure(error):
@@ -479,7 +495,7 @@ def article_failure(error):
             error.code in ("input_over_budget", "response_over_budget", "incomplete_response"))
 
 
-def project_article(article_id, serialized):
+def project_article(article_id, serialized, retry_after=None, provider_retry=None):
     article = json.loads(serialized)
     apply_source_whitelist({"news": [article]})
     analysis = article.get("llm_analysis") or {}
@@ -488,13 +504,24 @@ def project_article(article_id, serialized):
     if analysis.get("fact_status") == "rumor" or _is_rumor(article):
         article["credibility"] = "rumor"
     body = article.pop("full_text", None)
+    article.pop("analysis_retry_at", None)
+    if analysis.get("status") == "ready":
+        article["llm_status"] = "ready"
+    elif not (body or "").strip():
+        article["llm_status"] = "waiting_body"
+    elif provider_retry:
+        article.update(llm_status="provider_cooldown", analysis_retry_at=provider_retry)
+    elif retry_after:
+        article.update(llm_status="retry", analysis_retry_at=retry_after)
+    else:
+        article["llm_status"] = "pending"
     if body:
         ref = sha256(article_id.encode()).hexdigest()
         publish(OUTPUT / "articles" / (ref+".json"), {"id": article_id, "status": "complete", "full_text": body})
         article.update(article_text_url=f"./data/cloud-articles/{ref}.json", article_text_characters=len(body))
     fields = ("id", "title", "summary", "source", "source_id", "url", "published_at", "category",
               "credibility", "sector_ids", "first_seen_at", "fetched_at", "analysis_method",
-              "llm_analysis", "llm_status", "sentiment", "sentiment_method", "impact", "transmission",
+              "llm_analysis", "llm_status", "analysis_retry_at", "sentiment", "sentiment_method", "impact", "transmission",
               "relevance_note", "article_text_url", "article_text_characters",
               "full_text_fetched_at", "full_text_method")
     return {field: article[field] for field in fields if field in article}
@@ -548,11 +575,24 @@ def project(db, now):
                  "last_success_at": checkpoint(db, "collect_last_success") or None,
                  "retry_after": retry or None, "error_code": error or None, "last_incomplete_second": gap or None,
                  "pending_recheck_windows": pending}
+    retries = dict(db.execute("SELECT id,retry_after FROM articles WHERE analyzed=0 AND retry_after>?",
+                              (now.isoformat(),)))
+    model_pause = checkpoint(db, "model_pause")
+    provider_retry = model_pause if model_pause > now.isoformat() else None
+    def projected(rows):
+        return [project_article(article_id, payload, retries.get(article_id), provider_retry)
+                for article_id, payload in rows.items()]
     publish(OUTPUT / "news.json", remove_usage({"schema_version": 1, "source": "tencent_news", "trade_date": day,
-        "articles": [project_article(article_id, value) for article_id, value in current.items()],
-        "recent_articles": [project_article(article_id, value) for article_id, value in recent.items()],
+        "articles": projected(current), "recent_articles": projected(recent),
         "news_digest": digest, "previous_digest": previous_digest, "collector": collector,
         "model_revision": checkpoint(db, "model_revision")}))
+
+
+def publish_news(db):
+    with (STATE / "news/projection.lock").open("a") as lock, db:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        db.execute("BEGIN")
+        project(db, shanghai_now())
 
 
 if __name__ == "__main__":
@@ -567,10 +607,8 @@ if __name__ == "__main__":
         if args.mode == "collect":
             collect(db, now)
         elif args.mode == "analyze":
-            analyze(db, now, args.limit)
+            if not analyze(db, now, args.limit):
+                raise SystemExit(0)
         elif args.mode == "seed":
             seed(db, args.seed, now)
-        with (STATE / "news/projection.lock").open("a") as lock:
-            fcntl.flock(lock, fcntl.LOCK_EX)
-            db.execute("BEGIN")
-            project(db, shanghai_now())
+        publish_news(db)

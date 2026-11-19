@@ -72,6 +72,7 @@ function currentPageQuotes(){
 function normalizeDashboard(raw){
  const d={...baseData(),...raw};const canonical=d.sectors.filter(isCanonicalSector);
  if(canonical.length)d.sectors=canonical;d.sectors=Array.from(new Map(d.sectors.map(s=>[s.id,s])).values());
+ mergeCloudNews(d,relayOnly&&!state.demo?state.cloudNews:null);
  if(relayOnly&&!state.demo){
   const research=state.cloudResearch;
   if(research){
@@ -142,7 +143,6 @@ function normalizeDashboard(raw){
     return {...ref,...row,name:quote?.name||ref?.name||row.ts_code,live_quote:quote};
    }),
   }));
-  mergeCloudNews(d,state.cloudNews);
   const models=state.cloudModels;
   if(models?.schema_version===1){
    d.daily_forecast=models.daily_forecast||d.daily_forecast;
@@ -176,11 +176,25 @@ function retainDayDigest(incoming,previous,day){
  return {...previous,date,status:incoming.status==='temporarily_unavailable'?incoming.status:'updating',
   retry_after:incoming.retry_after,current_article_count:incoming.current_article_count};
 }
+// Older China-market feeds can omit the UTC offset on their local wall clock.
+function newsPublishedTime(value){
+ if(typeof value!=='string'||!value.trim())return null;
+ const stamp=value.trim();
+ return quoteTime(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(stamp)?stamp.replace(' ','T')+'+08:00':stamp);
+}
 function mergeCloudNews(d,news){
+ let rows=d.news;
+ if(news){
+  const articles=new Map(rows.map(article=>[article.id,article]));
+  for(const article of [...(news.recent_articles||[]),...news.articles]){
+   articles.set(article.id,{...article,analysis_queue:'tencent_news'});
+  }
+  rows=[...articles.values()];
+ }
+ d.news=rows.map(article=>({article,published:newsPublishedTime(article.published_at)??-Infinity}))
+  .sort((a,b)=>b.published-a.published||String(a.article.id||'').localeCompare(String(b.article.id||'')))
+  .map(row=>row.article);
  if(!news)return;
- const articles=new Map(d.news.map(article=>[article.id,article]));
- for(const article of [...(news.recent_articles||[]),...news.articles])articles.set(article.id,article);
- d.news=[...articles.values()].sort((a,b)=>String(b.published_at||b.first_seen_at||'').localeCompare(String(a.published_at||a.first_seen_at||'')));
  const digest=news.news_digest;
  if(digest&&(digest.date||news.trade_date)>=(d.news_digest?.date||'')){
   const day=digest.date||news.trade_date;
@@ -806,7 +820,32 @@ function newsCollectionNote(){
  }
  return lines.length?h('p',{class:'inline-note'},lines.join(' · ')):null;
 }
-function newsItem(n,d,compact=false){const credibility={official:['官方发布','official'],reliable:['可靠媒体','reliable'],trusted:['可靠媒体','reliable'],media:['媒体报道','reliable'],unverified:['待核实来源','rumor'],rumor:['传言 · 未核实','rumor']}[n.credibility]||['待核实','rumor'];const impact={positive:['潜在利好','up'],negative:['潜在利空','down'],neutral:['中性',''],uncertain:['影响待判断','']}[n.impact]||['影响待判断',''];const transmission=Array.isArray(n.transmission)?n.transmission:[];return h('article',{class:'news-item',id:'news-'+n.id},newsSummaryCard(n,compact),h('div',{class:'news-meta'},pill(...credibility),h('span',{},n.source||'未知来源'),h('span',{},'·'),h('time',{datetime:n.published_at||''},n.published_at?dateText(n.published_at):'发布时间未确认')),h('h4',{class:'news-title'},link(n.title||'无标题',n.url)),!compact&&n.summary&&n.llm_analysis?.status!=='ready'?h('p',{class:'news-summary'},n.summary):null,n.llm_analysis?.status==='ready'?null:newsTone(n),h('div',{class:'tags'},n.llm_analysis?.status==='ready'?null:pill(...impact),n.llm_analysis?.status==='ready'?null:(n.sector_ids||[]).filter(id=>d.sectors.some(x=>x.id===id)||(state.data?.sectors||[]).some(x=>x.id===id)).slice(0,3).map(id=>pill(sectorName(id,d))),n.category?pill(n.category):null),n.llm_analysis?.status==='ready'?null:transmission.length?h('div',{class:'chain'},transmission.map((x,i)=>[i?h('b',{},'→'):null,h('span',{},x)])):h('div',{class:'chain'},n.relevance_note||'A股关联线索待核实，尚未形成明确传导链。'),n.llm_analysis?.status!=='ready'&&n.relevance_note&&transmission.length?h('p',{class:'relevance-note'},n.relevance_note):null,!compact?newsTextCard(n):null,!compact?h('p',{class:'inline-note'},`首次采集：${dateText(n.first_seen_at||n.fetched_at)} · ${n.analysis_method==='minimax_full_text'?'MiniMax 全文分析':n.analysis_method==='keyword_rules'?'关键词线索 · 全文分析待完成':n.analysis_method||'待分析'}`):null);}
+function newsQueueNote(n){
+ if(n.analysis_queue!=='tencent_news')return null;
+ const labels={pending:'MiniMax 分析排队中',waiting_body:'缺少正文，等待补采',retry:'MiniMax 分析等待重试',provider_cooldown:'MiniMax 服务冷却中'};
+ const label=labels[n.llm_status];
+ if(!label)return null;
+ const retry=newsPublishedTime(n.analysis_retry_at);
+ return retry!==null&&['retry','provider_cooldown'].includes(n.llm_status)?label+' · '+dateText(retry)+' 后可重试':label;
+}
+function newsItem(n,d,compact=false){
+ const published=newsPublishedTime(n.published_at);
+ const ready=n.llm_analysis?.status==='ready'&&Boolean(n.llm_analysis.summary);
+ const queueNote=ready?null:newsQueueNote(n);
+ const credibility={official:['官方发布','official'],reliable:['可靠媒体','reliable'],trusted:['可靠媒体','reliable'],media:['媒体报道','reliable'],unverified:['待核实来源','rumor'],rumor:['传言 · 未核实','rumor']}[n.credibility]||['待核实','rumor'];
+ const impact={positive:['潜在利好','up'],negative:['潜在利空','down'],neutral:['中性',''],uncertain:['影响待判断','']}[n.impact]||['影响待判断',''];
+ const transmission=Array.isArray(n.transmission)?n.transmission:[];
+ const method=ready?'MiniMax 全文分析':n.analysis_method==='keyword_rules'?'关键词线索':n.analysis_method&&n.analysis_method!=='minimax_full_text'?n.analysis_method:'尚无全文分析';
+ return h('article',{class:'news-item',id:'news-'+n.id},newsSummaryCard(n,compact),
+  h('div',{class:'news-meta'},pill(...credibility),h('span',{},n.source||'未知来源'),h('span',{},'·'),
+   h('time',{datetime:published===null?'':n.published_at},published===null?'发布时间未确认':dateText(/^\d{4}-\d{2}-\d{2}$/.test(n.published_at)?n.published_at:published)),queueNote?pill(queueNote):null),
+  h('h4',{class:'news-title'},link(n.title||'无标题',n.url)),
+  !compact&&n.summary&&!ready?h('p',{class:'news-summary'},n.summary):null,ready?null:newsTone(n),
+  h('div',{class:'tags'},ready?null:pill(...impact),ready?null:(n.sector_ids||[]).filter(id=>d.sectors.some(x=>x.id===id)||(state.data?.sectors||[]).some(x=>x.id===id)).slice(0,3).map(id=>pill(sectorName(id,d))),n.category?pill(n.category):null),
+  ready?null:transmission.length?h('div',{class:'chain'},transmission.map((x,i)=>[i?h('b',{},'→'):null,h('span',{},x)])):h('div',{class:'chain'},n.relevance_note||'A股关联线索待核实，尚未形成明确传导链。'),
+  !ready&&n.relevance_note&&transmission.length?h('p',{class:'relevance-note'},n.relevance_note):null,!compact?newsTextCard(n):null,
+  !compact?h('p',{class:'inline-note'},`首次采集：${dateText(n.first_seen_at||n.fetched_at)} · ${method}`):null);
+}
 function industryRelations(sec){const hasLinks=[sec.upstream,sec.drivers,sec.downstream].some(rows=>Array.isArray(rows)&&rows.length);return panel('产业关联','仅展示已核实关系',hasLinks?h('div',{class:'mini-info'},h('div',{},'上游　',...(sec.upstream||[]).map(x=>pill(x))),h('div',{class:'divider'}),h('div',{},'核心驱动　',...(sec.drivers||[]).map(x=>pill(x))),h('div',{class:'divider'}),h('div',{},'下游　',...(sec.downstream||[]).map(x=>pill(x)))):h('div',{class:'mini-info'},'尚无已核实的产业链关系；可先查看上方关联消息与证据。'));}
 function sectors(d){const subset=d.sectors.filter(s=>`${s.name} ${s.code||''} ${(s.keywords||[]).join(' ')}`.toLowerCase().includes(state.search.toLowerCase())&&(state.group!=='我的自选'||state.favorites.includes(s.id)));const comparison=sectorComparison(subset),matches=comparison.rows.map(row=>row.sector);
  if(state.sort==='name')matches.sort((a,b)=>a.name.localeCompare(b.name,'zh-CN'));
@@ -826,7 +865,7 @@ function newsPage(d){const groups=['全部','官方信息','可靠媒体','未�
   },'button secondary news-load-more');more.id='news-load-more';timeline.append(more);
  }
  const progress=relayOnly&&!state.demo?null:d.news_backfill_summary;
- return h('div',{},heading('资讯与板块影响','先看全文提要，再查看受影响板块与原文依据。','A-SHARE INTELLIGENCE'),newsCollectionNote(),newsDigestCard(d),d.previous_news_digest?newsDigestCard({...d,news_digest:d.previous_news_digest},true):null,d.news_backfill_digest?.summary&&d.news_backfill_digest.date!==d.news_digest?.date&&d.news_backfill_digest.date!==d.previous_news_digest?.date?h('details',{class:'panel secondary-details'},h('summary',{},`${d.news_backfill_digest.date} · 补全文综合解读`),newsDigestCard({...d,news_digest:d.news_backfill_digest})):null,progress?h('p',{class:'inline-note news-backfill-progress'},`全文补全 ${progress.body_complete||0}/${progress.total||103} · 发布时间已核实 ${progress.publication_verified||0} · MiniMax 已分析 ${progress.model_complete||0} · 分批更新中`):null,h('div',{class:'toolbar'},h('div',{class:'filter-group'},groups.map(g=>button(g,()=>{state.newsFilter=g;state.newsLimit=12;render();},`filter ${state.newsFilter===g?'active':''}`))),h('label',{class:'search'},icon('search',14),h('input',{id:'news-search',type:'search',placeholder:'搜索事件、来源或板块',value:state.newsSearch,'aria-label':'搜索资讯',onInput:e=>{state.newsSearch=e.target.value;state.newsLimit=12;renderKeepFocus('news-search',e.target.selectionStart);}}))),state.newsFilter==='未核实传言'?h('div',{class:'banner demo'},icon('info',15),'传言缺少独立证实，默认不进入主预测模型。请先阅读原始来源与核实状态。'):null,h('div',{class:'news-grid'},panel('事件时间线',`${items.length} 条符合筛选的资讯 · 以采集范围为准`,items.length?timeline:empty('暂无匹配资讯','采集成功后会显示真实新闻；调整筛选可查看其他来源。','globe')),h('div',{class:'stack'},h('details',{class:'panel secondary-details'},h('summary',{},'查看信息源状态'),sourceList(sources)),panel('解读原则','把事实、推断与传言分开',h('div',{class:'mini-info'},h('p',{},pill('官方发布','official'),' 政策正文、监管披露、央行与政府公报。'),h('p',{},pill('媒体报道','reliable'),' 保留媒体名称与原文链接，仍需交叉核对。'),h('p',{},pill('传言','rumor'),' 单独展示，不把传播热度等同于事实。'),h('div',{class:'info-strip'},'全文提要与行业影响由 MiniMax 分别判断，并保留原文依据；经营影响不等于股价走势。'))))) );}
+ return h('div',{},heading('资讯与板块影响','先看全文提要，再查看受影响板块与原文依据。','A-SHARE INTELLIGENCE'),newsCollectionNote(),newsDigestCard(d),d.previous_news_digest?newsDigestCard({...d,news_digest:d.previous_news_digest},true):null,d.news_backfill_digest?.summary&&d.news_backfill_digest.date!==d.news_digest?.date&&d.news_backfill_digest.date!==d.previous_news_digest?.date?h('details',{class:'panel secondary-details'},h('summary',{},`${d.news_backfill_digest.date} · 补全文综合解读`),newsDigestCard({...d,news_digest:d.news_backfill_digest})):null,progress?h('p',{class:'inline-note news-backfill-progress'},`全文补全 ${progress.body_complete||0}/${progress.total||103} · 发布时间已核实 ${progress.publication_verified||0} · MiniMax 已分析 ${progress.model_complete||0} · 分批更新中`):null,h('div',{class:'toolbar'},h('div',{class:'filter-group'},groups.map(g=>button(g,()=>{state.newsFilter=g;state.newsLimit=12;render();},`filter ${state.newsFilter===g?'active':''}`))),h('label',{class:'search'},icon('search',14),h('input',{id:'news-search',type:'search',placeholder:'搜索事件、来源或板块',value:state.newsSearch,'aria-label':'搜索资讯',onInput:e=>{state.newsSearch=e.target.value;state.newsLimit=12;renderKeepFocus('news-search',e.target.selectionStart);}}))),state.newsFilter==='未核实传言'?h('div',{class:'banner demo'},icon('info',15),'传言缺少独立证实，默认不进入主预测模型。请先阅读原始来源与核实状态。'):null,h('div',{class:'news-grid'},panel('事件时间线',`${items.length} 条 · 按发布时间从新到旧`,items.length?timeline:empty('暂无匹配资讯','采集成功后会显示真实新闻；调整筛选可查看其他来源。','globe')),h('div',{class:'stack'},h('details',{class:'panel secondary-details'},h('summary',{},'查看信息源状态'),sourceList(sources)),panel('解读原则','把事实、推断与传言分开',h('div',{class:'mini-info'},h('p',{},pill('官方发布','official'),' 政策正文、监管披露、央行与政府公报。'),h('p',{},pill('媒体报道','reliable'),' 保留媒体名称与原文链接，仍需交叉核对。'),h('p',{},pill('传言','rumor'),' 单独展示，不把传播热度等同于事实。'),h('div',{class:'info-strip'},'全文提要与行业影响由 MiniMax 分别判断，并保留原文依据；经营影响不等于股价走势。'))))) );}
 function connectedSources(directory, feed){
  const names={sxdata:'SXData 行情与资讯',minimax:'MiniMax 资讯分析'};
  if(directory){

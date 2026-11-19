@@ -361,6 +361,74 @@ class CloudNewsTests(unittest.TestCase):
         self.assertEqual(self.db.execute("SELECT count(*) FROM model_usage").fetchone()[0], 0)
         self.assertEqual(news.checkpoint(self.db, "model_pause"), (NOW+timedelta(minutes=30)).isoformat())
 
+    def test_slow_single_item_runs_drain_current_day_and_prior_day_fairly(self):
+        old = NOW - timedelta(days=1)
+        for i in range(4):
+            news.save_article(self.db, report("old-"+str(i), old+timedelta(seconds=i)))
+        for i in range(6):
+            news.save_article(self.db, report("today-"+str(i), NOW-timedelta(seconds=6-i)))
+        published = []
+        def infer(article, config, key):
+            published.append(article["id"])
+            return {"summary":"正文分析已完成", "sector_impacts":[]}
+        with patch.object(news,"infer_article",side_effect=infer), patch.object(news,"update_digest"):
+            for _ in range(4):
+                news.analyze(self.db, NOW, 1)
+        self.assertEqual(published, ["today-5","old-0","today-4","today-0"])
+        self.assertFalse(self.db.in_transaction)
+
+    def test_completed_article_reaches_disk_before_second_model_call_and_digest(self):
+        news.save_article(self.db, report("first", NOW))
+        news.save_article(self.db, report("next", NOW-timedelta(seconds=1)))
+        def public_states():
+            feed = json.loads((news.OUTPUT/"news.json").read_text())
+            return {article["id"]:article["llm_status"] for article in feed["articles"]}
+        def infer(article, config, key):
+            if article["id"] == "next":
+                self.assertEqual(public_states(), {"first":"ready","next":"pending"})
+            return {"summary":"已完成单篇新闻的解读", "sector_impacts":[]}
+        def digest(db, key, day):
+            self.assertEqual(public_states(), {"first":"ready","next":"ready"})
+        with patch.object(news,"infer_article",side_effect=infer), patch.object(news,"update_digest",side_effect=digest):
+            self.assertTrue(news.analyze(self.db,NOW,2))
+
+    def test_digest_transport_backoff_allows_the_next_article(self):
+        news.save_article(self.db, report("first"))
+        answer = {"summary":"单篇新闻已完成分析", "sector_impacts":[]}
+        with patch.object(news, "infer_article", return_value=answer), patch.object(
+                news, "update_digest", side_effect=news.ModelFailure("transport_error", 1800)) as digest:
+            news.analyze(self.db, NOW, 1)
+            self.assertEqual(news.checkpoint(self.db, "model_pause"), "")
+            self.assertEqual(news.checkpoint(self.db, "digest_pause"), (NOW+timedelta(minutes=30)).isoformat())
+            news.save_article(self.db, report("next"))
+            news.analyze(self.db, NOW, 1)
+            self.assertEqual(digest.call_count, 1)
+        self.assertEqual(self.db.execute("SELECT sum(analyzed) FROM articles").fetchone()[0], 2)
+
+    def test_idle_or_cooling_worker_avoids_model_and_projection(self):
+        news.save_article(self.db, report("empty",body=""))
+        news.save_article(self.db, report("deferred"))
+        later = (NOW+timedelta(minutes=2)).isoformat()
+        self.db.execute("UPDATE articles SET retry_after=? WHERE id='deferred'",(later,))
+        with patch.object(news,"secret") as key, patch.object(news,"infer_article") as infer, \
+             patch.object(news,"publish_news") as project:
+            self.assertFalse(news.analyze(self.db,NOW,8))
+            news.save_article(self.db,report("ready-to-attempt"))
+            news.set_checkpoint(self.db,"model_pause",later)
+            self.assertFalse(news.analyze(self.db,NOW,8))
+            key.assert_not_called()
+            infer.assert_not_called()
+            project.assert_not_called()
+        states = {a["id"]:a for a in self.feed()["articles"]}
+        self.assertEqual(states["empty"]["llm_status"],"waiting_body")
+        self.assertEqual(states["ready-to-attempt"]["llm_status"],"provider_cooldown")
+        self.assertEqual(states["ready-to-attempt"]["analysis_retry_at"],later)
+        news.set_checkpoint(self.db,"model_pause","")
+        states = {a["id"]:a for a in self.feed()["articles"]}
+        self.assertEqual(states["deferred"]["llm_status"],"retry")
+        self.assertEqual(states["deferred"]["analysis_retry_at"],later)
+        self.assertEqual(states["ready-to-attempt"]["llm_status"],"pending")
+
     def test_article_truncation_does_not_pause_other_news_or_the_digest(self):
         news.save_article(self.db, report("A", stamp=NOW-timedelta(minutes=2)))
         news.save_article(self.db, report("B"))
