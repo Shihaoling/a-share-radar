@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#15273a">
   <title>板块详情 · 观澜</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./sector.css?v=20261119">
+  <link rel="stylesheet" href="./sector.css?v=20261119-4">
   <link rel="stylesheet" href="../asset/research.css?v=20261119-3">
   <link rel="stylesheet" href="../asset/chart.css?v=20261119-1">
-  <script defer src="../asset/chart.js?v=20261119-2"></script>
-  <script defer src="../asset/research.js?v=20261119-3"></script>
-  <script defer src="./sector.js?v=20261119-3"></script>
+  <script defer src="../asset/chart.js?v=20261119-4"></script>
+  <script defer src="../asset/research.js?v=20261119-4"></script>
+  <script defer src="./sector.js?v=20261119-4"></script>
 </head>
 <body>
   <a class="skip" href="#members">跳到成分股</a>
@@ -20,10 +20,24 @@
     <section class="profile" aria-labelledby="sector-title">
       <div class="identity"><p id="sector-meta" class="meta"></p><h1 id="sector-title">板块详情</h1><p id="sector-intro"></p><a class="member-jump" href="#members">查看成分股 ↓</a></div>
       <div class="quote-strip" id="quote-strip" hidden>
-        <div><span>指数点位</span><strong id="quote-price">—</strong><small id="quote-price-time"></small></div>
-        <div><span>涨跌幅</span><strong id="quote-change">—</strong><small id="quote-change-time"></small></div>
+        <div><span id="quote-price-label">指数点位</span><strong id="quote-price">—</strong><small id="quote-price-time"></small></div>
+        <div><span id="quote-change-label">涨跌幅</span><strong id="quote-change">—</strong><small id="quote-change-time"></small></div>
       </div>
       <p class="notice" id="catalog-status" role="status">正在读取板块目录…</p>
+    </section>
+    <section class="member-live" id="constituent-live" aria-labelledby="constituent-title" hidden>
+      <div class="member-live-heading">
+        <h2 id="constituent-title">成分股盘中表现</h2>
+        <p id="constituent-status">正在读取成分股报价…</p>
+      </div>
+      <dl class="member-live-data">
+        <div><dt>等权涨跌幅</dt><dd id="constituent-change">—</dd></div>
+        <div><dt>报价覆盖</dt><dd id="constituent-coverage">—</dd></div>
+      </dl>
+      <div class="member-live-foot"><span id="constituent-time"></span><details>
+        <summary>计算口径</summary>
+        <p>取近三分钟内成分股相对昨收的涨跌幅，按相同权重求平均。名单齐全、有效报价覆盖至少 80% 时计算。报价时点为这批样本中最早至最晚的来源时间。</p>
+      </details></div>
     </section>
     <section id="asset-chart" aria-label="行情与指标走势" hidden></section>
     <section class="research" id="research" aria-labelledby="research-title" hidden>
@@ -37,7 +51,9 @@
       <p id="member-source" class="source"></p>
       <p class="notice" id="member-status" role="status">正在读取成分股…</p>
       <div class="table-wrap" id="table-wrap" hidden>
-        <table><thead><tr><th scope="col">股票名称</th><th scope="col">股票代码</th><th scope="col" class="numeric">权重</th></tr></thead><tbody id="member-rows"></tbody></table>
+        <table><thead><tr><th scope="col">股票名称</th><th scope="col">股票代码</th><th scope="col" class="numeric">权重</th>
+          <th scope="col" class="numeric" id="member-price-column" hidden>现价</th><th scope="col" class="numeric" id="member-change-column" hidden>涨跌幅</th>
+          <th scope="col" id="member-time-column" hidden>报价时点</th></tr></thead><tbody id="member-rows"></tbody></table>
       </div>
       <nav id="pager" aria-label="成分股分页" hidden>
         <span id="page-info"></span><button type="button" id="prev">上一页</button><button type="button" id="next">下一页</button>

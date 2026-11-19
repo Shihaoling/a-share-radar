@@ -17,6 +17,7 @@ from pipeline.calendar import market_session, previous_trading_day, shanghai_now
 from pipeline.data_service import gate_delay, realtime_min_gap
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
+from board_quote_watch import BoardQuoteWatch
 from quote_schedule import QuoteSchedule
 from sector_quotes import IndexBatches, SectorFeed, catalog_codes
 
@@ -307,9 +308,14 @@ def start(args):
     entity_ids = universe["rt_idx_k"].values()
     core_entity_ids = set(entity_ids)
     restored_at = shanghai_now()
+    stock_watch_file = STATE / "asset-research/live-watch.json"
+    board_watch = BoardQuoteWatch(stock_watch_file.with_name("board-watch.json"), output.parent / "sector-members")
+    requested_stocks = watched_stocks(stock_watch_file, restored_at)
     quotes = {"rt_idx_k": read_saved_quotes(output, ("market","sectors"), set(entity_ids), restored_at)}
     if "rt_k" in conf["batches"]:
-        quotes["rt_k"] = read_saved_quotes(stocks_output, ("stocks",), universe["rt_k"], restored_at)
+        board_watch.refresh(restored_at.timestamp())
+        retained = universe["rt_k"].keys() | requested_stocks.keys() | board_watch.tracked_codes
+        quotes["rt_k"] = read_saved_quotes(stocks_output, ("stocks",), retained, restored_at)
     schedule = QuoteSchedule(conf)
     schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
     close_batches = iter(conf["batches"]) if args.close_snapshot else None
@@ -334,7 +340,6 @@ def start(args):
             schedule.paused_until[batch] = datetime.fromisoformat(due).timestamp()
         restore_gate_cooldowns(schedule, shanghai_now())
         watch_retry_at = 0
-        requested_stocks = {}
         sector_retry_at = 0
         while True:
             now = shanghai_now()
@@ -369,9 +374,13 @@ def start(args):
                 deferred = False
                 symbols, selector = universe[batch], None
                 if batch == "rt_k":
-                    requested_stocks = watched_stocks(STATE / "asset-research/live-watch.json", now)
-                    if requested_stocks and now.timestamp() >= watch_retry_at:
+                    requested_stocks = watched_stocks(stock_watch_file, now)
+                    board_watch.refresh(now.timestamp())
+                    extras_allowed = now.timestamp() >= watch_retry_at
+                    if extras_allowed:
                         symbols = {**symbols, **requested_stocks}
+                    board_plan = board_watch.choose(symbols, now.timestamp(), allowed=extras_allowed)
+                    symbols = {**symbols, **board_plan.extra}
                 rotating = batch == "rt_idx_k" and sector_feed is not None and close_batches is None
                 if rotating:
                     symbols, selector = index_batches.choose(now.timestamp())
@@ -379,9 +388,13 @@ def start(args):
                 try:
                     options = {"selector": selector} if selector else {}
                     fetched = collect(token, batch, symbols, conf["min_gap_seconds"], **options)
-                    observed_count = len({q["id"] for q in fetched})
-                    if batch == "rt_k" and requested_stocks and observed_count < len(universe[batch]) * .9:
-                        watch_retry_at = now.timestamp() + 180
+                    observed_ids = {q["id"] for q in fetched}
+                    observed_count = len(observed_ids)
+                    if batch == "rt_k":
+                        board_watch.finish(now.timestamp(), board_plan, universe[batch], observed_ids)
+                        if (not board_plan.extra and requested_stocks and extras_allowed
+                                and len(universe[batch].keys() & observed_ids) < len(universe[batch]) * .9):
+                            watch_retry_at = now.timestamp() + 180
                     if batch == "rt_idx_k" and sector_feed is not None:
                         directory_rows = fetched
                         # The original publication, retry ledger and model input
@@ -400,10 +413,14 @@ def start(args):
                     fresh_ids = {q["id"] for q in observed_quotes
                                  if (finished_at - datetime.fromisoformat(q["quote_timestamp"])).total_seconds() <= 30}
                     expected_count = len(universe[batch])
+                    if batch == "rt_k":
+                        fresh_ids.intersection_update(universe[batch])
                     status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == expected_count else "partial"
                 except _Failure as failure:
-                    if batch == "rt_k" and requested_stocks and not failure.deferred:
-                        watch_retry_at = now.timestamp() + 180
+                    if batch == "rt_k" and not failure.deferred:
+                        board_watch.finish(now.timestamp(), board_plan, universe[batch], set())
+                        if not board_plan.extra and requested_stocks and extras_allowed:
+                            watch_retry_at = now.timestamp() + 180
                     deferred = failure.deferred
                     if deferred:
                         restore_gate_cooldowns(schedule, shanghai_now())
@@ -421,7 +438,7 @@ def start(args):
                     schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
 
             if day != history_day or batch == "rt_k":
-                display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks)
+                display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks) | board_watch.tracked_codes
                 if "rt_k" in quotes:
                     quotes["rt_k"] = {c: q for c, q in quotes["rt_k"].items() if c in display_stocks}
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,

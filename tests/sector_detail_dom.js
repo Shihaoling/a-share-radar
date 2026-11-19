@@ -21,8 +21,10 @@ function node() {
 async function mount(code, publications) {
   const nodes = Object.fromEntries([...html.matchAll(/\bid="([^"]+)"/g)].map(match => [match[1], node()]));
   const calls = [], timers = new Map();
+  let onData;
   let seq = 0;
   const context = vm.createContext({Intl, AbortController, URLSearchParams,
+    RadarResearch:{mount(type, symbol, standalone, listener) {onData=listener;}},
     setTimeout(fn, ms) { timers.set(++seq, {fn,ms}); return seq; }, clearTimeout(id) {timers.delete(id);},
     location:{search:'?code=' + encodeURIComponent(code)}, fetch:async url => {
       calls.push(url);
@@ -41,7 +43,7 @@ async function mount(code, publications) {
     await active[1].fn();
     await new Promise(resolve => setImmediate(resolve));
   }
-  return {nodes, calls, tick};
+  return {nodes, calls, tick, onData};
 }
 function members(code, status, list, extra = {}) {
   return response(quote({source:'sxdata_sector_members', code, status, members:list, as_of:null,
@@ -60,16 +62,47 @@ async function checks() {
     quotes:{[hotCode]:{quote_date:'2026-11-18', price:1200.25, change_pct:-3.22}}}));
   const file = '../data/sector-members/' + hotCode + '.json';
   api[file] = members(hotCode, 'pending', []);
-  const {nodes:n, tick} = await mount(hotCode, api);
+  const {nodes:n, tick, onData} = await mount(hotCode, api);
   assert.equal(n['sector-title'].textContent, '同花顺金仓30全收益');
   assert.match(n['quote-price'].textContent, /1,200\.25/);
   assert.match(n['quote-price-time'].textContent, /2026-11-18 收盘/);
   assert.equal(n['quote-change'].textContent, '+2.01%');
   assert.match(n['quote-change-time'].textContent, /2026-11-19 10:30:00/);
+  assert.equal(n['quote-change-label'].textContent, '热榜涨跌幅');
+  assert.equal(n['quote-price-label'].textContent, '收盘点位');
+  const at=hotDate+'T13:05:00+08:00', first=hotDate+'T13:04:00+08:00';
+  const waiting={status:'partial',quoted_count:1,total_count:65,required_count:52,change_pct:null,quote_at:at,
+    members:[{code:rows[0].code,quote_at:at,change_pct:-0.23,price:10}]};
+  onData({constituent_live:waiting},false);
+  assert.match(n['constituent-status'].textContent,/52 只/);
+  assert.equal(n['constituent-coverage'].textContent,'1 / 65 只');
+  assert.equal(n['constituent-change'].textContent,'—');
+  onData({constituent_live:{...waiting,roster_complete:false,total_count:1}},false);
+  assert.match(n['constituent-status'].textContent,/补齐成分名单/);
+  assert.equal(n['constituent-change'].textContent,'—');
   assert.match(n['member-status'].textContent, /补采/);
   api[file] = members(hotCode, 'partial', rows.slice(0,2));
   await tick(15000);
   assert.equal(n['member-rows'].children.length, 2);
+  const cells=n['member-rows'].children[0].children;
+  assert.equal(cells[3].textContent,'10.00');
+  assert.equal(cells[4].textContent,'-0.23%');
+  assert.equal(cells[5].textContent,'2026-11-19 13:05:00');
+  assert.equal(n['member-rows'].children[1].children[4].textContent,'—');
+  const ready={...waiting,status:'ready',quoted_count:60,oldest_at:first,change_pct:0};
+  onData({constituent_live:ready},false);
+  assert.equal(n['constituent-change'].textContent,'0.00%');
+  assert.match(n['constituent-time'].textContent,/13:04:00 至 13:05:00/);
+  assert.equal(n['quote-change'].textContent,'+2.01%');
+  onData({constituent_live:ready},true);
+  assert.match(n['constituent-status'].textContent,/保留/);
+  assert.equal(n['constituent-change'].textContent,'0.00%');
+  onData({constituent_live:{...ready,status:'stale',members:[],current_quoted_count:0}},false);
+  assert.match(n['constituent-status'].textContent,/本轮已取 0 只/);
+  assert.equal(cells[4].textContent,'—');
+  onData({constituent_live:{...waiting,status:'waiting',quoted_count:0,quote_at:null}},false);
+  assert.equal(n['constituent-change'].textContent,'—');
+  assert.equal(n['constituent-time'].textContent,'');
   assert.match(n['member-source'].textContent, /来源未提供成分生效日.*核验时间 2026-11-19/);
   api[file] = response({}, 503);
   await tick(30000);

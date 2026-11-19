@@ -2,7 +2,7 @@
 from collections import OrderedDict
 from contextlib import closing
 from functools import lru_cache
-from datetime import date
+from datetime import date, timedelta
 import gzip
 from http.server import BaseHTTPRequestHandler
 import json
@@ -23,6 +23,7 @@ from relay_quotes import publish
 from research_factors import board_breadth, compute
 from factor_chart import build_daily_chart
 from intraday_chart import IntradayCharts
+import constituent_live
 
 PUBLIC = Path("/srv/ashare-radar-preview/public/data")
 RUNTIME = Path("/opt/ashare-radar-preview/runtime")
@@ -92,8 +93,10 @@ class ResearchStore:
         self.last_view = {}
         self.relay_covered = set()
         self.daily_charts = OrderedDict()
+        self.member_version = None
         with closing(self.db()) as db, db:
             db.executescript(SCHEMA)
+            db.execute(constituent_live.SCHEMA)
         self.intraday = IntradayCharts(self)
         self.sync_catalogs()
 
@@ -225,6 +228,44 @@ class ResearchStore:
             active = [[r[0],r[1]] for r in rows if r[0].endswith((".SH", ".SZ", ".BJ")) and r[0] not in self.relay_covered][:24]
             publish(self.private / "live-watch.json", {"stocks": active})
 
+        elif kind == "sector" and code.endswith(".TI"):
+            rows = db.execute("""SELECT code,stamp FROM watched WHERE kind='sector' AND code LIKE '%.TI'
+                          AND stamp>=? ORDER BY stamp DESC,code LIMIT 8""", (stamp - 150,))
+            publish(self.private / "board-watch.json", {"sectors": [list(row) for row in rows]})
+
+    def roster(self, code):
+        path = self.out / "sector-members" / (code + ".json")
+        try:
+            data = json.loads(path.read_bytes())
+            if (not isinstance(data, dict) or data.get("code", code) != code
+                    or not isinstance(data.get("members"), list)
+                    or any(not isinstance(row, dict) or not isinstance(row.get("code"), str)
+                           for row in data["members"])):
+                return {}
+            return data
+        except (OSError, ValueError):
+            return {}
+
+    def capture_members(self, now):
+        try:
+            version = (self.out / "stock-quotes.json").stat().st_mtime_ns
+        except OSError:
+            return
+        day = now.date()
+        if self.member_version == (version, day):
+            return
+        stocks = self.feed("stock-quotes").get("stocks", [])
+        with closing(self.db()) as db, db:
+            rows = db.execute("""SELECT code FROM watched WHERE kind='sector' AND code LIKE '%.TI'
+                               AND stamp>=? ORDER BY stamp DESC,code LIMIT 8""", (now.timestamp()-150,))
+            for row in rows.fetchall():
+                code = row[0]
+                if re.fullmatch(r"[0-9]{6}R?\.TI", code):
+                    constituent_live.summarize(db, code, self.roster(code), stocks, now, include_points=False)
+            if self.member_version is None or self.member_version[1] != day:
+                db.execute("DELETE FROM constituent_minutes WHERE day<?", ((day - timedelta(days=10)).isoformat(),))
+        self.member_version = (version, day)
+
     def live(self, kind, code):
         if kind == "index":
             ident = code[-2:].lower() + code[:6]
@@ -278,16 +319,11 @@ class ResearchStore:
             bench = self.history(db, "index", "000300.SH", day)
             intraday = self.intraday.render(db,kind,code,quote,now)
             breadth = []
-            member_file = self.out / "sector-members" / (code + ".json")
+            members = self.roster(code) if kind == "sector" else {}
+            member_live = None
+            if kind == "sector" and code.endswith(".TI"):
+                member_live = constituent_live.summarize(db, code, members, self.feed("stock-quotes").get("stocks", []), now)
             if kind == "sector" and finished:
-                try:
-                    members = json.loads(member_file.read_bytes())
-                    if not isinstance(members, dict) or not isinstance(members.get("members"), list):
-                        raise ValueError("invalid roster")
-                    if not all(isinstance(row, dict) and isinstance(row.get("code"), str) for row in members["members"]):
-                        raise ValueError("invalid members")
-                except (OSError, ValueError):
-                    members = {}
                 stock_day = db.execute("""SELECT max(day) FROM coverage WHERE kind='stock' AND complete=1
                                         AND day<=?""", (finished.isoformat(),)).fetchone()[0]
                 rows = members.get("members", [])
@@ -334,6 +370,8 @@ class ResearchStore:
                        daily_source=close.get("source"),
                        status="ready" if all(v["value"] is not None for v in values) else "partial",
                        metrics=values, chart={"daily":cached[1],"intraday":intraday})
+        if member_live is not None:
+            payload["constituent_live"] = member_live
         path = self.out / "asset-research" / kind / (code + ".json")
         if path.exists():
             try:
@@ -362,7 +400,9 @@ def main():
     def capture_loop():
         while True:
             try:
-                store.intraday.capture(shanghai_now())
+                now = shanghai_now()
+                store.intraday.capture(now)
+                store.capture_members(now)
             except (OSError, ValueError, sqlite3.Error, KeyError) as e:
                 print("research intraday cache",type(e).__name__,flush=True)
             time.sleep(4)

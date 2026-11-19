@@ -151,7 +151,7 @@ const RadarResearch = (() => {
     shared.hidden=!same;shared.textContent=same?caption(data.quote_at,data.quote_basis):'';
     get('asset-price-time').hidden=Boolean(same);get('asset-change-time').hidden=Boolean(same);
   }
-  function mount(type,code,standalone=false) {
+  function mount(type,code,standalone=false,onData) {
     const status=document.getElementById('research-status');
     if (!valid(type,code)) {status.textContent='代码或市场类型无效，请从行情目录选择标的。';return;}
     if (standalone) {
@@ -163,11 +163,12 @@ const RadarResearch = (() => {
     let chartKey;
     function renderChart(data) {
       if (!host || typeof window==='undefined' || typeof window.AssetChart?.mount!=='function') return;
-      const signature=JSON.stringify([data?.name,data?.chart]);
+      const members=data?.constituent_live;
+      const signature=JSON.stringify([data?.name,data?.chart,members?.trade_date,members?.points]);
       if (signature===chartKey) return;
       try {
         host.hidden=false;
-        window.AssetChart.mount(host,data?.chart,{key:type+'/'+code,name:data?.name||code});
+        window.AssetChart.mount(host,data?.chart,{key:type+'/'+code,name:data?.name||code,members});
         chartKey=signature;
       } catch {host.textContent='行情图暂时无法绘制。';}
     }
@@ -193,6 +194,7 @@ const RadarResearch = (() => {
           if (values!==lastMetrics) {render(data);lastMetrics=values;}
           researchSummary(data);
           renderChart(data);
+          if (onData) onData(data,false);
           if (standalone) {
             const quote=JSON.stringify([today,data.name,data.price,data.change_pct,data.quote_basis,data.change_basis,data.quote_at,data.change_at]);
             if (quote!==lastQuote) {assetHeader(data);lastQuote=quote;}
@@ -206,6 +208,7 @@ const RadarResearch = (() => {
           const message=last?'研究数据暂时无法更新，当前显示最近成功读取的数据。':
             error.message==='404'?'当前标的暂无已发布的研究数据，稍后自动再查。':'研究数据暂时无法读取，稍后自动重试。';
           if (status.textContent!==message) status.textContent=message;
+          if (onData) onData(last,true);
         }
       } finally {
         clearTimeout(timeout);

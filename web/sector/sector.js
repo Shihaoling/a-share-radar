@@ -79,6 +79,37 @@ async function readFile(name) {
   } finally { clearTimeout(timeout); }
 }
 
+function renderConstituentLive(live, failed, expected) {
+  const id = key => document.getElementById('constituent-' + key);
+  const count = live?.quoted_count;
+  const incomplete = live?.roster_complete === false && live.status !== 'stale';
+  const total = incomplete && live.total_count > expected ? null :
+    incomplete ? expected : (live?.total_count || expected);
+  const knownTotal = Number.isInteger(total) && total > 0;
+  const validCount = Number.isInteger(count) && count >= 0 && (!knownTotal || count <= total);
+  const last = observationTime(live?.quote_at), first = observationTime(live?.oldest_at);
+  const value = live?.change_pct;
+  const hasValue = validCount && count > 0 && Number.isFinite(value) && Boolean(last) &&
+    ['ready','stale','partial'].includes(live.status);
+  const change = id('change');
+  change.textContent = hasValue ? (value > 0 ? '+' : '') + displayNumber.format(value) + '%' : '—';
+  change.className = hasValue && value !== 0 ? (value > 0 ? 'up' : 'down') : '';
+  id('coverage').textContent = (validCount ? count : '—') + ' / ' + (knownTotal ? total : '—') + ' 只';
+  const range = first && last && first < last;
+  id('time').textContent = last ? '报价时点 ' + (range ? first + ' 至 ' : '') +
+    (range && first.slice(0,10) === last.slice(0,10) ? last.slice(11) : last) : '';
+  let message;
+  if (failed) message = hasValue ? '更新暂缓，保留上次报价' : '报价暂时无法读取，稍后自动重试';
+  else if (live?.status === 'stale') message = '最近一批达标报价' + (Number.isInteger(live.current_quoted_count) ?
+    '，本轮已取 ' + live.current_quoted_count + ' 只' : '，等待新数据');
+  else if (hasValue) message = knownTotal && count === total ? '全部成分已有报价' : '按已覆盖成分计算';
+  else if (incomplete) message = '正在补齐成分名单' + (knownTotal ? '，按目录总数展示覆盖' : '');
+  else if (validCount && count > 0) message = Number.isInteger(live.required_count) && live.required_count > count ?
+    '累计 ' + live.required_count + ' 只有效报价后展示涨跌幅' : '样本覆盖不足，等待更多报价';
+  else message = '等待有效成分报价';
+  id('status').textContent = message;
+}
+
 async function openDetail() {
   const id = key => document.getElementById(key);
   const code = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
@@ -106,8 +137,34 @@ async function openDetail() {
   id('quote-strip').hidden = false;
   id('members').hidden = false;
   id('research').hidden = false;
-  if (typeof RadarResearch !== 'undefined') RadarResearch.mount('sector', code);
-  else id('research-status').textContent = '研究指标组件暂时无法读取。';
+  let quotesByMember = new Map();
+  const quoteCells = new Map();
+  function updateQuoteCells() {
+    for (const [code, [price, change, time]] of quoteCells) {
+      const quote = quotesByMember.get(code);
+      const at = observationTime(quote?.quote_at);
+      const pct = quote?.change_pct;
+      price.textContent = at && Number.isFinite(quote.price) && quote.price > 0 ? displayNumber.format(quote.price) : '—';
+      change.textContent = at && Number.isFinite(pct) ? (pct > 0 ? '+' : '') + displayNumber.format(pct) + '%' : '—';
+      change.className = 'numeric quote-cell' + (at && Number.isFinite(pct) && pct !== 0 ? (pct > 0 ? ' up' : ' down') : '');
+      time.textContent = at || '—';
+    }
+  }
+  if (ths) {
+    id('constituent-live').hidden = false;
+    for (const field of ['price','change','time']) id('member-' + field + '-column').hidden = false;
+  }
+  const onData = ths ? (data, failed) => {
+    const live = data?.constituent_live;
+    renderConstituentLive(live, failed, entry.member_count);
+    quotesByMember = new Map((Array.isArray(live?.members) ? live.members : []).filter(row => row?.code).map(row => [row.code,row]));
+    updateQuoteCells();
+  } : undefined;
+  if (typeof RadarResearch !== 'undefined') RadarResearch.mount('sector', code, false, onData);
+  else {
+    id('research-status').textContent = '研究指标组件暂时无法读取。';
+    if (onData) onData(null, true);
+  }
 
   const feedFiles = ths ? [['hot','sector-hot','sxdata_ths_hot'], ['reference','sector-reference','sxdata_sector_reference']] :
     sw ? [['daily','daily-market','sxdata_daily'], ['stocks','stock-quotes','sxdata_relay']] :
@@ -129,6 +186,7 @@ async function openDetail() {
         if (candidate && (!prior || candidate.order > prior.order || (candidate.order === prior.order && (candidate.close || !prior.close)))) fields[key] = candidate;
         const row = fields[key], node = id('quote-' + key);
         if (row) {
+          if (ths) id('quote-' + key + '-label').textContent = (row.close ? '收盘' : '热榜') + (key === 'price' ? '点位' : '涨跌幅');
           node.textContent = (key === 'change' && row.change > 0 ? '+' : '') + displayNumber.format(row[key]) + (key === 'change' ? '%' : '');
           node.className = key === 'change' ? (row.change > 0 ? 'up' : row.change < 0 ? 'down' : '') : '';
         }
@@ -150,6 +208,7 @@ async function openDetail() {
     const message = all.length && !result.count ? '没有匹配的成分股。' : '';
     id('member-status').textContent = [notice, message].filter(Boolean).join(' ');
     const contents = document.createDocumentFragment();
+    quoteCells.clear();
     for (const row of result.rows) {
       const tr = document.createElement('tr');
       for (const [index, value] of [row.name || '—', row.code, Number.isFinite(row.weight_pct) ? String(row.weight_pct) + '%' : '—'].entries()) {
@@ -165,8 +224,18 @@ async function openDetail() {
         } else cell.textContent = value;
         tr.append(cell);
       }
+      if (ths) {
+        const cells = ['numeric quote-cell','numeric quote-cell','quote-cell'].map(className => {
+          const cell = document.createElement('td');
+          cell.className = className;
+          tr.append(cell);
+          return cell;
+        });
+        quoteCells.set(row.code,cells);
+      }
       contents.append(tr);
     }
+    updateQuoteCells();
     id('member-rows').replaceChildren(contents);
     id('table-wrap').hidden = !result.count;
     id('pager').hidden = result.pages <= 1;

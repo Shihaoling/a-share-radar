@@ -50,6 +50,7 @@ window.AssetChart = (() => {
       ...r, close:positive(r.close)?r.close:null, ma20:positive(r.ma20)?r.ma20:null, x:i, id:r.day
     }));
     const session = tradingSession(key), heat = intraday.measure === 'change_pct';
+    const percent = heat || intraday.measure === 'constituent_change_pct';
     const maxGap = positive(intraday.max_gap_minutes) ? intraday.max_gap_minutes : heat ? 35 : 3;
     function samples(pairs, signed) {
       const byTime=new Map();
@@ -73,8 +74,8 @@ window.AssetChart = (() => {
       rows.forEach((r,i)=>{r.gap=i>0 && (r.phase!==rows[i-1].phase || r.minute-rows[i-1].minute>maxGap);});
       return rows;
     }
-    return {daily,intraday,dailyRows,minutes:samples(intraday.points,heat),
-      relative:samples(intraday.relative,true),session,heat};
+    return {daily,intraday,dailyRows,minutes:samples(intraday.points,percent),
+      relative:samples(intraday.relative,true),session,heat,percent};
   }
 
   function range(values) {
@@ -107,13 +108,15 @@ window.AssetChart = (() => {
   class View {
     constructor(host,key) {
       this.host=host; this.key=key; this.name=''; this.mode=null; this.study='momentum20';
-      this.anchor={daily:null,intraday:null}; this.width=0; this.chart=read(null,key);
+      this.anchor={daily:null,intraday:null,members:null}; this.width=0; this.chart=read(null,key);
+      this.hasMembers=key.startsWith('sector/') && key.endsWith('.TI'); this.manualMode=false;
       this.root=el('section','asset-chart-view'); this.root.setAttribute('aria-label','行情走势');
       const header=el('header','ac-head');
       const modes=el('div','ac-controls'); modes.setAttribute('aria-label','行情周期');
       this.modes={};
-      for (const [id,text] of [['intraday','分时'],['daily','日线']]) {
-        this.modes[id]=control(text,()=>{this.mode=id;this.draw();},'ac-choice');
+      const choices=this.hasMembers?[['members','成分股分时'],['intraday','热榜分时'],['daily','日线']]:[['intraday','分时'],['daily','日线']];
+      for (const [id,text] of choices) {
+        this.modes[id]=control(text,()=>{this.manualMode=true;this.mode=id;this.draw();},'ac-choice');
         modes.append(this.modes[id]);
       }
       header.append(el('h2','', '行情走势'),modes);
@@ -165,15 +168,26 @@ window.AssetChart = (() => {
       }
     }
     measure() {return Math.max(248,Math.min(1500,Math.round(this.main.getBoundingClientRect().width||this.host.clientWidth||600)));}
-    update(chart,name) {
+    update(chart,name,members) {
       this.chart=read(chart,this.key); this.name=name||'';
-      if (!this.mode) {
+      if (this.hasMembers) {
+        this.memberChart=read({intraday:{measure:'constituent_change_pct',day:members?.trade_date,
+          points:members?.points,max_gap_minutes:3,basis_label:'成分股等权涨跌幅采样'}},this.key);
+        if (!this.manualMode) {
+          const newestHeat=this.chart.minutes.length && this.chart.intraday.day;
+          if (this.memberChart.minutes.length && (!newestHeat || members.trade_date>=newestHeat)) this.mode='members';
+          else if (this.chart.minutes.length) this.mode='intraday';
+          else if (this.chart.dailyRows.some(row=>positive(row.close))) this.mode='daily';
+          else this.mode='members';
+        }
+      } else if (!this.mode) {
         if(this.chart.minutes.length>1)this.mode='intraday';
         else if(this.chart.dailyRows.some(r=>positive(r.close)))this.mode='daily';
         else if(this.chart.minutes.length)this.mode='intraday';
       }
       this.draw();
     }
+    currentChart() {return this.mode==='members'?this.memberChart:this.chart;}
     step(d) { if(this.points.length)this.select(this.index+d); }
     select(index) {
       this.index=Math.max(0,Math.min(this.points.length-1,index));
@@ -181,7 +195,7 @@ window.AssetChart = (() => {
       this.display();
     }
     draw() {
-      const data=this.chart, daily=this.mode==='daily', mode=daily?'daily':'intraday';
+      const data=this.currentChart(), daily=this.mode==='daily', mode=this.mode||'intraday';
       Object.entries(this.modes).forEach(([id,b])=>b.setAttribute('aria-pressed',String(id===mode)));
       this.rows=daily?data.dailyRows:data.minutes;
       this.field=daily?'close':'value';
@@ -198,15 +212,15 @@ window.AssetChart = (() => {
       this.mainGuides=null; this.subGuides=null; this.axes=null;
       this.legend.replaceChildren();
       const dailyPrice=data.daily.basis==='reference_linked'?'收益链收盘':'收盘';
-      const name=daily?dailyPrice:data.heat?'热榜涨跌幅':'分时价格';
+      const name=daily?dailyPrice:mode==='members'?'成分股等权涨跌幅':data.heat?'热榜涨跌幅':'分时价格';
       this.legend.append(el('span','ac-key ac-price-key',name));
       if(daily && this.rows.some(r=>positive(r.ma20)))this.legend.append(el('span','ac-key ac-average-key','MA20'));
       let baseline=null;
-      if(!daily && (data.heat || positive(data.intraday.previous_close))) {
-        baseline=data.heat?0:data.intraday.previous_close;
-        this.legend.append(el('span','ac-key ac-base-key',data.heat?'零线':'昨收 '+label(baseline)));
+      if(!daily && (data.percent || positive(data.intraday.previous_close))) {
+        baseline=data.percent?0:data.intraday.previous_close;
+        this.legend.append(el('span','ac-key ac-base-key',data.percent?'零线':'昨收 '+label(baseline)));
       }
-      if(!daily && !data.heat && this.points.length){
+      if(!daily && !data.percent && this.points.length){
         const {open,high,low,previous_close:previous}=data.intraday;
         if(positive(open)){
           const jump=positive(previous)?(open/previous-1)*100:null;
@@ -223,7 +237,8 @@ window.AssetChart = (() => {
       if(this.points.length) {
         this.mainGuides=this.plot(this.main,this.field,daily?['ma20']:[],baseline,false,showDrop?[peak,trough]:null);
       } else {
-        this.main.replaceChildren(el('p','ac-empty',daily?'等待已核验的日线收盘数据':'等待交易时段的真实采样'));
+        this.main.replaceChildren(el('p','ac-empty',daily?'等待已核验的日线收盘数据':
+          mode==='members'?'等待覆盖达标的成分股报价':'等待交易时段的真实采样'));
       }
       if(daily) {
         if(this.rows.some(r=>finite(r[this.study]))) {
@@ -240,11 +255,11 @@ window.AssetChart = (() => {
       this.display();
     }
     plot(host,field,extra,base,small,drop) {
-      const data=this.chart, daily=this.mode==='daily', width=this.width;
+      const data=this.currentChart(), daily=this.mode==='daily', width=this.width;
       const height=small?(width<480?108:122):(width<480?186:220);
       const l=8,r=width-(width<420?52:63),top=10,bottom=height-23;
       const rows=small && !daily?data.relative:this.rows;
-      const ohlc=!small && !daily && !data.heat?data.intraday:{};
+      const ohlc=!small && !daily && !data.percent?data.intraday:{};
       const levels=[ohlc.open,ohlc.high,ohlc.low].filter(positive);
       const domain=range([...rows.flatMap(row=>[row[field],...extra.map(k=>row[k])]),base,...levels]);
       const natural=!daily && data.heat;
@@ -265,7 +280,7 @@ window.AssetChart = (() => {
         graph.append(svg('path',{d:`M${l+6} ${hi}h-5V${lo}h5`,class:'ac-range-mark',fill:'none'}));
       }
       if(positive(ohlc.open))graph.append(svg('line',{x1:l,x2:l+13,y1:y(ohlc.open),y2:y(ohlc.open),class:'ac-open-mark'}));
-      const ticks=small?2:3,unit=small?(daily?studies[this.study][1]:'百分点'):!daily&&data.heat?'%':'';
+      const ticks=small?2:3,unit=small?(daily?studies[this.study][1]:'百分点'):!daily&&data.percent?'%':'';
       const step=(domain[1]-domain[0])/ticks;
       const axisNumber=new Intl.NumberFormat('zh-CN',{maximumFractionDigits:Math.min(6,Math.max(0,1-Math.floor(Math.log10(step))))});
       for(let i=0;i<=ticks;i++) {
@@ -289,15 +304,15 @@ window.AssetChart = (() => {
       return {guide,dot,x,y,field,relative:small&&!daily};
     }
     display() {
-      const data=this.chart, row=this.points[this.index], daily=this.mode==='daily';
-      const unit=!daily&&data.heat?'%':this.key.startsWith('stock/')?(this.key.endsWith('.HK')?' 港元':' 元'):' 点';
+      const data=this.currentChart(), row=this.points[this.index], daily=this.mode==='daily';
+      const unit=!daily&&data.percent?'%':this.key.startsWith('stock/')?(this.key.endsWith('.HK')?' 港元':' 元'):' 点';
       this.time.textContent=row?(daily?row.day:row.time):'';
       this.primary.textContent=row?label(row[this.field],unit):'—';
       const context=[];
       if(row && daily) {
         if(positive(row.ma20))context.push('MA20 '+label(row.ma20));
         if(data.daily.basis==='reference_linked' && positive(row.raw_close))context.push('原始收盘 '+label(row.raw_close));
-      } else if(row && !data.heat && positive(data.intraday.previous_close)) {
+      } else if(row && !data.percent && positive(data.intraday.previous_close)) {
         const change=(row.value/data.intraday.previous_close-1)*100;
         context.push('较昨收 '+(change>0?'+':'')+label(change,'%'));
       }
@@ -327,14 +342,14 @@ window.AssetChart = (() => {
     }
   }
 
-  function mount(host,chart,{key='',name=''}={}) {
+  function mount(host,chart,{key='',name='',members}={}) {
     if(!host)return;
     let view=instances.get(host);
     if(!view || view.key!==key){
       if(view?.observer)view.observer.disconnect();
       view=new View(host,key);instances.set(host,view);
     }
-    view.update(chart,name);
+    view.update(chart,name,members);
   }
   return {mount};
 })();

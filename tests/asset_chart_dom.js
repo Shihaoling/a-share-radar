@@ -112,6 +112,28 @@ hotPlot.fire('keydown',{key:'Home'});assert.match(hotPlot.attrs['aria-valuetext'
 hotPlot.fire('keydown',{key:'ArrowRight'});assert.match(hotPlot.attrs['aria-valuetext'],/-2%/);
 hotPlot.fire('keydown',{key:'ArrowRight'});assert.match(hotPlot.attrs['aria-valuetext'],/10:00:00，0%/);
 
+const members={trade_date:'2026-11-19',points:[[at('09:30'),-2],[at('09:31'),-1],[at('09:41'),-1.5],
+  [at('11:29'),0],[at('11:30'),-0.1],[at('12:15'),10],[at('13:00'),0],[at('13:01'),0.25]]};
+const sector={key:'sector/885001.TI',members};
+const previousDay={trade_date:'2026-11-18',points:[['2026-11-18T14:59:58+08:00',1.5]]};
+mount(heatHost,ranks,{...sector,members:previousDay});
+assert.equal(nodes(heatHost,'ac-choice')[1].attrs['aria-pressed'],'true');
+mount(heatHost,ranks,sector);
+const modes=nodes(heatHost,'ac-choice');
+assert.deepEqual(modes.map(el=>el.textContent),['成分股分时','热榜分时','日线']);
+assert.equal(modes[0].attrs['aria-pressed'],'true');
+assert.equal(hotPlot.attrs['aria-valuemax'],'7');
+assert.match(hotPlot.attrs['aria-valuetext'],/13:01:00，0.25%/);
+assert.match(words(hotPlot),/09:30.*午休.*15:00/);
+assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,3);
+assert.equal(nodes(hotPlot,'ac-dot').length,1);
+assert.match(words(one(heatHost,'ac-legend')),/成分股等权涨跌幅.*零线/);
+modes[1].fire('click');
+assert.match(hotPlot.attrs['aria-valuetext'],/10:00:00，0%/);
+mount(heatHost,ranks,sector);
+assert.equal(modes[1].attrs['aria-pressed'],'true');
+assert.equal(hotPlot.attrs['aria-valuemax'],'8');
+
 const singleton={daily:{rows:[{day:'2026-11-19',close:7.5,raw_close:7.5}]}};
 const lastObserver=resize;
 mount(heatHost,singleton,{key:'index/000300.SH'});
