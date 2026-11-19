@@ -42,19 +42,22 @@ class CloudNewsTests(unittest.TestCase):
         return json.loads((news.OUTPUT/"news.json").read_text())
 
     def test_midnight_snapshot_preserves_prior_day_bodies_and_digest_without_changing_today(self):
-        article = report("A")
+        article = report("A",llm_analysis={"status":"ready","summary":"经济数据","usage":{"total_tokens":12}})
         news.save_article(self.db, article)
         digest = {"date": NOW.date().isoformat(), "summary": "昨日经济数据公布", "generated_at": NOW.isoformat(),
                   "positives": [{"text": "昨日的消息", "article_ids": ["A"]}]}
-        self.db.execute("INSERT INTO digests VALUES (?,?)", (digest["date"], json.dumps(digest)))
+        self.db.execute("INSERT INTO digests VALUES (?,?)", (digest["date"], json.dumps({**digest,"usage":{"total_tokens":8}})))
+        self.assertNotIn("usage",json.dumps(self.feed(NOW)))
         result = self.feed(NOW+timedelta(days=1))
         self.assertEqual(result["articles"], [])
         self.assertEqual(result["news_digest"]["current_article_count"], 0)
         self.assertEqual(result["previous_digest"], digest)
         story = result["recent_articles"][0]
         self.assertEqual(story["published_at"], article["published_at"])
+        self.assertNotIn("usage",story["llm_analysis"])
+        self.assertIn("usage",self.db.execute("SELECT payload FROM digests").fetchone()[0])
         body = news.OUTPUT/"articles"/Path(story["article_text_url"]).name
-        self.assertEqual(json.loads(body.read_text())["full_text"], article["full_text"])
+        self.assertEqual(json.loads(body.read_text()),{"full_text":article["full_text"],"status":"complete","id":"A"})
 
     def test_rate_limit_keeps_cursor_and_articles_and_skips_the_next_request(self):
         news.save_article(self.db, report("A"))

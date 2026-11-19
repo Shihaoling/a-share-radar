@@ -34,3 +34,6 @@
 .ac-range-mark{stroke:#9aa9b7;stroke-width:1.7}.ac-open-mark{stroke:#916238;stroke-width:2}
 .ac-level{font-variant-numeric:tabular-nums}.ac-relative-title{font-size:12px;font-weight:600;color:#38546a}
 .ac-relative-title[hidden],.ac-select[hidden]{display:none}
+
+.ac-gap-line{stroke:#6385a6;stroke-width:1.5;stroke-dasharray:4 4;pointer-events:none;vector-effect:non-scaling-stroke}
+.ac-gap-key:before{border-top:2px dashed #6385a6}

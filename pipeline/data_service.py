@@ -2,6 +2,7 @@
 import hashlib,hmac,json,math,os,sys,time
 from contextlib import contextmanager
 from pathlib import Path
+from .request_policy import MAX_REQUESTS, read_policy
 
 ENDPOINT='http://tus.sxdata.top/tu_share/'
 REGULAR_APIS=frozenset({'trade_cal','daily','daily_basic','index_daily','index_classify','sw_daily','index_member_all','index_basic','income','income_vip','balancesheet','balancesheet_vip','cashflow','cashflow_vip','fina_indicator','forecast','express','moneyflow','moneyflow_ind_ths','fund_basic','fund_nav','fund_daily','etf_basic','etf_share_size','cn_cpi','cn_gdp','cyq_perf'})
@@ -73,7 +74,7 @@ def _edit_gate():
 REALTIME_BATCHES = frozenset({"rt_idx_k", "rt_k"})
 
 
-HOST_LIMIT = 100
+HOST_LIMIT = MAX_REQUESTS
 EVENT_LIMIT = 64
 METERED_APIS = REGULAR_APIS | REALTIME_BATCHES | {
     "rt_sw_k", "news", "major_news", "cctv_news", "anns_d", "idx_mins",
@@ -113,8 +114,9 @@ def _gate_state(state, api, min_interval, now, starts):
     reason = (state.get('host_code') if host_until >= api_until
               else state.get('api_codes', {}).get(api))
     deadline = max(host_until, api_until)
-    if len(starts) >= HOST_LIMIT:
-        quota_until = starts[-HOST_LIMIT] + 60
+    limit = min(HOST_LIMIT, read_policy()["limit_60s"])
+    if len(starts) >= limit:
+        quota_until = starts[-limit] + 60
         if quota_until > deadline:
             deadline, reason = quota_until, "local_rate_limit"
     consecutive_quotes = api in REALTIME_BATCHES and state.get('last_api') in REALTIME_BATCHES
@@ -237,7 +239,7 @@ def request_usage():
     state, now = _read(), time.time()
     starts, pending_legacy = _window(state, now)
     data = state.get("usage", {})
-    return {"limit_60s": HOST_LIMIT, "starts_last_60s": len(starts), "pending_legacy": pending_legacy,
+    return {"limit_60s": min(HOST_LIMIT, read_policy()["limit_60s"]), "starts_last_60s": len(starts), "pending_legacy": pending_legacy,
             "realtime_min_gap": _realtime_spacing(state, now),
             "recent_rt_429": [stamp for stamp in state.get("recent_rt_429", []) if stamp > now - 600],
             "since": data.get("since"), "peak_60s": max(data.get("peak_60s", 0), len(starts)),

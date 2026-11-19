@@ -21,8 +21,9 @@ test('progress keeps its last valid calendar during 429 and invalid responses', 
   const snapshot = {
     schema_version: 1, start_day: '2026-06-01', end_day_exclusive: '2026-06-02',
     generated_at: '2026-06-02T14:00:00+08:00', source: 'test', total_days: 1,
-    audited_days: 1, collected: 2, labelled: 2, usage: {}, days: [
-      {day: '2026-06-01', windows: 1, complete_windows: 1, audited_windows: 1, returned: 2},
+    audited_days: 1, collected: 2, labelled: 2, days: [
+      {day: '2026-06-01', windows: 1, complete_windows: 1, audited_windows: 1, returned: 2,
+        collected: 2, labelled: 2},
     ],
   };
   let clock = Date.parse(snapshot.generated_at);
@@ -48,6 +49,8 @@ test('progress keeps its last valid calendar during 429 and invalid responses', 
   await new Promise(resolve => setImmediate(resolve));
   const refresh = () => vm.runInContext('refresh()', context);
   assert.equal(getElementById('collected').textContent, '2');
+  assert.equal(getElementById('pending-labels').textContent, '0');
+  assert.match(getElementById('finished-days').textContent, /^1 个有资讯的日期/);
   await refresh();
   assert.match(getElementById('message').textContent, /刷新失败.*14:00:00/);
   clock += 119000;
@@ -65,4 +68,5 @@ test('progress keeps its last valid calendar during 429 and invalid responses', 
   clock += 30000;
   await refresh();
   assert.equal(getElementById('collected').textContent, '3');
+  assert.equal(getElementById('pending-labels').textContent, '1');
 });

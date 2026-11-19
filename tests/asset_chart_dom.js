@@ -105,6 +105,7 @@ assert.match(words(heatHost),/热榜涨跌幅/);assert.match(words(heatHost),/�
 assert.equal(nodes(hotPlot,'ac-range-mark').length,0);
 assert.equal(nodes(hotPlot,'ac-baseline').length,1);
 assert.equal(nodes(hotPlot,'ac-dot').length,4);
+assert.equal(nodes(hotPlot,'ac-gap-line').length,0); // Ranked observations retain their own cadence.
 assert.equal(hotPlot.attrs['aria-valuemax'],'8');
 assert.match(words(hotPlot),/08:45.*12:00.*16:00/);
 assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,2);
@@ -127,6 +128,7 @@ assert.match(hotPlot.attrs['aria-valuetext'],/13:01:00，0.25%/);
 assert.match(words(hotPlot),/09:30.*午休.*15:00/);
 assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,3);
 assert.equal(nodes(hotPlot,'ac-dot').length,1);
+assert.equal((one(hotPlot,'ac-gap-line').attrs.d.match(/M/g)||[]).length,2);
 assert.match(words(one(heatHost,'ac-legend')),/成分股等权涨跌幅.*零线/);
 modes[1].fire('click');
 assert.match(hotPlot.attrs['aria-valuetext'],/10:00:00，0%/);
@@ -166,4 +168,33 @@ mount(weightedHost,{intraday:{day:'2026-11-19',measure:'weighted_change_pct',poi
   {key:'sector/801230.SI'});
 assert.match(words(weightedHost),/权重股估算涨跌幅/);
 assert.match(one(weightedHost,'ac-main-plot').attrs['aria-valuetext'],/0.2%/);
+assert.equal(nodes(main,'ac-gap-line').length,1);
+const boundaryHost=new Element('div'), mark=t=>'2026-11-19T'+t+'+08:00';
+const edgePoints=[['09:30:59',100],['09:32:01',102],['11:30:03',105],['11:31:00',900],['12:15:00',900],
+  ['13:00:02',106],['13:01:59',107],['15:00:03',108],['15:01:00',900]].map(([t,p])=>[mark(t),p]);
+edgePoints.push(['2026-11-18T10:35:00+08:00',900]);
+mount(boundaryHost,{intraday:{day:'2026-11-19',measure:'price',points:edgePoints}}, {key:'index/000001.SH'});
+const boundaryPlot=one(boundaryHost,'ac-main-plot'), gapPath=one(boundaryPlot,'ac-gap-line');
+assert.equal(boundaryPlot.attrs['aria-valuemax'],'6');
+assert.equal((gapPath.attrs.d.match(/M/g)||[]).length,3); // Two morning gaps, one afternoon gap.
+assert.match(words(boundaryHost),/虚线连接缺口两端的实采点/);
+assert.match(boundaryPlot.attrs['aria-valuetext'],/15:00:03，108 点/);
+boundaryPlot.fire('keydown',{key:'Home'});
+assert.match(boundaryPlot.attrs['aria-valuetext'],/09:30:59/);
+for(const actual of ['09:32:01','11:30:03','13:00:02','13:01:59','15:00:03']){
+  boundaryPlot.fire('keydown',{key:'ArrowRight'});
+  assert.ok(boundaryPlot.attrs['aria-valuetext'].includes(actual));
+}
+const dailyHost=new Element('div');
+const dailyRows=[{day:'2026-11-12',close:null},{day:'2026-11-13',close:100},{day:'2026-11-16',close:101},
+  {day:'2026-11-17',close:null},{day:'2026-11-18',close:103,gap:true},{day:'2026-11-19',close:null}];
+mount(dailyHost,{daily:{basis:'index_close',rows:dailyRows}},{key:'sector/000010.SH'});
+const dailyPlot=one(dailyHost,'ac-main-plot');
+assert.equal(dailyPlot.attrs['aria-valuemax'],'3');
+assert.equal((one(dailyPlot,'ac-gap-line').attrs.d.match(/M/g)||[]).length,1);
+assert.equal(nodes(one(dailyHost,'ac-study-plot'),'ac-gap-line').length,0);
+dailyPlot.fire('keydown',{key:'ArrowLeft'});assert.match(dailyPlot.attrs['aria-valuetext'],/2026-11-16/);
+mount(dailyHost,{daily:{basis:'reference_linked',rows:dailyRows}},{key:'stock/600001.SH'});
+assert.equal(nodes(dailyHost,'ac-gap-line').length,0);
+assert.equal(nodes(heatHost,'ac-gap-line').length,0); // Reused here for the real-price singleton.
 console.log('Asset chart DOM checks passed');

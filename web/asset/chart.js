@@ -49,10 +49,16 @@ window.AssetChart = (() => {
     const dailyRows = [...byDay.values()].sort((a,b) => a.day.localeCompare(b.day)).map((r,i) => ({
       ...r, close:positive(r.close)?r.close:null, ma20:positive(r.ma20)?r.ma20:null, x:i, id:r.day
     }));
+    // The daily payload enumerates verified trading sessions, including slots with no close.
+    let previousClose=null;
+    for (const row of dailyRows) if (positive(row.close)) {
+      row.bridge=previousClose!==null && row.x>previousClose+1 && daily.basis==='index_close';
+      previousClose=row.x;
+    }
     const session = tradingSession(key), heat = intraday.measure === 'change_pct';
     const weighted = intraday.measure === 'weighted_change_pct';
     const percent = heat || weighted || intraday.measure === 'constituent_change_pct';
-    const maxGap = positive(intraday.max_gap_minutes) ? intraday.max_gap_minutes : heat ? 35 : 3;
+    const maxGap = positive(intraday.max_gap_minutes) ? intraday.max_gap_minutes : 35;
     function samples(pairs, signed) {
       const byTime=new Map();
       for (const pair of Array.isArray(pairs)?pairs:[]) {
@@ -65,17 +71,23 @@ window.AssetChart = (() => {
         const local=new Date(ms+8*3600000).toISOString();
         if (local.slice(0,10)!==intraday.day) continue;
         const minute=Number(local.slice(11,13))*60+Number(local.slice(14,16))+Number(local.slice(17,19))/60;
-        const phase=minute<session.start?'pre':minute<=session.midday?'morning':minute<session.resume?'lunch':
-          minute<=session.close?'afternoon':'post';
+        const bucket=Math.floor(minute);
+        const phase=bucket<session.start?'pre':bucket<=session.midday?'morning':bucket<session.resume?'lunch':
+          bucket<=session.close?'afternoon':'post';
+        const position=phase==='morning'?Math.min(minute,session.midday):Math.min(minute,session.close);
         // Heat rankings are published at real wall-clock times, including during the break.
         if (!heat && phase!=='morning' && phase!=='afternoon') continue;
         const coverage=intraday.partial && Number.isInteger(pair[2]) && pair[2]>0 &&
           Number.isInteger(pair[3]) && pair[3]>=pair[2] ? [pair[2],pair[3]] : null;
         if(intraday.partial && !coverage)continue;
-        byTime.set(ms,{coverage,id:String(ms),time:local.slice(11,19),x:heat?minute:sessionX(minute,session),value,minute,phase});
+        byTime.set(ms,{coverage,id:String(ms),time:local.slice(11,19),x:heat?minute:sessionX(position,session),value,minute,bucket,phase});
       }
-      const rows=[...byTime.values()].sort((a,b)=>a.x-b.x);
-      rows.forEach((r,i)=>{r.gap=i>0 && (r.phase!==rows[i-1].phase || r.minute-rows[i-1].minute>maxGap);});
+      const rows=[...byTime.values()].sort((a,b)=>a.minute-b.minute);
+      rows.forEach((r,i)=>{
+        const prior=rows[i-1];
+        r.bridge=Boolean(prior && !heat && r.phase===prior.phase && r.bucket>prior.bucket+1);
+        r.gap=Boolean(prior && (r.phase!==prior.phase || (heat?r.minute-prior.minute>maxGap:r.bridge)));
+      });
       return rows;
     }
     return {daily,intraday,dailyRows,minutes:samples(intraday.points,percent),
@@ -89,17 +101,24 @@ window.AssetChart = (() => {
     const pad = (high-low)*0.10 || Math.max(Math.abs(high)*0.004,0.01);
     return [low-pad,high+pad];
   }
-  function addSeries(graph, rows, field, x, y, cls) {
-    const runs = [];
+  function addSeries(graph, rows, field, x, y, cls, showGaps=false) {
+    const runs = [], bridges=[];
+    let previous=null;
     let run=[];
     function flush() { if (run.length) runs.push(run); run=[]; }
     for (const r of rows) {
       if (r.gap || !finite(r[field])) flush();
-      if (finite(r[field])) run.push([x(r.x), y(r[field])]);
+      if (finite(r[field])) {
+        const point=[x(r.x),y(r[field])];
+        if(showGaps && r.bridge && previous) bridges.push('M'+previous.join(' ')+' L'+point.join(' '));
+        run.push(point);
+        previous=point;
+      }
     }
     flush();
     const path = runs.filter(p=>p.length>1).map(p=>p.map(([a,b],i)=>
       (i?'L':'M')+a.toFixed(2)+' '+b.toFixed(2)).join(' ')).join(' ');
+    if (bridges.length) graph.append(svg('path',{d:bridges.join(' '),class:'ac-gap-line',fill:'none'}));
     if (path) graph.append(svg('path',{d:path,class:'ac-line '+cls,fill:'none'}));
     for (const p of runs) if (p.length===1) graph.append(svg('circle',{cx:p[0][0],cy:p[0][1],r:2.6,class:'ac-dot '+cls}));
   }
@@ -224,6 +243,7 @@ window.AssetChart = (() => {
       const dailyPrice=data.daily.basis==='reference_linked'?'收益链收盘':'收盘';
       const name=daily?dailyPrice:mode==='members'?(data.intraday.partial?'部分成分平均涨跌幅':'成分股等权涨跌幅'):data.heat?'热榜涨跌幅':data.weighted?'权重股估算涨跌幅':'分时价格';
       this.legend.append(el('span','ac-key ac-price-key',name));
+      if(this.points.some(r=>r.bridge))this.legend.append(el('span','ac-key ac-gap-key','虚线连接缺口两端的实采点'));
       if(daily && this.rows.some(r=>positive(r.ma20)))this.legend.append(el('span','ac-key ac-average-key','MA20'));
       let baseline=null;
       if(!daily && (data.percent || positive(data.intraday.previous_close))) {
@@ -304,7 +324,7 @@ window.AssetChart = (() => {
         natural?[[l,clock(minX)],[x(720),'12:00'],[r,clock(maxX)]]:
         [[l,'09:30'],[x(data.session.midday-data.session.start+data.session.gap/2),'午休'],[r,data.session.close===960?'16:00':'15:00']];
       axis.forEach(([px,text],i)=>graph.append(svg('text',{x:px,y:height-4,'text-anchor':i===0?'start':i===axis.length-1?'end':'middle',class:'ac-axis'},text)));
-      addSeries(graph,rows,field,x,y,small?'ac-factor':'ac-price');
+      addSeries(graph,rows,field,x,y,small?'ac-factor':'ac-price',!small);
       extra.forEach(k=>addSeries(graph,rows,k,x,y,'ac-average'));
       if(drop)for(const row of drop)graph.append(svg('circle',{cx:x(row.x),cy:y(row.close),r:3,class:'ac-peak'}));
       const guide=svg('line',{y1:top,y2:bottom,class:'ac-guide'});

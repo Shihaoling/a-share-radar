@@ -119,6 +119,12 @@ def _previous(day):
     return prev.isoformat() if prev else None
 
 
+def trusted_daily_source(source):
+    return isinstance(source, str) and (
+        source in {"stock_api","equity_cache","daily","sw_daily","index_daily","ths_daily","sxdata"}
+        or source.startswith("sxdata_"))
+
+
 def _bars(raw, sessions):
     """Trust only a single unambiguous close per date in the supplied completed sessions."""
     wanted = set(sessions)
@@ -134,8 +140,7 @@ def _bars(raw, sessions):
         if day not in wanted or (day_key and _day(day_key) != day) or row.get("complete") is False:
             continue
         source = row.get("provider") or row.get("source")
-        if source and not (source in {"stock_api","equity_cache","daily","sw_daily","index_daily","ths_daily","sxdata"} or
-                           str(source).startswith("sxdata_")):
+        if source and not trusted_daily_source(source):
             continue
         if not _number(row.get("close"), True):
             continue

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <title>管理后台 · 观澜</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../account/account.css?v=20261119-1">
+  <link rel="stylesheet" href="./admin.css?v=20261119-1">
+  <script defer src="./admin.js?v=20261119-1"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到用量统计</a>
+  <header class="mast"><div><a class="brand" href="../">观澜</a><span>管理后台</span><a class="back" href="../account/">账户</a></div></header>
+  <main id="main" class="dashboard">
+    <header class="page-head"><div><h1>接口用量</h1><p id="as-of">正在读取统计…</p></div><button class="secondary" type="button" id="refresh">刷新</button></header>
+    <p class="notice" id="status" role="status" aria-live="polite"></p>
+    <div id="results" hidden>
+      <section class="card summary" aria-labelledby="totals-title">
+        <h2 id="totals-title">累计用量</h2>
+        <dl class="totals">
+          <div><dt>SXData 累计请求</dt><dd id="relay-total">—</dd><small>次</small></div>
+          <div><dt>最近 60 秒请求</dt><dd id="relay-now">—</dd><small id="relay-limit"></small></div>
+          <div><dt>MiniMax 历史已记录调用</dt><dd id="model-count">—</dd><small>次</small></div>
+          <div><dt>MiniMax 历史已记录 Token</dt><dd id="model-tokens">—</dd><small id="token-split"></small></div>
+        </dl>
+        <p class="hint" id="historical-note"></p>
+      </section>
+      <section class="card" aria-labelledby="period-title"><h2 id="period-title">盘中与盘外</h2><p class="section-note" id="coverage"></p>
+        <div class="scroll" tabindex="0" aria-label="分时段请求与 Token 用量"><table><thead><tr><th scope="col">服务 / 时段</th><th scope="col">观测分钟</th><th scope="col">请求</th><th scope="col">每分钟平均</th><th scope="col">成功</th><th scope="col">失败</th><th scope="col">输入 Token</th><th scope="col">输出 Token</th><th scope="col">总 Token</th></tr></thead><tbody id="periods"></tbody></table></div>
+        <p class="hint" id="window-note"></p>
+      </section>
+      <section class="card" aria-labelledby="details-title"><h2 id="details-title">接口与任务明细</h2>
+        <details><summary>SXData 各接口</summary>
+          <div class="scroll" tabindex="0" aria-label="各中转接口累计请求及盘中盘外均值"><table><thead><tr><th scope="col">接口</th><th scope="col">累计请求</th><th scope="col">HTTP 429</th><th scope="col">上游业务限流</th><th scope="col">传输错误</th><th scope="col">盘中请求</th><th scope="col">盘中每分钟</th><th scope="col">盘外请求</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="relay-apis"></tbody></table></div>
+        </details>
+        <details><summary>MiniMax 任务与 Token</summary>
+          <p id="model-since" class="section-note"></p>
+          <div class="scroll" tabindex="0" aria-label="MiniMax 各任务累计用量"><table><thead><tr><th scope="col">任务</th><th scope="col">累计调用</th><th scope="col">成功</th><th scope="col">失败</th><th scope="col">用量回执</th><th scope="col">输入 Token</th><th scope="col">输出 Token</th><th scope="col">总 Token</th><th scope="col">盘中每分钟</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="model-scopes"></tbody></table></div>
+        </details>
+      </section>
+      <section class="card" aria-labelledby="source-title"><h2 id="source-title">数据源与额度</h2><p class="section-note">连接状态以服务端记录的实际结果为准，时间均为北京时间。</p>
+        <div class="scroll" tabindex="0" aria-label="数据源连接状态及到期时间"><table class="sources"><thead><tr><th scope="col">数据源</th><th scope="col">连接状态</th><th scope="col">最近成功</th><th scope="col">额度到期</th></tr></thead><tbody id="sources"></tbody></table></div>
+      </section>
+    </div>
+    <section id="policy-section" class="card policy" aria-labelledby="policy-title" hidden>
+      <h2 id="policy-title">SXData 请求上限</h2>
+      <p class="section-note">所有采集任务共享滚动 60 秒窗口，保存后对后续请求生效。</p>
+      <form id="policy-form" method="post" action="/api/admin/policy">
+        <label for="policy-limit">每 60 秒最多请求</label>
+        <div class="policy-input"><input id="policy-limit" type="number" min="1" max="100" step="1" required disabled><span>次</span><button class="primary" id="policy-save" type="submit" disabled>保存</button></div>
+      </form>
+      <p class="hint" id="policy-state" role="status" aria-live="polite"></p>
+    </section>
+    <noscript><p>请启用 JavaScript 查看管理统计。</p></noscript>
+  </main>
+</body>
+</html>

@@ -225,23 +225,32 @@ function runFrontendChecks(source) {
     const x={intraday:{'801780.SI':{points:[{price:99,timestamp:'2026-11-17T13:00:00+08:00',provider:'eastmoney_page'},minute(100),{...minute(101),timestamp:'2026-11-17T15:00:00+08:00'}]}}};
     eq(api.intradayFor(x,entity).length,2);eq(api.intradayFor(x,entity)[0].price,100);
   });
-  check('today chart excludes legacy and lunch samples and does not bridge empty minutes',()=>{
+  check('today chart draws short and long data gaps only within a real trading session',()=>{
     const day='2026-11-18',item={id:'idx'};
     const stamp=t=>`${day}T${t}+08:00`;
     const state={trade_date:day,series:{idx:[
       ['2026-11-17T15:00:00+08:00',90],
       [stamp('11:29:06'),100],[stamp('11:30:03'),101],[stamp('12:03:00'),101],
-      [stamp('13:00:01'),102],[stamp('13:01:01'),103],[stamp('13:04:01'),104],
+      [stamp('13:00:01'),102],[stamp('13:01:59'),103],[stamp('13:03:01'),104],[stamp('13:42:00'),105],
     ]}};
-    const latest={quote_date:day,quote_timestamp:stamp('13:04:50'),timestamp_quality:'source_reported',price:105};
+    const latest={quote_date:day,quote_timestamp:stamp('13:42:50'),timestamp_quality:'source_reported',price:106};
     const ticks=api.relayIntraday(state,latest,item,day);
-    eq(ticks.length,5);eq(ticks.at(-1).price,105);
+    eq(ticks.length,6);eq(ticks.at(-1).price,106);
     eq(api.relayIntraday(state,latest,item,'2026-11-19').length,0);
     const graph=api.chart(ticks,{today:true,metric:'intraday',range:null});
     eq(graph.children.filter(node=>node.attrs.class==='session-line').length,2);
-    eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,1);
-    eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,1);
+    eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,2);
+    eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,2);
     ok(text(graph).includes('11:30'));ok(text(graph).includes('13:00'));
+  });
+  check('daily curves bridge only verified missing sessions without creating observations',()=>{
+    const rows=[{date:'2026-11-13',close:100},{date:'2026-11-16',close:101},{date:'2026-11-18',close:103}];
+    const ordinary=api.chart(rows,{metric:'index',range:null});
+    eq(ordinary.children.filter(n=>n.attrs.class==='session-interpolation').length,0);
+    const graph=api.chart(rows,{metric:'index',range:null,sessions:['2026-11-12','2026-11-17','2026-11-19']});
+    eq(graph.children.filter(n=>n.attrs.class==='session-interpolation').length,1);
+    graph.events.focus();graph.events.keydown({key:'ArrowLeft',preventDefault(){}});
+    ok(graph.attrs['aria-label'].includes('2026-11-16'));ok(!graph.attrs['aria-label'].includes('2026-11-17'));
   });
   check('recovered bars fill only their own missing minute, date and index',()=>{
     const day='2026-11-19', stamp=t=>day+'T'+t+'+08:00';

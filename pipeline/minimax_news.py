@@ -16,6 +16,7 @@ from .calendar import shanghai_now
 from .news_content import text_hash
 from .sentiment import SW2021, _timestamp
 from .stock_api import _retry_after
+from .usage_meter import model_start, model_finish
 
 ROOT = Path(__file__).resolve().parents[1]
 PROMPT_VERSION = 'fulltext-sw31-impact-v2-refs'
@@ -167,11 +168,14 @@ def _infer_article(article, config, key, *, prompt=None, validator=None):
         'messages': [{'role': 'system', 'content': prompt or system_prompt()}, {'role': 'user', 'content': json.dumps(user_input,ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}, method='POST')
+    event = model_start(digest=validator is not None and bool(article.get("digest_articles")))
+    accepted, usage = False, None
     try:
         with urllib.request.build_opener(_NoRedirect()).open(request, timeout=240) as response:
             raw = response.read(2000001)
             if len(raw) > 2000000: raise ModelFailure('response_over_budget')
         result = json.loads(raw)
+        usage = result.get("usage") if isinstance(result,dict) else None
         status = result.get('base_resp', {}).get('status_code', 0)
         if status != 0: raise ModelFailure('provider_code_'+str(status) if type(status) is int and abs(status)<1000000 else 'provider_rejected', 3600)
         choice = result['choices'][0]
@@ -181,7 +185,9 @@ def _infer_article(article, config, key, *, prompt=None, validator=None):
         content = re.sub(r'<think>.*?</think>', '', content, flags=re.S).strip()
         if content.startswith('```'): content = re.sub(r'^```(?:json)?\s*|\s*```$', '', content)
         analysis = validator(json.loads(content)) if validator else validate_analysis(resolve_evidence_references(json.loads(content), spans), body)
-        analysis['usage'] = {k: v for k, v in result.get('usage', {}).items() if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int}
+        analysis['usage'] = {k:v for k,v in (usage.items() if isinstance(usage,dict) else ())
+                             if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int and v>=0}
+        accepted = True
         return analysis
     except urllib.error.HTTPError as e:
         if 300 <= e.code < 400:
@@ -192,6 +198,7 @@ def _infer_article(article, config, key, *, prompt=None, validator=None):
             # Inspect only a bounded error payload and emit a fixed category or
             # numeric provider code. Never persist raw provider messages.
             failure = json.loads(e.read(16384))
+            usage = failure.get("usage") if isinstance(failure,dict) else None
             provider = failure.get('base_resp', {}).get('status_code')
             if type(provider) is int and abs(provider) < 1000000:
                 suffix = '_provider_'+str(provider)
@@ -214,6 +221,8 @@ def _infer_article(article, config, key, *, prompt=None, validator=None):
         raise ModelFailure('invalid_analysis_'+reason, 86400) from None
     except (KeyError, IndexError, TypeError): raise ModelFailure('invalid_analysis', 86400) from None
     except Exception: raise ModelFailure('invalid_or_unavailable_response') from None
+    finally:
+        model_finish(event,accepted,usage)
 
 
 def valid_cached_analysis(article, now):

@@ -13,6 +13,7 @@ import unicodedata
 
 from pipeline.calendar import shanghai_now
 from pipeline.minimax_news import DEFAULT_MODEL, PROMPT_VERSION, ModelFailure, infer_article
+from pipeline.public_fields import remove_usage
 from pipeline.news_digest import validate_digest
 from pipeline.news_trust import apply_source_whitelist
 from pipeline.sentiment import SW2021, _is_rumor, _merge_stock_api_news
@@ -547,11 +548,11 @@ def project(db, now):
                  "last_success_at": checkpoint(db, "collect_last_success") or None,
                  "retry_after": retry or None, "error_code": error or None, "last_incomplete_second": gap or None,
                  "pending_recheck_windows": pending}
-    publish(OUTPUT / "news.json", {"schema_version": 1, "source": "tencent_news", "trade_date": day,
+    publish(OUTPUT / "news.json", remove_usage({"schema_version": 1, "source": "tencent_news", "trade_date": day,
         "articles": [project_article(article_id, value) for article_id, value in current.items()],
         "recent_articles": [project_article(article_id, value) for article_id, value in recent.items()],
         "news_digest": digest, "previous_digest": previous_digest, "collector": collector,
-        "model_revision": checkpoint(db, "model_revision")})
+        "model_revision": checkpoint(db, "model_revision")}))
 
 
 if __name__ == "__main__":

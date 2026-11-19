@@ -53,9 +53,13 @@ class HistoryJobsTests(unittest.TestCase):
 
     def test_trading_hours_and_preopen_never_create_requests_calendar_off_days_stay_available(self):
         self.register(("index",jobs.BENCHMARK))
-        for hour, minute in ((7,0),(9,30),(11,38),(13,0),(15,0),(15,44)):
+        for hour, minute in ((7,0),(9,30),(11,38),(13,0),(14,59)):
             self.assertIsNone(self.cycle([],NOW.replace(hour=hour,minute=minute))[1])
-        self.assertEqual(self.cycle([],NOW.replace(hour=15,minute=45))[1][1], "index_daily")
+        _, earlier = self.cycle([],NOW.replace(hour=15,minute=0))
+        self.assertEqual(earlier[1],"index_daily")
+        self.assertEqual(earlier[2]["end_date"],"20261118")
+        self.assertIsNone(self.cycle([],NOW.replace(hour=15,minute=44))[1])
+        self.assertEqual(self.cycle([],NOW.replace(hour=15,minute=45))[1][2]["end_date"], "20261119")
         self.assertFalse(jobs.eligible(NOW.replace(hour=6,minute=59,second=55)))
         self.assertTrue(jobs.eligible(NOW.replace(hour=6,minute=58)))
         self.assertTrue(jobs.eligible(datetime.fromisoformat("2026-11-21T12:00:00+08:00")))
@@ -67,7 +71,7 @@ class HistoryJobsTests(unittest.TestCase):
         self.register(("index",jobs.BENCHMARK),("sector",CHIP),("sector",AI))
         days=jobs.window(NOW)
         with closing(self.store.db()) as db, db:
-            self.store.put_bars(db,"index",jobs.BENCHMARK,[{"date":days[3],"close":123}],"cached")
+            self.store.put_bars(db,"index",jobs.BENCHMARK,[{"date":days[3],"close":123}],"sxdata_rt_idx_k.pre_close")
             db.execute("INSERT INTO watched VALUES(?,?,?)",("sector",AI,NOW.timestamp()))
         def bar(code,day,close,**other):
             return dict(ts_code=code,trade_date=day,close=close,**other)
@@ -83,7 +87,8 @@ class HistoryJobsTests(unittest.TestCase):
         self.assertIsNone(self.cycle([],NOW+timedelta(seconds=2))[1])
         self.assertEqual(self.cycle([],NOW+timedelta(seconds=25))[1][2]["ts_code"],AI)
         self.assertEqual(self.cycle([],NOW+timedelta(seconds=50))[1][2]["ts_code"],CHIP)
-        self.assertIsNone(self.cycle([],NOW+timedelta(hours=3))[1])
+        _,evening = self.cycle([],NOW+timedelta(hours=3))
+        self.assertEqual(evening[2]["ts_code"],AI)
 
     def test_stored_complete_stock_file_skips_today_one_stock_never_covers_a_market(self):
         self.register(("stock",STOCK),("stock","000001.SZ"),("stock","00002.HK"))
@@ -104,7 +109,7 @@ class HistoryJobsTests(unittest.TestCase):
         self.register(("sector",THS),("sector","881121.TI"),("sector",SW))
         target=jobs.window(NOW)[1]
         with closing(self.store.db()) as db, db:
-            self.store.put_bars(db,"sector",SW,[{"date":DAY,"close":100}],"cached")
+            self.store.put_bars(db,"sector",SW,[{"date":DAY,"close":100}],"sw_daily")
         _, call=self.cycle([{"ts_code":THS,"trade_date":"20261119","close":120,"pct_change":2},
                             {"ts_code":SW,"trade_date":"20261119","close":9999},
                             {"ts_code":"881121.TI","trade_date":"20261119","close":0}])
@@ -117,11 +122,67 @@ class HistoryJobsTests(unittest.TestCase):
         self.assertEqual(third[1],"sw_daily")
         self.assertEqual(self.db_rows("SELECT complete,rows FROM coverage WHERE source='sw_daily' AND complete=1"),[(1,1)])
 
+    def test_recent_boards_use_exact_code_ranges_for_both_providers(self):
+        self.register(("sector",THS),("sector",SW))
+        recent = NOW.replace(hour=15,minute=15)
+        days = jobs.window(recent)
+        self.assertEqual(len(days),61)
+        with closing(self.store.db()) as db, db:
+            db.executemany("INSERT INTO watched VALUES('sector',?,?)",
+                           [(THS,recent.timestamp()),(SW,recent.timestamp()-10)])
+        for i, (code,other,api) in enumerate(((THS,SW,"ths_daily"),(SW,THS,"sw_daily"))):
+            rows = [{"ts_code":code,"trade_date":day,"close":100} for day in days]
+            rows.extend([{"ts_code":other,"trade_date":days[0],"close":9999},
+                         {"ts_code":code,"trade_date":DAY,"close":9999}])
+            # The fair rotation may offer intervening date-wide jobs.
+            for step in range(4):
+                _,call = self.cycle(lambda token,api,params,active: rows if "ts_code" in params else [],
+                                    recent+timedelta(minutes=i*4+step))
+                if "ts_code" in call[2]:
+                    break
+            self.assertEqual(call[1:3],(api,{"ts_code":code,"start_date":days[-1].replace("-",""),
+                                             "end_date":"20261118"}))
+            self.assertEqual(len([b for b in self.bars() if b[1]==code and b[3]==100]),61)
+        self.assertFalse(any(b[3]==9999 for b in self.bars()))
+        self.assertFalse(self.db_rows("SELECT day FROM coverage WHERE day LIKE 'sector/%'"))
+
+    def test_newly_viewed_boards_leave_slots_for_index_and_all_board_dates(self):
+        self.register(("sector",CHIP))
+        calls = []
+        for step in range(5):
+            now = NOW+timedelta(minutes=step)
+            code = str(881100+step)+".TI"
+            self.register(("sector",code))
+            with closing(self.store.db()) as db, db:
+                db.execute("INSERT INTO watched VALUES('sector',?,?)",(code,now.timestamp()))
+            calls.append(self.cycle([],now)[1])
+        self.assertEqual([c[2].get("ts_code") for c in calls],["881100.TI",None,CHIP,None,"881104.TI"])
+        self.assertTrue(all("trade_date" in calls[i][2] for i in (1,3)))
+
+    def test_partial_current_cross_section_retries_at_publication_and_after_midnight(self):
+        self.register(("sector",THS),("sector","881121.TI"))
+        with closing(self.store.db()) as db, db:
+            for code in (THS,"881121.TI"):
+                self.store.put_bars(db,"sector",code,[{"date":d,"close":95} for d in jobs.window(NOW)[1:]],"ths_daily")
+        first = [{"ts_code":THS,"trade_date":DAY,"close":100}]
+        self.assertEqual(self.cycle(first)[1][2],{"trade_date":"20261119"})
+        self.assertIsNone(self.cycle([],NOW.replace(hour=19,minute=4))[1])
+        for hour in (19,21):
+            self.assertEqual(self.cycle([],NOW.replace(hour=hour,minute=5))[1][2],{"trade_date":"20261119"})
+        self.assertEqual(self.cycle([],NOW.replace(hour=23))[1][2],{"trade_date":"20261119"})
+        after_midnight = NOW+timedelta(hours=9)
+        final = [{"ts_code":"881121.TI","trade_date":DAY,"close":102}]
+        self.assertEqual(self.cycle(final,after_midnight)[1][2],{"trade_date":"20261119"})
+        self.assertEqual([(b[1],b[3]) for b in self.bars() if b[2]==DAY],[(THS,100),("881121.TI",102)])
+        self.assertEqual(self.db_rows("SELECT complete,rows FROM coverage WHERE day='2026-11-19'"),[(1,2)])
+        self.assertIsNone(self.cycle([],after_midnight+timedelta(minutes=1))[1])
+
     def test_recheck_partial_indices_next_date_one_task_per_day_and_existing_gaps_only(self):
         self.register(("sector",CHIP))
         days=jobs.window(NOW)
         with closing(self.store.db()) as db, db:
-            self.store.put_bars(db,"sector",CHIP,[{"date":d,"close":29} for d in days if d!=days[5]],"cache")
+            self.store.put_bars(db,"sector",CHIP,[{"date":d,"close":29} for d in days if d!=days[5]],"index_daily")
+            self.store.put_bars(db,"sector",CHIP,[{"date":days[5],"close":10}],"saved_daily")
         _,call=self.cycle([])
         missing=days[5].replace("-","")
         self.assertEqual(call[2],{"ts_code":CHIP,"start_date":missing,"end_date":missing})

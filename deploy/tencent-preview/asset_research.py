@@ -2,7 +2,7 @@
 from collections import OrderedDict
 from contextlib import closing
 from functools import lru_cache
-from datetime import date
+from datetime import date, datetime
 import gzip
 from http.server import BaseHTTPRequestHandler
 import json
@@ -35,6 +35,8 @@ PRAGMA journal_mode=WAL;
 CREATE TABLE IF NOT EXISTS assets(kind TEXT,code TEXT,name TEXT,PRIMARY KEY(kind,code)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS bars(kind TEXT,code TEXT,day TEXT,close REAL NOT NULL,pre_close REAL,pct_chg REAL,source TEXT NOT NULL,
  PRIMARY KEY(kind,code,day)) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS index_close_evidence(code TEXT,day TEXT,close REAL NOT NULL,source TEXT NOT NULL,
+ source_stamp TEXT NOT NULL,available_at TEXT NOT NULL,PRIMARY KEY(code,day)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS watched(kind TEXT,code TEXT,stamp REAL,PRIMARY KEY(kind,code)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS coverage(kind TEXT,day TEXT,source TEXT,complete INTEGER,rows INTEGER,
  PRIMARY KEY(kind,day,source)) WITHOUT ROWID;
@@ -80,6 +82,46 @@ def bar_record(kind, code, row, source):
     change = row.get("pct_chg", row.get("change_pct"))
     return (kind, code, day, price, prev if finite(prev) and prev > 0 else None,
             change if finite(change) else None, source)
+
+
+def source_stamp(value):
+    if not isinstance(value, str):
+        return None
+    try:
+        stamp = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    return shanghai_now(stamp) if stamp.tzinfo is not None else None
+
+
+def index_previous_closes(db, packet, now):
+    # live-quotes.market contains only the collector's rt_idx_k index records.
+    day = normalized_day(packet.get("trade_date"))
+    available = source_stamp(packet.get("generated_at"))
+    if (packet.get("source") != "sxdata_relay" or packet.get("schema_version") != 1
+            or not day or is_trading_day(day) is not True or not available
+            or available.date().isoformat() != day or available > now):
+        return
+    previous = previous_trading_day(day)
+    if previous is None or not isinstance(packet.get("market"), list):
+        return
+    source = "sxdata_rt_idx_k.pre_close"
+    for row in packet["market"]:
+        if not isinstance(row, dict):
+            continue
+        code = _index_code(row)
+        close = row.get("previous_close")
+        observed = source_stamp(row.get("quote_timestamp"))
+        if (not code or row.get("provider") != "stock_api" or row.get("timestamp_quality") != "source_reported"
+                or row.get("quote_date") != day or not observed or observed.date().isoformat() != day
+                or observed > available or not finite(close) or close <= 0):
+            continue
+        added = db.execute("""INSERT OR IGNORE INTO bars(kind,code,day,close,source)
+            SELECT 'index',code,?,?,? FROM assets WHERE kind='index' AND code=?""",
+            (previous.isoformat(), close, source, code))
+        if added.rowcount:
+            db.execute("INSERT OR REPLACE INTO index_close_evidence VALUES(?,?,?,?,?,?)",
+                       (code, previous.isoformat(), close, source, observed.isoformat(), available.isoformat()))
 
 
 class ResearchStore:
@@ -177,7 +219,7 @@ class ResearchStore:
                             self.put_bars(db, kind, code, [bar], str(bar.get("source") or "saved_daily"))
         self.ingest(self.public / "view.json", snapshot)
 
-    def sync_prices(self):
+    def sync_prices(self, now=None):
         # Live quotations are read on demand. Only completed bars enter history.
         def equity(db, packet):
             day = normalized_day(packet.get("trade_date"))
@@ -205,6 +247,7 @@ class ResearchStore:
                 index = _index_code({"id": raw})
                 self.put_bars(db, "index" if index else "sector", index or raw, bucket.values(), "sxdata_daily")
         self.ingest(self.out / "daily-market.json", daily)
+        self.ingest(self.out / "live-quotes.json", lambda db, packet: index_previous_closes(db, packet, shanghai_now(now)))
         def reference(db, data):
             for code, row in data.get("quotes", {}).items():
                 self.put_bars(db, "sector", code, [{"date": row.get("quote_date"), "close": row.get("price"),

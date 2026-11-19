@@ -303,6 +303,61 @@ class RecoveryTests(unittest.TestCase):
         self.cycle()
         self.assertEqual(len(self.calls), 3)
 
+    def test_full_historical_bar_response_closes_source_task_without_filling_clock_gaps(self):
+        self.now = self.at("21:30")
+        slots = recovery.elapsed_minutes(self.day, self.now)
+        self.response = [self.row(label[11:]) for label in sorted(slots.bar_ends)]
+        self.observe("09:30:03")
+        self.cycle()
+        self.now = self.at("08:30", "2026-11-20")
+        self.response = []
+        self.cycle()
+        row = self.db.execute("SELECT complete,outcome FROM minute_recovery_tasks WHERE day=?", (self.day,)).fetchone()
+        self.assertEqual(row, (1, "full_source_bars"))
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(slots.expected-recovery.seen_minutes(self.db, self.symbol, self.day), {self.day+"T13:00"})
+
+    def test_legacy_241_unique_labels_are_closed_but_240_ambiguous_labels_retry(self):
+        self.now = self.at("21:30")
+        slots = recovery.elapsed_minutes(self.day,self.now)
+        self.response = [self.row(label[11:]) for label in sorted(slots.bar_ends | {self.day+"T09:30"})]
+        self.cycle()
+        with self.db:
+            self.db.execute("DELETE FROM minute_recovery_full_bars")
+        self.now = self.at("08:30","2026-11-20")
+        self.cycle()
+        self.assertEqual(len(self.calls),1)
+        previous = self.db.execute("SELECT outcome FROM minute_recovery_tasks WHERE day=?", (self.day,)).fetchone()
+        self.assertEqual(previous[0],"full_source_bars")
+        with self.db:
+            self.db.execute("UPDATE minute_recovery_tasks SET complete=0 WHERE day=?", (self.day,))
+            self.db.execute("UPDATE minute_recovery_last_response SET valid_minutes=240")
+        self.now += timedelta(minutes=1)
+        self.response = []
+        self.cycle()
+        self.assertEqual(len(self.calls),2)
+        self.assertFalse(self.db.execute("SELECT complete FROM minute_recovery_tasks WHERE day=?", (self.day,)).fetchone()[0])
+
+    def test_homepage_post_close_rechecks_then_leaves_other_symbols_a_turn(self):
+        self.symbols.update({"399001.SZ":"sz399001","000032.SH":"000032.SH"})
+        self.now = self.at("14:58")
+        self.cycle()
+        with self.db:
+            self.db.execute("UPDATE minute_recovery_tasks SET retry_at=?,no_progress=6 WHERE id=?",
+                            (self.at("18:58").timestamp(),self.symbol))
+        self.now = self.at("15:01")
+        self.cycle()
+        self.assertEqual(self.calls[-1][1]["ts_code"],self.code)
+        self.assertEqual(self.calls[-1][1]["end_date"],self.day+" 15:00:00")
+        retry = self.db.execute("SELECT retry_at FROM minute_recovery_tasks WHERE id=?",(self.symbol,)).fetchone()[0]
+        self.assertEqual(retry,self.at("15:16").timestamp())
+        self.now += timedelta(minutes=2)
+        self.cycle()
+        self.assertNotEqual(self.calls[-1][1]["ts_code"],self.code)
+        self.now = self.at("15:16")
+        self.cycle()
+        self.assertEqual(self.calls[-1][1]["ts_code"],self.code)
+
     def test_calendar_seed_catches_downtime_without_weekends(self):
         self.observe("15:00", day="2026-11-13")
         self.cycle()

@@ -1,0 +1,26 @@
+[Unit]
+Description=A-share provider request accounting
+After=local-fs.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+UMask=0077
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/request_usage.py
+Restart=on-failure
+RestartSec=10
+Nice=10
+NoNewPrivileges=yes
+ProtectSystem=strict
+StateDirectory=ashare-radar-preview/request-usage
+StateDirectoryMode=0700
+ReadWritePaths=/var/lib/ashare-radar-preview/request-usage
+ProtectHome=yes
+PrivateTmp=yes
+PrivateNetwork=yes
+
+[Install]
+WantedBy=multi-user.target

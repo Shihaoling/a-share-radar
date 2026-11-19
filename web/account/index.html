@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <title>账户 · 观澜</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./account.css?v=20261119-1">
+  <script defer src="./account.js?v=20261119-1"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到账户</a>
+  <header class="mast"><div><a class="brand" href="../">观澜</a><span>账户</span><a class="back" href="../">返回市场总览</a></div></header>
+  <main id="main" class="account-shell">
+    <section class="card account" aria-labelledby="title">
+      <h1 id="title">账户</h1>
+      <p id="intro">查看公开行情和资讯无需登录。</p>
+      <p id="status" class="notice" role="status" aria-live="polite">正在读取账户状态…</p>
+      <button id="retry" class="secondary" type="button" hidden>重新连接</button>
+      <div id="guest" hidden>
+        <div class="switcher" aria-label="账户操作">
+          <button id="login-tab" type="button" aria-pressed="true">登录</button>
+          <button id="register-tab" type="button" aria-pressed="false">注册</button>
+        </div>
+        <form id="credentials" action="/api/account/login" method="post">
+          <label for="username">用户名</label><input id="username" name="username" required autocomplete="username" autocapitalize="none" spellcheck="false">
+          <label for="password">密码</label><input id="password" name="password" type="password" required autocomplete="current-password">
+          <p class="hint" id="register-hint" hidden></p>
+          <button class="primary" id="submit" type="submit">登录</button>
+        </form>
+      </div>
+      <div id="member" hidden>
+        <dl class="profile"><div><dt>用户名</dt><dd id="name"></dd></div><div><dt>账户类型</dt><dd id="role"></dd></div></dl>
+        <div class="actions"><a class="primary" id="admin-link" href="../admin/" hidden>打开管理后台</a><button class="secondary" id="logout" type="button">退出登录</button></div>
+      </div>
+      <noscript><p>请启用 JavaScript 登录账户。</p></noscript>
+    </section>
+  </main>
+</body>
+</html>

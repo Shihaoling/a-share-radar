@@ -92,10 +92,13 @@ function showMetrics(data) {
   get('missing').textContent = data.missing_body ? `${fmt(data.missing_body)} 条缺少正文` : '去重后累计';
   get('labelled').textContent = fmt(data.labelled);
   const rate = data.label_rate;
-  const speed = rate?.minutes ? ` · 近 ${rate.minutes} 分钟 ${rateFormat.format(rate.articles / rate.minutes)} 条/分` : '';
-  get('pending').textContent = `${fmt(data.collected - data.labelled)} 条未标注${speed}`;
-  get('tokens').textContent = fmt(data.usage.total_tokens);
-  get('calls').textContent = `tokens · ${fmt(data.usage.calls)} 次调用`;
+  get('pending').textContent = rate?.minutes
+    ? `近 ${rate.minutes} 分钟标注 ${rateFormat.format(rate.articles / rate.minutes)} 条/分`
+    : '累计已标注条数';
+  get('pending-labels').textContent = fmt(data.collected - data.labelled);
+  const finished = data.days.filter(day => day.collected > 0 && day.collected === day.labelled
+    && verifiedWindows(day) === day.windows).length;
+  get('finished-days').textContent = `${fmt(finished)} 个有资讯的日期已完成采集核验和标注`;
   const labelCooldown = get('label-cooldown');
   labelCooldown.hidden = !data.label_error;
   labelCooldown.textContent = data.label_error
@@ -251,7 +254,7 @@ function validSnapshot(data) {
     const time = dateFromKey(value);
     return Number.isFinite(time.getTime()) && time.toISOString().slice(0, 10) === value;
   };
-  return data?.schema_version === 1 && data.usage && Array.isArray(data.days) && data.days.length > 0
+  return data?.schema_version === 1 && Array.isArray(data.days) && data.days.length > 0
     && dateKey(data.start_day) && dateKey(data.end_day_exclusive) && typeof data.generated_at === 'string'
     && Number.isFinite(Date.parse(data.generated_at)) && Number.isInteger(data.total_days)
     && data.total_days === data.days.length && Number.isInteger(data.audited_days)

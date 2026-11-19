@@ -18,6 +18,7 @@ from relay_common import STATE
 from relay_quotes import SOURCE, groups, publish
 
 API = "idx_mins"
+HEADLINE_REVISIT = 15 * 60
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS minute_recovery (
     id TEXT NOT NULL, minute TEXT NOT NULL, source_stamp TEXT NOT NULL,
@@ -35,6 +36,9 @@ CREATE TABLE IF NOT EXISTS minute_recovery_last_response (
     day TEXT NOT NULL, id TEXT NOT NULL, received_at TEXT NOT NULL,
     response_rows INTEGER NOT NULL, valid_minutes INTEGER NOT NULL, added_minutes INTEGER NOT NULL,
     PRIMARY KEY (day,id)
+) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS minute_recovery_full_bars (
+    day TEXT NOT NULL, id TEXT NOT NULL, received_at TEXT NOT NULL, PRIMARY KEY(day,id)
 ) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS minute_recovery_pending ON minute_recovery_tasks(attempted,day,id) WHERE complete=0;
 CREATE TABLE IF NOT EXISTS minute_recovery_meta (
@@ -108,15 +112,27 @@ def elapsed_minutes(day, now):
     return MinuteWindow({label(m) for m in starts}, {label(m+1) for m in starts})
 
 
-def missing_count(db, symbol, day, slots):
-    if not slots.expected:
-        return 0
+def seen_minutes(db, symbol, day):
     args = (symbol, day + "T09:30", day + "T15:00")
     rows = db.execute("""SELECT minute FROM samples WHERE id=? AND minute BETWEEN ? AND ?
                          UNION ALL SELECT minute FROM minute_recovery WHERE id=? AND minute BETWEEN ? AND ?""",
                       args + args)
-    seen = {row[0] for row in rows}
-    return len(slots.expected - seen)
+    return {row[0] for row in rows}
+
+
+def historical_bars_finished(db, symbol, day, slots, seen):
+    # Opening clock ticks and end-labelled bars are different observations. A complete
+    # historical response can leave 09:30 or 13:00 empty. Never shift a source timestamp.
+    if not slots.bar_ends <= seen:
+        return False
+    if db.execute("SELECT 1 FROM minute_recovery_full_bars WHERE day=? AND id=?", (day, symbol)).fetchone():
+        return True
+    # Before full-bar receipts were recorded, verified rows were counted once per exact
+    # source minute. If one response accounts for ALL possible observed labels, it
+    # necessarily contained every bar endpoint. A bare 240-row count is insufficient.
+    row = db.execute("SELECT valid_minutes FROM minute_recovery_last_response WHERE day=? AND id=?",
+                     (day, symbol)).fetchone()
+    return bool(row and row[0] == len(seen & (slots.bar_ends | slots.expected)))
 
 
 def next_task(db, now):
@@ -128,28 +144,36 @@ def next_task(db, now):
     task = None
     for lane in lanes:
         op = "=" if lane == "today" else "<"
-        # Homepage market IDs differ from their exchange codes. Industry IDs equal
-        # the code. Apply homepage priority only to otherwise tied jobs.
+        # The headline gets one due post-close slot per 15 minutes of current-day
+        # work. All intervening turns retain oldest-attempted order; history keeps its lane.
+        due = now.timestamp()
+        close = now.replace(hour=15, minute=0, second=0, microsecond=0).timestamp()
+        prioritize = lane == "today" and due >= close
         rows = db.execute(f"""SELECT day,id,code,no_progress FROM minute_recovery_tasks
-                              WHERE complete=0 AND day {op} ? AND retry_at<=?
-                              ORDER BY attempted,day,
-                                  CASE WHEN id='sh000001' THEN 0 WHEN id<>code THEN 1 ELSE 2 END,
-                                  id""", (today, now.timestamp())).fetchall()
+                              WHERE complete=0 AND day {op} ? AND (retry_at<=? OR
+                                (? AND id='sh000001' AND attempted<? AND outcome IN ('no_new_minutes','partial')))
+                              ORDER BY CASE WHEN ? AND id='sh000001' AND (attempted<? OR attempted<=?) THEN 0 ELSE 1 END,
+                                  attempted,day,CASE WHEN id='sh000001' THEN 0 WHEN id<>code THEN 1 ELSE 2 END,id""",
+                          (today, due, prioritize, close, prioritize, close, due-HEADLINE_REVISIT)).fetchall()
         for day, symbol, code, no_progress in rows:
             if day not in slots_by_day:
                 slots_by_day[day] = elapsed_minutes(day, now)
             slots = slots_by_day[day]
-            if missing_count(db, symbol, day, slots):
+            seen = seen_minutes(db, symbol, day) if slots.expected else set()
+            if slots.expected - seen:
+                if lane == "older" and historical_bars_finished(db, symbol, day, slots, seen):
+                    covered.append((True, due, "full_source_bars", day, symbol))
+                    continue
                 task = day, symbol, code, no_progress, slots, lane
                 break
-            covered.append((len(slots.expected) == 240, now.timestamp() + 60, day, symbol))
+            covered.append((len(slots.expected) == 240, due + 60, "covered", day, symbol))
         if task:
             break
     # Do not hold a writer lock while scanning live observations, or upgrade an
     # active read transaction over concurrent relay commits. Observations only accumulate.
     if covered:
         with db:
-            db.executemany("""UPDATE minute_recovery_tasks SET complete=?,retry_at=?,outcome='covered'
+            db.executemany("""UPDATE minute_recovery_tasks SET complete=?,retry_at=?,outcome=?
                               WHERE day=? AND id=?""", covered)
     return task
 
@@ -178,19 +202,23 @@ def low_priority_client(token, borrow_slot):
 def store_points(db, task, rows, received):
     day, symbol, code, _, slots, _ = task
     allowed = slots.expected | slots.bar_ends
-    valid = added = 0
+    labels = set()
+    added = 0
     for point in minute_points((r for r in rows if isinstance(r, dict)), code, day, received, "1min"):
         stamp = point["timestamp"]
         minute = stamp[:16]
         if minute not in allowed or stamp[16:] != ":00+08:00":
             continue
-        valid += 1
+        labels.add(minute)
         cursor = db.execute("""INSERT OR IGNORE INTO minute_recovery(id,minute,source_stamp,price,code,available_at)
                             SELECT ?,?,?,?,?,? WHERE NOT EXISTS (
                                 SELECT 1 FROM samples WHERE id=? AND minute=?)""",
                             (symbol, minute, stamp, point["price"], code, received.isoformat(), symbol, minute))
         added += cursor.rowcount
-    return valid, added
+    if len(slots.bar_ends) == 240 and slots.bar_ends <= labels:
+        db.execute("INSERT OR IGNORE INTO minute_recovery_full_bars VALUES(?,?,?)",
+                   (day,symbol,received.isoformat()))
+    return len(labels), added
 
 
 def attempt(db, now, client_factory, clock):
@@ -243,11 +271,13 @@ def attempt(db, now, client_factory, clock):
         db.execute("""INSERT OR REPLACE INTO minute_recovery_last_response
                       (day,id,received_at,response_rows,valid_minutes,added_minutes) VALUES(?,?,?,?,?,?)""",
                    (day, symbol, received.isoformat(), len(rows), valid, added))
-        remaining = missing_count(db, symbol, day, slots)
+        remaining = len(slots.expected - seen_minutes(db, symbol, day))
         complete = not remaining and len(slots.expected) == 240
         misses = 0 if added else no_progress + 1
         # A provider may release historical minutes only after close. Leave its empty jobs pending.
         delay = 60 if not remaining else 300 if added else min(14400, 300 * 2**min(misses-1, 6))
+        if day == received.date().isoformat() and symbol == "sh000001" and received.hour >= 15:
+            delay = min(delay, HEADLINE_REVISIT)
         db.execute("""UPDATE minute_recovery_tasks SET attempted=?,retry_at=?,attempts=attempts+1,
                       no_progress=?,complete=?,outcome=? WHERE day=? AND id=?""",
                    (received.timestamp(), received.timestamp()+delay, misses, complete,
@@ -265,7 +295,8 @@ def project(db, output, symbols, now, state):
     db.execute("BEGIN")
     try:
         for symbol in sorted(symbols.values()):
-            missing += missing_count(db, symbol, day, slots)
+            if slots.expected:
+                missing += len(slots.expected - seen_minutes(db, symbol, day))
             # Publish already recovered bars until the day changes. A browser may still
             # hold the previous independent relay snapshot when a live observation arrives.
             rows = db.execute("""SELECT source_stamp,price FROM minute_recovery
