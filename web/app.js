@@ -559,6 +559,22 @@ function thsSectorPanel(item){
   h('div',{class:'directory-snapshot'},entries.length?h('dl',{},entries.map(([label,value])=>[h('dt',{},label),h('dd',{},value)])):
    h('p',{},'已收录该板块，等待中转站返回带日期的行情。')),sectorDetailsLink(item));
 }
+function thsLeaderPanel(item){
+ const snapshot=state.trends;
+ const board=snapshot?.boards.find(row=>row.id===item.id&&row.group==='ths');
+ const leaders=board?.rank_basis==='total_market_cap'?board.leaders:[];
+ if(!leaders.length){
+  const message=!snapshot?'正在读取主要成分股。':board?.rank_basis==='membership_pending'?'等待完整成分名单。':
+   board?.rank_basis==='ranking_pending'?'等待同日总市值覆盖至少 90% 的成分股。':'等待该板块的总市值排名。';
+  return panel('主要成分股','按板块成分股总市值排序',h('p',{class:'inline-note',role:'status'},message));
+ }
+ return panel('主要成分股',`总市值前 ${leaders.length} · ${board.rank_date} · 市值数据覆盖 ${accuracy(board.rank_coverage)} 的成分股`,
+  h('div',{class:'table-wrap'},h('table',{},
+   h('thead',{},h('tr',{},h('th',{scope:'col'},'股票'),h('th',{scope:'col'},'总市值'))),
+   h('tbody',{},leaders.map(stock=>h('tr',{},
+    h('td',{},assetResearchLink('stock',stock,stock.name),h('div',{class:'panel-subtitle'},stock.id)),
+    h('td',{class:'numeric'},amount(stock.rank_value))))))));
+}
 function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=state.overviewSelected){
  const today=chinaDay(new Date());
  return h('div',{class:'heatmap'},comparison.rows.slice(0,limit).map(({sector:sec,q})=>{
@@ -1198,7 +1214,7 @@ function sectors(d){
  const pager=ths&&pages>1?h('div',{class:'directory-pager'},
   h('button',{type:'button',disabled:page===0,onClick:()=>move(-1)},'上一页'),
   h('span',{},(page+1)+' / '+pages),h('button',{type:'button',disabled:page+1>=pages,onClick:()=>move(1)},'下一页')):null;
- const details=sec?(ths?thsSectorPanel(sec):sec.taxonomy==='SSE'?exchangeSectorPanel(sec,d):sectorDetail(sec,d)):null;
+ const details=sec?(ths?[thsSectorPanel(sec),thsLeaderPanel(sec)]:sec.taxonomy==='SSE'?exchangeSectorPanel(sec,d):sectorDetail(sec,d)):null;
  return h('div',{},heading('板块雷达',headingText),controls,
   taxonomy==='eastmoney'?h('p',{class:'inline-note'},'独立行业分类。每轮最多两页，各行保留实际采样时间。'):null,
   h('div',{class:'sector-layout'},panel('板块行情',subtitle,h('div',{},filters,table,pager)),
@@ -1347,7 +1363,7 @@ const validTrendRow=row=>record(row)&&(row.as_of===null||dateKey(row.as_of))&&re
   Number.isInteger(r.state)&&Object.hasOwn(trendStates,r.state)&&dateKey(r.start_date)&&
   [r.return_pct,r.score,r.efficiency,r.direction_share].every(Number.isFinite));
 });
-const trendFeed={file:'trends',key:'trends',label:'趋势观察',interval:300000,pages:['overview','trend'],source:'trend_observations',
+const trendFeed={file:'trends',key:'trends',label:'趋势观察',interval:300000,pages:['overview','trend','sectors'],source:'trend_observations',
  valid:p=>(p.expected_date===null||dateKey(p.expected_date))&&p.method==='closing_trend_v1'&&
   records(p.market)&&records(p.boards)&&record(p.stocks)&&[...p.market,...p.boards].every(row=>
    typeof row.id==='string'&&typeof row.name==='string'&&validTrendRow(row))&&
@@ -1411,6 +1427,7 @@ const pageQuoteFeed={key:'pageQuotes',file:'page-quotes',label:'网页行情',pa
  valid:p=>records(p.market)&&records(p.sectors)&&record(p.intraday)};
 function visiblePublication(spec){
  if(spec.pages&&!spec.pages.includes(state.page))return false;
+ if(spec===trendFeed&&state.page==='sectors')return usingThsRadar();
  return !spec.directory||visibleDirectory()||
   (spec.directory==='taxonomy'&&relayOnly&&!state.demo&&state.page==='overview')||
   (['ths','taxonomy'].includes(spec.directory)&&usingThsRadar());

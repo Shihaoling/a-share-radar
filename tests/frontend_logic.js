@@ -361,17 +361,23 @@ function runFrontendChecks(source) {
       {code:'881001.TI',name:'同花顺测试行业',kind:'I'}]};
     state.sectorReference={quotes:{[codes[3]]:{quote_date:date,price:321.45,change_pct:2.5}}};
     state.boardLiveSummary={trade_date:date,items:{[codes[3]]:{quote_at:date+'T00:00:00+08:00',change_pct:9,quoted_count:9,total_count:10}}};
+    state.trends={boards:[{id:codes[3],group:'ths',rank_basis:'total_market_cap',rank_date:date,rank_coverage:.96,
+      leaders:[{id:'600000.SH',name:'排名样本',rank_value:5e10}]},
+     {id:codes[4],group:'ths',rank_basis:'ranking_pending',leaders:[]}]};
     f.cloud.render();
     const click=label=>f.nodes(f.page,n=>n.tag==='button'&&text(n)===label)[0].events.click();
     click('同花顺板块');
     const quoted=f.nodes(f.page,n=>n.tag==='tr'&&text(n).includes('测试概念3'))[0];
     ok(text(f.page).includes('23 个板块'));ok(text(quoted).includes('+2.50%'));ok(!text(quoted).includes('+9.00%'));
     ok(f.nodes(f.page,n=>n.tag==='a'&&n.attrs.href==='./sector/?code='+codes[3]).length===1);
+    ok(text(f.page).includes('主要成分股'));ok(text(f.page).includes('排名样本'));ok(text(f.page).includes('总市值前 1'));
     click('概念');eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,20);
     click('下一页');eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,2);
     const search=f.byId('sector-search');search.value='８８３００３．ｔｉ';
     search.events.input({target:search});eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,1);
     ok(text(f.page).includes(date+' 收盘'));eq(state.taxonomy,'sse');
+    const other=f.byId('sector-search');other.value=codes[4];other.events.input({target:other});
+    ok(text(f.page).includes('等待同日总市值覆盖'));ok(!text(f.page).includes('排名样本'));
   });
 
   check('delayed industry feed populates only the board below the six market indices',()=>{
