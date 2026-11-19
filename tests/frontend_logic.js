@@ -245,6 +245,14 @@ function runFrontendChecks(source) {
     eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,1);
     ok(text(graph).includes('11:30'));ok(text(graph).includes('13:00'));
   });
+  check('recovered bars fill only their own missing minute, date and index',()=>{
+    const day='2026-11-19', stamp=t=>day+'T'+t+'+08:00';
+    const live={trade_date:day,series:{a:[[stamp('09:51:02'),101],[stamp('09:53:01'),103]]}};
+    const recovery={trade_date:day,series:{a:[[stamp('09:51:59'),999],[stamp('09:52:00'),102],null,[stamp('12:00:00'),2]],b:[[stamp('09:54:00'),1]]}};
+    const points=api.relayIntraday(live,null,{id:'a'},day,recovery);
+    eq(points.map(p=>p.price).join(','),'101,102,103');eq(points[1].timestamp_quality,'minute_backfill');
+    eq(api.relayIntraday(live,null,{id:'a'},day,{...recovery,trade_date:'2026-11-18'}).length,2);
+  });
   check('clicking anywhere on an index card selects its intraday chart',()=>{
     const item={id:'second-index',name:'第二指数'};
     api.state.metric='index';

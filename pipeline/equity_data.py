@@ -112,7 +112,8 @@ def _parse_payload(payload, day):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload", 900)
     if payload["code"] != 0:
-        if _provider_reason(payload)=="rate_limited":raise _Failure("rate_limited",60,provider_code=429,provider_reason="rate_limited")
+        if _provider_reason(payload) == "rate_limited":
+            raise _Failure("rate_limited", 60, provider_code=payload["code"], provider_reason="rate_limited")
         reason = _provider_reason(payload)
         if payload['code'] in (401, 403) and reason == 'provider_error':
             reason = 'authorization_denied'
@@ -249,17 +250,18 @@ class DailyClient:
             if delay:
                 time.sleep(delay)
         if not credential_matches(self._token):raise _Failure("credential_mismatch",3600)
-        _service_before("daily",self.remaining())
         body = json.dumps({"api_name": "daily", "token": token_for_api(self._token,"daily"),
                            "params": {"trade_date": day.replace("-", ""), "limit": ROW_LIMIT},
                            "fields": FIELDS}, separators=(",", ":")).encode()
         request = urllib.request.Request(ENDPOINT, data=body, method="POST", headers={
             "Content-Type": "application/json", "Accept": "application/json",
             "User-Agent": "A-share-radar/equity-history"})
+        event = _service_before("daily",self.remaining())
         self.count += 1
         self.last = time.monotonic()
-        with _service_errors("daily", self.now, transport_retry=900, redirect_retry=86400):
+        with _service_errors("daily", self.now, transport_retry=900, redirect_retry=86400, event=event) as observed:
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
+                observed["http_status"] = getattr(response, "status", 200)
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 86400)
                 status = getattr(response, "status", 200)

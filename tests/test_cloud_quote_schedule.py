@@ -38,6 +38,18 @@ def collect(schedule, start, seconds, costs=()):
 
 
 class CloudQuoteScheduleTests(unittest.TestCase):
+    def test_slower_recovery_keeps_both_batches_and_retries_unsent_stock_turn(self):
+        schedule = QuoteSchedule(PROFILE)
+        schedule.gap = 15
+        start = at("09:30:00")
+        self.assertEqual([batch for _, batch in collect(schedule, start, 30)], ["rt_idx_k", "rt_idx_k"])
+        self.assertEqual(schedule.admit(start + timedelta(seconds=30)), "rt_k")
+        schedule.finish(start + timedelta(seconds=30), deferred=True)
+        self.assertIsNone(schedule.admit(start + timedelta(seconds=35)))
+        self.assertEqual(schedule.admit(start + timedelta(seconds=45)), "rt_k")
+        schedule.finish(start + timedelta(seconds=45))
+        self.assertEqual(schedule.admit(start + timedelta(seconds=60)), "rt_idx_k")
+
     def test_active_profile_obeys_five_second_caps_and_thirty_second_stock_batches(self):
         schedule = QuoteSchedule(PROFILE)
         for opening, end in [("09:30:00", "11:29:55"), ("13:00:00", "14:59:55")]:

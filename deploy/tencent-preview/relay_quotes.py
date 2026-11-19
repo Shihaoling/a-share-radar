@@ -13,7 +13,7 @@ from tempfile import NamedTemporaryFile
 import time
 
 from pipeline.calendar import market_session, previous_trading_day, shanghai_now
-from pipeline.data_service import gate_delay
+from pipeline.data_service import gate_delay, realtime_min_gap
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
 from quote_schedule import QuoteSchedule
@@ -278,6 +278,7 @@ def start(args):
     if "rt_k" in conf["batches"]:
         quotes["rt_k"] = read_saved_quotes(stocks_output, ("stocks",), universe["rt_k"], restored_at)
     schedule = QuoteSchedule(conf)
+    schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
     close_batches = iter(conf["batches"]) if args.close_snapshot else None
     if close_batches is not None and market_session()["phase"] != "post_close":
         raise SystemExit("The one-time close snapshot requires a completed trading session")
@@ -326,6 +327,7 @@ def start(args):
             if batch:
                 delay = 0
                 host_cooldown = False
+                deferred = False
                 try:
                     fetched = collect(token, batch, universe[batch], conf["min_gap_seconds"])
                     sample_changed = store_quotes(history, batch, fetched, quotes[batch], entity_ids)
@@ -341,17 +343,19 @@ def start(args):
                                  if (finished_at - datetime.fromisoformat(q["quote_timestamp"])).total_seconds() <= 30}
                     status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == len(universe[batch]) else "partial"
                 except _Failure as failure:
-                    status[batch] = failure.code
-                    if failure.deferred:
+                    deferred = failure.deferred
+                    if deferred:
                         restore_gate_cooldowns(schedule, shanghai_now())
                     else:
+                        status[batch] = failure.code
                         delay = failure.retry_seconds or 60
                         host_cooldown = failure.host or failure.code == "rate_limited"
                         queue_retry(history, batch, shanghai_now(), delay, failure.code)
-                    print(json.dumps({"event": "source_failure", "api": batch,
+                    print(json.dumps({"event": "request_deferred" if deferred else "source_failure", "api": batch,
                                       "code": failure.code, "provider_code": failure.provider_code}), flush=True)
                 finally:
-                    schedule.finish(shanghai_now(), delay, host=host_cooldown)
+                    schedule.finish(shanghai_now(), delay, host=host_cooldown, deferred=deferred)
+                    schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
 
             if day != history_day or batch == "rt_k":
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
@@ -366,7 +370,7 @@ def start(args):
             payload = {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
                        "collector": {"status": next(iter(status.values())), "session": phase,
                                      "batches": status.copy(),
-                                     "min_gap_seconds": conf["min_gap_seconds"]},
+                                     "min_gap_seconds": schedule.gap},
                        "market": [dated_quote(q, day) for symbol, q in index_quotes.items() if symbol not in INDUSTRIES],
                        "sectors": [{"id": code, "name": name, **dated_quote(index_quotes.get(code, {}), day),
                                     "taxonomy": "SSE", "basis": "index", "reference": weights.get(code, {})}

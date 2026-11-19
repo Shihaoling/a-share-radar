@@ -1,0 +1,12 @@
+[Unit]
+Description=Check for missing real A-share minutes
+
+[Timer]
+OnCalendar=*-*-* *:*:42 Asia/Shanghai
+AccuracySec=1s
+RandomizedDelaySec=4s
+Persistent=true
+Unit=ashare-minute-recovery.service
+
+[Install]
+WantedBy=timers.target

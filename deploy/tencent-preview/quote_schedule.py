@@ -65,7 +65,11 @@ class QuoteSchedule:
         self.in_flight = batch
         return batch
 
-    def finish(self, now, retry_after=0, *, host=False):
+    def finish(self, now, retry_after=0, *, host=False, deferred=False):
+        # A stock slot blocked before sending still owes the market a stock call.
+        if deferred and self.in_flight == "rt_k" and self.last_slot is not None:
+            self.next_stock_slot = self.last_slot[1] + 1
+            self.last_batch = "rt_idx_k"
         if self.in_flight and retry_after:
             until = shanghai_now(now).timestamp() + max(60, retry_after)
             for batch in self.batches if host else (self.in_flight,):

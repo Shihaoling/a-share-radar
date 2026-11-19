@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import errno
+import http.client
 import json
 import math
 import os
 import re
+import socket
 import time
 import urllib.error
 import urllib.parse
@@ -24,7 +27,7 @@ from pathlib import Path
 
 from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous_trading_day, shanghai_now
 
-from .data_service import ENDPOINT,token_for_api,credential_matches,gate_state,sent,failed
+from .data_service import ENDPOINT, token_for_api, credential_matches, reserve_request, finish_request, failed
 MAX_BYTES = 4 * 1024 * 1024
 MIN_HISTORY_BARS = 181
 ROW_PARSER_VERSION = 2
@@ -146,23 +149,55 @@ def _http_failure(status, headers, now, redirect_retry):
     return _Failure("http_error", 3600)
 
 
+def _transport_kind(error, received_headers):
+    if isinstance(error, urllib.error.URLError):
+        error = error.reason
+    if isinstance(error, socket.gaierror):
+        return "dns"
+    if isinstance(error, TimeoutError):
+        return "read_timeout" if received_headers else "open_timeout"
+    if isinstance(error, http.client.IncompleteRead):
+        return "incomplete_read"
+    if isinstance(error, http.client.RemoteDisconnected):
+        return "peer_closed"
+    if isinstance(error, (ConnectionResetError, BrokenPipeError)):
+        return "reset_on_read" if received_headers else "reset_on_open"
+    if isinstance(error, ConnectionRefusedError):
+        return "connect_refused"
+    if getattr(error, "errno", None) in (errno.EHOSTUNREACH, errno.ENETUNREACH):
+        return "unreachable"
+    return "other_read" if received_headers else "other_open"
+
+
 @contextmanager
-def _service_errors(api, now, *, transport_retry=60, redirect_retry=3600):
+def _service_errors(api, now, *, event=None, transport_retry=60, redirect_retry=3600):
+    response = {}
+    started = time.monotonic()
+    transport = None
     try:
-        yield
-        return
+        yield response
     except urllib.error.HTTPError as error:
+        response["http_status"] = error.code
         failure = _http_failure(error.code, error.headers, now, redirect_retry)
         error.close()
     except _Failure as error:
         failure = error
-    except (TimeoutError, urllib.error.URLError, OSError):
+    except (TimeoutError, urllib.error.URLError, OSError, http.client.IncompleteRead) as error:
+        transport = _transport_kind(error, "http_status" in response)
         failure = _Failure("transport_error", transport_retry)
     except Exception:
         failure = _Failure("invalid_payload", 900)
+    else:
+        finish_request(api, event, "ok", (time.monotonic()-started)*1000, response.get("http_status"))
+        return
+    duration_ms = (time.monotonic()-started)*1000
     limited = failure.code == "rate_limited" or failure.provider_reason == "rate_limited"
+    status = response.get("http_status")
+    outcome = ("http_429" if status == 429 else "provider_429" if limited and failure.provider_code == 429
+               else "provider_rate_limited" if limited else failure.code)
     failed(api, failure.retry_seconds or 60, host=failure.host or limited,
            code="rate_limited" if limited else failure.code)
+    finish_request(api, event, outcome, duration_ms, status, transport)
     raise failure from None
 
 
@@ -239,16 +274,17 @@ class _Client:
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        _service_before(api, self.remaining(), self.interval)
         body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
                            "fields": FIELDS[api]}, separators=(",", ":")).encode("utf-8")
         request = urllib.request.Request(self.url, data=body, method="POST", headers={
             "Content-Type": "application/json", "Accept": "application/json",
             "User-Agent": "A-share-radar/daily-supplement"})
+        event = _service_before(api, self.remaining(), self.interval)
         self.count += 1
         self.last = time.monotonic()
-        with _service_errors(api, self.now):
+        with _service_errors(api, self.now, event=event) as observed:
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
+                observed["http_status"] = getattr(response, "status", 200)
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 3600)
                 status = getattr(response, "status", 200)
@@ -266,11 +302,18 @@ class _Client:
 
 
 def _service_before(api, remaining, min_interval=6):
-    cooldown,gap,code=gate_state(api, min_interval)
-    if cooldown>0:raise _Failure(code,math.ceil(cooldown),deferred=True)
-    if gap>=remaining:raise _Failure('budget_exhausted',deferred=True)
-    if gap:time.sleep(gap)
-    sent(api)
+    deadline = time.monotonic() + remaining
+    while True:
+        try:
+            cooldown, gap, reason, event = reserve_request(api, min_interval, deadline-time.monotonic())
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            raise _Failure("gate_unavailable", 60, deferred=True) from None
+        if reason:
+            raise _Failure(reason, math.ceil(cooldown), deferred=True)
+        if not gap:
+            return event
+        time.sleep(gap)
+
 
 def _closed_day(now):
     if is_trading_day(now.date()) is True and now.time().replace(tzinfo=None) >= clock(18, 30):

@@ -71,7 +71,8 @@ def _rows(payload, api):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload", 900)
     if payload["code"] != 0:
-        if _provider_reason(payload)=="rate_limited":raise _Failure("rate_limited",60,provider_reason="rate_limited")
+        if _provider_reason(payload) == "rate_limited":
+            raise _Failure("rate_limited", 60, provider_code=payload["code"], provider_reason="rate_limited")
         reason = _provider_reason(payload)
         if payload["code"] in (401, 403):
             reason = "authorization_denied"
@@ -110,16 +111,17 @@ class _Client(_BaseClient):
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        _service_before(api,self.remaining())
         body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
                            "fields": FIELDS[api]}, separators=(",", ":")).encode()
         request = urllib.request.Request(self.url, data=body, method="POST", headers={
             "Content-Type": "application/json", "Accept": "application/json",
             "User-Agent": "A-share-radar/fund-research"})
+        event = _service_before(api,self.remaining())
         self.count += 1
         self.last = time.monotonic()
-        with _service_errors(api, self.now, transport_retry=900):
+        with _service_errors(api, self.now, transport_retry=900, event=event) as observed:
             with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
+                observed["http_status"] = getattr(response, "status", 200)
                 if response.geturl() != ENDPOINT:
                     raise _Failure("redirect_blocked", 3600)
                 status = getattr(response, "status", 200)

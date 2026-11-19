@@ -73,7 +73,7 @@ class CloudNewsTests(unittest.TestCase):
 
     def test_capped_window_splits_and_advances_with_one_request_per_run(self):
         client = Mock()
-        row = {"datetime": "2026-11-18 11:03:15", "content": "来源正文", "title": "市场关注经济数据", "channels": ""}
+        row = {"datetime": "2026-11-18 10:03:15", "content": "来源正文", "title": "市场关注经济数据", "channels": ""}
         client.request.side_effect = [[row, row], [], [row]]
         with patch.object(news, "relay_client", return_value=nullcontext(client)), patch.object(news, "NEWS_LIMIT", 2):
             news.collect(self.db, NOW)
@@ -82,8 +82,8 @@ class CloudNewsTests(unittest.TestCase):
             news.collect(self.db, NOW+timedelta(minutes=4))
         self.assertEqual(client.request.call_count, 3)
         windows = [(call.args[1]["start_date"][-8:], call.args[1]["end_date"][-8:]) for call in client.request.call_args_list]
-        self.assertEqual(windows, [("11:00:00", "12:00:00"), ("11:37:00", "12:02:00"), ("11:00:00", "11:30:00")])
-        self.assertEqual(news.checkpoint(self.db, "coverage_end"), NOW.replace(hour=11, minute=30).isoformat())
+        self.assertEqual(windows, [("09:00:00", "12:00:00"), ("11:37:00", "12:02:00"), ("09:00:00", "10:30:00")])
+        self.assertEqual(news.checkpoint(self.db, "coverage_end"), NOW.replace(hour=10, minute=30).isoformat())
         self.assertEqual(self.db.execute("SELECT count(*) FROM articles").fetchone()[0], 1)
 
     def test_delayed_publication_after_429_and_empty_reply_is_collected_analysed_and_published(self):
@@ -184,6 +184,157 @@ class CloudNewsTests(unittest.TestCase):
         self.assertEqual(len(stored), 1)
         self.assertEqual((stored[0]["id"],stored[0]["first_seen_at"],stored[0]["full_text"]),
                          ("A", NOW.isoformat(), completed["full_text"]))
+
+    @staticmethod
+    def mock_source(entries, limit=None):
+        def respond(api, params):
+            assert api == "news"
+            selected = [row for row in entries if params["start_date"] <= row["datetime"] <= params["end_date"]]
+            return sorted(selected, key=lambda r: r["datetime"], reverse=True)[:limit]
+        return Mock(request=Mock(side_effect=respond))
+
+    @staticmethod
+    def source_row(stamp, content, title="市场最新经济快讯"):
+        return {"datetime": stamp.strftime("%F %T"), "content": content, "title": title, "channels": ""}
+
+    def test_three_hour_poll_and_two_hourly_day_sweep_collect_distinct_delayed_stories(self):
+        start = NOW.replace(hour=1, minute=30)
+        near = self.source_row(start-timedelta(hours=2, minutes=38), "昨日同题的第一份完整快讯")
+        older = self.source_row(start-timedelta(hours=19), "昨日同题的第二份完整快讯")
+        entries = []
+        client = self.mock_source(entries)
+        with patch.object(news, "relay_client", return_value=nullcontext(client)):
+            for minute in range(0, 121, 20):
+                if minute == 20:
+                    entries.extend((near, older))
+                at = start+timedelta(minutes=minute)
+                news.collect(self.db, at)
+                if minute == 20:
+                    feed = self.feed(at)
+                    self.assertEqual([r["summary"] for r in feed["recent_articles"]], [near["content"]])
+                    self.assertEqual(feed["recent_articles"][0]["first_seen_at"], at.isoformat())
+        self.assertEqual(client.request.call_count, 7)
+        windows = [call.args[1] for call in client.request.call_args_list]
+        self.assertEqual(windows[1]["start_date"], (start-timedelta(hours=3)).strftime("%F %T"))
+        self.assertEqual(windows[-1]["start_date"], (at-timedelta(days=1)).strftime("%F %T"))
+        recent = self.feed(at)["recent_articles"]
+        self.assertEqual({r["summary"] for r in recent}, {near["content"], older["content"]})
+        self.assertEqual(next(r for r in recent if r["summary"] == older["content"])["first_seen_at"], at.isoformat())
+
+    def test_legacy_short_and_long_headline_keys_preserve_distinct_bodies_and_labels(self):
+        for number, title in enumerate(("数据", "今日经济数据统计")):
+            prefix = str(number)
+            original = report(prefix+"old", title=title, body="指标  +3%",
+                              llm_analysis={"status":"ready", "summary":"第一次快讯的标签"})
+            legacy = news.headline_key(title)
+            if len(legacy)<6:
+                legacy += news.sha256(original["full_text"].encode()).hexdigest()
+            self.db.execute("INSERT INTO articles(id,day,published,headline,payload,analyzed) VALUES(?,?,?,?,?,1)",
+                            (original["id"], NOW.date().isoformat(), NOW.isoformat(), legacy, json.dumps(original)))
+            repeat = report(prefix+"duplicate", stamp=NOW+timedelta(seconds=10), title=title, body="指标 +3%")
+            changed = report(prefix+"new", title=title, body="指标 -3%")
+            self.assertEqual(news.save_article(self.db, repeat), 0)
+            self.assertEqual(news.save_article(self.db, changed), 1)
+            self.assertEqual(news.save_article(self.db, changed), 0)
+            stored = [(key, flag) for key, flag in self.db.execute("SELECT id,analyzed FROM articles WHERE id LIKE ? ORDER BY id", (prefix+"%",))]
+            self.assertEqual(stored, [(changed["id"], 0), (original["id"], 1)])
+
+    def test_capped_day_sweep_retains_both_halves_through_restart_and_keeps_live_poll(self):
+        entries = [self.source_row(NOW-timedelta(hours=h), "原文"+str(h)) for h in (21, 8, 4)]
+        client = self.mock_source(entries, limit=2)
+        news.set_checkpoint(self.db, "coverage_end", NOW.isoformat())
+        news.set_checkpoint(self.db, "sweep_after", NOW.isoformat())
+        with patch.object(news, "relay_client", return_value=nullcontext(client)), patch.object(news, "NEWS_LIMIT", 2):
+            news.collect(self.db, NOW)
+            windows = self.db.execute("SELECT start_at,end_at FROM news_rechecks ORDER BY start_at").fetchall()
+            self.assertEqual(windows, [((NOW-timedelta(days=1)).isoformat(), (NOW-timedelta(hours=12)).isoformat()),
+                ((NOW-timedelta(hours=12)+timedelta(seconds=1)).isoformat(), NOW.isoformat())])
+            self.db.close()
+            self.db = news.db_open()
+            self.addCleanup(self.db.close)
+            entries.append(self.source_row(NOW+timedelta(minutes=2), "即时新增", title="实时消息"))
+            news.collect(self.db, NOW+timedelta(minutes=2))
+            self.assertIn("实时消息", [r["title"] for r in self.feed(NOW+timedelta(minutes=2))["articles"]])
+            for minute in range(4, 121, 2):
+                at = NOW+timedelta(minutes=minute)
+                news.collect(self.db, at)
+                if not self.feed(at)["collector"]["pending_recheck_windows"]:
+                    break
+        self.assertLessEqual(minute, 120)
+        self.assertEqual(self.feed(at)["collector"]["pending_recheck_windows"], 0)
+        stored = {json.loads(row[0])["full_text"] for row in self.db.execute("SELECT payload FROM articles")}
+        self.assertEqual(stored, {"原文21", "原文8", "原文4", "即时新增"})
+        self.assertEqual(client.request.call_count, minute//2+1)
+
+    def test_empty_response_contradicting_saved_news_is_rechecked_before_gap_closes(self):
+        old = NOW-timedelta(hours=8)
+        old_row = self.source_row(old, "先前触顶时的已知正文")
+        late_row = self.source_row(old+timedelta(seconds=10), "该段随后补齐的新正文")
+        start, end = old-timedelta(minutes=1), old+timedelta(minutes=1)
+        news.set_checkpoint(self.db, "coverage_end", NOW.isoformat())
+        news.set_checkpoint(self.db, "sweep_after", (NOW+timedelta(days=1)).isoformat())
+        news.queue_recheck(self.db, start, end, NOW)
+        news.save_article(self.db, report("stock-api-news-known", stamp=old, body=old_row["content"],
+                                           title=old_row["title"]))
+        client = self.mock_source([])
+        with patch.object(news, "relay_client", return_value=nullcontext(client)):
+            news.collect(self.db, NOW)
+            self.assertEqual(news.checkpoint(self.db, "collect_error"), "empty_known_window")
+            self.assertEqual(self.feed()["collector"]["pending_recheck_windows"], 1)
+            client.request.side_effect = self.mock_source([old_row, late_row]).request.side_effect
+            for minute in (2, 20, 40, 60, 80, 100, 120):
+                now = NOW+timedelta(minutes=minute)
+                news.collect(self.db, now)
+        self.assertEqual(self.feed(now)["collector"]["pending_recheck_windows"], 0)
+        self.assertEqual(self.db.execute("SELECT count(*) FROM articles").fetchone()[0], 2)
+        self.assertEqual(client.request.call_count, 8)
+
+    def test_terminal_second_is_retried_after_restart_while_fresh_news_advances(self):
+        old = NOW-timedelta(hours=7)
+        news.set_checkpoint(self.db, "unresolved_second", old.isoformat())
+        news.set_checkpoint(self.db, "coverage_end", NOW.isoformat())
+        news.set_checkpoint(self.db, "sweep_after", (NOW+timedelta(days=1)).isoformat())
+        self.db.commit()
+        self.db.close()
+        self.db = news.db_open()
+        self.addCleanup(self.db.close)
+        article = self.source_row(old, "后来可以完整读取的快讯")
+        current = self.source_row(NOW+timedelta(minutes=2), "实时更新")
+        client = self.mock_source([article, article, current])
+        with patch.object(news, "relay_client", return_value=nullcontext(client)), patch.object(news, "NEWS_LIMIT", 2):
+            news.collect(self.db, NOW)
+            self.assertEqual(self.feed()["collector"]["last_incomplete_second"], old.isoformat())
+            client.request.side_effect = self.mock_source([article, current]).request.side_effect
+            for minute in (2, 20, 40, 60, 80, 100, 120):
+                at = NOW+timedelta(minutes=minute)
+                news.collect(self.db, at)
+                if minute == 2:
+                    self.assertEqual(self.feed(at)["collector"]["coverage_end"], at.isoformat())
+        feed = self.feed(at)
+        self.assertIsNone(feed["collector"]["last_incomplete_second"])
+        self.assertEqual(feed["collector"]["status"], "ready")
+        self.assertEqual(client.request.call_args.args[1]["start_date"], old.strftime("%F %T"))
+        self.assertEqual(client.request.call_count, 8)
+
+    def test_interrupted_initial_request_after_nine_day_outage_recovers_original_window(self):
+        awaited = self.source_row(NOW-timedelta(hours=1), "停机前发布的真实快讯")
+        client = Mock()
+        with patch.object(news, "relay_client", return_value=nullcontext(client)):
+            client.request.side_effect = RuntimeError("interrupted")
+            with self.assertRaisesRegex(RuntimeError, "interrupted"):
+                news.collect(self.db, NOW)
+            self.db.close()
+            self.db = news.db_open()
+            self.addCleanup(self.db.close)
+            resume = NOW+timedelta(days=9)
+            client.request.side_effect = self.mock_source([awaited]).request.side_effect
+            news.collect(self.db, resume)
+            news.collect(self.db, resume+timedelta(minutes=2))
+        self.assertEqual(client.request.call_args_list[1].args[1]["end_date"], resume.strftime("%F %T"))
+        self.assertEqual(client.request.call_args_list[2].args[1], client.request.call_args_list[0].args[1])
+        article = self.feed(resume)["recent_articles"][0]
+        self.assertEqual(article["first_seen_at"], (resume+timedelta(minutes=2)).isoformat())
+        self.assertEqual(self.feed(resume)["collector"]["coverage_end"], NOW.isoformat())
 
     def test_digest_rate_limit_pauses_model_but_preserves_available_digest(self):
         day = NOW.date().isoformat()

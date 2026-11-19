@@ -18,6 +18,24 @@
 
 行情调度使用 `relay-active.json`，离线回放也读取此文件。共享额度、慢请求或限流会降低实际采样频率。长请求结束后，错过的个股批次优先使用下一次机会，采集器按正常间隔继续工作。午休和盘后暂停实时行情请求。浏览器在交易时段每 5 秒检查已发布的指数与行业行情，确认午休或收盘后三类行情快照分别每 5 分钟检查一次。资讯使用独立的发布周期。
 
+### 采集限额与缺口维护
+
+本站所有腾讯云 SXData 任务共用 `relay/rate-gate.json` 和文件锁。每次发送前在锁内核对最近 60 秒的请求，合计最多 100 次，重试也占用额度。行情正常时相邻批次至少间隔 5 秒，涉及其他业务时至少间隔 6 秒。10 分钟内连续累计 2 次明确实时 429 后，行情间隔增至 10 秒，3 次及以上增至 15 秒。旧限流记录退出窗口后逐级恢复。供应商指定的更长冷却仍然有效。
+
+独立定时器 `ashare-minute-recovery.timer` 查找交易所指数在已结束交易分钟中的缺口，每 60 秒最多向 `idx_mins` 请求一个标的的真实 1 分钟行情。任务按日、标的持久化，午休可补上午数据，盘中空返回会退避，跨日继续处理。补点在同一私有 SQLite 库的 `minute_recovery` 表中分别保存源时点和实际取得时间。网站用 `/data/minute-recovery.json` 填补当日分时，相同分钟优先显示已采集的实时报价。原始实盘观测和当时已保存的模型输入可独立复核。
+
+资讯每轮仍只请求一次。常规窗口回看水位前 3 小时，每 2 小时借用一轮检查过去 24 小时。在窗口积压时兼顾最新快讯，持久化的拆分队列继续处理触顶和异常窗口。同日标题相同且正文有变化的快讯分别保留。
+
+在服务器上运行以下只读命令核对共享计量及工作进程日志。
+
+```sh
+cd /opt/ashare-radar-preview
+PYTHONPATH=runtime /var/lib/ashare-radar-preview/venv/bin/python deploy/tencent-preview/collector_health.py --since today
+journalctl -u ashare-minute-recovery.service --since today --no-pager
+```
+
+共享计量中的 `starts_last_60s` 是当前滚动窗口，`peak_60s` 是计量开始以来的最高值。`apis` 按接口记录累计发送、完成结果、本地延后和传输异常，`recent` 保留有限的逐次耗时样本。日志中一次资讯调度遇到冷却不一定向上游发出了请求。引用 429 或失败率时应区分有供应商返回码的请求、HTTP 错误、传输异常和本地延后，并注明计量时段。新计量启用前的历史日志没有 DNS、连接或读取阶段的逐次归因。
+
 盘后研究复用现有行情校验、估值风险指标、个股模型和持仓聚合、ETF 数据及预测台账模块。成分按日期记录并轮换刷新。资金流以 SXData `moneyflow` 的实际盘后回包为准。研究投影记录发布时刻、市场覆盖和各子任务状态。订阅接口或数据迟到会体现为待更新，日后按同一时间口径继续处理。
 
 ## 历史新闻范围与导出
@@ -53,8 +71,8 @@ sha256sum news.jsonl.gz
 看板显示「正式归档已校验」后，在训练电脑上使用已有授权的 SSH 凭据下载正式清单和压缩文件。下载后比对 `manifest.json` 的 `sha256`。阶段导出仍可从 `export/` 查看。
 
 ```sh
-scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
-scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
+scp ubuntu@${RADAR_HOST}:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
+scp ubuntu@${RADAR_HOST}:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
 ```
 
 ## 域名

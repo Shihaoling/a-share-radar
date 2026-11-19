@@ -245,24 +245,29 @@ function checkSummary(d){const checks=d.data_checks||[];const counts={verified:0
 
 
 function intradayFor(d,entity,sector){const keys=[sector&&entity?.code?`${sector.id}:proxy:${entity.code}`:null,entity?.id,entity?.code,sector?`${sector.id}:proxy`:null].filter(Boolean);let rows=[];for(const k of keys){const bucket=d.intraday?.[k],points=Array.isArray(bucket)?bucket:bucket?.points;if(Array.isArray(points)&&points.length){rows=points;break;}}rows=rows.map(x=>({...x,timestamp:x.quote_timestamp||x.timestamp||(x.timestamp_quality==='page_observed'?x.observed_at:null)})).filter(x=>finite(x.price)&&x.timestamp&&Number.isFinite(new Date(x.timestamp).getTime())).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));if(!rows.length)return[];const day=t=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date(t));const latest=day(rows.at(-1).timestamp);const todayRows=rows.filter(x=>day(x.timestamp)===latest),primary=todayRows.filter(x=>x.provider==='stock_api'&&x.kind==='historical_minute'&&x.source_code===(entity.index_code||entity.code||(entity.id?.startsWith('sh')?entity.id.slice(2)+'.SH':entity.id?.startsWith('sz')?entity.id.slice(2)+'.SZ':entity.id)));return primary.length>=2?primary:todayRows;}
-function relayIntraday(snapshot, latest, item, day){
- const rows=snapshot?.trade_date===day?snapshot.series?.[item.id]||[]:[];
- const ticks=latest&&latest.quote_date===day&&latest.timestamp_quality==='source_reported'
-  ?[...rows,[latest.quote_timestamp,latest.price]]:rows;
+function relayIntraday(snapshot, latest, item, day, recovery){
  const minutes=new Map();
  const start=quoteTime(day+'T09:30:00+08:00');
- for(const [timestamp,price] of ticks){
+ function add(row,quality){
+  if(!Array.isArray(row))return;
+  const [timestamp,price]=row;
   const time=quoteTime(timestamp),seconds=(time-start)/1000,minute=Math.floor(seconds/60);
-  if(!finite(price)||Number(price)<=0||time===null||minute<0||minute>330||minute>120&&minute<210)continue;
+  if(typeof price!=='number'||!Number.isFinite(price)||price<=0||time===null||minute<0||minute>330||minute>120&&minute<210)return;
   const prior=minutes.get(minute);
-  if(!prior||time>=prior.time)minutes.set(minute,{timestamp,price:Number(price),time,minute,seconds});
+  if(!prior||(prior.timestamp_quality==='minute_backfill'&&quality==='source_reported')||time>=prior.time)
+   minutes.set(minute,{timestamp,price,time,minute,seconds,timestamp_quality:quality});
  }
+ for(const [feed,quality] of [[recovery,'minute_backfill'],[snapshot,'source_reported']]){
+  const rows=feed?.trade_date===day?feed.series?.[item.id]:null;
+  if(Array.isArray(rows))for(const row of rows)add(row,quality);
+ }
+ if(latest?.quote_date===day&&latest.timestamp_quality==='source_reported')add([latest.quote_timestamp,latest.price],'source_reported');
  return [...minutes.values()].sort((a,b)=>a.minute-b.minute);
 }
 function todayRelayTicks(item,day){
  const feed=state.liveQuotes;
  const quote=feed?.trade_date===day?[...feed.market,...feed.sectors].find(q=>q.id===item.id):null;
- return relayIntraday(state.relayIntraday,quote,item,day);
+ return relayIntraday(state.relayIntraday,quote,item,day,state.minuteRecovery);
 }
 function tickNote(rows){if(!rows.length)return h('div',{class:'tick-note'},'今日尚无分时采样。交易时段约每五分钟采集，取得两个真实样本后绘图。');const observed=rows.at(-1).timestamp_quality==='page_observed',historical=rows.every(p=>p.provider==='stock_api'&&p.kind==='historical_minute'&&p.frequency==='1min');return h('div',{class:'tick-note'},`${observed?'网页观测时间':'报价时间'} ${dateText(rows.at(-1).timestamp,false)} · ${rows.length} 个真实样本 · ${historical?'收盘后 · 真实一分钟数据':'盘中约五分钟更新，调度可能延迟'}`);}
 function liveQuoteBlock(entity){const q=entity?.live_quote;if(!q||!finite(q.price))return null;const stamp=q.quote_timestamp||q.timestamp||q.fetched_at;return h('div',{class:'live-quote-block'},h('span',{},'行情快照'),h('strong',{},num(q.price,entity.basis==='etf'?3:2)),h('span',{},`${q.timestamp_quality==='retrieved_only'?'仅采集时间（源时点未确认）':'来源时间'} ${stamp?dateText(stamp,false):'未提供'}`),h('span',{},q.provider||''));}
@@ -335,7 +340,7 @@ function chart(history,{height=205,compact=false,color='#4c85d5',metric='index',
    function show(i){active=Math.max(0,Math.min(values.length-1,i));const v=values[active],x=X(active),y=Y(v.value),bx=Math.max(left,Math.min(w-right-208,x+12)),by=top;
     overlay.setAttribute('visibility','visible');vertical.setAttribute('x1',x);vertical.setAttribute('x2',x);intersection.setAttribute('cx',x);intersection.setAttribute('cy',y);
     box.setAttribute('x',bx);box.setAttribute('y',by);stamp.setAttribute('x',bx+10);stamp.setAttribute('y',by+20);value.setAttribute('x',bx+10);value.setAttribute('y',by+43);
-    stamp.textContent=(today?chinaClock.format(quoteTime(v.date)):metric==='intraday'?dateText(v.date,false):v.date)+(v.timestamp_quality==='page_observed'?' · 网页观测':'');
+    stamp.textContent=(today?chinaClock.format(quoteTime(v.date)):metric==='intraday'?dateText(v.date,false):v.date)+(v.timestamp_quality==='page_observed'?' · 网页观测':v.timestamp_quality==='minute_backfill'?' · 补采分钟收盘价':'');
     value.textContent=(metric==='cap'?amount(v.value):num(v.value,metric==='intraday'?3:2)+' '+unit)+(v.provider?' · '+providerName(v.provider):'');
     el.setAttribute('aria-label',`${stamp.textContent} ${value.textContent}；左右方向键查看相邻样本`);
    }
@@ -860,6 +865,8 @@ const feeds=[
   valid:p=>records(p.market)&&records(p.sectors)&&Boolean(quoteSnapshotStamp(p))},
  {file:'today-intraday',key:'relayIntraday',label:'分时',interval:60000,pages:marketPages,source:'sxdata_relay',
   valid:p=>record(p.series)&&Object.values(p.series).every(Array.isArray)},
+ {file:'minute-recovery',key:'minuteRecovery',label:'分钟补采',interval:60000,pages:marketPages,source:'sxdata_minute_recovery',
+  valid:p=>/^\d{4}-\d{2}-\d{2}$/.test(p.trade_date)&&quoteTime(p.generated_at)!==null&&record(p.series)&&Object.values(p.series).every(Array.isArray)},
  {file:'stock-quotes',key:'relayStocks',label:'个股',interval:30000,pages:marketPages,source:'sxdata_relay',
   valid:p=>records(p.stocks)&&(p.board_estimates==null||records(p.board_estimates))},
  {file:'cloud-news',key:'cloudNews',label:'资讯',interval:30000,pages:['news',...marketPages],source:'tencent_news',
@@ -930,6 +937,7 @@ function refreshFeed(spec){
   const next=await response.json();
   if(next?.schema_version!==1||(spec.source&&next.source!==spec.source)||!spec.valid(next))throw Error('invalid publication');
   if(next.trade_date&&previous?.trade_date&&next.trade_date<previous.trade_date)return null;
+  if(spec.key==='minuteRecovery'&&previous?.trade_date===next.trade_date&&quoteTime(next.generated_at)<quoteTime(previous.generated_at))return null;
   if(spec.key==='cloudNews')next.news_digest=retainDayDigest(next.news_digest,previous?.news_digest,next.trade_date);
   if(spec.key==='liveQuotes'&&quoteSnapshotStamp(next)<=quoteSnapshotStamp(previous))return null;
   return {...next,version};
