@@ -149,7 +149,7 @@ def choose(db, days, now, blocked, turn=0):
             if not gaps:
                 continue
             stamp = watched.get((kind,code),0)
-            priority = 0 if code == BENCHMARK else 1 if stamp else 3
+            priority = 0 if code == BENCHMARK else 1 if kind == "index" or stamp else 3
             job = Job("index_daily",key,kind,{code},{days[i] for i in gaps},
                       (priority,gaps[0],-stamp,-1 if code==BENCHMARK else 4,code))
             if kind == "index" and code == BENCHMARK:

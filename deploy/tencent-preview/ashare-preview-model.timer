@@ -1,5 +1,5 @@
 [Unit]
-Description=Sample exact-minute inputs and run eligible pre-trained models
+Description=Sample exact-minute and post-close observations
 
 [Timer]
 OnCalendar=*-*-* *:00/5:35 Asia/Shanghai

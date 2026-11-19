@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh the A-share trend room from cached daily observations
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=5min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

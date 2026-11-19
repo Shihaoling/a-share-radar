@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh the MiniMax brief for completed A-share sessions
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 20..23:10,40:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 07..08:10,40:00 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

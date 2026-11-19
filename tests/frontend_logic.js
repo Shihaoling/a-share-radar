@@ -18,7 +18,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,probabilityValue,probabilityPanel,sectorProbabilityPanel,chart,relayIntraday,statCard,intradayFor,dailyIndexCard,awaitingForecasts,dailyForecastValue,dailyForecastPanel,dailySectorPanel,dailyGoal,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,equityValue,equityStatus,equityStockPage,equitySummary,fundsPanel,fundPremium,researchHelp,render,state,baseData,pages};');
+  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,chart,relayIntraday,statCard,intradayFor,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,fundsPanel,fundPremium,researchHelp,sectorNewsSummary,newsBoardChange,trendRoom,trendFeed,trendView,render,state,baseData,pages};');
   const startDisplay = document => loadDisplay(
     TestNode, document, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
@@ -96,7 +96,41 @@ function runFrontendChecks(source) {
   check('entity evidence uses safe text and never creates script nodes',()=>{api.state.search='';api.state.selected='801080.SI';api.render();const scripts=[];function walk(n){if(n.tag==='script')scripts.push(n);(n.children||[]).forEach(walk);}walk(root);eq(scripts.length,0);ok(text(root).includes('<script>alert(1)</script>'));});
   for(const metric of ['index','intraday','cap'])for(const [page] of api.pages)check(`render ${page} in ${metric} mode`,()=>{api.state.metric=metric;api.state.page=page;api.render();});
   check('endpoint permissions distinguish successful daily data from denied real-time access',()=>{api.state.page='settings';api.render();const content=text(root);ok(content.includes('已取得数据'));ok(content.includes('当前权限不可用'));ok(content.includes('市场指数快照'));});
-  check('active model status is displayed as available',()=>{api.state.data={...d,models:{status:'active'}};api.state.page='forecast';api.render();ok(text(root).includes('模型已准备'));api.state.data=d;});
+  check('trend room publishes three windows, current coverage, and expandable leader evidence',()=>{
+    const windowResult=state=>({state,start_date:'2026-11-04',return_pct:2.3,score:1.4,efficiency:.6,direction_share:.7});
+    const windows={5:windowResult(2),10:windowResult(1),20:{reason:'missing_window'}};
+    const stock={as_of:'2026-11-17',windows:{...windows,10:windowResult(-2)}};
+    const market={id:'sh000001',name:'趋势指数',as_of:'2026-11-18',windows};
+    const board={id:'801780.SI',name:'验证银行',group:'sw',as_of:'2026-11-18',windows,leaders:[{id:'600000.SH',name:'龙头样本',rank_value:2e11}],
+      rank_basis:'total_market_cap',rank_date:'2026-11-18',rank_coverage:.97};
+    const packet={method:'closing_trend_v1',expected_date:'2026-11-18',market:[market],boards:[board],stocks:{'600000.SH':stock}};
+    ok(api.trendFeed.valid(packet));ok(!api.trendFeed.valid({...packet,stocks:{}}));
+    api.state.page='trend';api.state.trends=packet;api.render();
+    const listed=text(root);
+    for(const label of ['趋势观察室','趋势指数','快速上升','波动上升','待数据','1 / 1','10 日 · 主观察','龙头 1 只'])ok(listed.includes(label));
+    ok(!listed.includes('龙头样本'));ok(!listed.includes('上涨概率'));
+    api.trendView.expanded=board.id;api.render();
+    const expanded=text(root);
+    for(const label of ['龙头样本','大幅下降','待更新','2026-11-17','成分覆盖 97.0%'])ok(expanded.includes(label));
+    api.trendView.window=20;api.render();ok(text(root).includes('0 / 1'));
+    api.trendView.window=10;api.trendView.expanded=null;api.state.trends=null;
+  });
+  check('window columns sort numeric returns and keep stale rows last',()=>{
+    const dates='2026-11-18';
+    const asset=(id,move,as_of=dates)=>({id,name:id,as_of,windows:{5:{},10:{return_pct:move},20:{}}});
+    api.state.page='trend';
+    api.state.trends={expected_date:dates,market:[asset('测试低',-4),asset('旧日线',30,'2026-11-17'),asset('测试高',2),asset('待接收',null)],boards:[],stocks:{}};
+    api.render();
+    const walk=node=>[node,...node.children.flatMap(walk)];
+    const sortButton=()=>walk(root).find(n=>n.tag==='button'&&n.attrs['aria-label']?.startsWith('按 10 日涨跌幅'));
+    sortButton().events.click();
+    const descending=text(root);
+    ok(descending.indexOf('测试高')<descending.indexOf('测试低'));ok(descending.indexOf('测试低')<descending.indexOf('旧日线'));
+    sortButton().events.click();
+    const ascending=text(root);
+    ok(ascending.indexOf('测试低')<ascending.indexOf('测试高'));ok(ascending.indexOf('测试高')<ascending.indexOf('旧日线'));
+    api.trendView.sorts={};api.state.trends=null;
+  });
   check('ready dashboard status illuminates market status',()=>{api.state.data={...d,status:'ready'};api.state.page='overview';api.render();const nodes=[];function walk(n){if(String(n.className||'').includes('status-dot live'))nodes.push(n);(n.children||[]).forEach(walk);}walk(root);ok(nodes.length>0);api.state.data=d;});
   check('per-article model tone is distinguished from directional impact',()=>{const node=api.newsTone({sentiment:'negative',sentiment_method:'finbert_chinese_cpu',impact:'positive'});const output=text(node);ok(output.includes('文本语气'));ok(output.includes('偏负面'));ok(output.includes('金融文本模型'));ok(!output.includes('潜在利好'));});
   check('per-article fallback rules are explicitly identified',()=>{const output=text(api.newsTone({sentiment:'positive',sentiment_method:'financial-tone-rules-v2'}));ok(output.includes('偏正面'));ok(output.includes('规则分析'));});
@@ -110,14 +144,9 @@ function runFrontendChecks(source) {
   check('vendor PB help retains a general formula and unverified aggregation caveat',()=>{api.openMetricHelp({name:'测试行业',vendor_pb:1.5},'pb');const content=text(doc.body.children.at(-1));ok(content.includes('PB = 股价 ÷ 每股净资产'));ok(content.includes('指数聚合'));ok(content.includes('尚未核实'));});
   check('empty industry relations show an honest consolidated empty state',()=>{const output=text(api.industryRelations({drivers:[],upstream:[],downstream:[]}));ok(output.includes('尚无已核实的产业链关系'));ok(!output.includes('核心驱动'));});
   for(const key of ['pe_ttm','pb','sharpe'])check(`metric help ${key} handles missing data`,()=>api.openMetricHelp(d.sectors[0],key));
-  check('pending stock result is never shown as a zero-return prediction',()=>{eq(api.equityValue({status:'pending',predicted_return_pct:0}),null);ok(api.equityStatus({status:'pending',predicted_return_pct:0}).includes('等待'));});
-  check('explicit zero-return baseline stays visible and labeled',()=>{eq(api.equityValue({status:'baseline',predicted_return_pct:0,model:'zero_return'}),0);eq(api.equityStatus({status:'baseline',predicted_return_pct:0,model:'zero_return'}),'基线预测');});
-  check('partial portfolio remains explicitly partial',()=>{eq(api.equityValue({status:'partial',predicted_return_pct:.8}),.8);ok(api.equityStatus({status:'partial',predicted_return_pct:.8}).includes('部分覆盖'));});
   check('fund premium requires same-date price and NAV',()=>{eq(api.fundPremium({price:2.2,nav:2,price_date:'2026-11-16',nav_date:'2026-11-13',premium_pct:10}),null);ok(Math.abs(api.fundPremium({price:2.2,nav:2,price_date:'2026-11-16',nav_date:'20261116'})-10)<1e-10);eq(api.fundPremium({price:2.2,nav:0,price_date:'2026-11-16',nav_date:'2026-11-16'}),null);});
   check('fund cards preserve independent dates and do not treat NAV as valuation',()=>{const node=api.fundsPanel({funds:[{code:'TEST.SH',name:'测试行业基金',manager:'测试管理人',broker_relation:'测试券商参股',price:2.2,price_date:'2026-11-16',nav:2,nav_date:'2026-11-13',aum_cny:12000000000,aum_date:'2026-11-12',match_status:'theme_candidate',source_url:'javascript:alert(1)'}]});const output=text(node);ok(output.includes('2026-11-16'));ok(output.includes('2026-11-13'));ok(output.includes('2026-11-12'));ok(output.includes('120.00 亿'));ok(output.includes('持仓待核验'));ok(output.includes('日期不齐 / 待数据'));const links=[];function walk(n){if(n.tag==='a')links.push(n);(n.children||[]).forEach(walk);}walk(node);eq(links.length,0);});
   check('fund panel displays at most three legitimate candidates',()=>{const node=api.fundsPanel({funds:Array.from({length:8},(_,i)=>({code:'fund'+i,name:'候选'+i}))});const output=text(node);ok(output.includes('候选2'));ok(!output.includes('候选3'));});
-  check('stock pagination is bounded and clamps after search changes',()=>{const fixture={...d,equity_forecast:{stocks:Array.from({length:5572},(_,i)=>({code:String(i),name:'股票'+i,sector_id:i%2?d.sectors[0].id:d.sectors[1].id,status:'pending'}))}};api.state.equitySearch='';api.state.equitySector='all';api.state.equityPage=0;let rows=api.equityStockPage(fixture);eq(rows.rows.length,30);eq(rows.count,5572);eq(rows.pageCount,186);api.state.equityPage=999;rows=api.equityStockPage(fixture);eq(rows.page,185);eq(rows.rows.length,22);api.state.equitySearch='股票5571';rows=api.equityStockPage(fixture);eq(rows.count,1);eq(rows.page,0);api.state.equitySearch='';api.state.equityPage=0;api.state.equitySector=d.sectors[0].id;eq(api.equityStockPage(fixture).count,2786);api.state.equitySector='all';});
-  check('aggregated research forecast never displays an official index target',()=>{const fixture={...d,equity_forecast:{status:'partial',coverage:{universe_count:100,predicted_count:80,weight_coverage:.75},market:{status:'partial',predicted_return_pct:.8,target_kind:'next_open',target_date:'2026-11-17',model:'ridge'}}};const output=text(api.equitySummary(fixture));ok(output.includes('80 / 100'));ok(output.includes('75.0%'));ok(output.includes('+0.80%'));ok(output.includes('部分覆盖'));ok(!output.includes('上证指数'));ok(!output.includes('预测点位'));});
   class Immediate {constructor(value,error){this.value=value;this.error=error;}then(fn){if(this.error)return this;try{const value=fn(this.value);return value instanceof Immediate?value:new Immediate(value);}catch(error){return new Immediate(null,error);}}catch(fn){if(!this.error)return this;try{return new Immediate(fn(this.error));}catch(error){return new Immediate(null,error);}}}
   function requestFixture(responses){const calls=[];let value,error;const fetcher=(url,options)=>{calls.push({url,options});const next=responses.shift();if(next instanceof Error)return new Immediate(null,next);return new Immediate({status:next.status,ok:next.status>=200&&next.status<300,json:()=>new Immediate(next.body,next.jsonError)});};api.requestSnapshot(fetcher,12345).then(x=>value=x).catch(e=>error=e);return{calls,value,error};}
   check('lightweight view is the preferred request',()=>{const r=requestFixture([{status:200,body:d}]);eq(r.calls.length,1);eq(r.calls[0].url,'./data/view.json?t=12345');eq(r.calls[0].options.cache,'no-store');eq(r.value,d);});
@@ -157,28 +186,7 @@ function runFrontendChecks(source) {
     eq(api.relayIntraday({trade_date:yesterday,series:{[stale.id]:[[stale.quote_timestamp,100]]}},stale,stale,today).length,0);
   });
 
-  const closeForecast={schema_version:1,status:'ready',model_id:'daily-research-20261117',issued_at:'2026-11-17T01:00:00+08:00',trained_at:'2026-11-17T00:50:00+08:00',target_date:'2026-11-18',target:'next_close_return_pct',unit:'percentage_points',mae_target:.1,
-    evaluation:{historical_research:true,note:'历史回溯研究，未来表现待结算',market:{mae_pct:.5,baseline_mae_pct:.6,target_met:false},sector:{mae_pct:1.2,baseline_mae_pct:1.3,target_met:false}},
-    market:Array.from({length:6},(_,i)=>({id:'index'+i,name:'预测指数'+i,reference_date:'2026-11-17',reference_close:3000,predicted_return_pct:i===0?0:.2,predicted_close:3006,validation_mae_pct:.5,model_family:'ridge'})),
-    sectors:[{id:'801080.SI',name:'电子',rank:1,ranking_score:.99,predicted_return_pct:.6,relative_return_pct:.4,validation_mae_pct:1.2,model_family:'ridge'}],ledger:[{id:'new-daily'}]};
-  check('daily close uses its own target date and all six direct indices',()=>{const output=text(api.dailyForecastPanel({...d,daily_forecast:closeForecast}));ok(output.includes('2026-11-18'));ok(output.includes('下一交易日收盘'));ok(output.includes('预测指数5'));ok(output.includes('daily-research-20261117'));ok(output.includes('训练'));ok(output.includes('历史回溯'));});
-  check('daily relative strength uses percentage points without a probability claim',()=>{const output=text(api.dailyForecastPanel({...d,daily_forecast:closeForecast}));ok(output.includes('+0.400 个百分点'));ok(output.includes('相对沪深300'));ok(!output.includes('60.0%'));ok(output.includes('不是上涨概率'));});
-  check('daily target status derives from numerical MAE even with a contradictory flag',()=>{eq(api.dailyGoal({mae_pct:.5,target_met:true},.1),'尚未达到 0.1 个百分点目标');eq(api.dailyGoal({mae_pct:.1,target_met:false},.1),'历史 MAE 已达到 0.1 个百分点目标');eq(api.dailyGoal({mae_pct:null},.1),'目标待验证');});
-  check('daily industry rank and numerical relative return remain distinct',()=>{const f={...closeForecast,sectors:[{id:'a',name:'排序优先',rank:1,ranking_score:5,predicted_return_pct:-.5,relative_return_pct:-.7},{id:'b',name:'幅度优先',rank:2,ranking_score:2,predicted_return_pct:1,relative_return_pct:.8}]};const output=text(api.dailyForecastPanel({...d,daily_forecast:f}));ok(output.includes('按独立模型得分排序'));ok(output.includes('独立排序得分'));ok(output.indexOf('排序优先')<output.indexOf('幅度优先'));ok(output.includes('-0.700 个百分点'));});
-  check('constant daily scores do not invent top industry ranks',()=>{const f={...closeForecast,sectors:closeForecast.sectors.map(row=>({...row,rank:null,ranking_score:0}))};const output=text(api.dailyForecastPanel({...d,daily_forecast:f},true));ok(output.includes('排序得分相同或缺失时不排强弱位次'));ok(!output.includes('强弱榜 · 前五'));});
-  check('zero index models disclose the baseline meaning without promising unchanged prices',()=>{const f={...closeForecast,market:closeForecast.market.map(row=>({...row,model_family:'zero',predicted_return_pct:0}))};const output=text(api.dailyForecastPanel({...d,daily_forecast:f}));ok(output.includes('指数当前采用零收益基线'));ok(output.includes('尚未获得优于基线的指数预测信号'));ok(output.includes('0% 不代表明天一定不涨跌'));ok(output.includes('基线预测'));});
-  check('negative retrospective ranking performance is disclosed with ranking coverage',()=>{const f={...closeForecast,evaluation:{...closeForecast.evaluation,sector_ranking:{daily_rank_ic:-.057593,ranking_coverage:1,ranking_valid_dates:20,dates:20}}};const output=text(api.dailyForecastPanel({...d,daily_forecast:f}));ok(output.includes('-0.0576'));ok(output.includes('有效排序覆盖 100.0%'));ok(output.includes('20 / 20 个交易日'));ok(output.includes('历史回溯尚未验证排序有效'));ok(output.includes('均不是上涨命中率'));});
-  check('missing ranking evidence cannot be presented as validated',()=>{const output=text(api.dailyForecastPanel({...d,daily_forecast:closeForecast}));ok(output.includes('历史排序表现待验证'));ok(!output.includes('排序相关为正'));});
-  check('daily missing results stay missing and an explicit zero remains valid',()=>{eq(api.dailyForecastValue(closeForecast,{predicted_return_pct:null}),null);eq(api.dailyForecastValue(closeForecast,{predicted_return_pct:0}),0);eq(api.dailyForecastValue({...closeForecast,status:'error'},{predicted_return_pct:5}),null);eq(api.dailyForecastValue({...closeForecast,target:'next_open_return_pct'},{predicted_return_pct:5}),null);});
-  check('daily live observations remain separate from retrospective MAE',()=>{let output=text(api.dailyForecastPanel({...d,daily_forecast:closeForecast}));ok(output.includes('前向留存：已结算 0 条'));const f={...closeForecast,forward_evaluation:{settled_rows:37,mae_pct:.8}};output=text(api.dailyForecastPanel({...d,daily_forecast:f}));ok(output.includes('前向留存：已结算 37 条'));ok(output.includes('0.8000 个百分点'));ok(output.includes('0.5000 个百分点'));});
-  check('daily errors hide untrusted predictions and preserve the reason',()=>{const output=text(api.dailyForecastPanel({...d,daily_forecast:{...closeForecast,status:'error',reason:'模型完整性检查失败'}}));ok(output.includes('模型完整性检查失败'));ok(!output.includes('预测指数5'));});
-  check('daily close is primary and stocks are auxiliary on the forecast page',()=>{api.state.data={...d,daily_forecast:closeForecast};api.state.page='forecast';api.render();const output=text(root);ok(output.indexOf('下一交易日收盘')<output.indexOf('个股辅助研究'));ok(output.includes('尚未达到 0.1 个百分点目标'));api.state.data=d;});
-  check('daily industry detail retains a missing forecast instead of zero',()=>{const output=text(api.dailySectorPanel(d.sectors[0],{...d,daily_forecast:closeForecast}));ok(output.includes('待生成'));ok(!output.includes('+0.00%'));});
   check('daily forecast array shapes are validated before rendering',()=>{let error;try{api.validateSnapshot({...d,daily_forecast:{market:{}}});}catch(err){error=err;}ok(error?.message.includes('daily_forecast.market'));});
-  check('zero baseline is not presented as an unchanged-price directional forecast',()=>{
-    const output=text(api.dailyIndexCard(closeForecast,{name:'上证指数',model_family:'incumbent_v3_zero',predicted_return_pct:0,predicted_close:3000}));
-    ok(output.includes('暂无方向信号'));ok(!output.includes('0.00%'));ok(!output.includes('3,000.00 点'));
-  });
   check('page observation is a labeled fallback without replacing a current Tushare close',()=>{
     const page={price:3200,change_pct:2,observed_at:'2026-11-16T15:55:00+08:00',timestamp_quality:'page_observed'};
     let q=api.displayQuote({...daily('2026-11-13',3000),page_quote:page},now);
@@ -198,24 +206,28 @@ function runFrontendChecks(source) {
     const rows=api.intradayFor({intraday:{x:{points:[{price:1,observed_at:'2026-11-16T10:00:00+08:00',timestamp_quality:'page_observed'},{price:2,observed_at:'2026-11-16T10:05:00+08:00',timestamp_quality:'page_observed'},{price:3,observed_at:'2026-11-16T10:10:00+08:00',timestamp_quality:'retrieved_only'}]}}},{id:'x'});
     eq(rows.length,2);eq(rows[1].timestamp,'2026-11-16T10:05:00+08:00');
   });
-  check('pending sector forecasts keep their original target day instead of disappearing',()=>{
-    const day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date());
-    const output=text(api.awaitingForecasts({daily_forecast:{sectors:[],market:[],ledger:[{id:'bank',name:'银行',target_date:day,predicted_return_pct:.35,model_family:'ridge'}]}}));
-    ok(output.includes(day));ok(output.includes('+0.35%'));ok(output.includes('待收盘数据'));
-  });
   check('noncompact charts expose both pointer and keyboard crosshair controls',()=>{
     const node=api.chart([{date:'2026-11-12',close:100},{date:'2026-11-13',close:101}],{metric:'index'});
     ok(node.events.pointermove);ok(node.events.pointerleave);ok(node.events.keydown);eq(node.attrs.tabindex,'0');
     node.events.focus();const output=text(node);ok(output.includes('101.00'));ok(output.includes('2026-11-13'));
   });
-  check('direction probability comes from a classifier rather than a return sign',()=>{
-    const f={status:'ready',target:'next_close_direction'};eq(api.probabilityValue(f,{up_probability:.62,predicted_return_pct:-3}),.62);eq(api.probabilityValue(f,{predicted_return_pct:3}),null);eq(api.probabilityValue({...f,status:'error'},{up_probability:.9}),null);
-  });
-  check('classifier page displays probability, real validation and sentiment readiness',()=>{
-    const f={status:'partial',target:'next_close_direction',model_id:'trained-classifier',market:[{id:'idx',name:'测试指数',target_date:'2026-11-18',reference_date:'2026-11-17',up_probability:.62,down_probability:.38}],sectors:[],evaluation:{},sentiment_training:{enabled:false,mature_dates_with_news:0,required_dates:30}};
-    const output=text(api.probabilityPanel({...d,direction_probability:f}));ok(output.includes('62.0%'));ok(output.includes('38.0%'));ok(output.includes('0 / 30'));ok(output.includes('不由涨跌幅正负转换'));ok(output.includes('频率基线'));
-  });
   check('malformed direction forecast cannot bypass snapshot array checks',()=>{let bad=false;try{api.validateSnapshot({...d,direction_probability:{market:{}}});}catch{bad=true;}ok(bad);});
+  check('today sector chart keeps tone, sector impact and quote date independent',()=>{
+    const day='2026-11-19',now=new Date(day+'T19:00:00+08:00'),id='801780.SI';
+    const sector={id,name:'银行',taxonomy:'SW2021',level:'L1',daily_quote:{
+      price:300,change_pct:-1.5,quote_date:day,quote_timestamp:day+'T15:00:00+08:00',timestamp_quality:'daily_close'}};
+    const a={id:'a',published_at:day+'T15:05:00+08:00',sector_ids:[id,id],llm_analysis:{
+      status:'ready',tone:'positive',sector_impacts:[{sector_code:id,direction:'negative'},{sector_code:id,direction:'negative'}]}};
+    const missing={id:'b',published_at:day+'T15:15:00+08:00',sector_ids:[id]};
+    const rumor={...a,id:'c',credibility:'rumor'};
+    const yesterday={...a,id:'d',published_at:'2026-11-18T15:05:00+08:00'};
+    const r=api.sectorNewsSummary({sectors:[sector],news:[a,missing,rumor,yesterday]},day,now);
+    eq(r.total,2);eq(r.related,2);eq(r.labeled,1);eq(r.rows[0].count,2);
+    eq(r.rows[0].tones.positive,1);eq(r.rows[0].impact.negative,1);
+    eq(api.newsBoardChange(sector,day,now).value,-1.5);
+    eq(api.newsBoardChange(sector,'2026-11-20',new Date('2026-11-20T09:00:00+08:00')).value,null);
+    ok(!api.pages.some(([id])=>id==='review'));
+  });
   check('full-text summary is the first article block and evidence stays folded',()=>{
     const n={title:'原油上涨',llm_analysis:{status:'ready',summary:'原油涨价利好开采业务，并增加航空燃油成本。',sector_impacts:[{sector_name:'石油石化',direction:'positive',reason:'收入改善',evidence:['原文依据']}],uncertainties:[]}};
     const node=api.newsItem(n,d);eq(node.children[0].className,'news-ai-summary');const out=text(node);ok(out.includes('全文提要'));ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));

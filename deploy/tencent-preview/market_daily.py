@@ -8,10 +8,12 @@ from pathlib import Path
 
 from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
 from pipeline.stock_api import FIELDS, _Failure, _basic_records, _index_bars, _index_code, _sw_bars
+from pipeline.trend import positive
 from relay_common import STATE, relay_client
 from relay_quotes import SOURCE, publish
 
 OUTPUT = STATE / "quote-output/daily-market.json"
+STOCK_CAPS = OUTPUT.with_name("trend-stock-caps.json")
 
 
 def read_daily():
@@ -120,9 +122,18 @@ def refresh():
         missing_stocks = any(daily["stocks"].get(code, {}).get("quote_date") != date for code in stock_codes)
         attempts = daily.get("stock_batch_attempts", {})
         attempts_today = attempts.get("count", 0) if attempts.get("date") == date else 0
-        if missing_stocks and attempts_today < 2:
+        try:
+            cap_history = json.loads(STOCK_CAPS.read_text()) if STOCK_CAPS.exists() else {}
+        except (OSError, ValueError):
+            cap_history = {}
+        cap_attempt = daily.get("trend_cap_attempts", {})
+        cap_count = cap_attempt.get("count", 0) if cap_attempt.get("date") == date else 0
+        capture_caps = date not in cap_history and cap_count < 2 and (pre_open_recovery or now.time() >= time(16))
+        if (missing_stocks and attempts_today < 2) or capture_caps:
             rows = request("daily_basic", {"trade_date": api_date})
-            matching = [r for r in rows if isinstance(r["ts_code"], str) and r["ts_code"] in stock_codes]
+            if capture_caps and rows:
+                daily["trend_cap_attempts"] = {"date": date, "count": cap_count + 1}
+            matching = rows if capture_caps else [r for r in rows if r.get("ts_code") in stock_codes]
             if matching:
                 try:
                     values = _basic_records(matching, day, stamp)
@@ -130,12 +141,17 @@ def refresh():
                     values = []
                     print(json.dumps({"api": "daily_basic", "status": error.code}), flush=True)
                 for value in values:
-                    if value.get("market_cap_cny") is not None:
+                    if value["ts_code"] in stock_codes and value.get("market_cap_cny") is not None:
                         daily["stocks"][value["ts_code"]] = {"quote_date": date, "price": value["close"], "market_cap_date": date,
                             "market_cap": value["market_cap_cny"], "timestamp_quality": "daily_close",
                             "as_of": date+"T15:00:00+08:00", "provider": "stock_api"}
                 if values:
                     daily["stock_batch_attempts"] = {"date": date, "count": attempts_today + 1}
+                if capture_caps and values:
+                    caps = {r["ts_code"]: r["market_cap_cny"] for r in values if positive(r.get("market_cap_cny"))}
+                    if len(caps) >= 4000:
+                        cap_history[date] = caps
+                        publish(STOCK_CAPS, {day: cap_history[day] for day in sorted(cap_history)[-3:]})
         coverage = {"000001.SH", "399001.SZ", "399006.SZ", "000688.SH", "000905.SH"}
         for code, entity_id in index_map.items():
             if code not in coverage:

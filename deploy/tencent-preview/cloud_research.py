@@ -1,4 +1,4 @@
-"""Post-close research using read-only model assets and confirmed SXData rows."""
+"""Post-close research and settlement of historical records using confirmed SXData rows."""
 
 from copy import deepcopy
 from datetime import time, timedelta
@@ -10,7 +10,6 @@ import shutil
 
 from pipeline.calendar import is_trading_day, shanghai_now
 from pipeline.equity_data import collect_equity_history
-from pipeline.equity_model import update_equity_predictions
 from pipeline.funds import enrich_funds
 from pipeline.metrics import compute_metrics
 from pipeline.model import DEFAULTS, _settle
@@ -178,8 +177,9 @@ def main():
     for group in ("market","sectors"):
         histories = {item["id"]:item for item in dashboard.get(group,[])}
         dashboard[group] = [{**histories.get(item["id"],{}),**item} for item in baseline.get(group,[])]
-    for field in ("news","predictions","ledger","market_session"):
+    for field in ("news","ledger","market_session"):
         dashboard[field] = baseline.get(field,dashboard.get(field,[]))
+    dashboard["predictions"] = []
     dashboard["generated_at"] = now.isoformat()
     dashboard["ledger"] = read(PRIVATE/"ledger.json",dashboard["ledger"])
     cache = read(PRIVATE/"inputs.json")
@@ -199,7 +199,6 @@ def main():
     publish(PRIVATE/"inputs.json",{"memberships":memberships,
                                   "fund_state":dashboard.get("fund_state",{}),"flows":flows})
     dashboard = compute_metrics(validate_prices(dashboard,now),{**config,"as_of":now.isoformat()})
-    dashboard = update_equity_predictions(dashboard,equity_root,RUNTIME/"data/equity/models",now,config)
     forecast = read(STATE/"model-output/models.json")
     news = read(STATE/"news-output/news.json")
     if news.get("trade_date")==now.date().isoformat():
@@ -213,20 +212,19 @@ def main():
         dashboard["news"] = list(items.values())
     review = review_models(dashboard,forecast,now)
     publish(PRIVATE/"ledger.json",dashboard["ledger"])
-    fields = ("id","quant_metrics","validation","data_quality","equity_prediction","funds","fund_method",
+    fields = ("id","quant_metrics","validation","data_quality","funds","fund_method",
               "fund_summary","valuation_coverage","membership_count","membership_as_of","membership_complete")
     entities = {item["id"]: {key:item[key] for key in fields if key in item}
                 for group in ("market","sectors") for item in dashboard[group]}
     payload = {"schema_version":1,"source":"tencent_research","generated_at":now.isoformat(),
         "entities":entities,"daily_review":review,"data_checks":dashboard["data_checks"],
-        "validation_summary":dashboard["validation_summary"],"equity_forecast":dashboard.get("equity_forecast"),
+        "validation_summary":dashboard["validation_summary"],
         "fund_summary":dashboard.get("fund_summary"),
         "fund_state":{key:value for key,value in dashboard.get("fund_state",{}).items() if key!="cache"},
         "equity_collection":dashboard.get("equity_collection"),"moneyflow":flows,
         "ledger":dashboard["ledger"],"training_enabled":False}
     publish(PUBLIC,payload)
     print(json.dumps({"published":now.isoformat(),"review":review["settled_count"],
-                      "equity":dashboard.get("equity_forecast",{}).get("status"),
                       "fund":dashboard.get("fund_state",{}).get("status"),"flow":flows.get("status")}),flush=True)
 
 

@@ -1,5 +1,5 @@
 [Unit]
-Description=A-share Radar inference with existing portable models
+Description=A-share Radar observed factor checkpoints
 
 [Service]
 Type=oneshot

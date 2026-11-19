@@ -1,0 +1,60 @@
+[
+  {
+    "topic": "economy",
+    "title": "2026 年 10 月国民经济运行数据",
+    "source": "国家统计局",
+    "url": "https://www.stats.gov.cn/sj/xwfbh/fbhwd/202611/t20261116_1965844.html",
+    "published_at": "2026-11-16T10:00:00+08:00",
+    "valid_days": 35,
+    "evidence": "10 月规模以上工业增加值同比增长 4.8%，服务业生产指数同比增长 4.6%，社会消费品零售总额同比增长 0.4%，城镇调查失业率为 5.1%，CPI 同比上涨 0.7%。1—10 月服务零售额同比增长 4.9%，固定资产投资同比下降 8.1%，全国房地产开发投资同比下降 21.6%。"
+  },
+  {
+    "topic": "global",
+    "title": "中美经贸磋商机制下贸易理事会首次会议",
+    "source": "商务部",
+    "url": "https://www.mofcom.gov.cn/syxwfb/art/2026/art_6d9023bbcdd04810a810ef2059ecad2f.html",
+    "published_at": "2026-11-14T14:33:00+08:00",
+    "evidence": "11 月 13 日，中美双方通过视频举行贸易理事会首次会议。会议属于既有磋商机制。这份通报未宣布新增关税变化。"
+  },
+  {
+    "topic": "global",
+    "title": "美国发布先进半导体远程访问规则",
+    "source": "美国商务部工业与安全局（BIS）",
+    "url": "https://www.bis.gov/press-release/bis-issues-rule-addressing-remote-access-american-super-intelligence-technology",
+    "published_at": "2026-11-16",
+    "evidence": "BIS 宣布临时最终规则，涉及特定主体对先进计算芯片和服务器的远程访问，可能经合规成本、可用算力与供应链暴露影响企业；该公告没有给出 A 股公司的利润影响。"
+  },
+  {
+    "topic": "global",
+    "title": "美国联邦公报刊载先进半导体远程访问规则",
+    "source": "美国联邦公报",
+    "url": "https://www.govinfo.gov/content/pkg/FR-2026-11-19/pdf/2026-23529.pdf",
+    "published_at": "2026-11-19",
+    "evidence": "美国商务部工业与安全局于11月16日发布新闻稿。美国联邦公报11月19日刊载临时最终规则，明确规则于2026年11月19日生效。"
+  },
+  {
+    "topic": "global",
+    "title": "美联储发布 10 月 FOMC 会议纪要",
+    "source": "美联储",
+    "url": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20261028.htm",
+    "published_at": "2026-11-18T14:00:00-05:00",
+    "evidence": "纪要对应 10 月 27—28 日会议。会议决定维持联邦基金利率目标区间 3.75%—4.00%；11 月 18 日公开的是会议纪要。"
+  },
+  {
+    "topic": "global",
+    "title": "中美元首在深圳会晤",
+    "source": "外交部",
+    "url": "https://www.mfa.gov.cn/mfa_eng/xw/zyxw/202611/t20261119_12063139.html",
+    "published_at": "2026-11-19T18:00:00+08:00",
+    "lead": true,
+    "evidence": "11 月 19 日下午，中美元首在深圳会晤。据中方通报，双方同意制定构建中美建设性战略稳定关系行动计划。通报未公布具体关税调整，于 A 股收盘后发布。"
+  },
+  {
+    "topic": "global",
+    "title": "中俄美元首在深圳会晤",
+    "source": "外交部",
+    "url": "https://www.mfa.gov.cn/web/wjb_673085/zzjg_673183/xws_674681/xgxw_674683/202611/t20261119_12063234.shtml",
+    "published_at": "2026-11-19T21:11:00+08:00",
+    "evidence": "11 月 19 日下午，中俄美元首在深圳会晤，讨论国际和平与大国关系战略稳定。这条通报在 A 股收盘后发布。"
+  }
+]

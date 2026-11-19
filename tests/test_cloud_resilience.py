@@ -77,7 +77,7 @@ class CloudResilienceTests(unittest.TestCase):
         self.assertEqual(entity["market_cap"], 20)
         self.assertEqual(len(entity["market_cap_history"]), 2)
 
-    def test_preopen_retries_previous_session_and_recomputes_only_after_receipt(self):
+    def test_preopen_recovers_previous_session_without_issuing_a_forecast(self):
         now = datetime.fromisoformat("2026-11-19T08:41:00+08:00")
         with TemporaryDirectory() as root, patch.dict(os.environ, {"CREDENTIALS_DIRECTORY": root}):
             folder = Path(root)
@@ -89,24 +89,18 @@ class CloudResilienceTests(unittest.TestCase):
                        pre_close=10,change=0,pct_chg=0,vol=1,amount=10)
             client.request.side_effect = lambda api, params: [bar] if api=="index_daily" else []
             output = folder/"models.json"
-            output.write_text(json.dumps({"daily_forecast":{"status":"pending"}}))
+            output.write_text(json.dumps({"daily_forecast":{"status":"archived"}}))
             with patch.object(market_daily,"SOURCE",source), patch.object(market_daily,"OUTPUT",folder/"daily.json"), \
                  patch.object(market_daily,"shanghai_now",return_value=now), \
                  patch.object(market_daily,"relay_client",return_value=nullcontext(client)), \
-                 patch.object(cloud_models,"SOURCE",source), patch.object(cloud_models,"OUTPUT",output), \
-                 patch.object(cloud_models,"STATE",folder), patch.object(cloud_models,"shanghai_now",return_value=now), \
-                 patch.object(cloud_models,"update_daily_forecasts",side_effect=lambda d,*args:{**d,"daily_forecast":{"status":"ready"}}) as forecast, \
-                 patch.object(cloud_models,"update_direction_probabilities",side_effect=lambda d,*args:{**d,"direction_probability":{"status":"ready"}}):
-                cloud_models.main()
-                forecast.assert_not_called()
+                 patch.object(market_daily,"STOCK_CAPS",folder/"caps.json"), \
+                 patch.object(cloud_models,"STATE",folder), patch.object(cloud_models,"shanghai_now",return_value=now):
                 market_daily.refresh()
                 recovered = market_daily.read_daily()["bars"]["sh000001"]["2026-11-18"]
                 self.assertEqual(recovered["fetched_at"], now.isoformat())
                 self.assertEqual(client.request.call_args_list[0].args[1]["end_date"], "20261118")
                 cloud_models.main()
-                cloud_models.main()
-                forecast.assert_called_once()
-                self.assertEqual(json.loads(output.read_text())["daily_forecast"]["status"],"ready")
+                self.assertEqual(json.loads(output.read_text())["daily_forecast"]["status"],"archived")
                 with sqlite3.connect(folder/"model/inputs.sqlite3") as db:
                     self.assertEqual(db.execute("SELECT count(*) FROM factors").fetchone()[0],0)
 

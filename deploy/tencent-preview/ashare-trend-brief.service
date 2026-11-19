@@ -1,0 +1,19 @@
+[Unit]
+Description=Generate the dated MiniMax trend brief after the close
+After=network-online.target ashare-trend-observations.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/trend_brief.py
+TimeoutStartSec=270
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview/news /var/lib/ashare-radar-preview/quote-output
+ProtectHome=yes
+PrivateTmp=yes

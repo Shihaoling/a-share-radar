@@ -1,21 +1,11 @@
-"""Inference-only forecast publication and observed five-minute factor checkpoints."""
+"""Archive observed five-minute and post-close factor checkpoints."""
 
 from datetime import time
-from hashlib import sha256
 import json
-from pathlib import Path
 import sqlite3
 
-from pipeline.calendar import market_session, previous_trading_day, shanghai_now
-from pipeline.daily_forecast import update_daily_forecasts
-from pipeline.direction_probability import update_direction_probabilities
-from market_daily import merge_daily, read_daily
+from pipeline.calendar import market_session, shanghai_now
 from relay_common import STATE
-from relay_quotes import SOURCE, publish
-
-RUNTIME = Path("/opt/ashare-radar-preview/runtime")
-OUTPUT = STATE / "model-output/models.json"
-STATUS = "现有预训练模型支持次日收盘点位和方向。次日开盘、盘中收盘待相应训练产物。现有方向模型的新闻因子未启用。"
 
 
 def latest_news_factors(now):
@@ -42,8 +32,6 @@ def latest_news_factors(now):
 def main():
     now = shanghai_now()
     phase = market_session(now)["phase"]
-    if not OUTPUT.exists():
-        publish(OUTPUT, {"schema_version": 1, "source": "tencent_models", "status": STATUS})
     folder = STATE / "model"
     folder.mkdir(parents=True, exist_ok=True)
     revision, news = latest_news_factors(now)
@@ -60,34 +48,11 @@ def main():
                 rows = quotes.execute("SELECT id,source_stamp,price,change_pct FROM samples WHERE minute=?", (slot,)).fetchall()
             db.execute("INSERT OR IGNORE INTO factors VALUES (?,?)", (slot, json.dumps({
                 "observations": rows, "news_revision": revision, "news": news,
-                "status": "missing_intraday_model" if rows else "missing_exact_minute_observations"})))
+                "status": "observed" if rows else "missing_exact_minute_observations"})))
             return
-        pre_open_recovery = phase == "pre_open" and time(7) <= now.time() < time(9, 15)
-        if not pre_open_recovery and (phase != "post_close" or now.time() < time(15, 30)):
-            return
-        daily = read_daily()
-        price_day = previous_trading_day(now.date()) if pre_open_recovery else now.date()
-        if pre_open_recovery and (not price_day or not any(price_day.isoformat() in bars for bars in daily["bars"].values())):
-            return
-        prices = sha256(json.dumps([price_day.isoformat(), daily["bars"]], sort_keys=True).encode()).hexdigest()
-        fingerprint = sha256(json.dumps([prices, revision]).encode()).hexdigest()
-        previous = json.loads(OUTPUT.read_text())
-        if previous.get("input_signature") == fingerprint or (pre_open_recovery and previous.get("price_signature") == prices):
-            return
-        if not pre_open_recovery:
-            db.execute("INSERT OR REPLACE INTO factors VALUES (?,?)", ("close:"+price_day.isoformat(),
+        if phase == "post_close" and now.time() >= time(15, 30):
+            db.execute("INSERT OR REPLACE INTO factors VALUES (?,?)", ("close:"+now.date().isoformat(),
                        json.dumps({"news_revision": revision, "news": news})))
-        data = merge_daily(json.loads(SOURCE.read_text()), daily)
-        data = update_daily_forecasts(data, RUNTIME/"data/daily_forecast/models", now, previous)
-        data = update_direction_probabilities(data, RUNTIME/"data/direction_probability/models/bundle.json", now, previous)
-        payload = {"schema_version": 1, "source": "tencent_models", "status": STATUS,
-                   "daily_forecast": data["daily_forecast"], "direction_probability": data["direction_probability"],
-                   "input_signature": fingerprint, "price_signature": prices, "generated_at": now.isoformat()}
-        publish(OUTPUT, payload)
-        print(json.dumps({"point_status": data["daily_forecast"]["status"],
-                          "direction_status": data["direction_probability"]["status"],
-                          "reference_date": data["daily_forecast"].get("reference_date"),
-                          "target_date": data["daily_forecast"].get("target_date")}), flush=True)
 
 
 if __name__ == "__main__":

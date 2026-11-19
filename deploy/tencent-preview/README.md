@@ -10,7 +10,8 @@
 | --- | --- | --- |
 | SXData 行情与当日分时 | `ashare-preview-relay.service` | 交易时段每 5 秒最多发起一批，滚动 60 秒最多 12 批。通常 10 批指数与行业、2 批个股，个股约每 30 秒一批 |
 | 即时资讯及 MiniMax | `ashare-preview-news@collect.timer`、`ashare-preview-news.path` | 09:00–16:00 每 2 分钟采集，其他时间每 20 分钟采集。收到新条目或补齐正文后唤醒分析，连续分批处理可分析的积压。受限条目留在队列，冷却期结束后的下一次新增可触发补做。 |
-| 日线、成分和已训练模型 | `ashare-preview-daily.timer`、`ashare-preview-reference.timer`、`ashare-preview-model.timer` | 盘后分批采集收盘数据，交易日 07:41 和 08:41 再补上一交易日缺项。日线模型可在开盘前用新到的收盘数据重新推断。盘中每五分钟保存对应分钟的输入，滚动预测今日收盘尚待独立模型 |
+| 日线、成分及观察数据 | `ashare-preview-daily.timer`、`ashare-preview-reference.timer`、`ashare-preview-model.timer` | 盘后分批采集收盘数据，交易日 07:41 和 08:41 补上一交易日缺项。盘中每五分钟保留对应分钟的真实观测与新闻因子 |
+| 趋势观察与简报 | `ashare-trend-observations.timer`、`ashare-trend-brief.timer` | 每五分钟从日线缓存发布一次趋势快照。MiniMax 晚间生成 10 日简报，次日早上补生成失败的结果。已有当日简报时跳过调用 |
 | 盘后研究和复盘 | `ashare-cloud-research.timer` | 工作日 17:26、19:38、21:22，程序再次检查是否为交易日 |
 | 历史快讯采集 | `ashare-training-collect.timer` | 09:00–16:00 每 10 分钟处理一个窗口，其余每分钟一个窗口 |
 | 历史快讯标注 | `ashare-training-label.timer` | 每批结束后等待 1 分钟再处理下一批，每批最多 32 篇 |
@@ -72,9 +73,11 @@ sha256sum news.jsonl.gz
 
 看板显示「正式归档已校验」后，在训练电脑上使用已有授权的 SSH 凭据下载正式清单和压缩文件。下载后比对 `manifest.json` 的 `sha256`。阶段导出仍可从 `export/` 查看。
 
+在训练电脑上把同一批次的清单与压缩文件放在同一目录，运行 `python3 scripts/prepare_labelled_news.py <导出目录> <新目录>`。该工具校验文件散列、记录数、标注时间和原文证据，抽取已打标样本，生成 `labelled.jsonl` 和样本清单。每条记录的 `input` 是新闻输入，`output` 是 MiniMax 标签，`provenance` 保留数据可得时间与标注来源。
+
 ```sh
-scp ubuntu@${RADAR_HOST}:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
-scp ubuntu@${RADAR_HOST}:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
+scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
+scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
 ```
 
 ## 域名
