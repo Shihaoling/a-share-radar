@@ -42,7 +42,7 @@ function amount(v) { if(!finite(v))return'—'; const n=Number(v);return Math.ab
 function dateText(value,short=false) {if(!value)return'尚未更新';if(/^\d{4}-\d{2}-\d{2}$/.test(String(value)))return String(value);const d=new Date(value);if(Number.isNaN(d.getTime()))return String(value);return new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',...(short?{}:{month:'2-digit',day:'2-digit'}),hour:'2-digit',minute:'2-digit',hour12:false}).format(d);}
 function safeURL(url){try{const u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}}
 function link(text,url,className=''){const safe=safeURL(url);return safe?h('a',{href:safe,target:'_blank',rel:'noopener noreferrer',class:className},text):h('span',{class:className},text);}
-function go(page) {if(page==='news'&&state.page!==page)state.newsLimit=12;state.page=page;history.replaceState(null,'',`#${page}`);render();window.dispatchEvent(new CustomEvent('radar:navigate',{detail:{page,title:pages.find(x=>x[0]===page)?.[1]||page}}));window.scrollTo({top:0,behavior:'instant'});}
+function go(page) {if(page==='news'&&state.page!==page)state.newsLimit=12;state.page=page;history.replaceState(null,'',`#${page}`);render();loadVisibleDirectoryFeeds();window.dispatchEvent(new CustomEvent('radar:navigate',{detail:{page,title:pages.find(x=>x[0]===page)?.[1]||page}}));window.scrollTo({top:0,behavior:'instant'});}
 function button(text,fn,className='outline-button',ico){return h('button',{class:className,type:'button',onClick:fn},ico?icon(ico,13):null,text);}
 function pill(text,cls=''){return h('span',{class:`tag ${cls}`},text);}
 function empty(title,body,ico='database'){return h('div',{class:'empty'},icon(ico,26),h('strong',{},title),h('p',{},body));}
@@ -56,6 +56,10 @@ function data(){const result=state.demo?demoData(state.data):{...baseData(),...(
 function isCanonicalSector(s){return s.taxonomy==='SW2021'&&(!s.level||s.level==='L1');}
 const relayOnly=document.querySelector('meta[name="radar-live-quotes"]')?.content==='sxdata';
 state.overviewIndustryView={metric:'intraday',range:21};
+const directoryView={scope:'hot',query:'',page:0,composing:false,selection:{},views:{}};
+const directoryPageSize=12;
+const sectorCode=/^\d{6}\.(?:SH|SZ)$/;
+const thsCode=/^\d{6}R?\.TI$/;
 if(relayOnly)state.taxonomy='sse';
 function quoteSnapshotStamp(snapshot){return String(snapshot?.collector?.checked_at||snapshot?.generated_at||'');}
 function currentPageQuotes(){
@@ -189,9 +193,10 @@ function mergeCloudNews(d,news){
  }
 }
 function taxonomyLabel(d){if(relayOnly&&!state.demo&&['sectors','overview'].includes(state.page)&&state.taxonomy==='sse')return d.sectors.length?`交易所行业与主题 · ${d.sectors.length} 个指数`:'行业行情等待更新';if(!relayOnly&&['sectors','overview'].includes(state.page)&&state.taxonomy==='eastmoney')return'东方财富行业 · 网页采样';return d.sectors.length&&d.sectors.every(isCanonicalSector)?`申万 2021 · ${d.sectors.length} 个一级行业`:'行业分类等待更新';}
-function industryOptions(){return relayOnly&&!state.demo?[['sse','交易所行业与主题'],['sw','申万行业 · 权重股估算']]:[['sw','申万行业'],['eastmoney','东方财富 · 网页采样']];}
+function industryOptions(){return relayOnly&&!state.demo?[['sse',state.page==='overview'?'板块行情目录':'交易所行业与主题'],['sw','申万行业 · 权重股估算']]:[['sw','申万行业'],['eastmoney','东方财富 · 网页采样']];}
 function providerName(value){return({stock_api:relayOnly?'SXData':'Tushare',tushare:'Tushare',tencent:'腾讯行情',sina:'新浪行情',eastmoney:'东方财富',baostock:'BaoStock',eastmoney_page:'东方财富网页'})[value]||value||'来源待确认';}
-function chinaDay(value){if(!value)return null;const text=String(value);if(/^\d{8}$/.test(text))return`${text.slice(0,4)}-${text.slice(4,6)}-${text.slice(6,8)}`;if(/^\d{4}-\d{2}-\d{2}$/.test(text))return text;const d=new Date(value);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(d):null;}
+const chinaDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'});
+function chinaDay(value){if(!value)return null;const text=String(value);if(/^\d{8}$/.test(text))return`${text.slice(0,4)}-${text.slice(4,6)}-${text.slice(6,8)}`;if(/^\d{4}-\d{2}-\d{2}$/.test(text))return text;const d=new Date(value);return Number.isFinite(d.getTime())?chinaDate.format(d):null;}
 function quoteTime(value,daily=false){if(!value)return null;let text=String(value);if(/^\d{8}$/.test(text))text=chinaDay(text);if(/^\d{4}-\d{2}-\d{2}$/.test(text))text+=daily?'T15:00:00+08:00':'T00:00:00+08:00';const t=new Date(text).getTime();return Number.isFinite(t)?t:null;}
 const chinaClock=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
 function indexUpdate(q){
@@ -266,6 +271,13 @@ function relayIntraday(snapshot, latest, item, day, recovery){
  return [...minutes.values()].sort((a,b)=>a.minute-b.minute);
 }
 function todayRelayTicks(item,day){
+ if(item.directoryEntry){
+  const series=state.sectorSeries;
+  const history=series?.id===item.id&&series.trade_date===day?{trade_date:day,series:{[item.id]:series.points}}:null;
+  const core=state.relayIntraday;
+  const samples=[...(core?.trade_date===day?core.series?.[item.id]||[]:[]),...(history?.series[item.id]||[])];
+  return relayIntraday({trade_date:day,series:{[item.id]:samples}},item.live_quote,item,day,state.minuteRecovery);
+ }
  const feed=state.liveQuotes;
  const quote=feed?.trade_date===day?[...feed.market,...feed.sectors].find(q=>q.id===item.id):null;
  return relayIntraday(state.relayIntraday,quote,item,day,state.minuteRecovery);
@@ -391,7 +403,7 @@ function pageWithAvailableData(view){
 }
 function render(){
   const focus=document.activeElement;
-  const quoteFocus=focus?.matches?.('.index-select, .heat-tile, .overview-leader')?focus.id:null;
+  const quoteFocus=focus?.matches?.('.index-select, .heat-tile, .overview-leader, [data-overview-focus]')?focus.id:null;
   const view={overview,sectors,news:newsPage,forecast,review,settings,analytics}[state.page]||overview;
   const {d,cov,body,conflict}=pageWithAvailableData(view),current=pages.find(x=>x[0]===state.page)||pages[0];
   const sidebar=h('aside',{class:'sidebar'},h('div',{class:'brand'},h('div',{class:'brand-symbol'},icon('logo',23)),h('div',{class:'brand-text'},h('h1',{},'观澜'),h('small',{},'MARKET OBSERVATORY'))),h('div',{class:'nav-title'},'研究工作台'),h('nav',{class:'nav','aria-label':'主导航'},pages.map(([id,label,ico])=>h('button',{type:'button',class:state.page===id?'active':'',title:label,'aria-current':state.page===id?'page':null,onClick:()=>go(id)},icon(ico,18),h('span',{},label)))),h('div',{class:'side-bottom'},h('div',{class:'small-divider'}),h('div',{class:'side-label'},'数据状态'),h('div',{class:'side-status'},h('i',{class:`status-dot ${cov.healthy?'live':''}`}),`${cov.healthy} / ${d.sources.length} 数据源可用`),h('div',{class:'side-caption'},relayOnly?'SXData 主源 · 指数分批更新':'Tushare 主源 · 五分钟行情采样'),relayOnly?h('a',{href:'./training-progress/',class:'training-progress-link'},'180 天新闻采集进度'):null));
@@ -439,7 +451,7 @@ function exchangeSectorPanel(sec,d){
   h('div',{class:'table-wrap'},h('table',{},h('thead',{},h('tr',{},['股票','权重','涨跌幅','总市值'].map(label=>h('th',{},label)))),
    h('tbody',{},weights.map(st=>{
     const quote=displayQuote(st),cap=stockCapital(st);
-    return h('tr',{},h('td',{},st.name,h('div',{class:'panel-subtitle'},st.ts_code)),h('td',{},pct(st.weight_pct).replace(/^\+/,'')),
+    return h('tr',{},h('td',{},assetResearchLink('stock',st,st.name||st.ts_code),h('div',{class:'panel-subtitle'},st.ts_code)),h('td',{},pct(st.weight_pct).replace(/^\+/,'')),
      h('td',{class:sign(quote.change_pct)},pct(quote.change_pct)),h('td',{},amount(cap.value),cap.label?h('div',{class:'panel-subtitle'},cap.label):null,stockFlow(st)));
    })))):h('p',{class:'inline-note'},'当前指数没有已核验的权重清单。')));
 }
@@ -456,24 +468,69 @@ function chooseOverviewIndustry(id){
  if(state.page!=='overview'){go('sectors');return;}
  state.overviewSelected=id;
  render();
+ if(visibleDirectory()&&sectorCode.test(id))requestSectorSeries(id);
+}
+function assetResearchLink(type, item, label) {
+  let code = item.ts_code || item.index_code || item.code || item.id || '';
+  const oldIndex = type === 'index' && /^(sh|sz)(\d{6})$/i.exec(code);
+  if (oldIndex) code = oldIndex[2] + '.' + oldIndex[1].toUpperCase();
+  const supported = type === 'index' ? /^\d{6}\.(SH|SZ)$/ : /^(?:\d{6}\.(?:SH|SZ|BJ|NQ)|\d{5,6}\.HK)$/;
+  if (state.demo || !supported.test(code)) return type === 'stock' ? label : null;
+  return h('a', {class:'directory-details', href:'./asset/?type='+type+'&code='+encodeURIComponent(code),
+    'aria-label':'查看'+(item.name || code)+'的研究指标'}, label);
+}
+function sectorDetailsLink(item,context='preview'){
+ return h('a',{class:'directory-details',id:'sector-link-'+context+'-'+item.id,'data-overview-focus':true,href:'./sector/?code='+encodeURIComponent(item.id),
+  'aria-label':item.name+'成分与研究详情'},'成分与研究 ↗');
+}
+function thsSnapshotRows(item){
+ const ranking=item.ranking,reference=item.reference;
+ const entries=[];
+ if(ranking){
+  entries.push(['热榜涨跌',pct(ranking.change_pct)],['热榜点位',finite(ranking.price)&&ranking.price>0?num(ranking.price)+' 点':'待更新']);
+  if(finite(ranking.hot))entries.push(['热度',num(ranking.hot,0)]);
+ }
+ if(reference)entries.push([reference.quote_date+' 收盘',num(reference.price)+' 点'],['收盘涨跌',pct(reference.change_pct)]);
+ return entries;
+}
+function snapshotTime(hot){
+ if(!hot)return '';
+ const stamp=String(hot.rank_time||'');
+ const clock=/^\d{2}:\d{2}(?::\d{2})?$/.test(stamp)?stamp:quoteTime(stamp)!==null?chinaClock.format(quoteTime(stamp)):'';
+ return [hot.trade_date,clock].filter(Boolean).join(' ');
+}
+function thsSectorPanel(item){
+ const entries=thsSnapshotRows(item);
+ return panel(item.name+' · 行情快照',item.ranking?'同花顺概念热榜 · '+snapshotTime(state.sectorHot):'同花顺 · 收盘参考',
+  h('div',{class:'directory-snapshot'},entries.length?h('dl',{},entries.map(([label,value])=>[h('dt',{},label),h('dd',{},value)])):
+   h('p',{},'已收录该板块，等待中转站返回带日期的行情。')),sectorDetailsLink(item));
 }
 function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=state.overviewSelected){
  const today=chinaDay(new Date());
  return h('div',{class:'heatmap'},comparison.rows.slice(0,limit).map(({sector:sec,q})=>{
+  const ths=sec.taxonomy==='THS',rank=sec.ranking,reference=sec.reference;
   const comparable=Boolean(comparison.day&&q.day===comparison.day&&finite(q.price)&&finite(q.value));
-  const value=comparable?q.value:null;
-  const stamp=q.estimate?sec.intraday_estimate?.quote_timestamp:q.quote.as_of;
-  const time=quoteTime(stamp,q.quote.daily&&!q.estimate);
-  const when=!q.day?'待更新':q.day!==today?`${q.day} 参考`:
-   time===null?'时点待确认':chinaClock.format(time);
+  const value=ths?(rank?rank.change_pct:reference?.change_pct):comparable?q.value:null;
+  const price=ths?(rank?rank.price:reference?.price):q.price;
+  const stamp=q.estimate?sec.intraday_estimate?.quote_timestamp:q.quote?.as_of;
+  const time=quoteTime(stamp,q.quote?.daily&&!q.estimate);
+  const when=ths?(rank?'热榜 '+snapshotTime(state.sectorHot):reference?reference.quote_date+' 收盘':'待更新'):
+   !q.day?'待更新':q.day!==today?`${q.day} 参考`:time===null?'时点待确认':q.day.slice(5)+' '+chinaClock.format(time);
   const basis=q.estimate?'权重股估算':q.proxy?'ETF代理':'';
   const selected=selectedId===sec.id;
-  return h('button',{class:`heat-tile ${finite(value)?value>0?'positive':value<0?'negative':'':''} ${Math.abs(value)>1.8?'strong':''} ${selected?'selected-sector':''}`,
+  const category=ths?'同花顺'+({industry:'行业',concept:'概念',theme:'主题'}[sec.kind]||''):
+   sec.directoryEntry?'交易所'+({industry:'行业',theme:'主题'}[sec.kind]||'指数'):'申万一级行业';
+  const enriched=relayOnly&&!state.demo&&(sec.directoryEntry||isCanonicalSector(sec));
+  const tile=h('button',{class:`heat-tile ${finite(value)?value>0?'positive':value<0?'negative':'':''} ${Math.abs(value)>1.8?'strong':''} ${selected?'selected-sector':''}`,
    id:`overview-industry-${sec.id}`,type:'button','aria-pressed':String(selected),'aria-controls':'overview-sector-trend',
-   onClick:()=>chooseOverviewIndustry(sec.id),title:[sec.name,num(q.price),pct(value),basis,when].filter(Boolean).join(' · ')},
-   h('span',{class:'name'},sec.name),h('strong',{class:'change'},pct(value)),
-   h('span',{class:'industry-quote'},finite(q.price)?`${num(q.price)} 点`:'点位待更新'),
-   h('span',{class:'industry-stamp'},[basis,when].filter(Boolean).join(' · ')));
+   onClick:()=>chooseOverviewIndustry(sec.id),title:[sec.fullname||sec.name,category,basis,when].filter(Boolean).join(' · ')},
+   h('span',{class:'name'},rank?h('small',{class:'directory-rank'},'#'+rank.rank):null,sec.name),
+   enriched?h('span',{class:'directory-code'},category+' · '+sec.id):null,h('strong',{class:'change'},pct(value)),
+   h('span',{class:'industry-quote'},finite(price)&&price>0?`${num(price)} 点`:'点位待更新'),
+   h('span',{class:'industry-stamp'},[basis,when].filter(Boolean).join(' · ')),
+   rank&&finite(rank.hot)?h('span',{class:'industry-stamp'},'热度 '+num(rank.hot,0)):null);
+  return enriched?h('article',{class:'sector-listing'},tile,h('div',{class:'directory-foot'},
+   h('p',{},sec.intro||'板块简介待更新。'),sectorDetailsLink(sec,'card'))):tile;
  }));
 }
 function trendPanel(d,item=selectedMarket(d),view=state){
@@ -491,7 +548,7 @@ function trendPanel(d,item=selectedMarket(d),view=state){
    metric==='cap'&&today&&!hist?.length?h('p',{class:'chart-data-note'},'当前指数缺少可核验的总市值历史。申万行业与有市值基准的个股可查看各自口径。'):null,
    !today&&!intraday&&metric!=='cap'?quoteCaption(mainQuote):null,intraday&&!today?tickNote(ticks):null,
    !today||!intraday||ticks.length?h('div',{class:'chart-footer'},h('span',{class:'legend'},h('i',{}),item.name||'上证指数'),h('span',{},today&&intraday?`虚线为短缺口插值 · 悬停查看${estimate?'估算点位':'实际报价'}`:intraday?'悬停查看时间与点位':'悬停查看日期与点位')):null),
-  item.taxonomy==='SSE'?null:h('div',{class:'panel-tools'},segmented([['intraday','今日走势'],['index','日线'],['cap','市值']],view.metric,v=>{view.metric=v;render();}),!intraday?segmented([[21,'1M'],[63,'3M'],[252,'1Y']],view.range,v=>{view.range=v;render();}):null),today?'chart-panel current-trend':'chart-panel');
+  item.taxonomy==='SSE'?(relayOnly&&!state.demo?sectorDetailsLink(item):null):h('div',{class:'panel-tools'},isCanonicalSector(item)&&relayOnly&&!state.demo?sectorDetailsLink(item):assetResearchLink('index',item,'指数研究 ↗'),segmented([['intraday','今日走势'],['index','日线'],['cap','市值']],view.metric,v=>{view.metric=v;render();}),!intraday?segmented([[21,'1M'],[63,'3M'],[252,'1Y']],view.range,v=>{view.range=v;render();}):null),today?'chart-panel current-trend':'chart-panel');
 }
 function marketBreadth(d,comparison=sectorComparison(d.sectors)){
  const {ranked,label}=comparison,up=ranked.filter(({q})=>q.value>0).length,down=ranked.filter(({q})=>q.value<0).length;
@@ -499,7 +556,7 @@ function marketBreadth(d,comparison=sectorComparison(d.sectors)){
  return h('div',{class:'breadth'},h('span',{},taxonomyLabel(d),' · ',label),h('strong',{class:'up'},`${up} 涨`),
   h('strong',{class:'down'},`${down} 跌`),h('span',{},`${ranked.length-up-down} 平`));
 }
-function leadersPanel(d,comparison=sectorComparison(d.sectors),selectedId=state.overviewSelected){
+function leadersPanel(d,comparison=sectorComparison(d.sectors),selectedId=state.overviewSelected,browse=()=>go('sectors')){
  const row=({sector:x,q},i)=>h('button',{class:'leader-row overview-leader',type:'button',
   id:`overview-leader-${x.id}`,'aria-controls':'overview-sector-trend','aria-pressed':String(x.id===selectedId),
   onClick:()=>chooseOverviewIndustry(x.id)},h('span',{class:'leader-rank'},i+1),h('strong',{},x.name),
@@ -509,30 +566,140 @@ function leadersPanel(d,comparison=sectorComparison(d.sectors),selectedId=state.
  return panel('行业焦点',comparison.label,h('div',{class:'leaders-grid'},
   h('div',{},h('h4',{class:'up'},'涨幅居前'),rising.length?rising.map(row):comparison.ranked.length?'已覆盖行业中暂无上涨':'等待同日涨跌幅'),
   h('div',{},h('h4',{class:'down'},'跌幅居前'),falling.length?falling.map(row):comparison.ranked.length?'已覆盖行业中暂无下跌':'等待同日涨跌幅')),
-  button('查看全部行业 ↗',()=>go('sectors'),'text-button'));
+  button('查看全部行业 ↗',browse,'text-button'));
+}
+function visibleDirectory(){return relayOnly&&!state.demo&&state.page==='overview'&&state.taxonomy==='sse';}
+function searchKey(value){return String(value||'').normalize('NFKC').toLowerCase().replace(/\s+/gu,'');}
+let lastDirectory;
+function exchangeDirectory(d){
+ const today=chinaDay(new Date()),catalog=state.sectorCatalog,feed=state.sectorQuotes,core=state.liveQuotes;
+ const ths=state.thsCatalog,reference=state.sectorReference,rankings=state.sectorHot;
+ const inputs=[today,catalog,feed,core,ths,reference,rankings];
+ if(lastDirectory&&inputs.every((input,i)=>input===lastDirectory.inputs[i]))
+  return lastDirectory;
+ const list=catalog?.items||[];
+ const entries=new Map(list.map(item=>[item.code,item]));
+ const quotes=new Map();
+ function remember(quote){
+  if(!quote||!sectorCode.test(quote.id)||!finite(quote.price)||Number(quote.price)<=0||quote.timestamp_quality!=='source_reported')return;
+  const time=quoteTime(quote.quote_timestamp);
+  if(time===null||time>Date.now()+60000||quote.quote_date!==chinaDay(quote.quote_timestamp))return;
+  const prior=quotes.get(quote.id);
+  if(!prior||time>=quoteTime(prior.quote_timestamp))quotes.set(quote.id,quote);
+ }
+ for(const row of feed?.sectors||[])remember(row);
+ for(const row of d.sectors)remember(row);
+ const byId=new Map(d.sectors.map(item=>[item.id,item]));
+ // Quotes can arrive before the independently published catalogue. Their verified IDs
+ // remain usable while names, aliases and classifications load.
+ for(const row of feed?.sectors||[])if(!byId.has(row.id))byId.set(row.id,{id:row.id,name:row.name||row.id});
+ for(const item of list)if(!byId.has(item.code))byId.set(item.code,{id:item.code});
+ const sectors=[...byId.values()].map(base=>{
+  const meta=entries.get(base.id),quote=quotes.get(base.id);
+  const label=meta?.name||base.name||quote?.name||base.id;
+  const name=meta?.fullname&&!/[\u3400-\u9fff]/u.test(label)?meta.fullname.replace(/指数$/u,''):label;
+  return {id:base.id,name,fullname:meta?.fullname,intro:meta?.intro,kind:meta?.kind,taxonomy:'SSE',directoryEntry:true,live_quote:quote,
+   searchText:[base.id,meta?.name,meta?.fullname,meta?.quote_name,base.name,quote?.name,...(meta?.keywords||[])].map(searchKey).join('|')};
+ });
+ const comparison=sectorComparison(sectors);
+ // Directory pages stay in code order when quotes move. Only the hot tab is ranked.
+ const thsMeta=new Map((ths?.items||[]).map(item=>[item.code,item]));
+ const rankingById=new Map((rankings?.trade_date<=today?rankings.items:[]).map(row=>[row.code,row]));
+ const thsRows=new Map();
+ for(const code of new Set([...thsMeta.keys(),...rankingById.keys(),...Object.keys(reference?.quotes||{}).filter(code=>thsCode.test(code))])){
+  const meta=thsMeta.get(code),ranking=rankingById.get(code),daily=reference?.quotes?.[code];
+  const name=meta?.name||ranking?.name||daily?.name||code;
+  const sector={id:code,name,kind:({I:'industry',N:'concept',TH:'theme'})[meta?.kind]||(ranking?'concept':undefined),
+   intro:meta?.intro,taxonomy:'THS',directoryEntry:true,ranking,
+   reference:daily&&dateKey(daily.quote_date)&&daily.quote_date<=today&&finite(daily.price)&&daily.price>0?daily:null,
+   searchText:[code,name,ranking?.name,...(meta?.keywords||[])].map(searchKey).join('|')};
+  thsRows.set(code,{sector,q:{}});
+ }
+ const ordered=[...comparison.rows,...thsRows.values()].sort((a,b)=>a.sector.id.localeCompare(b.sector.id));
+ const ranked=[...rankingById.values()].sort((a,b)=>a.rank-b.rank).slice(0,10).map(row=>thsRows.get(row.code));
+ const active=comparison.rows.filter(({sector,q})=>q.day===today&&q.quote.trusted&&finite(q.price)&&
+  finite(sector.live_quote?.amount)&&Number(sector.live_quote.amount)>0)
+  .sort((a,b)=>Number(b.sector.live_quote.amount)-Number(a.sector.live_quote.amount)||a.sector.id.localeCompare(b.sector.id));
+ const hot=ranked.length?ranked:active.slice(0,10);
+ const note=ranked.length?`同花顺 A股概念热榜 · ${rankings.trade_date===today?'今日':'历史榜'} ${snapshotTime(rankings)} · 按中转站热度排名`:
+  active.length?`热榜待更新 · 交易所成交活跃榜 · ${today} ${chinaClock.format(Math.max(...active.map(({q})=>q.quote.time)))} · 按当日累计成交额排序`:'同花顺概念热榜待更新';
+ lastDirectory={inputs,sectors:ordered.map(row=>row.sector),exchange:sectors,comparison,ordered,hot,note};return lastDirectory;
+}
+function changeDirectoryScope(scope){
+ directoryView.scope=scope;directoryView.page=0;
+ if(scope==='hot')directoryView.query='';
+ render();
+}
+function directoryToolbar(total){
+ const commit=(input)=>{
+  directoryView.query=input.value;directoryView.page=0;
+  if(searchKey(input.value)&&directoryView.scope==='hot')directoryView.scope='all';
+  renderKeepFocus('directory-search',input.selectionStart);
+ };
+ return h('div',{class:'directory-toolbar'},
+  h('label',{class:'search directory-search'},icon('search',15),h('input',{id:'directory-search',type:'search',
+   placeholder:'搜索半导体、人工智能或代码',value:directoryView.query,'aria-label':'搜索板块名称或代码',
+   onCompositionStart:()=>{directoryView.composing=true;},onCompositionEnd:e=>{directoryView.composing=false;commit(e.target);},
+   onInput:e=>{if(!directoryView.composing&&!e.isComposing&&e.target.value!==directoryView.query)commit(e.target);}})),
+  h('div',{class:'directory-filters'},[['hot','热门'],['all',`全部 ${total}`],['industry','行业'],['concept','概念'],['theme','主题']]
+   .map(([value,label])=>h('button',{type:'button',id:'directory-filter-'+value,'data-overview-focus':true,'aria-pressed':String(directoryView.scope===value),
+    onClick:()=>changeDirectoryScope(value)},label))));
+}
+function directoryPage(board){
+ const {scope,query}=directoryView;
+ const search=searchKey(query);
+ const hot=scope==='hot';
+ const results=hot?board.hot.slice(0,10):board.ordered.filter(({sector})=>
+  (scope==='all'||sector.kind===scope)&&(!search||sector.searchText.includes(search)));
+ const pages=Math.max(1,Math.ceil(results.length/directoryPageSize));
+ const page=Math.min(directoryView.page,pages-1);
+ const rows=results.slice(page*directoryPageSize,(page+1)*directoryPageSize);
+ const move=step=>{directoryView.page=page+step;render();};
+ const pager=!hot&&pages>1?h('div',{class:'directory-pager'},
+  h('button',{type:'button',id:'directory-prev','data-overview-focus':true,disabled:page===0,onClick:()=>move(-1)},'上一页'),
+  h('span',{},`${page+1} / ${pages}`),h('button',{type:'button',id:'directory-next','data-overview-focus':true,disabled:page+1>=pages,onClick:()=>move(1)},'下一页')):null;
+ const note=hot?board.note:
+  `共 ${results.length} 个匹配板块${rows.length?` · 显示 ${page*directoryPageSize+1}–${page*directoryPageSize+rows.length}`:''}`;
+ return {rows,results,note,pager};
 }
 function overviewIndustryBoard(d){
- const comparison=sectorComparison(d.sectors);
+ const useDirectory=visibleDirectory();
+ const board=useDirectory?exchangeDirectory(d):null;
+ const swMeta=new Map((state.thsCatalog?.sw_items||[]).map(item=>[item.code,item]));
+ const sectors=board?.sectors||d.sectors.map(item=>swMeta.has(item.id)?{...item,intro:swMeta.get(item.id).intro}:item);
+ const comparison=board?.comparison||sectorComparison(sectors);
+ const page=board?directoryPage(board):null;
  const quoted=new Set(comparison.rows.filter(({q})=>q.day===comparison.day&&finite(q.price)).map(({sector})=>sector.id));
- const selected=d.sectors.find(item=>item.id===state.overviewSelected)
-  ||d.sectors.find(item=>quoted.has(item.id))||d.sectors[0];
+ const selected=sectors.find(item=>item.id===state.overviewSelected)
+  ||board?.hot[0]?.sector||sectors.find(item=>quoted.has(item.id))||sectors[0];
+ const chartCode=useDirectory&&selected&&sectorCode.test(selected.id)&&(state.overviewSelected===selected.id||selected.live_quote)&&!d.sectors.some(item=>item.id===selected.id)?selected.id:null;
+ if(chartCode!==directoryView.chartCode){
+  directoryView.chartCode=chartCode;
+  if(chartCode)setTimeout(()=>{if(directoryView.chartCode===chartCode&&visibleDirectory())requestSectorSeries(chartCode);},300);
+ }
  const switchTaxonomy=value=>{
   if(value===state.taxonomy)return;
+  directoryView.selection[state.taxonomy]=selected?.id;
+  directoryView.views[state.taxonomy]=state.overviewIndustryView;
   state.taxonomy=value;
-  state.overviewSelected=null;
-  state.overviewIndustryView={metric:'intraday',range:21};
-  render();
+  state.overviewSelected=directoryView.selection[value]||null;directoryView.composing=false;
+  state.overviewIndustryView=directoryView.views[value]||{metric:'intraday',range:21};
+  render();loadVisibleDirectoryFeeds();
  };
  return h('section',{id:'overview-industries',class:'overview-section','aria-labelledby':'overview-industry-title'},
   h('header',{class:'overview-section-head'},h('h3',{id:'overview-industry-title'},'行业涨跌'),
    segmented(industryOptions(),state.taxonomy,switchTaxonomy)),
-  marketBreadth(d,comparison),
+  marketBreadth(board?{...d,sectors:board.exchange}:d,comparison),
   h('div',{class:'industry-board-grid'},
-   h('div',{class:'panel industry-quotes'},d.sectors.length?heatmap(d,d.sectors.length,comparison,selected.id):
-    empty('等待行业行情','取得报价后自动更新。')),
+   h('div',{class:'panel industry-quotes'},
+    board?directoryToolbar(sectors.length):null,page?h('div',{class:'directory-note','aria-live':'polite'},page.note):null,
+    (page?page.rows.length:sectors.length)?heatmap(d,page?directoryPageSize:sectors.length,page?{...comparison,rows:page.rows}:comparison,selected?.id):
+     page&&sectors.length?empty(directoryView.scope==='hot'?'等待板块热榜':'暂无匹配板块',
+      directoryView.scope==='hot'?'可切换到全部板块查看已有行情。':'试试其他名称、代码或分类。'):
+      empty('等待行业行情','取得报价后自动更新。'),page?.pager),
    h('div',{class:'industry-detail-stack'},h('div',{id:'overview-sector-trend'},selected?
-    trendPanel(d,selected,state.overviewIndustryView):panel('行业走势',null,empty('等待行业分时','取得行业数据后显示走势。'))),
-    leadersPanel(d,comparison,selected?.id))));
+    (selected.taxonomy==='THS'?thsSectorPanel(selected):trendPanel(d,selected,state.overviewIndustryView)):panel('行业走势',null,empty('等待行业分时','取得行业数据后显示走势。'))),
+    leadersPanel(d,comparison,selected?.id,board?()=>changeDirectoryScope('all'):undefined))));
 }
 function overview(d){
  const market=selectedMarket(d);
@@ -617,9 +784,9 @@ function sectors(d){const subset=d.sectors.filter(s=>`${s.name} ${s.code||''} ${
  if(state.sort==='name')matches.sort((a,b)=>a.name.localeCompare(b.name,'zh-CN'));
  if(state.sort==='cap')matches.sort((a,b)=>(Number(b.market_cap)||0)-(Number(a.market_cap)||0));
  const sec=matches.find(s=>s.id===state.selected)||matches[0];state.selected=sec?.id||null;return h('div',{},heading('行业雷达',taxonomyLabel(d)),h('div',{class:'toolbar'},segmented(industryOptions(),state.taxonomy,v=>{state.taxonomy=v;state.selected=null;state.group='全部';state.search='';state.metric=v==='sw'&&!relayOnly?'index':'intraday';render();}),h('label',{class:'search'},icon('search',14),h('input',{id:'sector-search',type:'search',value:state.search,placeholder:'搜索行业','aria-label':'搜索板块',onInput:e=>{state.search=e.target.value;renderKeepFocus('sector-search',e.target.selectionStart);}})),segmented([['全部','全部'],['我的自选','我的自选']],state.group,v=>{state.group=v;render();})),state.taxonomy==='eastmoney'?h('p',{class:'inline-note'},'独立行业分类，不与申万指数混用。每轮最多两页，显示已采集板块；各行保留实际采样时间。'):null,h('div',{class:'sector-layout'},panel('板块行情',`${comparison.label} · ${state.sort==='name'?'按名称排序':state.sort==='cap'?'按市值排序':'同日按涨跌幅排序，历史参考列后'}`,matches.length?h('div',{class:'table-wrap'},h('table',{class:'sector-quote-table'},h('thead',{},h('tr',{},['自选','行业','指数点位','涨跌幅','时间'].map(t=>h('th',{},t)))),h('tbody',{},matches.map(s=>{const sq=sectorQuote(s),q=sq.quote;return h('tr',{class:sec?.id===s.id?'selected':'',onClick:()=>{state.selected=s.id;render();}},h('td',{},button(state.favorites.includes(s.id)?'★':'☆',e=>{e.stopPropagation();state.favorites=state.favorites.includes(s.id)?state.favorites.filter(x=>x!==s.id):[...state.favorites,s.id];local.set('guanlan.favorites',state.favorites);render();},`star ${state.favorites.includes(s.id)?'saved':''}`)),h('td',{},h('button',{class:'sector-name',onClick:()=>{state.selected=s.id;render();}},s.name)),h('td',{class:'numeric'},num(sq.price)),h('td',{class:`numeric sector-change ${sign(sq.value)}`},pct(sq.value)),h('td',{class:'quote-time'},sq.estimate?`估算 ${dateText(s.intraday_estimate.quote_timestamp,true)}`:q.as_of?dateText(q.as_of,false):'待更新' ));})))):empty('尚无匹配行情',state.taxonomy==='eastmoney'?'网页采样尚未完成，或当前来源正在冷却。':'调整关键词后重试。')),h('div',{class:'stack'},sec?(sec.taxonomy==='SSE'?exchangeSectorPanel(sec,d):sectorDetail(sec,d)):null,sec&&state.taxonomy==='sw'?sectorProbabilityPanel(sec,d):null,sec&&state.taxonomy==='sw'?h('details',{class:'panel secondary-details'},h('summary',{},'成分研究、基金与关联资讯'),sectorEquityPanel(sec),fundsPanel(sec),sentimentPanel(sec,d),industryRelations(sec)):null)) );}
-function renderKeepFocus(id,pos){render();const input=document.getElementById(id);if(input){input.focus();try{input.setSelectionRange(pos,pos);}catch{}}}
+function renderKeepFocus(id,pos){render();const input=document.getElementById(id);if(input){input.focus({preventScroll:true});try{input.setSelectionRange(pos,pos);}catch{}}}
 function stockRankLabel(sector){const basis=sector.rank_basis||sector.stocks?.[0]?.rank_basis;if(['market_cap','total_market_cap'].includes(basis))return'按已获取总市值排序';if(basis==='membership_order')return'成分示例 · 市值排序待数据';if(['turnover_amount','amount','turnover'].includes(basis))return'按已获取成交额排序';return'成分示例 · 排序依据待确认';}
-function sectorDetail(sec,d){const stocks=sec.stocks||[],mainQuote=displayQuote(sec),shown=sectorQuote(sec),proxy=sec.proxy,proxyQuote=displayQuote(proxy||{}),hasProxy=!finite(mainQuote.price)&&finite(proxyQuote.price),useProxy=state.metric!=='cap'&&hasProxy;const quote=useProxy?proxy:sec;const today=relayOnly&&!state.demo,ticks=today?todayRelayTicks(quote,chinaDay(new Date())):intradayFor(d,quote,useProxy?sec:null),isIntraday=state.metric==='intraday';const hist=isIntraday?ticks:state.metric==='cap'?sec.market_cap_history:quote.history;return panel(`${sec.name}`,`${providerName(mainQuote.provider)} · ${sec.code||sec.id||'代码待确认'} · ${isCanonicalSector(sec)?'申万 2021 一级行业':sec.taxonomy==='EASTMONEY'?'东方财富行业':'行业口径待确认'}`,h('div',{},h('div',{class:'detail-top'},h('div',{},h('div',{class:'panel-subtitle'},shown.estimate?'板块点位 · 权重股估算':'板块指数点位'),h('strong',{class:'detail-price'},num(shown.estimate?shown.price:mainQuote.price))),h('span',{class:`change ${sign(shown.value)}`},pct(shown.value))),shown.estimate?h('p',{class:'chart-data-note'},`权重基准 ${sec.intraday_estimate.basis_date} · 样本股 ${sec.intraday_estimate.sample_count}/${sec.intraday_estimate.sample_size} · 报价时间 ${dateText(sec.intraday_estimate.quote_timestamp,false)}`):quoteCaption(mainQuote),validationStatus(sec)==='conflict'?validationDetail(sec):null,hasProxy?h('div',{class:'proxy-box'},h('div',{class:'proxy-title'},'参考ETF · ',proxy.name,` (${proxy.code})`),h('div',{class:'proxy-quote'},h('strong',{},num(proxyQuote.price,3)),h('span',{},`元 / ${proxyQuote.label}`),h('span',{class:`change ${sign(proxyQuote.change_pct)}`},pct(proxyQuote.change_pct))),h('p',{},`${providerName(proxyQuote.provider)} · ${proxyQuote.as_of?dateText(proxyQuote.as_of):'日期待确认'} · ETF仅为相关资产代理，不等同板块指数。`),validationDetail(proxy),liveQuoteBlock(proxy)):null,isCanonicalSector(sec)?h('details',{class:'secondary-details'},h('summary',{},'估值与风险指标'),quantPanel(sec),proxy?.quant_metrics?quantPanel(proxy,true):null):null,h('div',{class:'chart-body'},h('div',{class:'panel-subtitle'},isIntraday?(today?(sec.intraday_estimate?'今日分时 · 权重股估算':'今日分时'):useProxy?'参考ETF分时快照 · 单位：元':'板块分时快照 · 单位：点'):state.metric==='cap'?(sec.market_cap_date?`历史总市值 · 最新 ${sec.market_cap_date}`:'历史总市值'):useProxy?`参考ETF趋势 · ${proxy.name} (${proxy.code}) · 单位：元`:'板块指数趋势 · 单位：点'),chart(hist,{height:165,metric:state.metric,range:isIntraday?null:state.range,unit:useProxy?'元':'点',today:today&&isIntraday})),isIntraday&&!today?tickNote(ticks):null,h('div',{class:'chart-footer'},segmented([['intraday','分时'],['index',hasProxy?'ETF日线':'指数日线'],['cap','板块市值']],state.metric,v=>{state.metric=v;render();}),h('span',{},isIntraday?(today?'':'定时采样，非秒级实时'):state.metric==='cap'?'真实快照':useProxy?'ETF日收盘，非板块点位':'日频行情')),h('div',{class:'panel-head'},h('h3',{class:'panel-title'},'主要成分股'),h('span',{class:'panel-subtitle'},stockRankLabel(sec))),stocks.length?h('div',{class:'table-wrap'},h('table',{},h('thead',{},h('tr',{},(today?['股票','价格','涨跌幅','总市值']:['股票','价格','涨跌幅']).map(t=>h('th',{},t)))),h('tbody',{},stocks.slice(0,8).map(x=>{const q=displayQuote(x),cap=stockCapital(x);return h('tr',{},h('td',{},x.name,h('div',{class:'panel-subtitle'},x.code)),h('td',{class:'numeric'},num(q.price),h('div',{class:'panel-subtitle'},today?(q.daily?q.day:q.is_today&&q.time!==null?chinaClock.format(q.time):q.day||'待更新'):q.label)),h('td',{class:`numeric ${sign(q.change_pct)}`},pct(q.change_pct)),today?h('td',{class:'numeric'},amount(cap.value),cap.label?h('div',{class:'panel-subtitle'},cap.label):null,stockFlow(x)):null);})))):empty('成分股尚未接入','板块成分与ETF持仓不同，不以ETF持仓填充板块成分。')));}
+function sectorDetail(sec,d){const stocks=sec.stocks||[],mainQuote=displayQuote(sec),shown=sectorQuote(sec),proxy=sec.proxy,proxyQuote=displayQuote(proxy||{}),hasProxy=!finite(mainQuote.price)&&finite(proxyQuote.price),useProxy=state.metric!=='cap'&&hasProxy;const quote=useProxy?proxy:sec;const today=relayOnly&&!state.demo,ticks=today?todayRelayTicks(quote,chinaDay(new Date())):intradayFor(d,quote,useProxy?sec:null),isIntraday=state.metric==='intraday';const hist=isIntraday?ticks:state.metric==='cap'?sec.market_cap_history:quote.history;return panel(`${sec.name}`,`${providerName(mainQuote.provider)} · ${sec.code||sec.id||'代码待确认'} · ${isCanonicalSector(sec)?'申万 2021 一级行业':sec.taxonomy==='EASTMONEY'?'东方财富行业':'行业口径待确认'}`,h('div',{},relayOnly&&!state.demo&&isCanonicalSector(sec)?sectorDetailsLink(sec):null,h('div',{class:'detail-top'},h('div',{},h('div',{class:'panel-subtitle'},shown.estimate?'板块点位 · 权重股估算':'板块指数点位'),h('strong',{class:'detail-price'},num(shown.estimate?shown.price:mainQuote.price))),h('span',{class:`change ${sign(shown.value)}`},pct(shown.value))),shown.estimate?h('p',{class:'chart-data-note'},`权重基准 ${sec.intraday_estimate.basis_date} · 样本股 ${sec.intraday_estimate.sample_count}/${sec.intraday_estimate.sample_size} · 报价时间 ${dateText(sec.intraday_estimate.quote_timestamp,false)}`):quoteCaption(mainQuote),validationStatus(sec)==='conflict'?validationDetail(sec):null,hasProxy?h('div',{class:'proxy-box'},h('div',{class:'proxy-title'},'参考ETF · ',proxy.name,` (${proxy.code})`),h('div',{class:'proxy-quote'},h('strong',{},num(proxyQuote.price,3)),h('span',{},`元 / ${proxyQuote.label}`),h('span',{class:`change ${sign(proxyQuote.change_pct)}`},pct(proxyQuote.change_pct))),h('p',{},`${providerName(proxyQuote.provider)} · ${proxyQuote.as_of?dateText(proxyQuote.as_of):'日期待确认'} · ETF仅为相关资产代理，不等同板块指数。`),validationDetail(proxy),liveQuoteBlock(proxy)):null,isCanonicalSector(sec)?h('details',{class:'secondary-details'},h('summary',{},'估值与风险指标'),quantPanel(sec),proxy?.quant_metrics?quantPanel(proxy,true):null):null,h('div',{class:'chart-body'},h('div',{class:'panel-subtitle'},isIntraday?(today?(sec.intraday_estimate?'今日分时 · 权重股估算':'今日分时'):useProxy?'参考ETF分时快照 · 单位：元':'板块分时快照 · 单位：点'):state.metric==='cap'?(sec.market_cap_date?`历史总市值 · 最新 ${sec.market_cap_date}`:'历史总市值'):useProxy?`参考ETF趋势 · ${proxy.name} (${proxy.code}) · 单位：元`:'板块指数趋势 · 单位：点'),chart(hist,{height:165,metric:state.metric,range:isIntraday?null:state.range,unit:useProxy?'元':'点',today:today&&isIntraday})),isIntraday&&!today?tickNote(ticks):null,h('div',{class:'chart-footer'},segmented([['intraday','分时'],['index',hasProxy?'ETF日线':'指数日线'],['cap','板块市值']],state.metric,v=>{state.metric=v;render();}),h('span',{},isIntraday?(today?'':'定时采样，非秒级实时'):state.metric==='cap'?'真实快照':useProxy?'ETF日收盘，非板块点位':'日频行情')),h('div',{class:'panel-head'},h('h3',{class:'panel-title'},'主要成分股'),h('span',{class:'panel-subtitle'},stockRankLabel(sec))),stocks.length?h('div',{class:'table-wrap'},h('table',{},h('thead',{},h('tr',{},(today?['股票','价格','涨跌幅','总市值']:['股票','价格','涨跌幅']).map(t=>h('th',{},t)))),h('tbody',{},stocks.slice(0,8).map(x=>{const q=displayQuote(x),cap=stockCapital(x);return h('tr',{},h('td',{},assetResearchLink('stock',x,x.name||x.code),h('div',{class:'panel-subtitle'},x.code)),h('td',{class:'numeric'},num(q.price),h('div',{class:'panel-subtitle'},today?(q.daily?q.day:q.is_today&&q.time!==null?chinaClock.format(q.time):q.day||'待更新'):q.label)),h('td',{class:`numeric ${sign(q.change_pct)}`},pct(q.change_pct)),today?h('td',{class:'numeric'},amount(cap.value),cap.label?h('div',{class:'panel-subtitle'},cap.label):null,stockFlow(x)):null);})))):empty('成分股尚未接入','板块成分与ETF持仓不同，不以ETF持仓填充板块成分。')));}
 function newsPage(d){const groups=['全部','官方信息','可靠媒体','未核实传言'];let items=d.news.filter(n=>{if(state.newsFilter==='官方信息'&&n.credibility!=='official')return false;if(state.newsFilter==='可靠媒体'&&!['reliable','trusted','media'].includes(n.credibility))return false;if(state.newsFilter==='未核实传言'&&n.credibility!=='rumor')return false;if(state.newsFilter==='全部'&&!state.preferences.showRumors&&n.credibility==='rumor')return false;return`${n.title} ${n.source} ${(n.sector_ids||[]).map(id=>sectorName(id,d)).join(' ')}`.toLowerCase().includes(state.newsSearch.toLowerCase());});const sources=d.sources.filter(s=>s.type!=='market');
  const timeline=h('div',{class:'news-list'},items.slice(0,state.newsLimit).map(n=>newsItem(n,d)));
  if(items.length>state.newsLimit){
@@ -798,7 +965,7 @@ function equityStocksPanel(d) {
     h('div',{class:'equity-table-tools'},h('label',{class:'search'},icon('search',14),h('input',{id:'equity-search',type:'search',value:state.equitySearch,placeholder:'搜索股票名称、代码或行业','aria-label':'搜索个股预测',onInput:e=>{state.equitySearch=e.target.value;state.equityPage=0;renderKeepFocus('equity-search',e.target.selectionStart);}})),
       h('select',{class:'select','aria-label':'按行业筛选个股预测',onChange:e=>{state.equitySector=e.target.value;state.equityPage=0;render();}},[['all','全部行业'],...d.sectors.map(s=>[s.id,s.name])].map(([v,label])=>h('option',{value:v,selected:state.equitySector===v},label)))),
     result.rows.length?h('div',{class:'table-wrap'},h('table',{class:'equity-stock-table'},h('thead',{},h('tr',{},['股票 / 行业','预测收益','目标时点','状态 / 模型'].map(x=>h('th',{},x)))),h('tbody',{},result.rows.map(x=>h('tr',{},
-      h('td',{},h('strong',{},x.name||x.code),h('div',{class:'panel-subtitle'},`${x.code} · ${sectorName(x.sector_id,d)}`)),
+      h('td',{},h('strong',{},assetResearchLink('stock',x,x.name||x.code)),h('div',{class:'panel-subtitle'},`${x.code} · ${sectorName(x.sector_id,d)}`)),
       h('td',{class:`numeric ${sign(equityValue(x))}`},equityValue(x)===null?'—':pct(equityValue(x)),h('div',{class:'panel-subtitle'},'相对目标交易日除权参考价')),
       h('td',{},x.target_date||'待确定',h('div',{class:'panel-subtitle'},equityTarget(x)),h('div',{class:'panel-subtitle'},`特征日期 ${x.reference_date||'待更新'}`)),
       h('td',{},equityStatus(x),h('div',{class:'panel-subtitle'},x.model||'模型待就绪'),x.note?h('div',{class:'panel-subtitle'},x.note):null)))))):empty('暂无符合条件的个股结果','数据管道按交易日批量补齐日线；本站历史缓存尚未补齐或模型未就绪时保留空值。'),
@@ -911,7 +1078,26 @@ function requestSnapshot(fetcher=fetchPublished,cacheBust=null,previous){
 }
 const publications=new Map();
 const marketPages=['overview','sectors','settings'];
+const dateKey=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value);
+const validThsItem=x=>thsCode.test(x.code)&&typeof x.name==='string'&&['I','N','TH'].includes(x.kind)&&
+ (x.keywords==null||Array.isArray(x.keywords)&&x.keywords.every(k=>typeof k==='string'));
 const feeds=[
+ {file:'ths-sector-catalog',key:'thsCatalog',label:'同花顺及申万目录',interval:30000,maxAge:3600000,pages:['overview'],directory:'taxonomy',
+  valid:p=>records(p.items)&&p.items.length>0&&p.items.every(validThsItem)&&
+   (p.sw_items==null||records(p.sw_items)&&p.sw_items.every(x=>/^\d{6}\.SI$/.test(x.code)&&x.kind==='L1'&&typeof x.name==='string'))},
+ {file:'sector-reference',key:'sectorReference',label:'同花顺收盘行情',interval:60000,maxAge:300000,pages:['overview'],directory:true,source:'sxdata_sector_reference',
+  valid:p=>dateKey(p.trade_date)&&record(p.quotes)&&Object.values(p.quotes).every(q=>q==null||record(q))},
+ {file:'sector-hot',key:'sectorHot',label:'同花顺热榜',interval:60000,pages:['overview'],directory:true,source:'sxdata_ths_hot',
+  valid:p=>dateKey(p.trade_date)&&p.trade_date<=chinaDay(new Date())&&records(p.items)&&p.items.length>0&&
+   p.items.every(x=>thsCode.test(x.code)&&typeof x.name==='string'&&Number.isInteger(x.rank)&&x.rank>0)&&
+   new Set(p.items.map(x=>x.code)).size===p.items.length&&new Set(p.items.map(x=>x.rank)).size===p.items.length},
+ {file:'sector-catalog',key:'sectorCatalog',label:'交易所板块目录',interval:30000,maxAge:3600000,pages:['overview'],directory:true,
+  valid:p=>/^\d{4}-\d{2}-\d{2}$/.test(p.as_of)&&records(p.items)&&p.items.length>0&&
+   p.items.every(x=>sectorCode.test(x.code)&&typeof x.name==='string'&&typeof x.fullname==='string'&&
+    ['industry','theme'].includes(x.kind)&&(x.keywords==null||Array.isArray(x.keywords)&&x.keywords.every(k=>typeof k==='string')))&&
+   new Set(p.items.map(x=>x.code)).size===p.items.length},
+ {file:'sector-quotes',key:'sectorQuotes',label:'板块行情',interval:15000,pages:['overview'],directory:true,source:'sxdata_relay',
+  valid:p=>/^\d{4}-\d{2}-\d{2}$/.test(p.trade_date)&&quoteTime(p.generated_at)!==null&&records(p.sectors)&&p.sectors.every(x=>sectorCode.test(x.id))},
  {file:'live-quotes',key:'liveQuotes',label:'行情',interval:5000,pages:marketPages,source:'sxdata_relay',
   valid:p=>records(p.market)&&records(p.sectors)&&Boolean(quoteSnapshotStamp(p))},
  {file:'today-intraday',key:'relayIntraday',label:'分时',interval:60000,pages:marketPages,source:'sxdata_relay',
@@ -935,7 +1121,13 @@ const feeds=[
 const dashboardFeed={key:'data',label:'研究快照'};
 const pageQuoteFeed={key:'pageQuotes',file:'page-quotes',label:'网页行情',pages:marketPages,
  valid:p=>records(p.market)&&records(p.sectors)&&record(p.intraday)};
-function visiblePublication(spec){return !spec.pages||spec.pages.includes(state.page);}
+function visiblePublication(spec){
+ return (!spec.pages||spec.pages.includes(state.page))&&
+  (!spec.directory||visibleDirectory()||spec.directory==='taxonomy'&&relayOnly&&!state.demo);
+}
+function loadVisibleDirectoryFeeds(){
+ for(const spec of feeds)if(spec.directory&&visiblePublication(spec)&&!state[spec.key])refreshFeed(spec);
+}
 function publicationNotice(){
  const issues=[...publications.values()].filter(item=>item.failures&&visiblePublication(item.spec));
  const sections=state.data?.unavailable_sections;
@@ -944,6 +1136,7 @@ function publicationNotice(){
   `${spec.label}暂时读取失败，${state[spec.key]?'保留上次数据':'等待首次成功读取'}`).join('。')));
 }
 function renderAfterRefresh(){
+ if(directoryView.composing&&document.activeElement?.id==='directory-search')return;
  const focus=document.activeElement;
  const search=focus?.id&&focus.type==='search'?{id:focus.id,start:focus.selectionStart,end:focus.selectionEnd}:null;
  const opened=new Set(Array.from(document.querySelectorAll?.('details[data-reader-key][open]')||[],el=>el.dataset.readerKey));
@@ -955,6 +1148,27 @@ function renderAfterRefresh(){
   const input=document.getElementById(search.id);
   input?.focus({preventScroll:true});input?.setSelectionRange(search.start,search.end);
  }
+}
+let activeSeriesRequest;
+async function requestSectorSeries(id){
+ if(!visibleDirectory()||id!==directoryView.chartCode||!sectorCode.test(id))return;
+ const day=chinaDay(new Date());
+ let request=activeSeriesRequest;
+ if(!request||request.id!==id||request.day!==day)request=activeSeriesRequest={id,day};
+ if(request.pending||Date.now()<(request.next||0))return;
+ request.pending=true;
+ try{
+  const response=await fetchPublished(`./data/sector-intraday/${id}.json`,{cache:'no-cache'});
+  if(!response.ok)throw responseError(response);
+  const payload=await response.json();
+  if(payload.schema_version!==1||payload.source!=='sxdata_relay'||payload.id!==id||payload.trade_date!==day||!Array.isArray(payload.points))
+   throw Error('invalid intraday series');
+  if(activeSeriesRequest!==request||directoryView.chartCode!==id||!visibleDirectory())return;
+  state.sectorSeries=payload;
+  request.next=Date.now()+55000;
+  renderAfterRefresh();
+ }catch(error){request.next=Math.max(Date.now()+30000,error.retryAt||0);}
+ finally{request.pending=false;}
 }
 async function updatePublication(spec,read){
  let task=publications.get(spec.key);
@@ -988,7 +1202,9 @@ function refreshFeed(spec){
   const next=await response.json();
   if(next?.schema_version!==1||(spec.source&&next.source!==spec.source)||!spec.valid(next))throw Error('invalid publication');
   if(next.trade_date&&previous?.trade_date&&next.trade_date<previous.trade_date)return null;
-  if(spec.key==='minuteRecovery'&&previous?.trade_date===next.trade_date&&quoteTime(next.generated_at)<quoteTime(previous.generated_at))return null;
+  if(['minuteRecovery','sectorQuotes','sectorReference'].includes(spec.key)&&previous?.trade_date===next.trade_date&&quoteTime(next.generated_at)<quoteTime(previous.generated_at))return null;
+  if(['sectorCatalog','thsCatalog'].includes(spec.key)&&previous?.as_of>next.as_of)return null;
+  if(spec.key==='sectorHot'&&previous?.trade_date===next.trade_date&&snapshotTime(next)<snapshotTime(previous))return null;
   if(spec.key==='cloudNews')next.news_digest=retainDayDigest(next.news_digest,previous?.news_digest,next.trade_date);
   if(spec.key==='liveQuotes'&&quoteSnapshotStamp(next)<=quoteSnapshotStamp(previous))return null;
   return {...next,version};
@@ -1002,12 +1218,12 @@ function refresh(includeFeeds=true){
   demoCache=null;
   return {...baseData(),...result};
  })];
- if(relayOnly&&includeFeeds)jobs.push(...feeds.map(refreshFeed));
+ if(relayOnly&&includeFeeds)jobs.push(...feeds.filter(spec=>!spec.directory||visiblePublication(spec)).map(refreshFeed));
  if(!relayOnly)jobs.push(refreshFeed(pageQuoteFeed));
  return Promise.all(jobs);
 }
 const hash=location.hash.slice(1);if(pages.some(x=>x[0]===hash))state.page=hash;
-window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(pages.some(x=>x[0]===next)){state.page=next;render();}});
+window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(pages.some(x=>x[0]===next)){state.page=next;render();loadVisibleDirectoryFeeds();}});
 function quietQuoteSession(quote,now){
  if(!quote?.trade_date)return false;
  const beijing=new Date(now+8*3600000);
@@ -1019,6 +1235,9 @@ function quietQuoteSession(quote,now){
  return phase==='post_close'&&minute>=900;
 }
 function pollFeed(feed,now=Date.now()){
+ if(feed.directory&&!visiblePublication(feed))return;
+ const task=publications.get(feed.key);
+ if(feed.maxAge&&state[feed.key]&&!task?.failures&&now-(task?.lastStartedAt??-Infinity)<feed.maxAge)return;
  if(feed.source==='sxdata_relay'&&quietQuoteSession(state.liveQuotes,now)&&
     now-(publications.get(feed.key)?.lastStartedAt??-Infinity)<300000)return;
  return refreshFeed(feed);
@@ -1026,6 +1245,7 @@ function pollFeed(feed,now=Date.now()){
 function poll(action){if(state.preferences.autoRefresh&&!state.demo&&!document.hidden)action();}
 setInterval(()=>poll(()=>refresh(false)),relayOnly?300000:60000);
 if(relayOnly)for(const feed of feeds)setInterval(()=>poll(()=>pollFeed(feed)),feed.interval);
+if(relayOnly)setInterval(()=>poll(()=>requestSectorSeries(directoryView.chartCode)),60000);
 refresh();
 
 fetch('./data/analytics.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(cfg=>{state.analytics=cfg; if(state.page==='analytics')render();}).catch(()=>{});

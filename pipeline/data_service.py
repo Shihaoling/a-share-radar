@@ -78,6 +78,7 @@ EVENT_LIMIT = 64
 METERED_APIS = REGULAR_APIS | REALTIME_BATCHES | {
     "rt_sw_k", "news", "major_news", "cctv_news", "anns_d", "idx_mins",
     "sw_mins", "stk_mins", "index_weight", "index_dailybasic",
+    "ths_hot", "ths_daily", "ths_member", "stock_basic",
 }
 
 
@@ -151,7 +152,7 @@ def _worker():
     name = Path(sys.argv[0]).stem
     return name if name in {"cloud_news", "training_news", "relay_quotes", "market_daily", "market_reference",
                             "minute_recovery", "cloud_research", "cloud_models", "service_rollout",
-                            "probe_stock_api", "run"} else "other"
+                            "probe_stock_api", "sector_directory", "asset_research", "run"} else "other"
 
 
 def _add_event(state, api, stamp, outcome, size):

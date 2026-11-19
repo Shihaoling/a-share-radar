@@ -1,0 +1,30 @@
+[Unit]
+Description=A-share asset research from published quotes and completed trading sessions
+After=network-online.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+Nice=12
+IOSchedulingClass=idle
+UMask=0077
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+RuntimeDirectory=ashare-asset-research
+RuntimeDirectoryMode=0750
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+EnvironmentFile=-/etc/ashare-radar-preview/relay-identity.env
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python -u /opt/ashare-radar-preview/deploy/tencent-preview/asset_research.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=310M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

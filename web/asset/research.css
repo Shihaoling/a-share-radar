@@ -1,0 +1,17 @@
+.research{margin-top:18px;padding:22px 26px 25px;border:1px solid var(--line);border-radius:13px;background:white}
+.research>header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px}
+.research h2{margin:0;font-size:20px}.research h3{font-size:14px;margin:19px 0 9px}
+#research-date,.research-status,.metric-context,.metric-help-body{font-size:13px;line-height:1.6;color:var(--muted)}
+#research-date,.research-status{margin:4px 0}.research-status:empty{display:none}
+.research-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:11px;align-items:start}
+.research-metric{padding:14px 15px;border:1px solid var(--line);border-radius:8px;min-width:0;overflow-wrap:anywhere}
+.research-metric h4{margin:0 0 4px;font-size:14px;font-weight:600}
+.metric-value{font-size:24px;font-weight:650;line-height:1.4;font-variant-numeric:tabular-nums}
+.metric-value small{font-size:13px;font-weight:500;margin-left:4px}
+.metric-context{margin:3px 0;font-variant-numeric:tabular-nums}
+.metric-reason{margin:3px 0;color:#71531c;font-size:13px}
+.research-metric details{margin-top:7px}.research-metric summary,.member-link{color:#295a85}
+.research-metric summary{cursor:pointer;font-size:12px}
+.metric-help-body{margin:5px 0 0}.metric-formula{font-variant-numeric:tabular-nums}
+.member-link{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:480px){.research{padding:16px 14px;margin-top:12px}.research-grid{gap:8px}}

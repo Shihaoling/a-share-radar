@@ -1032,7 +1032,8 @@ def _realtime(rows, allowed, now, api, token):
     quotes, seen = {}, set()
     for row in rows:
         code = row["ts_code"]
-        if not isinstance(code, str) or not re.fullmatch(r"\d{6}\.(?:SH|SZ|SI)", code):
+        pattern = r"\d{6}\.(?:SH|SZ|BJ)" if api == "rt_k" else r"\d{6}\.(?:SH|SZ|SI)"
+        if not isinstance(code, str) or not re.fullmatch(pattern, code):
             raise _Failure("invalid_code")
         if code not in allowed:
             continue

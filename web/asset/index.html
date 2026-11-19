@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#15273a">
+  <title>研究详情 · 观澜</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../sector/sector.css?v=20261119">
+  <link rel="stylesheet" href="./research.css?v=20261119">
+  <script defer src="./research.js?v=20261119-2"></script>
+</head>
+<body>
+  <a class="skip" href="#research">跳到研究指标</a>
+  <header class="masthead"><div><a href="../#overview">观澜</a><span>研究详情</span><a class="back" href="../#overview">← 返回市场总览</a></div></header>
+  <main id="asset-detail">
+    <section class="profile" aria-labelledby="asset-title">
+      <div class="identity"><p id="asset-meta" class="meta"></p><h1 id="asset-title">研究详情</h1></div>
+      <div class="quote-strip" id="asset-quote" hidden>
+        <div><span id="asset-price-label">价格</span><strong id="asset-price">—</strong><small id="asset-price-time"></small></div>
+        <div><span>涨跌幅</span><strong id="asset-change">—</strong><small id="asset-change-time"></small></div>
+      </div>
+    </section>
+    <section class="research" id="research" aria-labelledby="research-title">
+      <header><h2 id="research-title">研究指标</h2><p id="research-date"></p></header>
+      <p class="research-status" id="research-status" role="status">正在读取研究指标…</p>
+      <div id="research-groups"></div>
+    </section>
+  </main>
+</body>
+</html>

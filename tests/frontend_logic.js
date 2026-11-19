@@ -261,7 +261,7 @@ function runFrontendChecks(source) {
     const market = indices.map((name,i)=>({id:ids[i],name,provider:'stock_api'}));
     const sectors = Array.from({length:16},(_,i)=>({
       id:`0000${32+i}.SH`, name:'行业'+String(i+1).padStart(2,'0'),
-      provider:'stock_api',taxonomy:'SSE',price:i===15?null:100+i,
+      provider:'stock_api',taxonomy:'SSE',price:i===15?null:100+i,amount:1e8*(16-i),
       change_pct:i===15?null:i-7,quote_timestamp:day+'T00:00:00+08:00',
       quote_date:day,timestamp_quality:'source_reported',
     }));
@@ -299,9 +299,14 @@ function runFrontendChecks(source) {
     f.cloud.state.liveQuotes=f.feed;
     f.cloud.render();
     const industryNames=f.sectors.map(s=>s.name);
-    const tiles=f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile')
+    const tileButtons=()=>f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile')
       && n.attrs['aria-controls']==='overview-sector-trend' && n.attrs['aria-pressed']!==undefined);
-    eq(tiles.length,16);
+    eq(tileButtons().length,10);
+    ok(text(f.byId('overview-industries')).includes('交易所成交活跃榜'));
+    f.select('overview-industries',n=>text(n)==='全部 16');
+    const first=tileButtons();eq(first.length,12);
+    f.select('overview-industries',n=>text(n)==='下一页');
+    const tiles=[...first,...tileButtons()];eq(tiles.length,16);
     for(const name of industryNames) {
       ok(tiles.some(f.named(name)),name+' missing from industry board');
       ok(!text(f.byId('overview-indices')).includes(name));
@@ -309,6 +314,7 @@ function runFrontendChecks(source) {
     for(const index of f.market)ok(!text(f.byId('overview-industries')).includes(index.name));
     const missing=text(tiles.find(f.named(f.sectors[15].name)));
     ok(missing.includes('—'));ok(!missing.includes('0.00%'));
+    f.select('overview-industries',n=>text(n)==='上一页');
     ok(f.chartTitle('overview-sector-trend').includes(f.sectors[0].name));
 
     const day=f.feed.trade_date;
@@ -321,6 +327,17 @@ function runFrontendChecks(source) {
     ok(text(f.byId('overview-indices')).includes('3,333.00'));
     const tile=f.buttons('overview-industries',n=>(n.className||'').includes('heat-tile')&&f.named(older.name)(n))[0];
     ok(text(tile).includes(prior+' 参考'));ok(!text(tile).includes('+12.00%'));
+  });
+
+  check('each broad index opens research for its own published exchange code',()=>{
+    const f=overviewFixture();
+    f.cloud.state.liveQuotes=f.feed;f.cloud.render();
+    const expected=['000001.SH','399001.SZ','399006.SZ','000300.SH','000688.SH','000905.SH'];
+    f.market.forEach((market,i)=>{
+      f.select('overview-indices',f.named(market.name));
+      const links=f.nodes(f.byId('overview-trend'),n=>n.tag==='a' && n.attrs.href==='./asset/?type=index&code='+expected[i]);
+      eq(links.length,1);
+    });
   });
 
   check('industry tiles and rankings do not replace the index or change its chart controls',()=>{
@@ -341,6 +358,8 @@ function runFrontendChecks(source) {
     f.select('overview-indices',f.named(f.market[2].name));
     ok(f.chartTitle('overview-trend').includes(f.market[2].name));
     ok(f.chartTitle('overview-sector-trend').includes(f.sectors[14].name));
+    f.select('overview-industries',n=>text(n)==='全部 16');
+    f.select('overview-industries',n=>text(n)==='下一页');
     const selectedTiles=f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile')
       && n.attrs['aria-pressed']==='true');
     eq(selectedTiles.length,1);ok(f.named(f.sectors[14].name)(selectedTiles[0]));
@@ -377,9 +396,57 @@ function runFrontendChecks(source) {
     eq(f.buttons('overview-trend',n=>n.className==='active'&&text(n)==='3M').length,1);
     eq(f.buttons('overview-trend',n=>n.className==='active'&&text(n)==='日线').length,1);
     ok(f.chartTitle('overview-trend').includes(f.market[1].name));
-    f.select('overview-industries',n=>text(n)==='交易所行业与主题');
+    f.select('overview-industries',n=>text(n)==='板块行情目录');
     ok(f.chartTitle('overview-sector-trend').includes(f.sectors[0].name));
     ok(!text(f.byId('overview-industries')).includes(f.sw.name));
+  });
+  check('directory searches aliases and exact codes, isolates sources, and dates the official heat ranking',()=>{
+    const f=overviewFixture();
+    const day=f.feed.trade_date,older='2020-05-06';
+    const exchange={code:'980017.SZ',name:'国证芯片',fullname:'国证半导体芯片指数',kind:'theme',
+      intro:'跟踪半导体与集成电路相关公司表现',keywords:['集成电路']};
+    const ths={code:'881121.TI',name:'半导体',kind:'I',intro:'关注半导体行业上市公司表现'};
+    const concept={code:'885999.TI',name:'人工智能',kind:'N',intro:'关注人工智能相关概念公司表现'};
+    const unusual={code:'700051R.TI',name:'金仓全收益',kind:'TH',intro:'跟踪对应全收益指数的表现'};
+    const extras=Array.from({length:10},(_,i)=>({code:String(886000+i)+'.TI',name:'概念'+i,kind:'N',intro:'关注该概念相关公司的市场表现'}));
+    const hot=[concept,...extras].map((item,i)=>({code:item.code,name:item.name,rank:i+1,hot:15894-i,change_pct:2.28}));
+    const state=f.cloud.state;
+    state.liveQuotes=f.feed;
+    state.sectorCatalog={items:[exchange]};
+    state.thsCatalog={items:[ths,concept,unusual,...extras],sw_items:[{code:f.sw.id,kind:'L1',intro:'关注商业银行及相关金融服务'}]};
+    state.sectorReference={quotes:{[concept.code]:{price:404.42,change_pct:-0.5,quote_date:older}}};
+    state.sectorHot={trade_date:older,rank_time:'10:30:05',items:[...hot].reverse()};
+    f.cloud.render();
+    const board=()=>f.byId('overview-industries');
+    const tiles=()=>f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile'));
+    const query=value=>{const input=f.byId('directory-search');input.value=value;input.events.input({target:input});};
+    eq(tiles().length,10);ok(text(board()).includes('历史榜 '+older+' 10:30:05'));
+    ok(text(tiles()[0]).includes(concept.name));ok(text(tiles()[0]).includes('点位待更新'));
+    ok(!text(tiles()[0]).includes('404.42'));ok(!text(tiles()[0]).includes('0.00 点'));
+    state.sectorHot={trade_date:day,rank_time:'09:46:01',items:hot};
+    f.cloud.render();
+    ok(text(board()).includes('今日 '+day+' 09:46:01'));ok(!text(board()).includes('交易所成交活跃榜'));
+    f.select('overview-industries',n=>n.attrs.id==='overview-industry-'+concept.code);
+    const snapshot=text(f.byId('overview-sector-trend'));
+    ok(snapshot.includes('行情快照'));ok(snapshot.includes('+2.28%'));ok(snapshot.includes(older+' 收盘'));ok(snapshot.includes('404.42'));
+    const links=f.nodes(board(),n=>n.tag==='a'&&n.attrs.href==='./sector/?code='+concept.code);
+    eq(links.length,2);
+    const composing=f.byId('directory-search');
+    composing.events.compositionstart({target:composing});
+    composing.value='bandaoti';composing.events.input({target:composing,isComposing:true});eq(tiles().length,10);
+    composing.value='半导体';composing.events.compositionend({target:composing});
+    eq(tiles().length,2);ok(tiles().some(f.named('交易所主题')));ok(tiles().some(f.named('同花顺行业')));
+    ok(text(board()).includes(exchange.intro));ok(text(board()).includes(ths.intro));
+    ok(f.chartTitle('overview-sector-trend').includes(concept.name));
+    query('集成电路');eq(tiles().length,1);ok(text(tiles()[0]).includes(exchange.code));
+    query('７０００５１ｒ.ti');eq(tiles().length,1);ok(text(tiles()[0]).includes(unusual.name));
+    query('人工智能');f.select('overview-industries',n=>text(n)==='行业');eq(tiles().length,0);
+    f.select('overview-industries',n=>text(n)==='概念');eq(tiles().length,1);
+    f.select('overview-industries',n=>text(n).includes('申万行业')&&text(n).includes('估算'));
+    ok(text(board()).includes('关注商业银行及相关金融服务'));
+    ok(f.nodes(board(),n=>n.tag==='a'&&n.attrs.href==='./sector/?code='+f.sw.id).length>0);
+    f.select('overview-industries',n=>text(n)==='板块行情目录');
+    eq(tiles().length,1);ok(f.chartTitle('overview-sector-trend').includes(concept.name));
   });
   return {passed, failures};
 }
@@ -408,6 +475,11 @@ async function runRefreshChecks(source) {
   const api = new Function('document','location','history','localStorage','window','setInterval','fetch','onRender', program)(
     doc,{hash:'#news'},{},{getItem:k=>k==='guanlan.preferences'?'{"autoRefresh":false}':null},
     {addEventListener(){}},(fn,ms)=>intervals.push({fn,ms}),fetcher,()=>{renders++;});
+  const fs=require('node:fs');
+  for(const file of ['sector-catalog','ths-sector-catalog']){
+    const feed=api.feeds.find(f=>f.file===file);
+    assert.ok(feed.valid(JSON.parse(fs.readFileSync('web/data/'+file+'.json','utf8'))),file+' must accept its published catalog');
+  }
   const yesterday = '2026-11-18', today = '2026-11-19';
   const old = {id:'last-night',title:'夜间更新',published_at:yesterday+'T23:58:00+08:00'};
   const previous_digest = {date:yesterday,summary:'上一期',generated_at:yesterday+'T23:59:00+08:00'};

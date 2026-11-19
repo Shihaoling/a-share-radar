@@ -1,6 +1,7 @@
 """Poll permitted SXData batches and save one received observation per symbol/minute."""
 
 import argparse
+from contextlib import closing, nullcontext
 from datetime import datetime, timedelta
 from hashlib import sha256
 import json
@@ -17,6 +18,7 @@ from pipeline.data_service import gate_delay, realtime_min_gap
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
 from quote_schedule import QuoteSchedule
+from sector_quotes import IndexBatches, SectorFeed, catalog_codes
 
 SOURCE = Path("/srv/ashare-radar-preview/public/data/view.json")
 FIELDS = ("price", "change_pct", "quote_date", "quote_timestamp", "provider",
@@ -59,11 +61,24 @@ def publish(path, payload):
             temporary.unlink(missing_ok=True)
 
 
-def collect(token, api, symbols, min_gap_seconds=6):
+def watched_stocks(path, now):
+    """Reuse a scheduled stock batch for a bounded set of recently viewed details."""
+    try:
+        rows = json.loads(path.read_bytes())["stocks"]
+        if not isinstance(rows, list):
+            return {}
+        return {code: code for code, stamp in rows[:24] if isinstance(code, str)
+                and re.fullmatch(r"[0-9]{6}\.(?:SH|SZ|BJ)", code)
+                and type(stamp) in (int, float) and now.timestamp() - 150 <= stamp <= now.timestamp()}
+    except (OSError, KeyError, TypeError, ValueError):
+        return {}
+
+
+def collect(token, api, symbols, min_gap_seconds=6, *, selector=None):
     if not symbols:
         return []
     with relay_client(token, timeout=5, min_gap_seconds=min_gap_seconds) as client:
-        received = client.request(api, {"ts_code": ",".join(symbols)})
+        received = client.request(api, {"ts_code": selector or ",".join(symbols)})
     now = shanghai_now()
     filtered = {}
     for row in received:
@@ -270,9 +285,27 @@ def start(args):
     private = STATE / "relay"
     private.mkdir(parents=True, exist_ok=True)
     output = STATE / "quote-output/live-quotes.json"
+    codes = catalog_codes(SOURCE.with_name("sector-catalog.json"))
+    sector_feed = SectorFeed(private, output.parent, codes, publish) if codes else None
+    index_batches = IndexBatches(universe["rt_idx_k"], codes)
+    if getattr(args, "catalog_snapshot", False):
+        session = market_session()["phase"]
+        if session not in {"midday_break", "post_close"}:
+            raise SystemExit("A sector directory bootstrap requires lunch or post-close")
+        if sector_feed is None:
+            raise SystemExit("A verified sector catalog is required")
+        fetched = collect(token, "rt_idx_k", index_batches.all, conf["min_gap_seconds"])
+        path = private / "minute-observations.sqlite3"
+        reader = closing(sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True)) if path.exists() else nullcontext()
+        with reader as core_history:
+            sector_feed.update(core_history, set(INDUSTRIES), fetched, shanghai_now())
+        print(json.dumps({"mode": "catalog_snapshot", "received": len(fetched),
+                          "sectors": len({q["id"] for q in fetched if q["id"] in codes})}), flush=True)
+        return
     intraday_output = output.with_name("today-intraday.json")
     stocks_output = output.with_name("stock-quotes.json")
     entity_ids = universe["rt_idx_k"].values()
+    core_entity_ids = set(entity_ids)
     restored_at = shanghai_now()
     quotes = {"rt_idx_k": read_saved_quotes(output, ("market","sectors"), set(entity_ids), restored_at)}
     if "rt_k" in conf["batches"]:
@@ -300,6 +333,9 @@ def start(args):
         for batch, due in history.execute("SELECT api, max(due) FROM retries WHERE status='awaiting_retry' GROUP BY api"):
             schedule.paused_until[batch] = datetime.fromisoformat(due).timestamp()
         restore_gate_cooldowns(schedule, shanghai_now())
+        watch_retry_at = 0
+        requested_stocks = {}
+        sector_retry_at = 0
         while True:
             now = shanghai_now()
             day = now.date().isoformat()
@@ -312,6 +348,8 @@ def start(args):
                     weights = json.loads(weight_file.read_text())
                     universe = groups(data, weights)
                     entity_ids = universe["rt_idx_k"].values()
+                    core_entity_ids = set(entity_ids)
+                    index_batches = IndexBatches(universe["rt_idx_k"], codes)
                 expire_prior_day_retries(history, day, entity_ids)
                 history.commit()
             phase = market_session(now)["phase"]
@@ -324,12 +362,31 @@ def start(args):
             batch = schedule.admit(now) if close_batches is None else next(close_batches, None)
             if close_batches is not None and batch is None:
                 return
+            directory_rows = []
             if batch:
                 delay = 0
                 host_cooldown = False
                 deferred = False
+                symbols, selector = universe[batch], None
+                if batch == "rt_k":
+                    requested_stocks = watched_stocks(STATE / "asset-research/live-watch.json", now)
+                    if requested_stocks and now.timestamp() >= watch_retry_at:
+                        symbols = {**symbols, **requested_stocks}
+                rotating = batch == "rt_idx_k" and sector_feed is not None and close_batches is None
+                if rotating:
+                    symbols, selector = index_batches.choose(now.timestamp())
+                observed_count = 0
                 try:
-                    fetched = collect(token, batch, universe[batch], conf["min_gap_seconds"])
+                    options = {"selector": selector} if selector else {}
+                    fetched = collect(token, batch, symbols, conf["min_gap_seconds"], **options)
+                    observed_count = len({q["id"] for q in fetched})
+                    if batch == "rt_k" and requested_stocks and observed_count < len(universe[batch]) * .9:
+                        watch_retry_at = now.timestamp() + 180
+                    if batch == "rt_idx_k" and sector_feed is not None:
+                        directory_rows = fetched
+                        # The original publication, retry ledger and model input
+                        # keep only their original index universe.
+                        fetched = [q for q in fetched if q["id"] in core_entity_ids]
                     sample_changed = store_quotes(history, batch, fetched, quotes[batch], entity_ids)
                     if batch == "rt_k":
                         for estimate in board_estimates(data["sectors"], quotes[batch], day):
@@ -339,10 +396,14 @@ def start(args):
                                     (estimate["id"], stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
                     history.commit()
                     finished_at = shanghai_now()
-                    fresh_ids = {q["id"] for q in fetched
+                    observed_quotes = quotes[batch].values() if batch == "rt_idx_k" else fetched
+                    fresh_ids = {q["id"] for q in observed_quotes
                                  if (finished_at - datetime.fromisoformat(q["quote_timestamp"])).total_seconds() <= 30}
-                    status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == len(universe[batch]) else "partial"
+                    expected_count = len(universe[batch])
+                    status[batch] = "stale" if not fresh_ids else "ok" if len(fresh_ids) == expected_count else "partial"
                 except _Failure as failure:
+                    if batch == "rt_k" and requested_stocks and not failure.deferred:
+                        watch_retry_at = now.timestamp() + 180
                     deferred = failure.deferred
                     if deferred:
                         restore_gate_cooldowns(schedule, shanghai_now())
@@ -354,13 +415,19 @@ def start(args):
                     print(json.dumps({"event": "request_deferred" if deferred else "source_failure", "api": batch,
                                       "code": failure.code, "provider_code": failure.provider_code}), flush=True)
                 finally:
+                    if rotating and not deferred:
+                        index_batches.finish(now.timestamp(), observed_count, len(symbols))
                     schedule.finish(shanghai_now(), delay, host=host_cooldown, deferred=deferred)
                     schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
 
             if day != history_day or batch == "rt_k":
+                display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks)
+                if "rt_k" in quotes:
+                    quotes["rt_k"] = {c: q for c, q in quotes["rt_k"].items() if c in display_stocks}
                 publish(stocks_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,
+                                        "core_stock_ids": sorted(universe.get("rt_k", {})),
                                         "stocks": [dated_quote(q, day) for q in quotes.get("rt_k", {}).values()
-                                                   if q["id"] in universe["rt_k"]],
+                                                   if q["id"] in display_stocks],
                                         "board_estimates": board_estimates(data["sectors"], quotes.get("rt_k", {}), day)})
             if day != history_day or sample_changed:
                 publish_intraday(intraday_output, history, day, set(entity_ids) | sector_ids)
@@ -379,6 +446,16 @@ def start(args):
                 fingerprint = payload.copy()
                 payload["generated_at"] = shanghai_now().isoformat()
                 publish(output, payload)
+            if (sector_feed is not None and time.monotonic() >= sector_retry_at
+                    and (sector_feed.day != day or directory_rows)):
+                try:
+                    sector_feed.update(history, set(INDUSTRIES), directory_rows, shanghai_now())
+                except (OSError, sqlite3.Error, ValueError) as err:
+                    # A directory projection failure cannot stop existing feeds.
+                    sector_feed.day = None
+                    sector_retry_at = time.monotonic() + 5
+                    print(json.dumps({"event": "sector_publication_delayed",
+                                      "error": type(err).__name__}), flush=True)
             time.sleep(0.25 if phase in {"morning", "afternoon", "closing_auction"} else 2)
 
 
@@ -386,4 +463,5 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--diagnostic", action="store_true")
     parser.add_argument("--close-snapshot", action="store_true")
+    parser.add_argument("--catalog-snapshot", action="store_true")
     start(parser.parse_args())
