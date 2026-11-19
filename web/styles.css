@@ -54,7 +54,12 @@
 .breadth>span:first-child{margin-right:auto;color:#67778a}
 .overview-grid{grid-template-columns:minmax(0,1.9fr) minmax(290px,1fr);gap:22px}
 .chart-body{padding:20px 22px 8px}.chart{cursor:crosshair;min-height:235px;touch-action:pan-y}
-.chart-crosshair text.crosshair-label{fill:#fff;font-size:11px}.chart-crosshair text.crosshair-value{fill:#fff;font-size:13px;font-weight:700}
+.chart-header{display:flex;align-items:baseline;justify-content:space-between;gap:0 12px}
+.chart-header .chart-meta{flex:none}
+.chart-readout{display:flex;justify-content:flex-end;align-items:baseline;flex-wrap:wrap;gap:0 8px;min-height:18px;visibility:hidden;color:#53677c;font-size:11px;line-height:18px;font-variant-numeric:tabular-nums}
+.chart-readout[data-active="true"]{visibility:visible}
+.chart-readout strong{color:#21374c;font-size:12px;white-space:nowrap}
+@media(max-width:600px){.chart-header{display:grid}.chart-readout{justify-content:flex-start}}
 .chart-footer{font-size:11px}.chart-meta strong{font-size:26px}
 .heatmap{grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;padding:20px}
 .heat-tile{min-height:83px;border-radius:9px;gap:9px}.heat-tile .change{font-weight:750;font-size:19px}

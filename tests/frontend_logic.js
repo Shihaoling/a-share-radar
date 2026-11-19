@@ -206,10 +206,15 @@ function runFrontendChecks(source) {
     const rows=api.intradayFor({intraday:{x:{points:[{price:1,observed_at:'2026-11-16T10:00:00+08:00',timestamp_quality:'page_observed'},{price:2,observed_at:'2026-11-16T10:05:00+08:00',timestamp_quality:'page_observed'},{price:3,observed_at:'2026-11-16T10:10:00+08:00',timestamp_quality:'retrieved_only'}]}}},{id:'x'});
     eq(rows.length,2);eq(rows[1].timestamp,'2026-11-16T10:05:00+08:00');
   });
-  check('noncompact charts expose both pointer and keyboard crosshair controls',()=>{
-    const node=api.chart([{date:'2026-11-12',close:100},{date:'2026-11-13',close:101}],{metric:'index'});
-    ok(node.events.pointermove);ok(node.events.pointerleave);ok(node.events.keydown);eq(node.attrs.tabindex,'0');
-    node.events.focus();const output=text(node);ok(output.includes('101.00'));ok(output.includes('2026-11-13'));
+  check('chart reads the selected value above the plot and preserves crosshair controls',()=>{
+    const [header,plot]=api.chart([{date:'2026-11-12',close:100},{date:'2026-11-13',close:101}],{metric:'index'}).children;
+    ok(plot.events.pointermove);ok(plot.events.pointerleave);ok(plot.events.keydown);eq(plot.attrs.tabindex,'0');
+    const crosshair=plot.children.find(n=>n.attrs.class==='chart-crosshair');
+    const readout=header.children.at(-1);
+    eq(crosshair.children.map(n=>n.tag).join(','),'line,circle');
+    plot.events.focus();ok(text(readout).includes('101.00'));ok(text(readout).includes('2026-11-13'));
+    eq(readout.attrs['data-active'],'true');eq(crosshair.attrs.visibility,'visible');
+    plot.events.pointerleave();eq(readout.attrs['data-active'],'false');eq(crosshair.attrs.visibility,'hidden');
   });
   check('malformed direction forecast cannot bypass snapshot array checks',()=>{let bad=false;try{api.validateSnapshot({...d,direction_probability:{market:{}}});}catch{bad=true;}ok(bad);});
   check('today sector chart keeps tone, sector impact and quote date independent',()=>{
@@ -287,7 +292,7 @@ function runFrontendChecks(source) {
     const ticks=api.relayIntraday(state,latest,item,day);
     eq(ticks.length,6);eq(ticks.at(-1).price,106);
     eq(api.relayIntraday(state,latest,item,'2026-11-19').length,0);
-    const graph=api.chart(ticks,{today:true,metric:'intraday',range:null});
+    const graph=api.chart(ticks,{today:true,metric:'intraday',range:null}).children.at(-1);
     eq(graph.children.filter(node=>node.attrs.class==='session-line').length,2);
     eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,2);
     eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,2);
@@ -295,9 +300,9 @@ function runFrontendChecks(source) {
   });
   check('daily curves bridge only verified missing sessions without creating observations',()=>{
     const rows=[{date:'2026-11-13',close:100},{date:'2026-11-16',close:101},{date:'2026-11-18',close:103}];
-    const ordinary=api.chart(rows,{metric:'index',range:null});
+    const ordinary=api.chart(rows,{metric:'index',range:null}).children.at(-1);
     eq(ordinary.children.filter(n=>n.attrs.class==='session-interpolation').length,0);
-    const graph=api.chart(rows,{metric:'index',range:null,sessions:['2026-11-12','2026-11-17','2026-11-19']});
+    const graph=api.chart(rows,{metric:'index',range:null,sessions:['2026-11-12','2026-11-17','2026-11-19']}).children.at(-1);
     eq(graph.children.filter(n=>n.attrs.class==='session-interpolation').length,1);
     graph.events.focus();graph.events.keydown({key:'ArrowLeft',preventDefault(){}});
     ok(graph.attrs['aria-label'].includes('2026-11-16'));ok(!graph.attrs['aria-label'].includes('2026-11-17'));
