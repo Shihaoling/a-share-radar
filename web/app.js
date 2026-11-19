@@ -1194,32 +1194,53 @@ function sectors(d){
   comparison.label+' · '+(state.sort==='name'?'按名称排序':state.sort==='cap'?'按市值排序':'同日按涨跌幅排序，历史参考列后');
  const filters=ths?h('div',{class:'directory-toolbar'},segmented([['all','全部类型'],...Object.entries(thsKinds)],
   radarView.kind,kind=>{radarView.kind=kind;radarView.page=0;render();})):null;
- const select=id=>{state.selected=id;render();};
- const table=shown.length?h('div',{class:'table-wrap'},h('table',{class:'sector-quote-table'},
+ const detailsFor=sector=>{
+  if(!sector)return [];
+  if(ths)return [thsSectorPanel(sector),thsLeaderPanel(sector)];
+  const primary=sector.taxonomy==='SSE'?exchangeSectorPanel(sector,d):sectorDetail(sector,d);
+  if(taxonomy!=='sw')return [primary];
+  return [primary,h('details',{class:'panel secondary-details'},
+   h('summary',{},'成分研究、基金与关联资讯'),fundsPanel(sector),sentimentPanel(sector,d),industryRelations(sector))];
+ };
+ const detailPane=h('div',{class:'stack',id:'sector-radar-detail'},detailsFor(sec));
+ const quoteRows=new Map();
+ const select=sector=>{
+  if(sector.id===state.selected)return;
+  detailPane.replaceChildren(...detailsFor(sector));
+  const previous=quoteRows.get(state.selected),next=quoteRows.get(sector.id);
+  previous.row.className='';
+  previous.nameButton.setAttribute('aria-pressed','false');
+  next.row.className='selected';
+  next.nameButton.setAttribute('aria-pressed','true');
+  state.selected=sector.id;
+ };
+ const table=shown.length?h('div',{class:'table-wrap',id:'sector-quote-scroll'},h('table',{class:'sector-quote-table'},
   h('thead',{},h('tr',{},['自选','板块','指数点位','涨跌幅','行情时间'].map(label=>h('th',{scope:'col'},label)))),
   h('tbody',{},shown.map(({sector,q})=>{
    const saved=favorites.includes(sector.id);
    const stamp=ths?q.label:q.estimate?'估算 '+dateText(sector.intraday_estimate.quote_timestamp,true):
     q.quote.as_of?dateText(q.quote.as_of,false):'待更新';
-   return h('tr',{class:sec?.id===sector.id?'selected':'',onClick:()=>select(sector.id)},
+   const active=sec.id===sector.id;
+   const nameButton=h('button',{class:'sector-name',type:'button','aria-pressed':String(active),
+    'aria-controls':'sector-radar-detail',onClick:e=>{e.stopPropagation();select(sector);}},sector.name);
+   const row=h('tr',{class:active?'selected':'',onClick:()=>select(sector)},
     h('td',{},button(saved?'★':'☆',e=>{e.stopPropagation();state.favorites=saved?favorites.filter(x=>x!==sector.id):[...favorites,sector.id];
      local.set('guanlan.favorites',state.favorites);render();},'star '+(saved?'saved':''))),
-    h('th',{scope:'row'},h('button',{class:'sector-name',type:'button',onClick:e=>{e.stopPropagation();select(sector.id);}},sector.name),
+    h('th',{scope:'row'},nameButton,
      ths?h('div',{class:'panel-subtitle'},[thsKinds[sector.kind],sector.id].filter(Boolean).join(' · ')):null),
     h('td',{class:'numeric'},num(q.price)),h('td',{class:'numeric sector-change '+sign(q.value)},pct(q.value)),
     h('td',{class:'quote-time'},stamp));
+   quoteRows.set(sector.id,{row,nameButton});
+   return row;
   })))):empty(ths&&!directory.length?'等待同花顺板块目录':'尚无匹配板块',
    ths&&!directory.length?'目录加载后即可按名称、代码或类型查找。':taxonomy==='eastmoney'?'网页采样尚未完成，或当前来源正在冷却。':'调整关键词或筛选后重试。');
  const move=step=>{radarView.page=page+step;state.selected=null;render();};
  const pager=ths&&pages>1?h('div',{class:'directory-pager'},
   h('button',{type:'button',disabled:page===0,onClick:()=>move(-1)},'上一页'),
   h('span',{},(page+1)+' / '+pages),h('button',{type:'button',disabled:page+1>=pages,onClick:()=>move(1)},'下一页')):null;
- const details=sec?(ths?[thsSectorPanel(sec),thsLeaderPanel(sec)]:sec.taxonomy==='SSE'?exchangeSectorPanel(sec,d):sectorDetail(sec,d)):null;
  return h('div',{},heading('板块雷达',headingText),controls,
   taxonomy==='eastmoney'?h('p',{class:'inline-note'},'独立行业分类。每轮最多两页，各行保留实际采样时间。'):null,
-  h('div',{class:'sector-layout'},panel('板块行情',subtitle,h('div',{},filters,table,pager)),
-   h('div',{class:'stack'},details,sec&&taxonomy==='sw'?h('details',{class:'panel secondary-details'},
-    h('summary',{},'成分研究、基金与关联资讯'),fundsPanel(sec),sentimentPanel(sec,d),industryRelations(sec)):null)));
+  h('div',{class:'sector-layout'},panel('板块行情',subtitle,h('div',{},filters,table,pager)),detailPane));
 }
 function renderKeepFocus(id,pos){render();const input=document.getElementById(id);if(input){input.focus({preventScroll:true});try{input.setSelectionRange(pos,pos);}catch{}}}
 function stockRankLabel(sector){const basis=sector.rank_basis||sector.stocks?.[0]?.rank_basis;if(['market_cap','total_market_cap'].includes(basis))return'按已获取总市值排序';if(basis==='membership_order')return'成分示例 · 市值排序待数据';if(['turnover_amount','amount','turnover'].includes(basis))return'按已获取成交额排序';return'成分示例 · 排序依据待确认';}
@@ -1448,8 +1469,15 @@ function renderAfterRefresh(){
  const focus=document.activeElement;
  if(directoryView.composing&&focus?.id==='directory-search'||radarView.composing&&focus?.id==='sector-search')return;
  const search=focus?.id&&focus.type==='search'?{id:focus.id,start:focus.selectionStart,end:focus.selectionEnd}:null;
+ const sectorQuotes=document.getElementById('sector-quote-scroll');
+ const quoteScroll=sectorQuotes&&{top:sectorQuotes.scrollTop,left:sectorQuotes.scrollLeft};
  const opened=new Set(Array.from(document.querySelectorAll?.('details[data-reader-key][open]')||[],el=>el.dataset.readerKey));
  render();
+ const newSectorQuotes=quoteScroll&&document.getElementById('sector-quote-scroll');
+ if(newSectorQuotes){
+  newSectorQuotes.scrollTop=quoteScroll.top;
+  newSectorQuotes.scrollLeft=quoteScroll.left;
+ }
  if(opened.size)for(const el of document.querySelectorAll('details[data-reader-key]')){
   if(opened.has(el.dataset.readerKey))el.open=true;
  }
