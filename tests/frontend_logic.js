@@ -352,6 +352,28 @@ function runFrontendChecks(source) {
     return {cloud,page,market,sectors,feed,sw,nodes,byId,buttons,select,named,chartTitle};
   }
 
+  check('sector radar opens the THS catalogue with paging, quote dates and real detail links',()=>{
+    const f=overviewFixture(),state=f.cloud.state;
+    state.page='sectors';state.liveQuotes=f.feed;
+    const date=f.feed.trade_date;
+    const codes=Array.from({length:22},(_,i)=>`${883000+i}.TI`);
+    state.thsCatalog={items:[...codes.map((code,i)=>({code,name:'测试概念'+i,kind:'N'})),
+      {code:'881001.TI',name:'同花顺测试行业',kind:'I'}]};
+    state.sectorReference={quotes:{[codes[3]]:{quote_date:date,price:321.45,change_pct:2.5}}};
+    state.boardLiveSummary={trade_date:date,items:{[codes[3]]:{quote_at:date+'T00:00:00+08:00',change_pct:9,quoted_count:9,total_count:10}}};
+    f.cloud.render();
+    const click=label=>f.nodes(f.page,n=>n.tag==='button'&&text(n)===label)[0].events.click();
+    click('同花顺板块');
+    const quoted=f.nodes(f.page,n=>n.tag==='tr'&&text(n).includes('测试概念3'))[0];
+    ok(text(f.page).includes('23 个板块'));ok(text(quoted).includes('+2.50%'));ok(!text(quoted).includes('+9.00%'));
+    ok(f.nodes(f.page,n=>n.tag==='a'&&n.attrs.href==='./sector/?code='+codes[3]).length===1);
+    click('概念');eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,20);
+    click('下一页');eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,2);
+    const search=f.byId('sector-search');search.value='８８３００３．ｔｉ';
+    search.events.input({target:search});eq(f.nodes(f.page,n=>n.tag==='button'&&n.className==='sector-name').length,1);
+    ok(text(f.page).includes(date+' 收盘'));eq(state.taxonomy,'sse');
+  });
+
   check('delayed industry feed populates only the board below the six market indices',()=>{
     const f=overviewFixture();
     f.cloud.render();
