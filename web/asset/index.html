@@ -7,8 +7,10 @@
   <title>研究详情 · 观澜</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../sector/sector.css?v=20261119">
-  <link rel="stylesheet" href="./research.css?v=20261119">
-  <script defer src="./research.js?v=20261119-2"></script>
+  <link rel="stylesheet" href="./research.css?v=20261119-3">
+  <link rel="stylesheet" href="./chart.css?v=20261119-1">
+  <script defer src="./chart.js?v=20261119-2"></script>
+  <script defer src="./research.js?v=20261119-3"></script>
 </head>
 <body>
   <a class="skip" href="#research">跳到研究指标</a>
@@ -19,11 +21,12 @@
       <div class="quote-strip" id="asset-quote" hidden>
         <div><span id="asset-price-label">价格</span><strong id="asset-price">—</strong><small id="asset-price-time"></small></div>
         <div><span>涨跌幅</span><strong id="asset-change">—</strong><small id="asset-change-time"></small></div>
+        <small id="asset-common-time" hidden></small>
       </div>
     </section>
+    <section id="asset-chart" aria-label="行情与指标走势" hidden></section>
     <section class="research" id="research" aria-labelledby="research-title">
-      <header><h2 id="research-title">研究指标</h2><p id="research-date"></p></header>
-      <p class="research-status" id="research-status" role="status">正在读取研究指标…</p>
+      <header><div class="research-heading"><h2 id="research-title">研究指标</h2><p class="research-status" id="research-status" role="status">正在读取…</p></div><p id="research-date"></p></header>
       <div id="research-groups"></div>
     </section>
   </main>

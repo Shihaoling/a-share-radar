@@ -18,6 +18,7 @@ from urllib.parse import urlsplit
 from pipeline.calendar import is_trading_day, market_session, previous_trading_day, shanghai_now
 from pipeline.data_service import gate_state
 from pipeline.stock_api import FIELDS, _Client, _Failure
+from intraday_chart import archive_heat
 from relay_common import STATE
 from relay_quotes import publish
 
@@ -249,6 +250,7 @@ class Directory:
             if not data or data["rank_time"] < mapping(path).get("rank_time",""):
                 return False
             publish(path, data)
+            archive_heat(self.out / "sector-heat-samples.json", rows, self.known, now, publish)
             for item in data["items"]:
                 self.demand(item["code"], now)
         elif code == "@daily":

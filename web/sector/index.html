@@ -7,8 +7,10 @@
   <title>板块详情 · 观澜</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="./sector.css?v=20261119">
-  <link rel="stylesheet" href="../asset/research.css?v=20261119">
-  <script defer src="../asset/research.js?v=20261119-2"></script>
+  <link rel="stylesheet" href="../asset/research.css?v=20261119-3">
+  <link rel="stylesheet" href="../asset/chart.css?v=20261119-1">
+  <script defer src="../asset/chart.js?v=20261119-2"></script>
+  <script defer src="../asset/research.js?v=20261119-3"></script>
   <script defer src="./sector.js?v=20261119-3"></script>
 </head>
 <body>
@@ -16,16 +18,16 @@
   <header class="masthead"><div><a href="../#overview">观澜</a><span>行情目录</span><a class="back" href="../#overview">← 返回市场总览</a></div></header>
   <main>
     <section class="profile" aria-labelledby="sector-title">
-      <div class="identity"><p id="sector-meta" class="meta"></p><h1 id="sector-title">板块详情</h1><p id="sector-intro"></p></div>
+      <div class="identity"><p id="sector-meta" class="meta"></p><h1 id="sector-title">板块详情</h1><p id="sector-intro"></p><a class="member-jump" href="#members">查看成分股 ↓</a></div>
       <div class="quote-strip" id="quote-strip" hidden>
         <div><span>指数点位</span><strong id="quote-price">—</strong><small id="quote-price-time"></small></div>
         <div><span>涨跌幅</span><strong id="quote-change">—</strong><small id="quote-change-time"></small></div>
       </div>
       <p class="notice" id="catalog-status" role="status">正在读取板块目录…</p>
     </section>
+    <section id="asset-chart" aria-label="行情与指标走势" hidden></section>
     <section class="research" id="research" aria-labelledby="research-title" hidden>
-      <header><h2 id="research-title">研究指标</h2><p id="research-date"></p></header>
-      <p class="research-status" id="research-status" role="status">正在读取研究指标…</p>
+      <header><div class="research-heading"><h2 id="research-title">研究指标</h2><p class="research-status" id="research-status" role="status">正在读取…</p></div><p id="research-date"></p></header>
       <div id="research-groups"></div>
     </section>
     <section id="members" class="members" aria-labelledby="members-title" hidden>

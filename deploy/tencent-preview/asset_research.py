@@ -1,5 +1,7 @@
 """Serve instrument research from observed quotes and completed daily sessions."""
+from collections import OrderedDict
 from contextlib import closing
+from functools import lru_cache
 from datetime import date
 import gzip
 from http.server import BaseHTTPRequestHandler
@@ -19,6 +21,8 @@ from pipeline.stock_api import _index_code
 from relay_common import STATE
 from relay_quotes import publish
 from research_factors import board_breadth, compute
+from factor_chart import build_daily_chart
+from intraday_chart import IntradayCharts
 
 PUBLIC = Path("/srv/ashare-radar-preview/public/data")
 RUNTIME = Path("/opt/ashare-radar-preview/runtime")
@@ -53,10 +57,11 @@ def normalized_day(day):
         return None
 
 
+@lru_cache(maxsize=128)
 def sessions_ending(day):
     output = []
     current = date.fromisoformat(day)
-    for _ in range(61):
+    for _ in range(120):
         output.append(current.isoformat())
         current = previous_trading_day(current)
         if current is None:
@@ -86,8 +91,10 @@ class ResearchStore:
         self.versions = {}
         self.last_view = {}
         self.relay_covered = set()
+        self.daily_charts = OrderedDict()
         with closing(self.db()) as db, db:
             db.executescript(SCHEMA)
+        self.intraday = IntradayCharts(self)
         self.sync_catalogs()
 
     def db(self):
@@ -119,6 +126,8 @@ class ResearchStore:
         except FileNotFoundError:
             return
         version = f"{stat.st_mtime_ns}:{stat.st_size}"
+        if path == self.public / "view.json":
+            version = "history125:" + version
         if self.versions.get(path) == version:
             return
         with closing(self.db()) as db, db:
@@ -159,7 +168,7 @@ class ResearchStore:
                     code = _index_code(item) if kind == "index" else item["id"]
                     if code:
                         db.execute(ASSETS, (kind, code, item["name"]))
-                        for bar in item.get("history", [])[-95:]:
+                        for bar in item.get("history", [])[-125:]:
                             self.put_bars(db, kind, code, [bar], str(bar.get("source") or "saved_daily"))
         self.ingest(self.public / "view.json", snapshot)
 
@@ -184,7 +193,7 @@ class ResearchStore:
                 if re.fullmatch(r"\d{8}\.json\.gz", p.name):
                     if p.name not in paths or p.stat().st_mtime_ns > paths[p.name].stat().st_mtime_ns:
                         paths[p.name] = p
-        for name in sorted(paths)[-78:]:
+        for name in sorted(paths)[-125:]:
             self.ingest(paths[name], equity)
         def daily(db, data):
             for raw, bucket in data.get("bars", {}).items():
@@ -251,7 +260,7 @@ class ResearchStore:
     @staticmethod
     def history(db, kind, code, through):
         rows = db.execute("""SELECT day AS date,close,pre_close,pct_chg,source FROM bars
-                 WHERE kind=? AND code=? AND day<=? ORDER BY day DESC LIMIT 90""", (kind,code,through))
+                 WHERE kind=? AND code=? AND day<=? ORDER BY day DESC LIMIT 125""", (kind,code,through))
         return list(reversed([dict(r) for r in rows]))
 
     def instrument(self, kind, code, now):
@@ -267,6 +276,7 @@ class ResearchStore:
             bars = self.history(db, kind, code, finished.isoformat()) if finished else []
             day = bars[-1]["date"] if bars else finished.isoformat() if finished else today
             bench = self.history(db, "index", "000300.SH", day)
+            intraday = self.intraday.render(db,kind,code,quote,now)
             breadth = []
             member_file = self.out / "sector-members" / (code + ".json")
             if kind == "sector" and finished:
@@ -295,7 +305,17 @@ class ResearchStore:
                 breadth = board_breadth(member_codes, returns, stock_day,
                             membership_as_of=members.get("as_of"), checked_at=members.get("checked_at"),
                             complete=members.get("status")=="ready")
-        values = compute(kind, quote, benchmark, bars, bench, sessions=sessions_ending(day)) + breadth
+        sessions = sessions_ending(day)
+        signature = tuple(tuple(row.values()) for row in bars), tuple(tuple(row.values()) for row in bench)
+        key = (kind,code)
+        cached = self.daily_charts.get(key)
+        if not cached or cached[0] != signature:
+            cached = (signature,build_daily_chart(kind,bars,bench,sessions))
+            self.daily_charts[key] = cached
+        self.daily_charts.move_to_end(key)
+        if len(self.daily_charts) > 128:
+            self.daily_charts.popitem(last=False)
+        values = compute(kind, quote, benchmark, bars, bench, sessions=sessions) + breadth
         close = bars[-1] if bars else {}
         usable = bool(quote.get("quote_timestamp")) and (quote.get("quote_date") or "") >= (close.get("date") or "")
         live_price = usable and finite(quote.get("price")) and quote["price"] > 0
@@ -313,7 +333,7 @@ class ResearchStore:
                        quote_basis=basis if live_price else "close", change_basis=basis if live_change else "close",
                        daily_source=close.get("source"),
                        status="ready" if all(v["value"] is not None for v in values) else "partial",
-                       metrics=values)
+                       metrics=values, chart={"daily":cached[1],"intraday":intraday})
         path = self.out / "asset-research" / kind / (code + ".json")
         if path.exists():
             try:
@@ -339,6 +359,13 @@ def main():
             except (OSError,ValueError,sqlite3.Error,KeyError) as e:
                 print("research cache",type(e).__name__,flush=True)
             time.sleep(100)
+    def capture_loop():
+        while True:
+            try:
+                store.intraday.capture(shanghai_now())
+            except (OSError, ValueError, sqlite3.Error, KeyError) as e:
+                print("research intraday cache",type(e).__name__,flush=True)
+            time.sleep(4)
     def daily_loop():
         while True:
             try:
@@ -375,7 +402,7 @@ def main():
     sock.unlink(missing_ok=True)
     with UnixStreamServer(str(sock),Handler) as server:
         os.chmod(sock,0o660)
-        for fn in (ingest_loop,daily_loop):
+        for fn in (ingest_loop,capture_loop,daily_loop):
             threading.Thread(target=fn,daemon=True).start()
         server.serve_forever()
 

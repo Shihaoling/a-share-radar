@@ -36,32 +36,66 @@ const RadarResearch = (() => {
     if (value!==undefined && value!==null) el.textContent=value;
     return el;
   }
-  function metricCard(row, expanded) {
+  const summaryValue=new Intl.NumberFormat('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const preciseValue=new Intl.NumberFormat('zh-CN',{maximumFractionDigits:8});
+  const directional=new Set(['opening_gap_pct','relative_hs300_pp','ma20_bias_pct','momentum20_pct']);
+  function displayTime(value,today) {
+    const full=stamp(value);
+    return full.startsWith(today+' ')?full.slice(11):full;
+  }
+  function detailsLine(list,label,value) {
+    if (value===null || value===undefined || value==='') return;
+    list.append(node('dt','',label),node('dd','',value));
+  }
+  function shortReason(reason) {
+    if (!reason) return '等待所需数据';
+    if (reason.length<=20) return reason;
+    if (/不同步|时点|时间差/.test(reason)) return '行情与基准时点未对齐';
+    if (/不足|不够/.test(reason)) return /覆盖/.test(reason)?'成分覆盖不足':'有效样本不足';
+    if (/昨收/.test(reason)) return '行情或昨收不全';
+    return '计算所需数据不全';
+  }
+  function metricCard(row,expanded,today) {
     const card=node('article','research-metric');
-    const value=node('div','metric-value',Number.isFinite(row.value)?number.format(row.value):'—');
-    if (Number.isFinite(row.value) && row.unit) value.append(node('small','',row.unit));
+    const hasValue=Number.isFinite(row.value), sign=directional.has(row.key) && hasValue?Math.sign(row.value):0;
+    const value=node('div','metric-value'+(sign>0?' up':sign<0?' down':''),
+      hasValue?(sign>0?'+':'')+summaryValue.format(row.value):'—');
+    if (hasValue && row.unit) value.append(node('small','',row.unit));
     card.append(node('h4','',row.label),value);
-    if (row.value===null) card.append(node('p','metric-reason',row.missing_reason||'来源尚未提供计算所需数据。'));
-    const hasSamples=Number.isInteger(row.sample_count) && row.sample_count>=0;
-    const samples=hasSamples ? (Number.isInteger(row.total_count)?'成分覆盖 '+row.sample_count+' / '+row.total_count:
-      '有效样本 '+row.sample_count):'';
-    const asOf=(row.group==='intraday' && stamp(row.quote_timestamp)) || stamp(row.as_of);
-    const context=[row.window,samples].filter(Boolean).join(' · ');
-    if (context) card.append(node('p','metric-context',context));
-    card.append(node('p','metric-context',asOf?'数据时点 '+asOf:'数据时点待核验'));
-    if (row.basis) card.append(node('p','metric-context',row.basis));
-    if (Number.isFinite(row.coverage_pct)) card.append(node('p','metric-context','覆盖率 '+number.format(row.coverage_pct)+'%'));
-    if (stamp(row.membership_as_of)) card.append(node('p','metric-context','成分日期 '+stamp(row.membership_as_of)));
-    else if (stamp(row.checked_at)) card.append(node('p','metric-context','成分核验 '+stamp(row.checked_at)));
-    const benchmark=stamp(row.benchmark_timestamp);
-    if (benchmark) card.append(node('p','metric-context','基准时点 '+benchmark));
-    if (row.formula || row.description) {
-      const help=node('details'); help.dataset.key=row.key; help.open=expanded;
-      help.append(node('summary','','公式与释义'));
-      if (row.formula) help.append(node('p','metric-help-body metric-formula',row.formula));
-      if (row.description) help.append(node('p','metric-help-body',row.description));
-      card.append(help);
+    const intra=row.group==='intraday',at=stamp(intra && row.quote_timestamp || row.as_of);
+    const day=at.slice(0,10);
+    const shortDay=day.slice(0,4)===today.slice(0,4)?day.slice(5):day;
+    const period=/^(\d+)(?:个收盘|个日收益|对日收益|个交易日)$/.exec(row.window||'');
+    const window=period?period[1]+'个交易日':row.window;
+    const context=intra?'盘中 · '+(displayTime(row.quote_timestamp||row.as_of,today)||'时点待核验'):
+      [shortDay?'截至 '+shortDay:'日期待核验',window].filter(Boolean).join(' · ');
+    card.append(node('p','metric-context',context));
+    const notes=[];
+    if (/估算/.test(row.basis||'')) notes.push('成分股估算');
+    else if (/热榜/.test(row.basis||'')) notes.push('热榜行情');
+    if (Number.isFinite(row.coverage_pct) && row.coverage_pct<100) notes.push('成分覆盖 '+number.format(row.coverage_pct)+'%');
+    if (intra && row.benchmark_timestamp && row.quote_timestamp) {
+      const delta=Math.abs(Date.parse(row.benchmark_timestamp)-Date.parse(row.quote_timestamp))/1000;
+      if (Number.isFinite(delta) && delta>0) notes.push(delta<60?'基准相差 '+Math.round(delta)+' 秒':'基准时点不同');
     }
+    if (!hasValue) notes.push(shortReason(row.missing_reason));
+    if (notes.length) card.append(node('p','metric-note',notes.join(' · ')));
+    const help=node('details');help.dataset.key=row.key;help.open=expanded;
+    help.append(node('summary','','计算说明'));
+    const list=node('dl','metric-info');
+    if (hasValue) detailsLine(list,'原值',preciseValue.format(row.value)+(row.unit?' '+row.unit:''));
+    detailsLine(list,'计算公式',row.formula);detailsLine(list,'释义',row.description);
+    detailsLine(list,'数据口径',row.basis);detailsLine(list,'样本窗口',row.window);
+    if (Number.isInteger(row.sample_count)) {
+      const required=Number.isInteger(row.required_samples)?'，至少需要 '+row.required_samples:'';
+      detailsLine(list,'有效样本',String(row.sample_count)+required);
+    }
+    if (Number.isInteger(row.total_count)) detailsLine(list,'成分总数',String(row.total_count));
+    if (Number.isFinite(row.coverage_pct)) detailsLine(list,'成分覆盖率',preciseValue.format(row.coverage_pct)+'%');
+    detailsLine(list,'数据时点',at);detailsLine(list,'基准时点',stamp(row.benchmark_timestamp));
+    detailsLine(list,'成分日期',stamp(row.membership_as_of));detailsLine(list,'成分核验',stamp(row.checked_at));
+    if (!hasValue) detailsLine(list,'缺数原因',row.missing_reason);
+    help.append(list);card.append(help);
     return card;
   }
   function render(data) {
@@ -73,18 +107,20 @@ const RadarResearch = (() => {
       if (!rows.length) continue;
       const section=node('section'), grid=node('div','research-grid');
       section.append(node('h3','',label),grid);
-      rows.forEach(row=>grid.append(metricCard(row, open.has(row.key))));
+      const today=localTime.format(new Date()).replaceAll('/','-').slice(0,10);
+      rows.forEach(row=>grid.append(metricCard(row,open.has(row.key),today)));
       fragment.append(section);
     }
     panel.replaceChildren(fragment);
   }
   function researchSummary(data) {
     const generated=stamp(data.generated_at);
-    const line=generated?'最近计算 '+generated:'';
+    const today=localTime.format(new Date()).replaceAll('/','-').slice(0,10);
+    const line=generated?'更新于 '+displayTime(data.generated_at,today):'';
     const dateNode=document.getElementById('research-date');
     if (dateNode.textContent!==line) dateNode.textContent=line;
     const available=data.metrics.filter(row=>row.value!==null).length;
-    const message=data.metrics.length?'已取得 '+available+' / '+data.metrics.length+' 项指标':'当前标的暂无已发布的研究指标。';
+    const message=data.metrics.length?available+' / '+data.metrics.length+' 项可用':'当前标的暂无已发布的研究指标。';
     const status=document.getElementById('research-status');
     if (status.textContent!==message) status.textContent=message;
   }
@@ -94,21 +130,26 @@ const RadarResearch = (() => {
       get('asset-title').textContent=data.name;
       document.title=data.name+' · '+labels[data.type]+'研究 · 观澜';
     }
-    const captions={live:'行情',close:'收盘',estimate:'估算',hot:'概念热榜'};
+    const captions={live:'盘中',close:'收盘',estimate:'估算',hot:'概念热榜'};
+    const today=localTime.format(new Date()).replaceAll('/','-').slice(0,10);
     function caption(at,basis) {
-      return [captions[basis],stamp(at)].filter(Boolean).join(' · ')||'行情时间待核验';
+      return [captions[basis],displayTime(at,today)].filter(Boolean).join(' · ')||'行情时间待核验';
     }
     get('asset-quote').hidden=false;
     get('asset-price-label').textContent=data.type==='index'?'指数点位':data.code.endsWith('.HK')?'价格（港元）':'价格（元）';
     const hasPrice=Number.isFinite(data.price) && data.price>0, hasChange=Number.isFinite(data.change_pct);
     get('asset-price').textContent=hasPrice?price.format(data.price):'—';
-    get('asset-change').textContent=hasChange?(data.change_pct>0?'+':'')+number.format(data.change_pct)+'%':'—';
+    get('asset-change').textContent=hasChange?(data.change_pct>0?'+':'')+summaryValue.format(data.change_pct)+'%':'—';
     get('asset-change').className=hasChange?(data.change_pct>0?'up':data.change_pct<0?'down':''):'';
     get('asset-price-time').textContent=hasPrice?caption(data.quote_at,data.quote_basis):'点位或价格待更新';
     const changeAt=Object.hasOwn(data,'change_at')?data.change_at:data.quote_at;
     const changeBasis=data.change_basis || (changeAt===data.quote_at?data.quote_basis:
       /^\d{4}-\d\d-\d\d$/.test(changeAt)?'close':'live');
     get('asset-change-time').textContent=hasChange?caption(changeAt,changeBasis):'涨跌幅待更新';
+    const shared=get('asset-common-time');
+    const same=hasPrice && hasChange && data.quote_at && changeAt===data.quote_at && data.quote_basis===changeBasis;
+    shared.hidden=!same;shared.textContent=same?caption(data.quote_at,data.quote_basis):'';
+    get('asset-price-time').hidden=Boolean(same);get('asset-change-time').hidden=Boolean(same);
   }
   function mount(type,code,standalone=false) {
     const status=document.getElementById('research-status');
@@ -118,6 +159,19 @@ const RadarResearch = (() => {
       document.getElementById('asset-title').textContent=code;
     }
     let last=null, lastMetrics='', lastQuote='', timer=null, active=null, restart=false, failures=0;
+    const host=document.getElementById('asset-chart');
+    let chartKey;
+    function renderChart(data) {
+      if (!host || typeof window==='undefined' || typeof window.AssetChart?.mount!=='function') return;
+      const signature=JSON.stringify([data?.name,data?.chart]);
+      if (signature===chartKey) return;
+      try {
+        host.hidden=false;
+        window.AssetChart.mount(host,data?.chart,{key:type+'/'+code,name:data?.name||code});
+        chartKey=signature;
+      } catch {host.textContent='行情图暂时无法绘制。';}
+    }
+    renderChart(null);
     const url='../data/asset-research/'+type+'/'+encodeURIComponent(code)+'.json';
     function schedule(wait) {
       clearTimeout(timer);
@@ -134,11 +188,13 @@ const RadarResearch = (() => {
         const data=await response.json();
         if (!payload(data,type,code)) throw new Error('schema');
         if (!document.hidden && (!last || !(stamp(last.generated_at)>stamp(data.generated_at)))) {
-          const values=JSON.stringify(data.metrics);
+          const today=localTime.format(new Date()).replaceAll('/','-').slice(0,10);
+          const values=JSON.stringify([today,data.metrics]);
           if (values!==lastMetrics) {render(data);lastMetrics=values;}
           researchSummary(data);
+          renderChart(data);
           if (standalone) {
-            const quote=JSON.stringify([data.name,data.price,data.change_pct,data.quote_basis,data.change_basis,data.quote_at,data.change_at]);
+            const quote=JSON.stringify([today,data.name,data.price,data.change_pct,data.quote_basis,data.change_basis,data.quote_at,data.change_at]);
             if (quote!==lastQuote) {assetHeader(data);lastQuote=quote;}
           }
           last=data;

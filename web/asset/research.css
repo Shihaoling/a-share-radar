@@ -1,17 +1,29 @@
-.research{margin-top:18px;padding:22px 26px 25px;border:1px solid var(--line);border-radius:13px;background:white}
-.research>header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px}
-.research h2{margin:0;font-size:20px}.research h3{font-size:14px;margin:19px 0 9px}
-#research-date,.research-status,.metric-context,.metric-help-body{font-size:13px;line-height:1.6;color:var(--muted)}
-#research-date,.research-status{margin:4px 0}.research-status:empty{display:none}
-.research-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:11px;align-items:start}
-.research-metric{padding:14px 15px;border:1px solid var(--line);border-radius:8px;min-width:0;overflow-wrap:anywhere}
-.research-metric h4{margin:0 0 4px;font-size:14px;font-weight:600}
-.metric-value{font-size:24px;font-weight:650;line-height:1.4;font-variant-numeric:tabular-nums}
-.metric-value small{font-size:13px;font-weight:500;margin-left:4px}
-.metric-context{margin:3px 0;font-variant-numeric:tabular-nums}
-.metric-reason{margin:3px 0;color:#71531c;font-size:13px}
-.research-metric details{margin-top:7px}.research-metric summary,.member-link{color:#295a85}
-.research-metric summary{cursor:pointer;font-size:12px}
-.metric-help-body{margin:5px 0 0}.metric-formula{font-variant-numeric:tabular-nums}
-.member-link{text-decoration:underline;text-underline-offset:3px}
-@media(max-width:480px){.research{padding:16px 14px;margin-top:12px}.research-grid{gap:8px}}
+.research{margin-top:18px;padding:22px 25px 25px;border:1px solid var(--line);border-radius:13px;background:#fff}
+.research>header,.research-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 12px}
+.research>header{justify-content:space-between}.research h2{margin:0;color:#192f46;font-size:21px;letter-spacing:-.025em}
+#research-date,.research-status{margin:0;color:#566b7d;font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
+.research-status:empty{display:none}
+.research h3{margin:24px 0 10px;color:#233d53;font-size:14px;line-height:1.5;font-weight:680}
+.research-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
+.research-metric{display:flex;min-width:0;flex-direction:column;align-self:stretch;padding:15px 15px 11px;background:#fafcfd;
+  border:1px solid #d9e3eb;border-radius:9px;color:#172d40;overflow-wrap:anywhere}
+.research-metric h4{margin:0 0 6px;color:#2b4051;font-size:14px;font-weight:620;line-height:1.4}
+.metric-value{display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;font-size:clamp(24px,2.7vw,29px);
+  font-weight:660;line-height:1.12;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.metric-value small{font-size:12px;font-weight:550;line-height:1.2;letter-spacing:0;color:#40576a}
+.metric-value.up{color:#a83b36}.metric-value.down{color:#166e53}
+.metric-context,.metric-note{margin:8px 0 0;color:#536879;font-size:12px;line-height:1.45;font-variant-numeric:tabular-nums}
+.metric-note{margin-top:3px;color:#765221}
+.research-metric details{margin-top:auto;padding-top:10px}.research-metric summary,.member-link,.member-jump{color:#325e80}
+.research-metric summary{width:fit-content;cursor:pointer;font-size:12px;line-height:1.5}
+.research-metric summary:hover,.member-jump:hover,.member-link:hover{text-decoration:underline}
+.metric-info{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 8px;margin:8px 0 0;padding-top:8px;
+  border-top:1px solid #dbe3ea;font-size:12px;line-height:1.55;font-variant-numeric:tabular-nums}
+.metric-info dt{color:#5a6d7c}.metric-info dd{margin:0;color:#223d50}
+.member-jump,.member-link{text-underline-offset:3px}.member-jump{display:inline-block;margin-top:10px;font-size:13px}
+#asset-quote{row-gap:4px}#asset-common-time{grid-column:1/-1;font-size:12px;color:#526779}
+@media(max-width:640px){.research-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.research{padding:17px 15px}}
+@media(max-width:480px){.research{margin-top:12px;padding:16px 12px}.research h3{margin-top:18px}.research-grid{gap:8px}
+ .research-metric{padding:12px 10px 9px}.research-metric h4{font-size:13px}.metric-value{font-size:23px}
+ .metric-info{display:block}.metric-info dt{margin-top:4px}.metric-info dd{margin-bottom:4px}}
+@media(max-width:365px){.research-grid{grid-template-columns:minmax(0,1fr)}}
