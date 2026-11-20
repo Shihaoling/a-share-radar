@@ -384,6 +384,9 @@ class ResearchStore:
         values = compute(kind, quote, benchmark, bars, bench, sessions=sessions) + breadth
         close = bars[-1] if bars else {}
         usable = bool(quote.get("quote_timestamp")) and (quote.get("quote_date") or "") >= (close.get("date") or "")
+        if (kind == "sector" and code.endswith(".SI") and quote.get("basis") == "estimate"
+                and quote.get("quote_date") == close.get("date") and finite(close.get("pct_chg"))):
+            usable = False
         live_price = usable and finite(quote.get("price")) and quote["price"] > 0
         live_change = usable and finite(quote.get("change_pct"))
         close_at = close.get("date")

@@ -1,6 +1,7 @@
 """Observed exchange minutes, immutable samples and latest-quote recovery."""
 from contextlib import ExitStack, nullcontext
-from datetime import datetime
+from datetime import date, datetime
+import gzip
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -46,6 +47,28 @@ class RelayRecoveryTests(unittest.TestCase):
 
     def statuses(self, api):
         return dict(self.db.execute("SELECT substr(minute,12),status FROM retries WHERE api=?", (api,)))
+
+    def test_shenwan_estimates_use_previous_caps_and_verified_stock_closes(self):
+        codes = ["600001.SH", "600002.SH", "600003.SH", "600004.SH"]
+        previous = date(2026, 11, 18)
+        sector = {"id": "801780.SI", "taxonomy": "SW2021", "stocks": [{"ts_code": c} for c in codes],
+                  "daily_quote": {"quote_date": previous.isoformat(), "price": 100}}
+        caps = dict(zip(codes, (40, 30, 20, 10)))
+        stamp = DAY + "T14:57:03+08:00"
+        live = {c: {"quote_date": DAY, "quote_timestamp": stamp, "change_pct": 1.0} for c in codes[:3]}
+        with TemporaryDirectory() as folder, patch.object(relay, "previous_trading_day", return_value=previous):
+            intraday, = relay.board_estimates([sector], live, DAY, caps)
+            self.assertEqual((intraday["change_pct"], intraday["weight_coverage"], intraday["estimate_phase"]), (1, .9, "intraday"))
+            close_path = Path(folder)/"close.json.gz"
+            rows = [{"ts_code": c, "trade_date": DAY, "pct_chg": r} for c,r in zip(codes, (-2,-1,0,1))]
+            rows.append({"ts_code": codes[0], "trade_date": previous.isoformat(), "pct_chg": 80})
+            with gzip.open(close_path, "wt") as stream:
+                json.dump({"trade_date": DAY, "complete": True, "rows": rows}, stream)
+            closed, = relay.board_estimates([sector], relay.completed_stock_quotes(close_path, DAY), DAY, caps, phase="close")
+            self.assertEqual((closed["change_pct"], closed["estimate_phase"]), (-1, "close"))
+            self.assertEqual(closed["price"], 99)
+            self.assertEqual(closed["quote_timestamp"], DAY+"T15:00:00+08:00")
+            self.assertEqual(relay.completed_stock_quotes(close_path, previous.isoformat()), {})
 
     def test_late_index_quote_fills_chart_and_model_source_without_regressing_latest(self):
         self.retry("rt_idx_k", "10:00")

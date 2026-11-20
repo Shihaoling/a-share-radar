@@ -3,6 +3,7 @@
 import argparse
 from contextlib import closing, nullcontext
 from datetime import datetime, timedelta
+import gzip
 from hashlib import sha256
 import json
 import math
@@ -105,34 +106,67 @@ def collect(token, api, symbols, min_gap_seconds=6, *, selector=None):
              "timestamp_quality": "source_reported"} for (code, _), record in filtered.items()]
 
 
-def board_estimates(sectors, stock_quotes, day):
+def board_estimates(sectors, stock_quotes, day, caps=None, *, phase="intraday"):
     previous = previous_trading_day(day)
     if previous is None:
         return []
     previous = previous.isoformat()
+    caps = caps or {}
     estimates = []
     for sector in sectors:
-        weighted = [(stock, stock_quotes.get(stock.get("ts_code"))) for stock in sector.get("stocks", [])
-                    if stock.get("market_cap_date") == previous and (stock.get("market_cap") or 0) > 0]
-        available = [(stock, quote) for stock, quote in weighted if quote and quote["quote_date"] == day]
+        if sector.get("taxonomy") != "SW2021":
+            continue
+        weighted = {}
+        for stock in sector.get("stocks", []):
+            code = stock.get("ts_code")
+            cap = caps.get(code, stock.get("market_cap") if stock.get("market_cap_date") == previous else None)
+            if type(cap) in (float, int) and math.isfinite(cap) and cap > 0:
+                weighted[code] = cap
+        available = []
+        for code, cap in weighted.items():
+            quote = stock_quotes.get(code, {})
+            change = quote.get("change_pct")
+            if quote.get("quote_date") == day and type(change) in (float, int) and math.isfinite(change):
+                available.append((cap, quote))
         if not available:
             continue
-        latest = max(datetime.fromisoformat(quote["quote_timestamp"]) for stock, quote in available)
-        available = [(stock, quote) for stock, quote in available
+        latest = max(datetime.fromisoformat(quote["quote_timestamp"]) for cap, quote in available)
+        available = [(cap, quote) for cap, quote in available
                      if latest-datetime.fromisoformat(quote["quote_timestamp"]) <= timedelta(seconds=90)]
-        cap = sum(stock["market_cap"] for stock, quote in available)
-        coverage = cap / sum(stock["market_cap"] for stock, quote in weighted)
+        cap = sum(weight for weight, quote in available)
+        coverage = cap / sum(weighted.values())
         if len(available) < 3 or coverage < .6:
             continue
-        change = sum(stock["market_cap"] * quote["change_pct"] for stock, quote in available) / cap
+        change = sum(weight * quote["change_pct"] for weight, quote in available) / cap
         base = sector.get("daily_quote") or {}
         estimate = {"id": sector["id"], "quote_date": day, "quote_timestamp": latest.isoformat(),
                     "change_pct": change, "sample_count": len(available), "sample_size": len(weighted),
-                    "weight_coverage": coverage, "basis_date": previous, "basis": "constituent_estimate"}
+                    "weight_coverage": coverage, "basis_date": previous, "basis": "constituent_estimate",
+                    "estimate_phase": phase}
         if base.get("quote_date") == previous and (base.get("price") or 0) > 0:
             estimate["price"] = base["price"] * (1 + change / 100)
         estimates.append(estimate)
     return estimates
+
+
+def read_board_estimates(path, sectors):
+    try:
+        rows = json.loads(path.read_bytes()).get("board_estimates", [])
+        return {row["id"]: row for row in rows if row.get("id") in sectors
+                and row.get("basis") == "constituent_estimate" and isinstance(row.get("quote_timestamp"), str)}
+    except (OSError, ValueError, AttributeError, TypeError):
+        return {}
+
+
+def completed_stock_quotes(path, day):
+    with gzip.open(path, "rt", encoding="utf-8") as stream:
+        packet = json.load(stream)
+    day_key = day.replace("-", "")
+    if packet.get("complete") is not True or packet.get("trade_date") not in (day, day_key):
+        return {}
+    stamp = day + "T15:00:00+08:00"
+    return {row["ts_code"]: {"quote_date": day, "quote_timestamp": stamp, "change_pct": row.get("pct_chg")}
+            for row in packet["rows"] if row.get("trade_date") in (day, day_key) and isinstance(row.get("ts_code"), str)}
 
 
 def queue_retry(history, batch, now, delay, error):
@@ -310,6 +344,10 @@ def start(args):
         return
     intraday_output = output.with_name("today-intraday.json")
     stocks_output = output.with_name("stock-quotes.json")
+    saved_estimates = read_board_estimates(stocks_output, sector_ids)
+    sector_caps = {}
+    next_close_check = 0
+    last_close_version = None
     entity_ids = universe["rt_idx_k"].values()
     core_entity_ids = set(entity_ids)
     restored_at = shanghai_now()
@@ -364,6 +402,10 @@ def start(args):
                 baseline = previous_trading_day(day)
                 if baseline:
                     merge_daily(data, read_daily(), baseline.isoformat())
+                    try:
+                        sector_caps = json.loads((output.parent / "trend-stock-caps.json").read_bytes()).get(baseline.isoformat(), {})
+                    except (OSError, ValueError, AttributeError):
+                        sector_caps = {}
                 if weight_file.exists():
                     weights = json.loads(weight_file.read_text())
                     universe = groups(data, weights)
@@ -427,12 +469,6 @@ def start(args):
                         # keep only their original index universe.
                         fetched = [q for q in fetched if q["id"] in core_entity_ids]
                     sample_changed = store_quotes(history, batch, fetched, quotes[batch], entity_ids)
-                    if batch == "rt_k":
-                        for estimate in board_estimates(data["sectors"], quotes[batch], day):
-                            stamp = estimate["quote_timestamp"]
-                            if "price" in estimate:
-                                sample_changed |= history.execute("INSERT OR IGNORE INTO samples VALUES (?,?,?,?,?)",
-                                    (estimate["id"], stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
                     history.commit()
                     finished_at = shanghai_now()
                     directory_slice = batch == "rt_k" and market_plan is not None and market_plan.kind != "whole"
@@ -473,7 +509,38 @@ def start(args):
                     schedule.finish(shanghai_now(), delay, host=host_cooldown, deferred=deferred)
                     schedule.gap = max(conf["min_gap_seconds"], realtime_min_gap())
 
-            if day != history_day or batch == "rt_k":
+            estimates = (board_estimates(data["sectors"], quotes.get("rt_k", {}), day, sector_caps)
+                         if stock_received or day != history_day else [])
+            if phase == "post_close" and now.timestamp() >= next_close_check:
+                next_close_check = now.timestamp() + 30
+                close_path = STATE / "research/equity/daily" / (day.replace("-", "") + ".json.gz")
+                try:
+                    version = (day, close_path.stat().st_mtime_ns)
+                    if version != last_close_version:
+                        closes = completed_stock_quotes(close_path, day)
+                        if closes:
+                            estimates.extend(board_estimates(data["sectors"], closes, day, sector_caps, phase="close"))
+                            last_close_version = version
+                except (OSError, ValueError, KeyError, TypeError):
+                    pass
+            estimate_changed = False
+            for estimate in estimates:
+                ident = estimate["id"]
+                stamp = estimate["quote_timestamp"]
+                previous_estimate = saved_estimates.get(ident, {})
+                rank = (estimate["quote_date"], estimate["estimate_phase"] == "close", stamp)
+                prior_rank = (previous_estimate.get("quote_date", ""), previous_estimate.get("estimate_phase") == "close",
+                              previous_estimate.get("quote_timestamp", ""))
+                if rank < prior_rank or estimate == previous_estimate:
+                    continue
+                saved_estimates[ident] = estimate
+                estimate_changed = True
+                if "price" in estimate:
+                    sample_changed |= history.execute("INSERT OR IGNORE INTO samples VALUES (?,?,?,?,?)",
+                        (ident, stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
+            if sample_changed:
+                history.commit()
+            if day != history_day or batch == "rt_k" or estimate_changed:
                 display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks) | board_watch.tracked_codes
                 if "rt_k" in quotes:
                     all_stock_ids = display_stocks | market_universe.codes.keys()
@@ -482,7 +549,7 @@ def start(args):
                                         "core_stock_ids": sorted(universe.get("rt_k", {})),
                                         "stocks": [dated_quote(q, day) for q in quotes.get("rt_k", {}).values()
                                                    if q["id"] in display_stocks],
-                                        "board_estimates": board_estimates(data["sectors"], quotes.get("rt_k", {}), day)})
+                                        "board_estimates": list(saved_estimates.values())})
                 if market_universe.codes and (stock_received or day != history_day):
                     try:
                         publish(board_output, {"schema_version": 1, "source": "sxdata_relay", "trade_date": day,

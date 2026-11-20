@@ -129,7 +129,7 @@ function normalizeDashboard(raw){
   d.market=[...marketById.values()].map(entity=>update(entity,feed?.market));
   const stockFeed=state.relayStocks?.trade_date===chinaDay(new Date())?state.relayStocks.stocks:[];
   const stocks=new Map(stockFeed.map(q=>[q.id,q]));
-  const estimates=new Map((state.relayStocks?.trade_date===chinaDay(new Date())?state.relayStocks.board_estimates||[]:[]).map(q=>[q.id,q]));
+  const estimates=new Map((state.relayStocks?.board_estimates||[]).map(q=>[q.id,q]));
   const withStockReference=st=>{
    const record=state.cloudDaily?.stocks?.[st.ts_code];
    const stock=record&&record.quote_date>=(st.quote_date||'')?{...st,...record}:st;
@@ -248,14 +248,18 @@ function selectedSector(d=data()){return d.sectors.find(s=>s.id===state.selected
 function changeDemo(){state.demo=!state.demo;state.selected=null;render();}
 function setPreference(name,value){state.preferences[name]=value;local.set('guanlan.preferences',state.preferences);render();}
 function sourceCoverage(d){
- const quotes=d.sectors.map(sector=>displayQuote(sector)).filter(quote=>finite(quote.price));
- return {quoted:quotes.length,today:quotes.filter(quote=>quote.is_today).length,total:d.sectors.length,
+ const current=chinaDay(new Date());
+ const quotes=d.sectors.map(sector=>sectorQuote(sector)).filter(quote=>finite(quote.price)||finite(quote.value));
+ return {quoted:quotes.length,today:quotes.filter(quote=>quote.day===current).length,total:d.sectors.length,
   proxy:d.sectors.filter(s=>finite(displayQuote(s.proxy||{}).price)).length,healthy:d.sources.filter(s=>['ok','success','healthy'].includes(s.status)).length};
 }
 
-function sectorQuote(sec){
- const own=displayQuote(sec),estimate=sec.intraday_estimate;
- if(estimate&&estimate.quote_date===chinaDay(new Date())&&(!own.daily||!own.is_today))
+function estimateLabel(estimate){return estimate?.estimate_phase==='close'?'盘后权重股估算':'盘中权重股估算';}
+function sectorQuote(sec,now=new Date()){
+ const own=displayQuote(sec,now),estimate=sec.intraday_estimate;
+ const stamp=quoteTime(estimate?.quote_timestamp);
+ if(estimate&&finite(estimate.change_pct)&&stamp!==null&&stamp<=now.getTime()&&chinaDay(estimate.quote_timestamp)===estimate.quote_date&&
+    (estimate.quote_date>(own.day||'')||estimate.quote_date===own.day&&!(own.trusted&&finite(own.change_pct))))
   return {value:estimate.change_pct,price:estimate.price,day:estimate.quote_date,quote:own,estimate:true};
  const proxy=displayQuote(sec.proxy||{}),useProxy=!finite(own.price)&&finite(proxy.price);
  return {value:useProxy?proxy.change_pct:own.change_pct,day:useProxy?proxy.day:own.day,price:useProxy?proxy.price:own.price,quote:useProxy?proxy:own,proxy:useProxy};
@@ -551,8 +555,8 @@ function sectorComparison(sectors){
  const rows=sectors.map(sector=>({sector,q:sectorQuote(sector)}));
  rows.sort((a,b)=>String(b.q.day||'').localeCompare(String(a.q.day||''))||
   Number(finite(b.q.value))-Number(finite(a.q.value))||Number(b.q.value||0)-Number(a.q.value||0));
- const day=rows.find(({q})=>q.day&&finite(q.price))?.q.day;
- const ranked=rows.filter(({q})=>day&&q.day===day&&finite(q.price)&&finite(q.value));
+ const day=rows.find(({q})=>q.day&&(finite(q.price)||finite(q.value)))?.q.day;
+ const ranked=rows.filter(({q})=>day&&q.day===day&&finite(q.value));
  return {day,rows,ranked,label:day?`${day} 涨跌幅覆盖 ${ranked.length} / ${rows.length}`:'等待带日期的行业行情'};
 }
 function chooseOverviewIndustry(id){
@@ -629,15 +633,15 @@ function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=st
  const today=chinaDay(new Date());
  return h('div',{class:'heatmap'},comparison.rows.slice(0,limit).map(({sector:sec,q})=>{
   const ths=sec.taxonomy==='THS',rank=sec.ranking,reference=sec.reference;
-  const comparable=Boolean(comparison.day&&q.day===comparison.day&&finite(q.price)&&finite(q.value));
-  const sampled=(ths || sec.id.endsWith('.SI')) ? boardSample(sec.id,today) : null;
+  const comparable=Boolean(comparison.day&&q.day===comparison.day&&finite(q.value));
+  const sampled=ths ? boardSample(sec.id,today) : null;
   const value=sampled?sampled.change_pct:ths?(rank?rank.change_pct:reference?.change_pct):comparable?q.value:null;
   const price=ths?(rank?rank.price:reference?.price):q.price;
   const stamp=q.estimate?sec.intraday_estimate?.quote_timestamp:q.quote?.as_of;
   const time=quoteTime(stamp,q.quote?.daily&&!q.estimate);
   const when=sampled?'成分等权 '+chinaClock.format(quoteTime(sampled.quote_at)):ths?(rank?'热榜 '+snapshotTime(state.sectorHot):reference?reference.quote_date+' 收盘':'待更新'):
    !q.day?'待更新':q.day!==today?`${q.day} 参考`:time===null?'时点待确认':q.day.slice(5)+' '+chinaClock.format(time);
-  const basis=sampled?'':q.estimate?'权重股估算':q.proxy?'ETF代理':'';
+  const basis=sampled?'':q.estimate?estimateLabel(sec.intraday_estimate):q.proxy?'ETF代理':'';
   const selected=selectedId===sec.id;
   const category=ths?'同花顺'+({industry:'行业',concept:'概念',theme:'主题'}[sec.kind]||''):
    sec.directoryEntry?'交易所'+({industry:'行业',theme:'主题'}[sec.kind]||'指数'):'申万一级行业';
@@ -656,7 +660,8 @@ function heatmap(d,limit=12,comparison=sectorComparison(d.sectors),selectedId=st
 }
 function trendPanel(d,item=selectedMarket(d),view=state){
  const mainQuote=displayQuote(item),today=relayOnly&&!state.demo;
- const estimate=item.intraday_estimate;
+ const shown=isCanonicalSector(item)?sectorQuote(item):null;
+ const estimate=shown?.estimate?item.intraday_estimate:null;
  const day=chinaDay(new Date()),ticks=today?todayRelayTicks(item,day):intradayFor(d,item);
  const requested=view.metric==='intraday'||item.taxonomy==='SSE',fallback=requested&&!ticks.length&&!today;
  const metric=requested&&!fallback?'intraday':fallback?'index':view.metric;
@@ -665,7 +670,7 @@ function trendPanel(d,item=selectedMarket(d),view=state){
   h('div',{},fallback?h('p',{class:'chart-data-note'},isCanonicalSector(item)?minuteFallbackNote(d):'暂无分时采样，先显示已有日线。'):null,
    h('div',{class:'chart-body'},chart(hist,{height:today?170:205,metric,range:intraday?null:view.range,today:today&&intraday,sessions:!intraday?mainlandSessions(d,item):[],caption:h('div',{class:'chart-meta'},h('strong',{},metric==='cap'?amount(item.market_cap):intraday?num(ticks.at(-1)?.price):num(mainQuote.price)),h('span',{},today&&intraday&&ticks.length?chinaClock.format(ticks.at(-1).time):item.name||'上证指数'))})),
    today&&intraday?quoteActivity(item):null,
-   today&&intraday&&estimate?h('p',{class:'chart-data-note'},`采用 ${estimate.basis_date} 市值加权 · 覆盖 ${estimate.sample_count}/${estimate.sample_size} 只样本股（样本权重 ${accuracy(estimate.weight_coverage)}）`):null,
+   estimate?h('p',{class:'chart-data-note'},`${estimateLabel(estimate)} ${pct(shown.value)} · ${dateText(estimate.quote_timestamp,false)} · ${estimate.basis_date} 市值加权 · 覆盖 ${estimate.sample_count}/${estimate.sample_size} 只样本股（样本权重 ${accuracy(estimate.weight_coverage)}）`):null,
    metric==='cap'&&today&&!hist?.length?h('p',{class:'chart-data-note'},'当前指数缺少可核验的总市值历史。申万行业与有市值基准的个股可查看各自口径。'):null,
    !today&&!intraday&&metric!=='cap'?quoteCaption(mainQuote):null,intraday&&!today?tickNote(ticks):null,
    !today||!intraday||ticks.length?h('div',{class:'chart-footer'},h('span',{class:'legend'},h('i',{}),item.name||'上证指数'),h('span',{},intraday?'悬停查看分时数据状态':'悬停查看当日数据状态')):null),
@@ -681,7 +686,7 @@ function leadersPanel(d,comparison=sectorComparison(d.sectors),selectedId=state.
  const row=({sector:x,q},i)=>h('button',{class:'leader-row overview-leader',type:'button',
   id:`overview-leader-${x.id}`,'aria-controls':'overview-sector-trend','aria-pressed':String(x.id===selectedId),
   onClick:()=>chooseOverviewIndustry(x.id)},h('span',{class:'leader-rank'},i+1),h('strong',{},x.name),
-  h('span',{class:`change ${sign(q.value)}`},pct(q.value)));
+  h('span',{class:`change ${sign(q.value)}`},pct(q.value),q.estimate?h('small',{class:'panel-subtitle',title:estimateLabel(x.intraday_estimate)},'（估算）'):null));
  const rising=comparison.ranked.filter(({q})=>q.value>0).slice(0,3);
  const falling=comparison.ranked.filter(({q})=>q.value<0).reverse().slice(0,3);
  return panel('行业焦点',comparison.label,h('div',{class:'leaders-grid'},
@@ -1140,11 +1145,10 @@ function sectorNewsSummary(d,day,now){
 }
 
 function newsBoardChange(sector,day,now){
- const own=displayQuote(sector,now);
- if(own.trusted&&own.day===day&&finite(own.change_pct))return {value:own.change_pct,label:own.daily?'正式收盘':own.label};
+ const shown=sectorQuote(sector,now),own=shown.quote;
  const estimate=sector.intraday_estimate;
- if(estimate?.quote_date===day&&finite(estimate.change_pct)&&quoteTime(estimate.quote_timestamp)!==null&&
-    quoteTime(estimate.quote_timestamp)<=now.getTime())return {value:estimate.change_pct,label:`权重股估算 · ${dateText(estimate.quote_timestamp,true)}`};
+ if(shown.estimate&&shown.day===day)return {value:shown.value,label:`${estimateLabel(estimate)} · ${dateText(estimate.quote_timestamp,true)}`};
+ if(!shown.proxy&&own.trusted&&own.day===day&&finite(own.change_pct))return {value:own.change_pct,label:own.daily?'正式收盘':own.label};
  return {value:null,label:own.day&&own.day!==day?'当日行情待更新':'暂无当日行情'};
 }
 
@@ -1268,7 +1272,7 @@ function sectors(d){
   h('thead',{},h('tr',{},['自选','板块','指数点位','涨跌幅','行情时间'].map(label=>h('th',{scope:'col'},label)))),
   h('tbody',{},shown.map(({sector,q})=>{
    const saved=favorites.includes(sector.id);
-   const stamp=ths?q.label:q.estimate?'估算 '+dateText(sector.intraday_estimate.quote_timestamp,true):
+   const stamp=ths?q.label:q.estimate?estimateLabel(sector.intraday_estimate)+' · '+dateText(sector.intraday_estimate.quote_timestamp,false):
     q.quote.as_of?dateText(q.quote.as_of,false):'待更新';
    const active=sec.id===sector.id;
    const nameButton=h('button',{class:'sector-name',type:'button','aria-pressed':String(active),

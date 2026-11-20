@@ -222,6 +222,17 @@ function runFrontendChecks(source) {
     plot.events.pointerleave();eq(readout.attrs['data-active'],'false');eq(crosshair.attrs.visibility,'hidden');
   });
   check('malformed direction forecast cannot bypass snapshot array checks',()=>{let bad=false;try{api.validateSnapshot({...d,direction_probability:{market:{}}});}catch{bad=true;}ok(bad);});
+  check('Shenwan weighted estimates cover pending close until an official return arrives',()=>{
+    const day='2026-11-20',closed=new Date(day+'T17:00:00+08:00');
+    const sector={id:'801780.SI',name:'银行',taxonomy:'SW2021',daily_quote:daily('2026-11-19',100),
+      intraday_estimate:{quote_date:day,quote_timestamp:day+'T15:00:00+08:00',change_pct:-1.2,estimate_phase:'close'}};
+    eq(api.sectorQuote(sector,closed).value,-1.2);
+    eq(api.sectorQuote(sector,new Date('2026-11-21T09:00:00+08:00')).value,-1.2);
+    ok(api.newsBoardChange(sector,day,closed).label.includes('盘后权重股估算'));
+    const official={...sector,daily_quote:{...daily(day,101),change_pct:2}};
+    eq(api.sectorQuote(official,closed).value,2);
+    eq(api.newsBoardChange(official,day,closed).label,'正式收盘');
+  });
   check('today sector chart keeps tone, sector impact and quote date independent',()=>{
     const day='2026-11-19',now=new Date(day+'T19:00:00+08:00'),id='801780.SI';
     const sector={id,name:'银行',taxonomy:'SW2021',level:'L1',daily_quote:{

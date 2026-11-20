@@ -21,6 +21,10 @@ function findEntry(catalog, code) {
   return Array.isArray(rows) ? rows.find(item => item?.code === code && typeof item.name === 'string' && Object.hasOwn(sectorKinds, item.kind)) : null;
 }
 
+function quoteOrder(a,b,sw) {
+  return (sw ? b.day.localeCompare(a.day) || Number(b.close)-Number(a.close) : 0)
+    || b.order-a.order || Number(b.close)-Number(a.close);
+}
 function sourceRows(code, feeds) {
   // A price and a percentage may have different source times (e.g. a hot-list row with no index level).
   const quotes = [];
@@ -29,7 +33,7 @@ function sourceRows(code, feeds) {
     const time = close ? day + ' 收盘' : observationTime(stamp);
     if (!close && (!time || time.slice(0, 10) !== day)) return;
     const order = Date.parse(close ? day + 'T15:00:00+08:00' : stamp);
-    quotes.push({price:row.price, change:row.change_pct, order, caption:label + ' · ' + time, close});
+    quotes.push({price:row.price, change:row.change_pct, day, order, caption:label + ' · ' + time, close});
   };
   if (code.endsWith('.TI')) {
     const ref = feeds.reference?.quotes?.[code];
@@ -43,13 +47,13 @@ function sourceRows(code, feeds) {
     if (closing) add({price:closing.close, change_pct:closing.change_pct}, last, null, '申万行业', true);
     const estimates = feeds.stocks?.board_estimates;
     const estimate = Array.isArray(estimates) && estimates.find(row => row?.id === code);
-    add(estimate, estimate?.quote_date, estimate?.quote_timestamp, '权重股估算');
+    add(estimate, estimate?.quote_date, estimate?.quote_timestamp, estimate?.estimate_phase==='close'?'盘后权重股估算':'盘中权重股估算');
   } else {
     const sectors = feeds.exchange?.sectors;
     const quote = Array.isArray(sectors) && sectors.find(row => row?.id === code);
     add(quote, quote?.quote_date, quote?.quote_timestamp, '交易所指数');
   }
-  return quotes.sort((a,b) => b.order - a.order || Number(b.close) - Number(a.close));
+  return quotes.sort((a,b) => quoteOrder(a,b,code.endsWith('.SI')));
 }
 
 function memberPage(rows, search, number) {
@@ -183,7 +187,7 @@ async function openDetail() {
       for (const key of ['price','change']) {
         const candidate = candidates.find(row => Number.isFinite(row[key]) && (key !== 'price' || row.price > 0));
         const prior = fields[key];
-        if (candidate && (!prior || candidate.order > prior.order || (candidate.order === prior.order && (candidate.close || !prior.close)))) fields[key] = candidate;
+        if (candidate && (!prior || quoteOrder(candidate,prior,sw)<=0)) fields[key] = candidate;
         const row = fields[key], node = id('quote-' + key);
         if (row) {
           if (ths) id('quote-' + key + '-label').textContent = (row.close ? '收盘' : '热榜') + (key === 'price' ? '点位' : '涨跌幅');
