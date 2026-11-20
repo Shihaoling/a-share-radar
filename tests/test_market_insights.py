@@ -1,7 +1,7 @@
 """Test evidence binding, quote selection and supplemental news eligibility."""
 
 from contextlib import closing
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from pathlib import Path
 import sqlite3
@@ -15,12 +15,58 @@ if sys.platform == "win32":
 
 with patch.object(sys, "path", [str(Path(__file__).resolve().parents[1] / "deploy/tencent-preview"), *sys.path]):
     import market_insights as insights
+    import market_reading as reading
+    import economic_calendar as calendar
 
 DAY = "2026-11-20"
 NOW = datetime.fromisoformat(DAY + "T16:00:00+08:00")
 
 
 class MarketInsightsTests(unittest.TestCase):
+    def test_fixed_slots_use_beijing_clock_and_skip_nontrading_days(self):
+        for slot in reading.SLOTS:
+            at = datetime.fromisoformat(DAY+"T"+slot+":00+08:00")
+            self.assertEqual(reading.due_slot(at, True, ""), slot)
+            self.assertEqual(reading.due_slot(at, True, slot), "")
+            self.assertEqual(reading.due_slot(at, False, ""), "")
+        pre_open = datetime.fromisoformat(DAY+"T09:30:59+08:00")
+        self.assertEqual(reading.due_slot(pre_open, True, ""), "")
+        self.assertEqual(reading.due_slot(NOW, True, "13:01"), "15:00")
+
+    def test_rapid_move_strict_threshold_rolling_window_and_rearm(self):
+        now = datetime.fromisoformat(DAY+"T10:15:00+08:00")
+        def at(minutes, value):
+            return (now-timedelta(minutes=minutes),value)
+        names = {"idx":"上证指数"}
+        series = {"idx":[at(31,90),at(30,100),at(0,101)]}
+        self.assertEqual(reading.scan_moves(now,series,names,[])[0],[])
+        series["idx"][-1] = at(0,98.8)
+        alerts, active = reading.scan_moves(now,series,names,[])
+        self.assertEqual([r["change_pct"] for r in alerts],[-1.2])
+        self.assertEqual(reading.scan_moves(now,series,names,active)[0],[])
+        self.assertEqual(reading.scan_moves(now,{"idx":[at(30,100),at(0,99.9)]},names,active)[1],[])
+        self.assertEqual(reading.scan_moves(now+timedelta(minutes=3),series,names,[])[0],[])
+
+    def test_market_news_gate_and_summary_limit(self):
+        self.assertTrue(reading.major_world_news({"credibility":"trusted","title":"美联储宣布紧急降息50个基点"}))
+        self.assertTrue(reading.major_world_news({"credibility":"official","title":"美国宣布新关税即日生效"}))
+        self.assertFalse(reading.major_world_news({"credibility":"reliable","title":"交易员预计美联储可能会降息"}))
+        self.assertFalse(reading.major_world_news({"credibility":"rumor","title":"美国宣布新关税即日生效"}))
+        self.assertEqual(reading.validate({"summary":"主要指数走势分化，行业表现偏弱。","refs":["N1"]},{"N1":{}})["refs"],["N1"])
+        complete = "主要指数震荡，成长板块回落，权重板块相对抗跌。板块表现分化，资金痕迹需要跟踪。"
+        answer = reading.validate({"summary":complete+"不宜重复过多次要情况。" * 20,"refs":["N1","猜测"]},{"N1":{}})
+        self.assertEqual(answer,{"summary":complete,"refs":["N1"]})
+        self.assertEqual(len(reading.validate({"summary":"长"*120,"refs":[]},{})["summary"]),100)
+
+    def test_us_release_times_convert_both_daylight_and_standard_time(self):
+        page = calendar.SchedulePage("""<table>
+          <tr><td>Friday, July 02, 2026</td><td>08:30 AM</td><td>Employment Situation for June 2026</td></tr>
+          <tr><td>Thursday, December 10, 2026</td><td>08:30 AM</td><td>Consumer Price Index for November 2026</td></tr>
+          </table>""")
+        events = list(calendar.us_events(page,2026,"https://www.bls.gov",bls=True))
+        self.assertEqual([r["at"] for r in events],["2026-07-02T20:30:00+08:00","2026-12-10T21:30:00+08:00"])
+        self.assertEqual(events[1]["period"],"2026 年 11 月")
+
     def test_current_index_close_and_verified_industry_estimate(self):
         catalog = {"market":[{"id":"sh000001","name":"上证指数"}],
                    "sectors":[{"id":"801780.SI","name":"银行","taxonomy":"SW2021"}]}

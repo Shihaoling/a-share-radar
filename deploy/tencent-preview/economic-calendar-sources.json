@@ -1,0 +1,176 @@
+{
+  "indicators": {
+    "cn_pmi": {
+      "country": "中国",
+      "name": "制造业 PMI",
+      "definition": "把它想成一张工厂问卷。问订单、生产和用工比上月好不好。高于50表示整体在扩张，低于50表示在收缩。",
+      "formula": "制造业 PMI＝新订单×30%＋生产×25%＋从业人员×20%＋（100－供应商配送时间指数）×15%＋原材料库存×10%。",
+      "method_url": "https://www.stats.gov.cn/zs/tjws/zytjzbqs/cgzlzs/202501/t20250121_1958396.html"
+    },
+    "cn_cpi": {
+      "country": "中国",
+      "name": "居民消费价格指数（CPI）",
+      "definition": "想象把米、菜、衣服和坐车装进一只篮子。买得多的东西权重更大，看整篮子比以前贵了还是便宜了。",
+      "formula": "CPI 同比涨幅＝（本月 CPI ÷ 去年同月 CPI－1）×100%。",
+      "method_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202302/P020230202401909231437.pdf"
+    },
+    "cn_ppi": {
+      "country": "中国",
+      "name": "工业生产者出厂价格指数（PPI）",
+      "definition": "看工厂把钢材、机器等卖出去时的价格变了多少，像记下货物出了厂门时的价钱。",
+      "formula": "PPI 同比涨幅＝（本月出厂价格指数 ÷ 去年同月出厂价格指数－1）×100%。",
+      "method_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202302/P020230202401909231437.pdf"
+    },
+    "cn_retail": {
+      "country": "中国",
+      "name": "社会消费品零售总额",
+      "definition": "把大家买日用品、家电等商品的钱，加上去餐馆吃饭的钱，看看这些消费一共有多少。",
+      "formula": "社会消费品零售总额＝商品零售额＋餐饮收入。同比增速＝（本期总额 ÷ 上年同口径同期总额－1）×100%。",
+      "method_url": "https://www.stats.gov.cn/zs/tjws/zytjzbqs/shxfp/202409/t20240910_1956343.html"
+    },
+    "us_gdp": {
+      "country": "美国",
+      "name": "国内生产总值（GDP）",
+      "definition": "像给一个国家这段时间新做出来的东西和新提供的服务算总账。实际 GDP 会扣除价格变化，让前后更好比较。",
+      "formula": "支出法 GDP＝居民消费＋私人投资＋政府消费与投资＋出口－进口。实际季度增速按年率展示时＝［（本季实际 GDP ÷ 上季实际 GDP）⁴－1］×100%。",
+      "method_url": "https://www.bea.gov/news/blog/2025-06-03/expenditures-approach-measuring-gdp"
+    },
+    "us_pce": {
+      "country": "美国",
+      "name": "个人消费支出价格指数（PCE）",
+      "definition": "看美国人日常用的东西和服务贵了多少，也会把别人替他们付的钱计入，比如雇主医保付的医药费。",
+      "formula": "PCE 同比涨幅＝（本月 PCE 价格指数 ÷ 去年同月 PCE 价格指数－1）×100%。指数由各类价格用链式费雪公式合成。",
+      "method_url": "https://www.bea.gov/help/faq/521"
+    },
+    "us_jobs": {
+      "country": "美国",
+      "name": "非农就业",
+      "definition": "问公司和单位的工资单上有多少份工作，再看比上月多了还是少了；一个人有两份工作可以算两份。",
+      "formula": "新增非农就业＝本月经季节调整后的非农岗位数－上月经季节调整后的非农岗位数。",
+      "method_url": "https://www.bls.gov/bls/empsitquickguide.htm"
+    },
+    "us_cpi": {
+      "country": "美国",
+      "name": "消费者价格指数（CPI）",
+      "definition": "记录美国城市居民常买的东西和服务的价格。每样东西按它在日常开销里的份量来算。",
+      "formula": "CPI 同比涨幅＝（本月 CPI ÷ 去年同月 CPI－1）×100%。",
+      "method_url": "https://www.bls.gov/opub/hom/cpi/calculation.htm"
+    }
+  },
+  "events": [
+    {
+      "indicator": "us_gdp",
+      "at": "2026-11-25T21:30:00+08:00",
+      "period": "2026 年三季度 · 二次估计",
+      "source_url": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "indicator": "us_pce",
+      "at": "2026-11-25T21:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "indicator": "cn_pmi",
+      "at": "2026-11-30T09:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-12-04T21:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm"
+    },
+    {
+      "indicator": "cn_cpi",
+      "at": "2026-12-09T09:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html"
+    },
+    {
+      "indicator": "cn_ppi",
+      "at": "2026-12-09T09:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-12-10T21:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm"
+    },
+    {
+      "indicator": "cn_retail",
+      "at": "2026-12-15T10:00:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html"
+    },
+    {
+      "indicator": "us_gdp",
+      "at": "2026-12-23T21:30:00+08:00",
+      "period": "2026 年三季度 · 三次估计",
+      "source_url": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "indicator": "us_pce",
+      "at": "2026-12-23T21:30:00+08:00",
+      "period": "2026 年 11 月",
+      "source_url": "https://www.bea.gov/news/schedule"
+    },
+    {
+      "indicator": "cn_pmi",
+      "at": "2026-12-31T09:30:00+08:00",
+      "period": "2026 年 12 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2027-01-08T21:30:00+08:00",
+      "period": "2026 年 12 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2027-01-13T21:30:00+08:00",
+      "period": "2026 年 12 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2027-02-05T21:30:00+08:00",
+      "period": "2027 年 1 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2027-02-11T21:30:00+08:00",
+      "period": "2027 年 1 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2027-03-05T21:30:00+08:00",
+      "period": "2027 年 2 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2027-03-10T21:30:00+08:00",
+      "period": "2027 年 2 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2027-04-02T20:30:00+08:00",
+      "period": "2027 年 3 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2027-04-13T20:30:00+08:00",
+      "period": "2027 年 3 月",
+      "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    }
+  ]
+}

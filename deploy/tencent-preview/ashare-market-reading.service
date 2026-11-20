@@ -1,0 +1,19 @@
+[Unit]
+Description=Generate MiniMax market readings on schedule and on material events
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/market_reading.py
+TimeoutStartSec=270
+MemoryMax=300M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

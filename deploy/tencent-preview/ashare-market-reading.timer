@@ -1,0 +1,14 @@
+[Unit]
+Description=Check fixed A-share commentary slots and material event triggers
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 09:31:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 11:30:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 13:01:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 15:00:00 Asia/Shanghai
+OnCalendar=*-*-* *:*:20 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

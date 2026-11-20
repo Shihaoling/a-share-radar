@@ -1,0 +1,10 @@
+[Unit]
+Description=Synchronize the official economic release calendar
+
+[Timer]
+OnCalendar=*-*-* 08:20:00 Asia/Shanghai
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
