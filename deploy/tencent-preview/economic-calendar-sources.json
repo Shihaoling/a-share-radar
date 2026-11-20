@@ -376,5 +376,178 @@
       "period": "2027 年 3 月",
       "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm"
     }
+  ],
+  "release_observations": {
+    "us_jobs:2026-11-06T21:30:00+08:00": {
+      "source_url": "https://www.bls.gov/news.release/archives/empsit_11062026.pdf",
+      "metrics": [
+        {
+          "label": "非农就业净增",
+          "value": 165000,
+          "unit": "人"
+        },
+        {
+          "label": "失业率",
+          "value": 4.1,
+          "unit": "%"
+        }
+      ]
+    },
+    "us_cpi:2026-11-10T21:30:00+08:00": {
+      "source_url": "https://www.bls.gov/news.release/archives/cpi_11102026.pdf",
+      "metrics": [
+        {
+          "label": "CPI 环比（季调）",
+          "value": 0.4,
+          "unit": "%"
+        },
+        {
+          "label": "核心 CPI 环比（季调）",
+          "value": 0.3,
+          "unit": "%"
+        }
+      ],
+      "note": "美国劳工统计局未采集 2025 年 10 月可比数据，本次总体 CPI 同比未公布。"
+    },
+    "cn_ppi:2026-04-10T09:30:00+08:00": {
+      "source_url": "https://www.stats.gov.cn/sj/zxfb/202604/t20260410_1963263.html",
+      "metrics": [
+        {
+          "label": "同比",
+          "value": 0.5,
+          "unit": "%"
+        },
+        {
+          "label": "环比",
+          "value": 1.0,
+          "unit": "%"
+        }
+      ]
+    },
+    "cn_cpi:2026-06-10T09:30:00+08:00": {
+      "source_url": "https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963923.html",
+      "metrics": [
+        {
+          "label": "同比",
+          "value": 1.2,
+          "unit": "%"
+        },
+        {
+          "label": "环比",
+          "value": -0.1,
+          "unit": "%"
+        }
+      ]
+    },
+    "cn_retail:2026-07-15T10:00:00+08:00": {
+      "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202607/t20260715_1964127.html",
+      "metrics": [
+        {
+          "label": "零售总额",
+          "value": 42691,
+          "unit": "亿元"
+        },
+        {
+          "label": "同比",
+          "value": 1.0,
+          "unit": "%"
+        }
+      ]
+    }
+  },
+  "release_news": [
+    {
+      "indicators": [
+        "cn_pmi"
+      ],
+      "published_at": "2026-10-27",
+      "credibility": "official",
+      "source": "国家统计局",
+      "title": "2026年1—9月份全国规模以上工业企业利润增长15.5%",
+      "url": "https://www.stats.gov.cn/xxgk/sjfb/zxfb2020/202610/t20261027_1965697.html",
+      "content": "国家统计局此前公布，1—9月规模以上工业企业利润同比增长15.5%。利润是累计经营结果，可与10月PMI给出的环比景气信号对照。"
+    },
+    {
+      "indicators": [
+        "us_gdp",
+        "us_pce"
+      ],
+      "published_at": "2026-10-29T02:00:00+08:00",
+      "credibility": "official",
+      "source": "美联储",
+      "title": "10月货币政策声明",
+      "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
+      "content": "美联储在10月会议声明中指出，通胀仍处高位，委员会将结合进一步信息判断政策立场。"
+    },
+    {
+      "indicators": [
+        "us_jobs"
+      ],
+      "published_at": "2026-11-06",
+      "credibility": "reliable",
+      "source": "路透社",
+      "title": "美国10月就业报告公布后，美债收益率上升",
+      "url": "https://www.investing.com/news/economic-indicators/strong-october-jobs-report-sends-yields-higher-5008272",
+      "content": "路透社报道，数据发布后，两年期和十年期美债收益率先上行，随后从高位回落一部分。反映的是同一时段的市场反应。"
+    },
+    {
+      "indicators": [
+        "cn_cpi",
+        "cn_ppi",
+        "us_cpi"
+      ],
+      "published_at": "2026-11-11",
+      "credibility": "official",
+      "source": "美国能源信息署（EIA）",
+      "title": "11月短期能源展望",
+      "url": "https://www.eia.gov/outlooks/steo/archives/Nov26.pdf",
+      "content": "报告指出国际原油供给受扰且运输成本较高，给油价带来支撑。展望使用11月5日前掌握的信息。能源价格是理解工业和消费价格分项的一个背景。"
+    },
+    {
+      "indicators": [
+        "cn_cpi",
+        "cn_ppi"
+      ],
+      "published_at": "2026-11-09",
+      "credibility": "official",
+      "source": "国家统计局",
+      "title": "统计局解读10月居民消费与工业出厂价格",
+      "url": "https://www.stats.gov.cn/xxgk/jd/sjjd2020/202611/t20261109_1965796.html",
+      "content": "解读指出，食品价格拖累居民消费价格同比表现，国内汽油价格环比走高。工业端石油天然气开采、煤炭开采等价格上行。"
+    },
+    {
+      "indicators": [
+        "us_cpi",
+        "us_jobs"
+      ],
+      "published_at": "2026-11-10",
+      "credibility": "official",
+      "source": "美联储",
+      "title": "理事沃勒谈美国经济与通胀",
+      "url": "https://www.federalreserve.gov/newsevents/speech/waller20261110a.htm",
+      "content": "沃勒指出，核心商品价格和不含住房的市场化核心服务价格压力仍偏高，说明需要跟踪短期通胀的构成。讲话代表个人观点。"
+    },
+    {
+      "indicators": [
+        "cn_retail"
+      ],
+      "published_at": "2026-11-16",
+      "credibility": "official",
+      "source": "国家统计局",
+      "title": "新闻发言人答记者问：10月国内需求与消费表现",
+      "url": "https://www.stats.gov.cn/zwfwck/sjfb/202611/t20261116_1965869.html",
+      "content": "统计局表示，中秋错月及部分耐用消费品销售放缓影响了当月零售增长。同期服务零售累计增长快于商品零售。"
+    },
+    {
+      "indicators": [
+        "cn_retail"
+      ],
+      "published_at": "2026-11-12",
+      "credibility": "reliable",
+      "source": "中国汽车工业协会（我的钢铁网转载）",
+      "title": "10月汽车产销环比回升、同比下降",
+      "url": "https://news.mysteel.com/a/26111217/FB79F6951E73AFCD.html",
+      "content": "中汽协发布的10月数据中，汽车销量环比增加，同比略有下降。行业数据包含出口等口径，适合作为消费结构的补充。"
+    }
   ]
 }

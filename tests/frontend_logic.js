@@ -40,7 +40,11 @@ function runFrontendChecks(source) {
   const live = (time, price, quality = 'exchange_timestamp') => ({price, quote_timestamp: '2026-11-16T' + time + '+08:00', timestamp_quality: quality, provider: 'stock_api'});
   check('economic calendar marks today, keeps same-day historical releases, and switches details', () => {
     const makeEvent = (indicator, at) => ({indicator, at, period:'2026 年 10 月',
-      source_url:'https://www.stats.gov.cn/schedule', release_url:'https://www.stats.gov.cn/release'});
+      source_url:'https://www.stats.gov.cn/schedule', release_url:'https://www.stats.gov.cn/release',
+      release_data:{metrics:[{label:'同比',value:0.7,unit:'%'}],source_url:'https://www.stats.gov.cn/data'},
+      release_analysis:{summary:'本次价格温和上涨',impact:'需求仍有待观察',
+        references:[{title:'背景资讯',source:'新闻源',published_at:'2026-11-09',
+          url:'https://www.stats.gov.cn/news',evidence:'证据摘要'}]}});
     const info = (name, definition) => ({country:'中国', name, short_name:name, definition,
       formula:'同比涨幅公式', method_url:'https://www.stats.gov.cn/method'});
     api.state.economicCalendar = {
@@ -60,7 +64,8 @@ function runFrontendChecks(source) {
     ok(text(cpi).includes('CPI'));ok(text(ppi).includes('PPI'));
     ok(!text(calendar).includes('消费价格定义'));
     cpi.events.click();
-    for(const label of ['消费价格定义','同比涨幅公式','消费价格重点','官方发布'])ok(text(calendar).includes(label));
+    for(const label of ['消费价格定义','同比涨幅公式','0.7','本次价格温和上涨','背景资讯','官方发布'])ok(text(calendar).includes(label));
+    ok(!text(calendar).includes('消费价格重点'));
     ppi.events.click();
     eq(cpi.attrs['aria-pressed'],'false');eq(ppi.attrs['aria-pressed'],'true');
     ok(text(calendar).includes('出厂价格定义'));ok(!text(calendar).includes('消费价格定义'));

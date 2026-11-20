@@ -17,6 +17,7 @@ with patch.object(sys, "path", [str(Path(__file__).resolve().parents[1] / "deplo
     import market_insights as insights
     import market_reading as reading
     import economic_calendar as calendar
+    import economic_releases as releases
 
 DAY = "2026-11-20"
 NOW = datetime.fromisoformat(DAY + "T16:00:00+08:00")
@@ -111,6 +112,42 @@ class MarketInsightsTests(unittest.TestCase):
                          ("2026-09-30T20:30:00+08:00","2026 年二季度 · 三次估计","https://www.bea.gov/news/2026/gdp"))
         self.assertEqual(pce["period"],"2026 年 10 月")
         self.assertNotIn("release_url",pce)
+
+    def test_release_values_keep_frequency_and_release_period(self):
+        cn = "2026年10月份，全国居民消费价格同比上涨0.7%。10月份，全国居民消费价格环比持平。"
+        self.assertEqual(releases.chinese_points("cn_cpi","2026 年 10 月",cn)[:2],
+                         [{"label":"同比","value":0.7,"unit":"%"},{"label":"环比","value":0.0,"unit":"%"}])
+        ppi = "2026年3月份，全国工业生产者出厂价格同比由上月下降0.9%转为上涨0.5%；环比上涨1.0%。"
+        self.assertEqual([m["value"] for m in releases.chinese_points("cn_ppi","2026 年 3 月",ppi)],[0.5,1.0])
+        retail = "1—10月份，社会消费品零售总额416464亿元，同比增长1.0%。10月份，社会消费品零售总额46463亿元，同比增长0.4%。"
+        self.assertEqual([m["value"] for m in releases.chinese_points("cn_retail","2026 年 10 月",retail)],[46463,0.4])
+        self.assertFalse(releases.chinese_points("cn_retail","2026 年 8 月",retail))
+        pce = ("From the preceding month, the PCE price index for September increased 0.5 percent. "
+               "Excluding food and energy, the PCE price index increased 0.3 percent. "
+               "From the same month one year ago, the PCE price index for September increased 3.6 percent. "
+               "Excluding food and energy, the PCE price index increased 3.1 percent from one year ago.")
+        self.assertEqual([m["value"] for m in releases.english_points("us_pce","2026 年 9 月",pce)],[0.5,3.6,0.3,3.1])
+
+    def test_alfred_uses_published_vintage_and_omits_missing_comparison(self):
+        def download(url):
+            series = url.split("id=")[1].split("&")[0]
+            return f"observation_date,{series}_20261110\n2026-09-01,100\n2026-10-01,100.4\n"
+        with patch.object(releases,"download",side_effect=download):
+            run_at = datetime.fromisoformat("2026-11-10T21:30:00+08:00")
+            data = releases.alfred_result("us_cpi","2026 年 10 月",run_at)
+        self.assertEqual([(m["label"],m["value"]) for m in data["metrics"]],
+                         [("CPI 环比（季调）",0.4),("核心 CPI 环比（季调）",0.4)])
+        self.assertIn("vintage_date=2026-11-10",data["source_url"])
+
+    def test_release_analysis_can_use_only_the_news_for_its_own_record(self):
+        source = {"id":"N1","url":"https://example.org/release","title":"消息"}
+        inputs = {"R1":{"news":[source]},"R2":{"news":[]}}
+        reading = {"summary":"核对本次数据的变化。","impact":"可能影响增长判断。","refs":["N1"]}
+        value = {"items":{"R1":reading,"R2":{**reading,"refs":[]}}}
+        self.assertEqual(calendar.validate_release_analysis(value,inputs)["items"]["R1"]["references"],[source])
+        value["items"]["R2"]["refs"] = ["N1"]
+        with self.assertRaises(ValueError):
+            calendar.validate_release_analysis(value,inputs)
 
     def test_current_index_close_and_verified_industry_estimate(self):
         catalog = {"market":[{"id":"sh000001","name":"上证指数"}],

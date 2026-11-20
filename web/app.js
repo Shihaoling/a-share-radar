@@ -849,24 +849,48 @@ function economicDate(month, offset=0, day=1){
  return new Date(Date.UTC(year,number-1+offset,day));
 }
 
+function economicReleaseReading(row){
+ const data=row.release_data,reading=row.release_analysis;
+ if(!data)return h('p',{class:'economic-release-note'},'官方数值待核验。');
+ return h('section',{class:'economic-release'},
+  h('h5',{},'本次公布'),
+  h('dl',{class:'economic-metrics'},data.metrics.map(metric=>h('div',{},
+   h('dt',{},metric.label),
+   h('dd',{},metric.value.toLocaleString('zh-CN',{maximumFractionDigits:2}),
+    h('span',{},metric.unit))))),
+  h('div',{class:'economic-release-source'},link((data.source_label||'官方发布数据')+' ↗',data.source_url,'text-button'),
+   data.note?h('span',{},data.note):null),
+  reading?h('div',{class:'economic-release-analysis'},
+   h('h5',{},'MiniMax · 本次解读'),h('p',{},reading.summary),
+   h('p',{},h('strong',{},'可能影响 '),reading.impact),
+   reading.references.length?h('details',{'data-reader-key':'economic-context-'+row.indicator+'-'+row.at},
+    h('summary',{},`关联资讯（${reading.references.length}）`),
+    h('ul',{},reading.references.map(item=>h('li',{},item.url?link(item.title+' ↗',item.url):h('strong',{},item.title),
+     h('small',{},`${item.source} · ${dateText(item.published_at)}`),h('p',{},item.evidence))))):
+    h('small',{},'本次解读依据官方数值。')):
+   h('p',{class:'economic-release-note'},'等待 MiniMax 解读本次数据。'));
+}
+
 function economicDetail(packet,row){
- if(!row)return h('p',{class:'economic-prompt'},'点击日历里的指标，查看定义、计算公式和 MiniMax 解读。');
+ if(!row)return h('p',{class:'economic-prompt'},'点击日历里的指标，查看公布数据、计算公式和 MiniMax 解读。');
  const info=packet.indicators[row.indicator],reading=packet.analysis[row.indicator];
- const status=row.release_url?'已发布':quoteTime(row.at)<Date.now()?'计划时间已过':'计划发布';
+ const released=Boolean(row.release_url||row.release_data),past=quoteTime(row.at)<Date.now();
+ const status=released?'已发布':past?'计划时间已过':'计划发布';
  return h('article',{class:'economic-detail'},
   h('header',{},
    h('div',{class:'economic-detail-meta'},h('span',{class:'economic-status'},status),info.country,' · ',row.period),
    h('h4',{},info.name),
    h('time',{datetime:row.at},`${chinaDay(row.at)} ${dateText(row.at,true)} · 北京时间`)),
+  released||past?economicReleaseReading(row):null,
   h('div',{class:'economic-detail-grid'},
    h('div',{},h('h5',{},'指标定义'),h('p',{},info.definition)),
    h('div',{class:'economic-formula'},h('h5',{},'计算公式'),h('p',{},info.formula))),
-  reading?h('dl',{class:'economic-reading','aria-label':'MiniMax 解读'},
+  released||past?null:reading?h('dl',{class:'economic-reading','aria-label':'MiniMax 解读'},
    h('div',{},h('dt',{},'MiniMax · 关注重点'),h('dd',{},reading.focus)),
    h('div',{},h('dt',{},'可能影响'),h('dd',{},reading.impact))):
    h('p',{class:'economic-prompt'},'MiniMax 解读待更新。'),
   h('footer',{class:'economic-sources'},
-   row.release_url?link('官方发布 ↗',row.release_url,'text-button'):null,
+   row.release_url&&row.release_url!==row.release_data?.source_url?link('官方发布 ↗',row.release_url,'text-button'):null,
    link('官方日程 ↗',row.source_url,'text-button'),link('统计口径 ↗',info.method_url,'text-button')));
 }
 
@@ -1607,7 +1631,13 @@ const feeds=[
    Object.values(p.indicators).every(r=>record(r)&&['name','country','definition','formula','method_url'].every(k=>typeof r[k]==='string')&&
     (r.short_name==null||typeof r.short_name==='string'))&&
    p.events.every(r=>Object.hasOwn(p.indicators,r.indicator)&&quoteTime(r.at)!==null&&typeof r.period==='string'&&
-    typeof r.source_url==='string'&&(r.release_url==null||typeof r.release_url==='string'))&&
+    typeof r.source_url==='string'&&(r.release_url==null||typeof r.release_url==='string')&&
+    (r.release_data==null||record(r.release_data)&&typeof r.release_data.source_url==='string'&&
+     records(r.release_data.metrics)&&r.release_data.metrics.length>0&&r.release_data.metrics.every(m=>
+      typeof m.label==='string'&&Number.isFinite(m.value)&&typeof m.unit==='string'))&&
+    (r.release_analysis==null||record(r.release_analysis)&&typeof r.release_analysis.summary==='string'&&
+     typeof r.release_analysis.impact==='string'&&records(r.release_analysis.references)&&r.release_analysis.references.every(n=>
+      ['url','title','source','published_at','evidence'].every(k=>typeof n[k]==='string'))))&&
    Object.values(p.analysis).every(r=>record(r)&&typeof r.focus==='string'&&typeof r.impact==='string')},
  {file:'market-insights',key:'marketInsights',label:'MiniMax 热门板块影响',interval:30000,pages:['news'],
   source:'minimax_market_insights',valid:validMarketInsights},

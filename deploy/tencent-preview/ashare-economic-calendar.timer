@@ -3,6 +3,12 @@ Description=Synchronize the official economic release calendar
 
 [Timer]
 OnCalendar=*-*-* 08:20:00 Asia/Shanghai
+OnCalendar=*-*-* 09:36:00 Asia/Shanghai
+OnCalendar=*-*-* 10:06:00 Asia/Shanghai
+OnCalendar=*-*-* 15:06:00 Asia/Shanghai
+OnCalendar=*-*-* 20:40:00 Asia/Shanghai
+OnCalendar=*-*-* 21:40:00 Asia/Shanghai
+OnCalendar=*-*-* 23:10:00 Asia/Shanghai
 AccuracySec=1min
 Persistent=true
 

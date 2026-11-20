@@ -283,6 +283,22 @@
 .economic-detail-grid>.economic-formula{background:#edf4fc}
 .economic-detail h5,.economic-detail dt{margin:0 0 4px;color:#2a527a;font-size:12px;font-weight:700}
 .economic-detail p,.economic-detail dd{margin:0}
+.economic-release{margin-top:12px;padding:12px;border:1px solid #d6e4f3;border-radius:8px;background:#fff}
+.economic-release .economic-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin:7px 0 8px}
+.economic-metrics>div{padding:7px 9px;border-radius:6px;background:#edf4fc}
+.economic-metrics dt{margin:0;color:#435e79;font-size:11px}
+.economic-metrics dd{color:#23496c;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.economic-metrics dd span{margin-left:3px;color:#536c86;font-size:11px;font-weight:500}
+.economic-release-source{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;color:#52697f;font-size:11px}
+.economic-release-analysis{margin-top:9px;padding-top:9px;border-top:1px solid #dfe8f3}
+.economic-release-analysis>p+p{margin-top:5px}
+.economic-release-analysis>small,.economic-release-note{color:#52697f;font-size:11px}
+.economic-detail>.economic-release-note{margin-top:8px}
+.economic-release-analysis details{margin-top:6px;color:#315572}
+.economic-release-analysis summary{cursor:pointer;font-size:12px}
+.economic-release-analysis ul{margin:4px 0 0;padding-left:18px}
+.economic-release-analysis li+li{margin-top:7px}
+.economic-release-analysis li small{display:block;color:#52697f}
 .economic-formula p{white-space:pre-line;overflow-wrap:anywhere}
 .economic-reading{margin:11px 0 0;padding:10px 0 0;border-top:1px solid #dfe8f3}
 .economic-sources{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:10px}
