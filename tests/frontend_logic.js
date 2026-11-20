@@ -8,6 +8,7 @@ function runFrontendChecks(source) {
     addEventListener(name, fn) { this.events[name] = fn; }
     replaceChildren(...children) { this.children = children; }
     remove() {}
+    scrollIntoView() {}
     showModal() { this.opened = true; }
     close() { this.events.close?.(); }
   }
@@ -18,7 +19,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,chart,relayIntraday,statCard,intradayFor,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,fundsPanel,fundPremium,researchHelp,sectorNewsSummary,newsBoardChange,trendRoom,trendFeed,trendView,render,state,baseData,pages};');
+  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,economicCalendar,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,chart,relayIntraday,statCard,intradayFor,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,fundsPanel,fundPremium,researchHelp,sectorNewsSummary,newsBoardChange,trendRoom,trendFeed,trendView,render,state,baseData,pages};');
   const startDisplay = document => loadDisplay(
     TestNode, document, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
@@ -37,6 +38,38 @@ function runFrontendChecks(source) {
   const now = new Date('2026-11-16T16:00:00+08:00');
   const daily = (day, price) => ({price, as_of: day + 'T15:00:00+08:00', quote_date: day, timestamp_quality: 'daily_close', change_pct: 1, provider: 'stock_api'});
   const live = (time, price, quality = 'exchange_timestamp') => ({price, quote_timestamp: '2026-11-16T' + time + '+08:00', timestamp_quality: quality, provider: 'stock_api'});
+  check('economic calendar marks today, keeps same-day historical releases, and switches details', () => {
+    const makeEvent = (indicator, at) => ({indicator, at, period:'2026 年 10 月',
+      source_url:'https://www.stats.gov.cn/schedule', release_url:'https://www.stats.gov.cn/release'});
+    const info = (name, definition) => ({country:'中国', name, short_name:name, definition,
+      formula:'同比涨幅公式', method_url:'https://www.stats.gov.cn/method'});
+    api.state.economicCalendar = {
+      events:[makeEvent('cn_cpi','2026-11-09T09:30:00+08:00'),makeEvent('cn_ppi','2026-11-09T09:30:00+08:00')],
+      indicators:{cn_cpi:info('CPI','消费价格定义'),cn_ppi:info('PPI','出厂价格定义')},
+      analysis:{cn_cpi:{focus:'消费价格重点',impact:'可能影响'}}};
+    const calendar = api.economicCalendar('2026-11-20');
+    const walk = node => [node, ...node.children.flatMap(walk)];
+    const find = predicate => walk(calendar).find(predicate);
+    const day = date => find(n => n.tag==='td'&&walk(n).some(c => c.attrs.datetime===date));
+    const today = day('2026-11-20');
+    eq(today.className,'is-today');
+    eq(walk(today).find(n=>n.tag==='time').attrs['aria-current'],'date');
+    const past = day('2026-11-09');
+    eq(past.className,'is-past');
+    const [cpi,ppi] = walk(past).filter(n=>n.tag==='button');
+    ok(text(cpi).includes('CPI'));ok(text(ppi).includes('PPI'));
+    ok(!text(calendar).includes('消费价格定义'));
+    cpi.events.click();
+    for(const label of ['消费价格定义','同比涨幅公式','消费价格重点','官方发布'])ok(text(calendar).includes(label));
+    ppi.events.click();
+    eq(cpi.attrs['aria-pressed'],'false');eq(ppi.attrs['aria-pressed'],'true');
+    ok(text(calendar).includes('出厂价格定义'));ok(!text(calendar).includes('消费价格定义'));
+    find(n=>n.attrs['aria-label']==='下一月').events.click();
+    ok(text(calendar).includes('2026 年 12 月'));ok(!day('2026-11-20'));
+    find(n=>n.tag==='button'&&text(n)==='回到今天').events.click();
+    ok(day('2026-11-20'));ok(!text(calendar).includes('出厂价格定义'));
+    api.state.economicCalendar = null;
+  });
   check('new source-timestamp quote outranks an old daily close', () => {
     const q = api.displayQuote({...daily('2026-11-13', 3000), live_quote: live('15:05:00', 3100)}, now);
     eq(q.price, 3100); eq(q.label, '今日行情 · 待最终日线'); eq(q.origin, 'live');

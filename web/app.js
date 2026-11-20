@@ -8,6 +8,7 @@ const state = { page: 'overview', demo: false, data: null, loading: true, group:
 const pages = [['overview','市场总览','grid'],['sectors','板块雷达','layers'],['news','A股关联资讯','globe'],['trend','趋势观察室','activity'],['settings','数据设置','settings']];
 const newsOverview={sector:null,sort:'volume',scope:'all'};
 const trendView={window:10,group:'sw',filter:'all',query:'',page:0,expanded:null,sorts:{}};
+const economicView={month:null,selected:null};
 const trendWindows=[5,10,20];
 const trendStates={'-2':'大幅下降','-1':'抖动下降',0:'波动',1:'波动上升',2:'快速上升'};
 const trendReasons={missing_window:'窗口内连续收盘日线不足',missing_baseline:'历史波动基准不足',zero_baseline:'历史波动基准为零',calendar:'等待确认交易日历'};
@@ -843,31 +844,98 @@ function marketCommentary(){
     h('div',{},h('small',{},`${row.source} · ${dateText(row.published_at,true)}`),
      row.evidence?h('p',{},row.evidence):null,row.url?link('查看原文 ↗',row.url,'text-button'):null)))):null));
 }
-function economicCalendar(){
- const packet=state.demo?null:state.economicCalendar, now=Date.now();
- const seen=new Set();
- const next=[];
- for(const row of packet?.events||[]){
-  if(quoteTime(row.at)<now||seen.has(row.indicator))continue;
-  seen.add(row.indicator);next.push(row);
- }
- return panel('重要经济指标公布时间','北京时间 · 以官方日程为准',
-  next.length?h('div',{class:'economic-calendar'},next.map(row=>{
-   const info=packet.indicators[row.indicator],reading=packet.analysis[row.indicator];
-   const date=futureDate(row.at,now);
-   return h('details',{'data-reader-key':'economic-'+row.indicator},h('summary',{},
-    h('time',{datetime:row.at},date),h('strong',{},info.country+' · '+info.name)),
-    h('div',{class:'economic-detail'},h('p',{class:'panel-subtitle'},row.period),h('p',{},info.definition),
-     h('p',{class:'economic-formula'},info.formula),
-     reading?h('dl',{},h('dt',{},'MiniMax 关注重点'),h('dd',{},reading.focus),
-      h('dt',{},'可能影响'),h('dd',{},reading.impact)):h('p',{class:'panel-subtitle'},'MiniMax 解读待更新'),
-     h('div',{class:'economic-sources'},link('官方日程 ↗',row.source_url,'text-button'),
-      link('指标口径 ↗',info.method_url,'text-button'))));
-  })):h('p',{class:'inline-note'},packet?'暂无已公布的后续日程。':'正在读取官方日程。'));
+function economicDate(month, offset=0, day=1){
+ const [year,number]=month.split('-').map(Number);
+ return new Date(Date.UTC(year,number-1+offset,day));
 }
-function futureDate(stamp,now){
- const day=chinaDay(stamp);
- return day.slice(0,4)!==chinaDay(now).slice(0,4)?day+' '+dateText(stamp,true):dateText(stamp);
+
+function economicDetail(packet,row){
+ if(!row)return h('p',{class:'economic-prompt'},'点击日历里的指标，查看定义、计算公式和 MiniMax 解读。');
+ const info=packet.indicators[row.indicator],reading=packet.analysis[row.indicator];
+ const status=row.release_url?'已发布':quoteTime(row.at)<Date.now()?'计划时间已过':'计划发布';
+ return h('article',{class:'economic-detail'},
+  h('header',{},
+   h('div',{class:'economic-detail-meta'},h('span',{class:'economic-status'},status),info.country,' · ',row.period),
+   h('h4',{},info.name),
+   h('time',{datetime:row.at},`${chinaDay(row.at)} ${dateText(row.at,true)} · 北京时间`)),
+  h('div',{class:'economic-detail-grid'},
+   h('div',{},h('h5',{},'指标定义'),h('p',{},info.definition)),
+   h('div',{class:'economic-formula'},h('h5',{},'计算公式'),h('p',{},info.formula))),
+  reading?h('dl',{class:'economic-reading','aria-label':'MiniMax 解读'},
+   h('div',{},h('dt',{},'MiniMax · 关注重点'),h('dd',{},reading.focus)),
+   h('div',{},h('dt',{},'可能影响'),h('dd',{},reading.impact))):
+   h('p',{class:'economic-prompt'},'MiniMax 解读待更新。'),
+  h('footer',{class:'economic-sources'},
+   row.release_url?link('官方发布 ↗',row.release_url,'text-button'):null,
+   link('官方日程 ↗',row.source_url,'text-button'),link('统计口径 ↗',info.method_url,'text-button')));
+}
+
+function economicCalendar(today=chinaDay(new Date())){
+ const packet=state.demo?null:state.economicCalendar,currentMonth=today.slice(0,7);
+ const monthTitle=h('h4',{class:'economic-month',id:'economic-month','aria-live':'polite'});
+ const grid=h('div',{class:'economic-grid'});
+ const detail=h('div',{class:'economic-selection',id:'economic-selection','aria-live':'polite'});
+ const key=row=>JSON.stringify([row.indicator,row.at,row.period]);
+ const byDay=new Map();
+ for(const row of packet?.events||[]){
+  const date=chinaDay(row.at);
+  if(!byDay.has(date))byDay.set(date,[]);
+  byDay.get(date).push(row);
+ }
+ function drawMonth(){
+  const month=economicView.month||currentMonth,first=economicDate(month);
+  const start=(first.getUTCDay()+6)%7,count=economicDate(month,1,0).getUTCDate();
+  const weeks=[],buttons=[];
+  let selected=null;
+  monthTitle.textContent=`${first.getUTCFullYear()} 年 ${first.getUTCMonth()+1} 月`;
+  for(let i=0;i<start+count;i+=7){
+   const cells=Array.from({length:7},(_,offset)=>{
+    const number=i+offset-start+1;
+    if(number<1||number>count)return h('td',{class:'economic-outside','aria-hidden':'true'});
+    const date=economicDate(month,0,number).toISOString().slice(0,10);
+    const isToday=date===today;
+    const entries=(byDay.get(date)||[]).map(row=>{
+     const info=packet.indicators[row.indicator],chosen=key(row)===economicView.selected;
+     if(chosen)selected=row;
+     const time=dateText(row.at,true);
+     const trigger=h('button',{type:'button',class:'economic-event','aria-controls':'economic-selection',
+      'aria-pressed':String(chosen),'aria-label':`${date} ${time}，${info.country}${info.name}`,
+      title:`${time} · ${info.country} ${info.name}`,onClick:()=>{
+       economicView.selected=key(row);
+       for(const item of buttons)item.setAttribute('aria-pressed',String(item===trigger));
+       detail.replaceChildren(economicDetail(packet,row));
+       detail.scrollIntoView({block:'nearest'});
+      }},
+      h('span',{class:'economic-country','aria-hidden':'true'},info.country.slice(0,1)),
+      h('strong',{},info.short_name||info.name),h('time',{datetime:row.at},time));
+     buttons.push(trigger);
+     return trigger;
+    });
+    return h('td',{class:isToday?'is-today':date<today?'is-past':null},
+     h('div',{class:'economic-day'},h('time',{datetime:date,'aria-current':isToday?'date':null,
+      'aria-label':isToday?`今天 ${date}`:date},number),isToday?h('span',{'aria-hidden':'true'},'今天'):null),
+     entries.length?h('div',{class:'economic-events'},entries):null);
+   });
+   weeks.push(h('tr',{},cells));
+  }
+  grid.replaceChildren(h('table',{'aria-labelledby':'economic-month'},
+   h('thead',{},h('tr',{},['一','二','三','四','五','六','日'].map(day=>h('th',{scope:'col'},'周'+day)))),
+   h('tbody',{},weeks)));
+  const emptyMessage=packet?'本月暂无收录的指标日程。':state.demo?'演示模式下没有官方日程。':'正在读取官方日程。';
+  detail.replaceChildren(buttons.length?economicDetail(packet,selected):h('p',{class:'economic-prompt'},emptyMessage));
+ }
+ function changeMonth(offset){
+  economicView.month=offset?economicDate(economicView.month||currentMonth,offset).toISOString().slice(0,7):null;
+  economicView.selected=null;
+  drawMonth();
+ }
+ drawMonth();
+ return panel('重要经济指标日历','北京时间 · 以官方日程为准',h('div',{class:'economic-calendar'},
+  h('div',{class:'economic-toolbar'},monthTitle,h('div',{class:'economic-nav'},
+   h('button',{type:'button','aria-label':'上一月',onClick:()=>changeMonth(-1)},'‹'),
+   h('button',{type:'button',onClick:()=>changeMonth(0)},'回到今天'),
+   h('button',{type:'button','aria-label':'下一月',onClick:()=>changeMonth(1)},'›'))),
+  grid,detail),null,'economic-panel');
 }
 function overview(d){
  const market=selectedMarket(d);
@@ -877,8 +945,7 @@ function overview(d){
    h('div',{class:'stat-grid compact-indices'},d.market.map(item=>statCard(item,item.id===market.id))),
    h('div',{id:'overview-trend'},d.market.length?trendPanel(d,market):panel('指数走势',null,
     empty('等待大盘行情','取得指数数据后自动更新。')))),
-  overviewIndustryBoard(d),
-  h('div',{class:'overview-research-grid'},trendDigest(),economicCalendar()));
+  overviewIndustryBoard(d),economicCalendar(),trendDigest());
 }
 function trendDigest(){
  const packet=state.demo?null:state.trends;
@@ -1537,8 +1604,10 @@ const feeds=[
    records(p.news)&&p.news.length<=3&&p.news.every(r=>typeof r.id==='string'&&typeof r.title==='string'&&typeof r.evidence==='string'))},
  {file:'economic-calendar',key:'economicCalendar',label:'重要经济指标日程',interval:300000,pages:['overview'],source:'official_economic_calendar',
   valid:p=>records(p.events)&&record(p.indicators)&&record(p.analysis)&&
-   Object.values(p.indicators).every(r=>record(r)&&['name','country','definition','formula','method_url'].every(k=>typeof r[k]==='string'))&&
-   p.events.every(r=>Object.hasOwn(p.indicators,r.indicator)&&quoteTime(r.at)!==null&&typeof r.period==='string'&&typeof r.source_url==='string')&&
+   Object.values(p.indicators).every(r=>record(r)&&['name','country','definition','formula','method_url'].every(k=>typeof r[k]==='string')&&
+    (r.short_name==null||typeof r.short_name==='string'))&&
+   p.events.every(r=>Object.hasOwn(p.indicators,r.indicator)&&quoteTime(r.at)!==null&&typeof r.period==='string'&&
+    typeof r.source_url==='string'&&(r.release_url==null||typeof r.release_url==='string'))&&
    Object.values(p.analysis).every(r=>record(r)&&typeof r.focus==='string'&&typeof r.impact==='string')},
  {file:'market-insights',key:'marketInsights',label:'MiniMax 热门板块影响',interval:30000,pages:['news'],
   source:'minimax_market_insights',valid:validMarketInsights},

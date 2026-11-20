@@ -67,6 +67,51 @@ class MarketInsightsTests(unittest.TestCase):
         self.assertEqual([r["at"] for r in events],["2026-07-02T20:30:00+08:00","2026-12-10T21:30:00+08:00"])
         self.assertEqual(events[1]["period"],"2026 年 11 月")
 
+    def test_calendar_keeps_past_releases_and_prefers_confirmed_dates(self):
+        def release(indicator, period, day, confirmed=False):
+            row = {"indicator":indicator,"period":period,"at":day+"T09:30:00+08:00",
+                   "source_url":"https://www.stats.gov.cn/schedule"}
+            if confirmed:
+                row["release_url"] = "https://www.stats.gov.cn/release"
+            return row
+
+        confirmed = release("cn_cpi","2026 年 10 月","2026-11-09",True)
+        ppi = release("cn_ppi","2026 年 10 月","2026-11-09")
+        updated = release("cn_cpi","2026 年 11 月","2026-12-10")
+        rows = [confirmed, ppi,
+                release("cn_cpi","2026 年 11 月","2026-12-09"),
+                release("cn_cpi","2026 年 10 月","2026-11-12"),
+                release("cn_cpi","2025 年 9 月","2025-10-10"), updated]
+        self.assertEqual(calendar.calendar_entries(NOW,rows),[confirmed,ppi,updated])
+
+    def test_nbs_calendar_handles_merged_month_cells(self):
+        tail = "".join(f"<td>{day}/五</td>" for day in range(22,31))
+        page = calendar.SchedulePage(f"""<table>
+          <tr><td>4</td><td>采购经理指数月度报告</td><td>31/六</td><td rowspan="2">……</td>
+              <td>4/三 注5<br>31/二</td>{tail}</tr>
+          <tr>{"<td>9:30</td>"*11}</tr>
+          <tr><td>11</td><td>社会消费品零售总额月度报告</td><td>19/一</td><td rowspan="2">……</td>
+              <td>16/一</td>{tail}</tr>
+          <tr>{"<td>10:00</td>"*11}</tr></table>""")
+        rows = list(calendar.nbs_events(page,2026,"https://www.stats.gov.cn/sj/fbrc/"))
+        march = [(r["at"],r["period"]) for r in rows if r["at"].startswith("2026-03")]
+        self.assertEqual(march,[("2026-03-04T09:30:00+08:00","2026 年 2 月"),
+                                ("2026-03-31T09:30:00+08:00","2026 年 3 月"),
+                                ("2026-03-16T10:00:00+08:00","2026 年 1–2 月")])
+
+    def test_bea_full_schedule_preserves_published_links(self):
+        page = calendar.SchedulePage("""<table>
+          <tr><th>Year 2026</th><th></th><th>Release</th><th></th></tr>
+          <tr><td>September 30 8:30 AM</td><td>N ews</td><td>GDP (Third Estimate), 2nd Quarter 2026</td>
+              <td><a href="/news/2026/gdp">View</a></td></tr>
+          <tr><td>November 25 8:30 AM</td><td>N ews</td><td>Personal Income and Outlays, October 2026</td><td></td></tr>
+          </table>""")
+        gdp, pce = calendar.us_events(page,2026,calendar.BEA_FULL)
+        self.assertEqual((gdp["at"],gdp["period"],gdp["release_url"]),
+                         ("2026-09-30T20:30:00+08:00","2026 年二季度 · 三次估计","https://www.bea.gov/news/2026/gdp"))
+        self.assertEqual(pce["period"],"2026 年 10 月")
+        self.assertNotIn("release_url",pce)
+
     def test_current_index_close_and_verified_industry_estimate(self):
         catalog = {"market":[{"id":"sh000001","name":"上证指数"}],
                    "sectors":[{"id":"801780.SI","name":"银行","taxonomy":"SW2021"}]}

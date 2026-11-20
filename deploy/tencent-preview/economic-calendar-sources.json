@@ -3,61 +3,265 @@
     "cn_pmi": {
       "country": "中国",
       "name": "制造业 PMI",
-      "definition": "把它想成一张工厂问卷。问订单、生产和用工比上月好不好。高于50表示整体在扩张，低于50表示在收缩。",
-      "formula": "制造业 PMI＝新订单×30%＋生产×25%＋从业人员×20%＋（100－供应商配送时间指数）×15%＋原材料库存×10%。",
+      "short_name": "制造业 PMI",
+      "definition": "制造业采购经理指数由企业月度调查编制，用于衡量订单、生产、用工等活动相较上月的变化方向和广度。50 是临界值，高于 50 表示总体扩张，低于 50 表示总体收缩。",
+      "formula": "分类指数＝回答增加的企业占比＋0.5×回答持平的企业占比（以百分数计）。\n制造业 PMI＝新订单指数×30%＋生产指数×25%＋从业人员指数×20%＋（100－供应商配送时间指数）×15%＋原材料库存指数×10%。",
       "method_url": "https://www.stats.gov.cn/zs/tjws/zytjzbqs/cgzlzs/202501/t20250121_1958396.html"
     },
     "cn_cpi": {
       "country": "中国",
       "name": "居民消费价格指数（CPI）",
-      "definition": "想象把米、菜、衣服和坐车装进一只篮子。买得多的东西权重更大，看整篮子比以前贵了还是便宜了。",
-      "formula": "CPI 同比涨幅＝（本月 CPI ÷ 去年同月 CPI－1）×100%。",
+      "short_name": "CPI",
+      "definition": "衡量城乡居民购买的代表性商品和服务的价格水平变化。各消费类别按其在居民支出中的比重加权，可用于观察消费端通胀。",
+      "formula": "CPI 同比涨幅＝（本月 CPI ÷ 上年同月 CPI－1）×100%。\nCPI 环比涨幅＝（本月 CPI ÷ 上月 CPI－1）×100%。",
       "method_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202302/P020230202401909231437.pdf"
     },
     "cn_ppi": {
       "country": "中国",
       "name": "工业生产者出厂价格指数（PPI）",
-      "definition": "看工厂把钢材、机器等卖出去时的价格变了多少，像记下货物出了厂门时的价钱。",
-      "formula": "PPI 同比涨幅＝（本月出厂价格指数 ÷ 去年同月出厂价格指数－1）×100%。",
+      "short_name": "PPI",
+      "definition": "衡量工业企业产品首次出售时的出厂价格变化。指数综合各类工业产品的价格与销售权重，用于观察生产端价格走势。",
+      "formula": "PPI 同比涨幅＝（本月 PPI ÷ 上年同月 PPI－1）×100%。\nPPI 环比涨幅＝（本月 PPI ÷ 上月 PPI－1）×100%。",
       "method_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202302/P020230202401909231437.pdf"
     },
     "cn_retail": {
       "country": "中国",
       "name": "社会消费品零售总额",
-      "definition": "把大家买日用品、家电等商品的钱，加上去餐馆吃饭的钱，看看这些消费一共有多少。",
-      "formula": "社会消费品零售总额＝商品零售额＋餐饮收入。同比增速＝（本期总额 ÷ 上年同口径同期总额－1）×100%。",
+      "short_name": "社零",
+      "definition": "统计企业和个体经营户向个人及社会集团销售的非生产、非经营用途实物商品金额，以及提供餐饮服务取得的收入。它主要反映商品消费和餐饮市场的经营规模。",
+      "formula": "社会消费品零售总额＝商品零售额＋餐饮收入。\n同比增速＝（本期总额 ÷ 上年同口径同期总额－1）×100%。",
       "method_url": "https://www.stats.gov.cn/zs/tjws/zytjzbqs/shxfp/202409/t20240910_1956343.html"
     },
     "us_gdp": {
       "country": "美国",
       "name": "国内生产总值（GDP）",
-      "definition": "像给一个国家这段时间新做出来的东西和新提供的服务算总账。实际 GDP 会扣除价格变化，让前后更好比较。",
-      "formula": "支出法 GDP＝居民消费＋私人投资＋政府消费与投资＋出口－进口。实际季度增速按年率展示时＝［（本季实际 GDP ÷ 上季实际 GDP）⁴－1］×100%。",
+      "short_name": "GDP",
+      "definition": "衡量一定时期内美国境内生产的最终产品和服务的价值。名义 GDP 按当期价格计量，实际 GDP 剔除价格变动，以便比较产出。随着资料补齐，季度初值会经历后续修订。",
+      "formula": "名义 GDP（支出法）＝个人消费支出＋国内私人总投资＋政府消费与投资＋出口－进口。\n实际 GDP 季度增速（折年率）＝［（本季实际 GDP ÷ 上季实际 GDP）⁴－1］×100%。",
       "method_url": "https://www.bea.gov/news/blog/2025-06-03/expenditures-approach-measuring-gdp"
     },
     "us_pce": {
       "country": "美国",
       "name": "个人消费支出价格指数（PCE）",
-      "definition": "看美国人日常用的东西和服务贵了多少，也会把别人替他们付的钱计入，比如雇主医保付的医药费。",
-      "formula": "PCE 同比涨幅＝（本月 PCE 价格指数 ÷ 去年同月 PCE 价格指数－1）×100%。指数由各类价格用链式费雪公式合成。",
+      "short_name": "PCE",
+      "definition": "衡量美国居民消费的商品和服务价格变化，涵盖居民直接支付和第三方为其支付的支出，例如雇主医保支付的医疗费用。核心 PCE 剔除食品和能源价格。",
+      "formula": "PCE 同比涨幅＝（本月 PCE 价格指数 ÷ 上年同月 PCE 价格指数－1）×100%。\n综合指数按相邻时期的消费支出权重，以链式费雪方法编制。",
       "method_url": "https://www.bea.gov/help/faq/521"
     },
     "us_jobs": {
       "country": "美国",
       "name": "非农就业",
-      "definition": "问公司和单位的工资单上有多少份工作，再看比上月多了还是少了；一个人有两份工作可以算两份。",
-      "formula": "新增非农就业＝本月经季节调整后的非农岗位数－上月经季节调整后的非农岗位数。",
+      "short_name": "非农",
+      "definition": "根据雇主调查估计政府和非农私营部门的工资岗位数，常关注经季节调整后的月度净变化。统计单位是岗位，一人兼任多份工作时可计入多个岗位。结果会随样本补报而修订。",
+      "formula": "非农就业月度净增＝本月经季节调整的非农工资岗位数－上月经季节调整的非农工资岗位数。",
       "method_url": "https://www.bls.gov/bls/empsitquickguide.htm"
     },
     "us_cpi": {
       "country": "美国",
       "name": "消费者价格指数（CPI）",
-      "definition": "记录美国城市居民常买的东西和服务的价格。每样东西按它在日常开销里的份量来算。",
-      "formula": "CPI 同比涨幅＝（本月 CPI ÷ 去年同月 CPI－1）×100%。",
+      "short_name": "CPI",
+      "definition": "衡量美国城市消费者购买的一篮子商品和服务的价格变化，各类别以消费支出为基础加权。核心 CPI 剔除食品和能源，用于观察较持续的价格变化。",
+      "formula": "CPI 同比涨幅（通常用未季调指数）＝（本月 CPI ÷ 上年同月 CPI－1）×100%。\nCPI 环比涨幅（通常用季调指数）＝（本月 CPI ÷ 上月 CPI－1）×100%。",
       "method_url": "https://www.bls.gov/opub/hom/cpi/calculation.htm"
     }
   },
   "events": [
+    {
+      "indicator": "us_jobs",
+      "at": "2026-01-09T21:30:00+08:00",
+      "period": "2025 年 12 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_01092026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-01-13T21:30:00+08:00",
+      "period": "2025 年 12 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_01132026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-02-11T21:30:00+08:00",
+      "period": "2026 年 1 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_02112026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-02-13T21:30:00+08:00",
+      "period": "2026 年 1 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_02132026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-03-06T21:30:00+08:00",
+      "period": "2026 年 2 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_03062026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-03-11T20:30:00+08:00",
+      "period": "2026 年 2 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_03112026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-04-03T20:30:00+08:00",
+      "period": "2026 年 3 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_04032026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-04-10T20:30:00+08:00",
+      "period": "2026 年 3 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_04102026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-05-08T20:30:00+08:00",
+      "period": "2026 年 4 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_05082026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-05-12T20:30:00+08:00",
+      "period": "2026 年 4 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_05122026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-06-05T20:30:00+08:00",
+      "period": "2026 年 5 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_06052026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-06-10T20:30:00+08:00",
+      "period": "2026 年 5 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_06102026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-07-02T20:30:00+08:00",
+      "period": "2026 年 6 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_07022026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-07-14T20:30:00+08:00",
+      "period": "2026 年 6 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_07142026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-08-07T20:30:00+08:00",
+      "period": "2026 年 7 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_08072026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-08-12T20:30:00+08:00",
+      "period": "2026 年 7 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_08122026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-09-04T20:30:00+08:00",
+      "period": "2026 年 8 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_09042026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-09-11T20:30:00+08:00",
+      "period": "2026 年 8 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_09112026.pdf"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-10-02T20:30:00+08:00",
+      "period": "2026 年 9 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_10022026.pdf"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-10-14T20:30:00+08:00",
+      "period": "2026 年 9 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_10142026.pdf"
+    },
+    {
+      "indicator": "us_gdp",
+      "at": "2026-10-29T20:30:00+08:00",
+      "period": "2026 年三季度 · 初值",
+      "source_url": "https://www.bea.gov/news/schedule",
+      "release_url": "https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026/"
+    },
+    {
+      "indicator": "us_pce",
+      "at": "2026-10-29T20:30:00+08:00",
+      "period": "2026 年 9 月",
+      "source_url": "https://www.bea.gov/news/schedule",
+      "release_url": "https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026"
+    },
+    {
+      "indicator": "cn_pmi",
+      "at": "2026-10-31T09:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html",
+      "release_url": "https://www.stats.gov.cn/sj/zxfb/202610/t20261031_1965718.html"
+    },
+    {
+      "indicator": "us_jobs",
+      "at": "2026-11-06T21:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/empsit_11062026.pdf"
+    },
+    {
+      "indicator": "cn_cpi",
+      "at": "2026-11-09T09:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html",
+      "release_url": "https://www.stats.gov.cn/sj/zxfb/202611/t20261109_1965795.html"
+    },
+    {
+      "indicator": "cn_ppi",
+      "at": "2026-11-09T09:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html",
+      "release_url": "https://www.stats.gov.cn/sj/zxfb/202611/t20261109_1965794.html"
+    },
+    {
+      "indicator": "us_cpi",
+      "at": "2026-11-10T21:30:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.bls.gov/schedule/2026/home.htm",
+      "release_url": "https://www.bls.gov/news.release/archives/cpi_11102026.pdf"
+    },
+    {
+      "indicator": "cn_retail",
+      "at": "2026-11-16T10:00:00+08:00",
+      "period": "2026 年 10 月",
+      "source_url": "https://www.stats.gov.cn/xw/tjxw/tzgg/202512/t20251224_1962137.html",
+      "release_url": "https://www.stats.gov.cn/xxgk/sjfb/zxfb2020/202611/t20261116_1965839.html"
+    },
     {
       "indicator": "us_gdp",
       "at": "2026-11-25T21:30:00+08:00",
