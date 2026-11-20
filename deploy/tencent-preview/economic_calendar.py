@@ -1,5 +1,6 @@
 """Sync official Chinese and US release dates and publish short indicator explainers."""
 
+from collections import deque
 from datetime import datetime, timedelta
 from hashlib import sha256
 from html.parser import HTMLParser
@@ -267,18 +268,25 @@ def update_release_analysis(output, external_news, key, now, path):
         signature = sha256((RELEASE_PROMPT+json.dumps(material,sort_keys=True,ensure_ascii=False)).encode()).hexdigest()
         if row.get("release_analysis",{}).get("version")!=signature:
             pending.append((row,material,signature))
-    for offset in range(0,min(len(pending),54),18):
-        if time.monotonic()-started>175:
+    batch_size = 12
+    queue = deque(pending[offset:offset+batch_size] for offset in range(0,min(len(pending),54),batch_size))
+    for _ in range(7):
+        if not queue or time.monotonic()-started>175:
             break
-        batch = pending[offset:offset+18]
+        batch = queue.popleft()
         inputs = {f"R{index}":material for index,(_,material,_) in enumerate(batch,1)}
         try:
             result = ask("经济指标发布数据与相关资讯",
                          [{"id":ident,**material} for ident,material in inputs.items()],key,RELEASE_PROMPT,
                          lambda value:validate_release_analysis(value,inputs))
         except ModelFailure as error:
-            print(json.dumps({"economic_release_analysis":error.code,"pending":len(pending)-offset}),flush=True)
-            break
+            print(json.dumps({"economic_release_analysis":error.code,"batch":len(batch)}),flush=True)
+            if not error.code.startswith("invalid_analysis") and error.code!="incomplete_response":
+                break
+            if len(batch)>1:
+                middle = len(batch)//2
+                queue.extendleft((batch[middle:],batch[:middle]))
+            continue
         generated_at = shanghai_now().isoformat()
         for ident,(row,_,signature) in zip(inputs,batch):
             row["release_analysis"] = {**result["items"][ident],"version":signature,"generated_at":generated_at}

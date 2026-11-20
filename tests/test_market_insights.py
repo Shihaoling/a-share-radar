@@ -149,6 +149,25 @@ class MarketInsightsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             calendar.validate_release_analysis(value,inputs)
 
+    def test_invalid_model_batch_is_split_and_valid_results_are_kept(self):
+        events = [{"indicator":"cn_cpi","at":DAY+"T09:30:00+08:00","period":f"第{i}期",
+                   "release_data":{"metrics":[{"label":"同比","value":i,"unit":"%"}]}} for i in (1,2)]
+        output = {"events":events,"indicators":{"cn_cpi":{"country":"中国","name":"CPI"}}}
+        sizes = []
+
+        def ask(title, batch, key, prompt, validator):
+            sizes.append(len(batch))
+            if len(batch)>1:
+                raise calendar.ModelFailure("invalid_analysis_invalid_json")
+            return validator({"items":{batch[0]["id"]:{"summary":"本期消费价格小幅上升。",
+                                                       "impact":"可继续观察分项变化。","refs":[]}}})
+
+        with patch.object(calendar,"ask",side_effect=ask),patch.object(calendar,"news_for_release",return_value=[]), \
+             patch.object(calendar,"publish"),patch("builtins.print"):
+            calendar.update_release_analysis(output,[],"unused",NOW,Path("unused.json"))
+        self.assertEqual(sizes,[2,1,1])
+        self.assertTrue(all(row.get("release_analysis",{}).get("summary") for row in events))
+
     def test_current_index_close_and_verified_industry_estimate(self):
         catalog = {"market":[{"id":"sh000001","name":"上证指数"}],
                    "sectors":[{"id":"801780.SI","name":"银行","taxonomy":"SW2021"}]}
