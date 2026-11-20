@@ -25,7 +25,9 @@ class Observer {
   observe(host){this.host=host;}
   disconnect(){this.disconnected=true;}
 }
-const scope=vm.createContext({document:doc,window:{},ResizeObserver:Observer,
+let chartNow=Date.parse('2026-11-20T16:00:00+08:00');
+class ChartDate extends Date { static now(){return chartNow;} }
+const scope=vm.createContext({document:doc,window:{},ResizeObserver:Observer,Date:ChartDate,
   fetch:()=>{throw Error('A chart must not contact another data source');}});
 vm.runInContext(fs.readFileSync('web/asset/chart.js','utf8'),scope);
 const {mount}=scope.window.AssetChart;
@@ -62,7 +64,7 @@ assert.equal(nodes(main,'ac-range-mark').length,1);
 assert.equal(nodes(main,'ac-open-mark').length,1);
 let lines=nodes(main,'ac-line').filter(n=>classes(n).includes('ac-price'));
 assert.equal(lines.length,1);assert.equal((lines[0].attrs.d.match(/M/g)||[]).length,2);
-assert.equal(nodes(main,'ac-dot').length,2);
+assert.equal(nodes(main,'ac-dot').length,0);
 assert.match(main.attrs['aria-valuetext'],/13:02:00，106 元/);
 assert.equal(main.fire('keydown',{key:'Home'}).defaultPrevented,true);
 assert.match(main.attrs['aria-valuetext'],/09:30:00，101 元.*相对沪深300 -1 个百分点/);
@@ -126,9 +128,9 @@ assert.equal(modes[0].attrs['aria-pressed'],'true');
 assert.equal(hotPlot.attrs['aria-valuemax'],'7');
 assert.match(hotPlot.attrs['aria-valuetext'],/13:01:00，0.25%/);
 assert.match(words(hotPlot),/09:30.*午休.*15:00/);
-assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,3);
-assert.equal(nodes(hotPlot,'ac-dot').length,1);
-assert.equal((one(hotPlot,'ac-gap-line').attrs.d.match(/M/g)||[]).length,2);
+assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,2);
+assert.equal(nodes(hotPlot,'ac-dot').length,0);
+assert.equal(nodes(hotPlot,'ac-gap-line').length,0);
 assert.match(words(one(heatHost,'ac-legend')),/成分股等权涨跌幅.*零线/);
 modes[1].fire('click');
 assert.match(hotPlot.attrs['aria-valuetext'],/10:00:00，0%/);
@@ -168,17 +170,39 @@ mount(weightedHost,{intraday:{day:'2026-11-19',measure:'weighted_change_pct',poi
   {key:'sector/801230.SI'});
 assert.match(words(weightedHost),/权重股估算涨跌幅/);
 assert.match(one(weightedHost,'ac-main-plot').attrs['aria-valuetext'],/0.2%/);
-assert.equal(nodes(main,'ac-gap-line').length,1);
+assert.equal(nodes(main,'ac-gap-line').length,0);
 const boundaryHost=new Element('div'), mark=t=>'2026-11-19T'+t+'+08:00';
 const edgePoints=[['09:30:59',100],['09:32:01',102],['11:30:03',105],['11:31:00',900],['12:15:00',900],
   ['13:00:02',106],['13:01:59',107],['15:00:03',108],['15:01:00',900]].map(([t,p])=>[mark(t),p]);
 edgePoints.push(['2026-11-18T10:35:00+08:00',900]);
 mount(boundaryHost,{intraday:{day:'2026-11-19',measure:'price',points:edgePoints}}, {key:'index/000001.SH'});
-const boundaryPlot=one(boundaryHost,'ac-main-plot'), gapPath=one(boundaryPlot,'ac-gap-line');
+const boundaryPlot=one(boundaryHost,'ac-main-plot');
 assert.equal(boundaryPlot.attrs['aria-valuemax'],'6');
-assert.equal((gapPath.attrs.d.match(/M/g)||[]).length,3); // Two morning gaps, one afternoon gap.
-assert.match(words(boundaryHost),/虚线连接缺口两端的实采点/);
+assert.equal(nodes(boundaryPlot,'ac-gap-line').length,0);
+assert.equal((one(boundaryPlot,'ac-line').attrs.d.match(/M/g)||[]).length,2); // Solid within sessions, split at lunch.
+assert.match(words(boundaryHost),/实线跨越缺采分钟/);
 assert.match(boundaryPlot.attrs['aria-valuetext'],/15:00:03，108 点/);
+const hoverAt=(offset)=>boundaryPlot.fire('pointermove',{pointerType:'mouse',clientX:8+offset/252*(360-52-8)});
+hoverAt(1.5);
+assert.equal(one(boundaryHost,'ac-missing').textContent,'未采集到数据');
+assert.equal(boundaryPlot.attrs['aria-valuetext'],'09:31，未采集到数据');
+assert.equal(one(boundaryPlot,'ac-focus').attrs.visibility,'hidden');
+boundaryPlot.fire('pointerleave');
+assert.equal(nodes(boundaryHost,'ac-missing').length,0);
+assert.match(boundaryPlot.attrs['aria-valuetext'],/15:00:03，108 点/);
+hoverAt(2.5);
+assert.match(boundaryPlot.attrs['aria-valuetext'],/09:32:01，102 点/);
+assert.equal(one(boundaryPlot,'ac-focus').attrs.visibility,'visible');
+hoverAt(126);
+assert.equal(nodes(boundaryHost,'ac-missing').length,0); // Lunch stays blank.
+chartNow=Date.parse('2026-11-19T13:02:22+08:00');
+hoverAt(135.5);
+assert.equal(nodes(boundaryHost,'ac-missing').length,0); // Future minute.
+hoverAt(134.5);
+assert.equal(nodes(boundaryHost,'ac-missing').length,0); // Incomplete current minute.
+chartNow=Date.parse('2026-11-20T16:00:00+08:00');
+hoverAt(250.5);
+assert.equal(boundaryPlot.attrs['aria-valuetext'],'14:58，未采集到数据');
 boundaryPlot.fire('keydown',{key:'Home'});
 assert.match(boundaryPlot.attrs['aria-valuetext'],/09:30:59/);
 for(const actual of ['09:32:01','11:30:03','13:00:02','13:01:59','15:00:03']){

@@ -9,6 +9,7 @@
 .ac-readout{gap:6px 14px;flex-wrap:wrap;margin:13px 0 3px;font-variant-numeric:tabular-nums}
 .ac-time,.ac-context,.ac-legend,.ac-note{font-size:12px;line-height:1.5;color:#536779}
 .ac-current{font-size:23px;line-height:1.3;font-weight:650;letter-spacing:-.025em}
+.ac-current.ac-missing{color:#b42318}
 .ac-arrows{gap:3px;margin-left:auto}
 .ac-arrow{display:grid;place-items:center;background:#fff;border:1px solid #dce4eb;border-radius:5px;font-size:19px;line-height:1;width:29px;height:29px}
 .ac-arrow:disabled{opacity:.37;cursor:default}

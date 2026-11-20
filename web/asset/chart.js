@@ -40,6 +40,15 @@ window.AssetChart = (() => {
   function sessionX(minute, s) {
     return minute <= s.midday ? minute-s.start : s.midday-s.start+s.gap+minute-s.resume;
   }
+  function minuteAt(x, session) {
+    const offset=Math.floor(x);
+    const morningEnd=session.midday-session.start;
+    const afternoonStart=morningEnd+session.gap;
+    if (offset>=0 && offset<morningEnd) return session.start+offset;
+    if (offset>=afternoonStart && offset<sessionX(session.close,session)) return session.resume+offset-afternoonStart;
+    return null;
+  }
+  const clock=minute=>String(Math.floor(minute/60)).padStart(2,'0')+':'+String(Math.floor(minute%60)).padStart(2,'0');
   function read(chart, key) {
     const daily = chart?.daily || {}, intraday = chart?.intraday || {};
     const byDay = new Map();
@@ -86,7 +95,7 @@ window.AssetChart = (() => {
       rows.forEach((r,i)=>{
         const prior=rows[i-1];
         r.bridge=Boolean(prior && !heat && r.phase===prior.phase && r.bucket>prior.bucket+1);
-        r.gap=Boolean(prior && (r.phase!==prior.phase || (heat?r.minute-prior.minute>maxGap:r.bridge)));
+        r.gap=Boolean(prior && (r.phase!==prior.phase || (heat && r.minute-prior.minute>maxGap)));
       });
       return rows;
     }
@@ -173,10 +182,19 @@ window.AssetChart = (() => {
           const box=area.getBoundingClientRect();
           if (!box.width) return;
           const pixel=(event.clientX-box.left)/box.width*this.axes.width;
-          this.select(nearest(this.points,this.axes.inverse(pixel)));
+          const x=this.axes.inverse(pixel), data=this.currentChart();
+          const minute=this.mode!=='daily' && !data.heat ? minuteAt(x,data.session) : null;
+          if (minute!==null) {
+            const sampled=this.points.findIndex(point=>point.bucket===minute);
+            if (sampled>=0) {this.select(sampled);return;}
+            const now=new Date(Date.now()+8*3600000).toISOString().slice(0,16);
+            if (data.intraday.day+'T'+clock(minute)<now) {this.display({minute,x});return;}
+          }
+          this.select(nearest(this.points,x));
         };
         area.addEventListener('pointerdown',probe);
         area.addEventListener('pointermove',e=>{if(e.pointerType!=='touch'||e.buttons)probe(e);});
+        area.addEventListener('pointerleave',()=>this.display());
       }
       this.main.addEventListener('keydown',e=>{
         if (!this.points.length) return;
@@ -243,7 +261,9 @@ window.AssetChart = (() => {
       const dailyPrice=data.daily.basis==='reference_linked'?'收益链收盘':'收盘';
       const name=daily?dailyPrice:mode==='members'?(data.intraday.partial?'部分成分平均涨跌幅':'成分股等权涨跌幅'):data.heat?'热榜涨跌幅':data.weighted?'权重股估算涨跌幅':'分时价格';
       this.legend.append(el('span','ac-key ac-price-key',name));
-      if(this.points.some(r=>r.bridge))this.legend.append(el('span','ac-key ac-gap-key','虚线连接缺口两端的实采点'));
+      if(this.points.some(r=>r.bridge))this.legend.append(daily
+        ?el('span','ac-key ac-gap-key','虚线连接缺口两端的实采点')
+        :el('span','','实线跨越缺采分钟，悬停查看状态'));
       if(daily && this.rows.some(r=>positive(r.ma20)))this.legend.append(el('span','ac-key ac-average-key','MA20'));
       let baseline=null;
       if(!daily && (data.percent || positive(data.intraday.previous_close))) {
@@ -319,12 +339,11 @@ window.AssetChart = (() => {
           svg('text',{x:width-2,y:py+3,'text-anchor':'end',class:'ac-axis'},axisNumber.format(p)+(unit==='%'?'%':'')));
       }
       if(finite(base))graph.append(svg('line',{x1:l,x2:r,y1:y(base),y2:y(base),class:'ac-baseline'}));
-      const clock=minute=>String(Math.floor(minute/60)).padStart(2,'0')+':'+String(Math.floor(minute%60)).padStart(2,'0');
       const axis = daily ? [...new Set([0,Math.floor((this.rows.length-1)/2),this.rows.length-1])].map(i=>[x(i),this.rows[i].day.slice(5)]) :
         natural?[[l,clock(minX)],[x(720),'12:00'],[r,clock(maxX)]]:
         [[l,'09:30'],[x(data.session.midday-data.session.start+data.session.gap/2),'午休'],[r,data.session.close===960?'16:00':'15:00']];
       axis.forEach(([px,text],i)=>graph.append(svg('text',{x:px,y:height-4,'text-anchor':i===0?'start':i===axis.length-1?'end':'middle',class:'ac-axis'},text)));
-      addSeries(graph,rows,field,x,y,small?'ac-factor':'ac-price',!small);
+      addSeries(graph,rows,field,x,y,small?'ac-factor':'ac-price',daily&&!small);
       extra.forEach(k=>addSeries(graph,rows,k,x,y,'ac-average'));
       if(drop)for(const row of drop)graph.append(svg('circle',{cx:x(row.x),cy:y(row.close),r:3,class:'ac-peak'}));
       const guide=svg('line',{y1:top,y2:bottom,class:'ac-guide'});
@@ -333,11 +352,12 @@ window.AssetChart = (() => {
       if(!small)this.axes={width,inverse:pixel=>minX+(pixel-l)/(r-l)*(maxX-minX)};
       return {guide,dot,x,y,field,relative:small&&!daily};
     }
-    display() {
-      const data=this.currentChart(), row=this.points[this.index], daily=this.mode==='daily';
+    display(missing=null) {
+      const data=this.currentChart(), row=missing?null:this.points[this.index], daily=this.mode==='daily';
       const unit=!daily&&data.percent?'%':this.key.startsWith('stock/')?(this.key.endsWith('.HK')?' 港元':' 元'):' 点';
-      this.time.textContent=row?(daily?row.day:row.time):'';
-      this.primary.textContent=row?label(row[this.field],unit):'—';
+      this.time.textContent=missing?clock(missing.minute):row?(daily?row.day:row.time):'';
+      this.primary.className=missing?'ac-current ac-missing':'ac-current';
+      this.primary.textContent=missing?'未采集到数据':row?label(row[this.field],unit):'—';
       const context=[];
       if(row && daily) {
         if(positive(row.ma20))context.push('MA20 '+label(row.ma20));
@@ -355,9 +375,9 @@ window.AssetChart = (() => {
       }
       this.studyValue.textContent=daily&&row?label(row[this.study],studies[this.study][1]):paired?
         label(paired.value,' 个百分点')+(paired.time!==row.time?' · '+paired.time:''):'—';
-      for(const g of [this.mainGuides,this.subGuides])if(g&&row) {
+      for(const g of [this.mainGuides,this.subGuides])if(g&&(row||missing)) {
         const actual=g.relative?paired:row;
-        const px=g.x(row.x);g.guide.setAttribute('x1',px);g.guide.setAttribute('x2',px);
+        const px=g.x(missing?.x??row.x);g.guide.setAttribute('x1',px);g.guide.setAttribute('x2',px);
         const v=actual?.[g.field];
         g.dot.setAttribute('visibility',finite(v)?'visible':'hidden');
         if(finite(v)){g.dot.setAttribute('cx',g.x(actual.x));g.dot.setAttribute('cy',g.y(v));}
@@ -366,7 +386,7 @@ window.AssetChart = (() => {
       this.main.setAttribute('aria-disabled',String(!total));
       this.main.setAttribute('aria-valuemin',total?'1':'0');
       this.main.setAttribute('aria-valuemax',String(total));
-      this.main.setAttribute('aria-valuenow',String(row?this.index+1:0));
+      this.main.setAttribute('aria-valuenow',String(total?this.index+1:0));
       const study=daily&&row?studies[this.study][0]+' '+this.studyValue.textContent:paired?'相对沪深300 '+this.studyValue.textContent:'';
       this.main.setAttribute('aria-valuetext',[this.time.textContent,this.primary.textContent,this.context.textContent,study].filter(Boolean).join('，'));
       this.previous.disabled=this.index<=0;this.next.disabled=this.index<0||this.index>=total-1;
