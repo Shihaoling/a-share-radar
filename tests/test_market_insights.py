@@ -139,6 +139,30 @@ class MarketInsightsTests(unittest.TestCase):
                          [("CPI 环比（季调）",0.4),("核心 CPI 环比（季调）",0.4)])
         self.assertIn("vintage_date=2026-11-10",data["source_url"])
 
+    def test_levels_use_quarter_release_vintage_and_original_units(self):
+        row = {"indicator":"us_gdp","period":"2026 年三季度 · 初值","at":"2026-10-29T20:30:00+08:00"}
+
+        def download(url):
+            self.assertIn("vintage_date=2026-10-29&cosd=2026-07-01&coed=2026-07-01",url)
+            if "id=GDP&" in url:
+                return "observation_date,GDP_20261029\n2026-07-01,33010.036\n"
+            return "observation_date,GDPC1_20261125\n2026-07-01,24611.077\n"
+
+        with patch.object(releases,"download",side_effect=download):
+            levels = releases.us_release_levels(row)
+        self.assertEqual([(m["label"],m["value"],m["unit"]) for m in levels],
+                         [("名义 GDP",33010.036,"十亿美元")])
+
+    def test_price_reference_levels_chain_months_and_do_not_fill_a_gap(self):
+        rows = [{"indicator":"cn_ppi","period":period,"release_data":{
+            "metrics":[{"label":"环比","value":change,"unit":"%"}],"source_url":"https://www.stats.gov.cn/"}}
+                for period,change in (("2025 年 11 月",0.2),("2025 年 12 月",1),("2026 年 1 月",-1),("2026 年 3 月",2))]
+        releases.collect_release_levels(rows)
+        self.assertEqual(rows[0]["release_levels"][0]["value"],100)
+        self.assertAlmostEqual(rows[2]["release_levels"][0]["value"],99.99)
+        self.assertIn("估算",rows[2]["release_levels"][0]["basis"])
+        self.assertNotIn("release_levels",rows[3])
+
     def test_release_analysis_can_use_only_the_news_for_its_own_record(self):
         source = {"id":"N1","url":"https://example.org/release","title":"消息"}
         inputs = {"R1":{"news":[source]},"R2":{"news":[]}}

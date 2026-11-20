@@ -849,15 +849,23 @@ function economicDate(month, offset=0, day=1){
  return new Date(Date.UTC(year,number-1+offset,day));
 }
 
+function economicMetrics(metrics,levels=false){
+ return h('dl',{class:`economic-metrics${levels?' economic-level-metrics':''}`},metrics.map(metric=>h('div',{},
+  h('dt',{},metric.label),
+  h('dd',{},metric.value.toLocaleString('zh-CN',{maximumFractionDigits:3}),h('span',{},metric.unit),
+   metric.basis?h('small',{},metric.basis):null,
+   metric.source_url?link('数值来源 ↗',metric.source_url,'economic-level-source'):null))));
+}
+
 function economicReleaseReading(row){
  const data=row.release_data,reading=row.release_analysis;
  if(!data)return h('p',{class:'economic-release-note'},'官方数值待核验。');
+ const levels=row.release_levels||[],labels=new Set(levels.map(metric=>metric.label));
+ const changes=data.metrics.filter(metric=>!labels.has(metric.label));
  return h('section',{class:'economic-release'},
   h('h5',{},'本次公布'),
-  h('dl',{class:'economic-metrics'},data.metrics.map(metric=>h('div',{},
-   h('dt',{},metric.label),
-   h('dd',{},metric.value.toLocaleString('zh-CN',{maximumFractionDigits:2}),
-    h('span',{},metric.unit))))),
+  levels.length?economicMetrics(levels,true):h('p',{class:'economic-release-note'},'当期水平值待核验。'),
+  changes.length?economicMetrics(changes):null,
   h('div',{class:'economic-release-source'},link((data.source_label||'官方发布数据')+' ↗',data.source_url,'text-button'),
    data.note?h('span',{},data.note):null),
   reading?h('div',{class:'economic-release-analysis'},
@@ -928,7 +936,6 @@ function economicCalendar(today=chinaDay(new Date())){
        economicView.selected=key(row);
        for(const item of buttons)item.setAttribute('aria-pressed',String(item===trigger));
        detail.replaceChildren(economicDetail(packet,row));
-       detail.scrollIntoView({block:'nearest'});
       }},
       h('span',{class:'economic-country','aria-hidden':'true'},info.country.slice(0,1)),
       h('strong',{},info.short_name||info.name),h('time',{datetime:row.at},time));
@@ -1635,6 +1642,8 @@ const feeds=[
     (r.release_data==null||record(r.release_data)&&typeof r.release_data.source_url==='string'&&
      records(r.release_data.metrics)&&r.release_data.metrics.length>0&&r.release_data.metrics.every(m=>
       typeof m.label==='string'&&Number.isFinite(m.value)&&typeof m.unit==='string'))&&
+    (r.release_levels==null||records(r.release_levels)&&r.release_levels.every(m=>
+     ['label','unit','basis','source_url'].every(k=>typeof m[k]==='string')&&Number.isFinite(m.value)))&&
     (r.release_analysis==null||record(r.release_analysis)&&typeof r.release_analysis.summary==='string'&&
      typeof r.release_analysis.impact==='string'&&records(r.release_analysis.references)&&r.release_analysis.references.every(n=>
       ['url','title','source','published_at','evidence'].every(k=>typeof n[k]==='string'))))&&

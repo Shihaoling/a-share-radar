@@ -289,6 +289,11 @@
 .economic-metrics dt{margin:0;color:#435e79;font-size:11px}
 .economic-metrics dd{color:#23496c;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
 .economic-metrics dd span{margin-left:3px;color:#536c86;font-size:11px;font-weight:500}
+.economic-release .economic-level-metrics{grid-template-columns:repeat(auto-fit,minmax(min(165px,100%),1fr))}
+.economic-level-metrics>div{background:#e9f2fc;border:1px solid #dce9f8}
+.economic-level-metrics dd{font-size:24px}
+.economic-level-metrics dd small,.economic-level-source{display:block;color:#506982;font-size:11px;font-weight:500}
+.economic-level-source{display:inline-block;color:#285d93}
 .economic-release-source{display:flex;align-items:center;gap:4px 12px;flex-wrap:wrap;color:#52697f;font-size:11px}
 .economic-release-analysis{margin-top:9px;padding-top:9px;border-top:1px solid #dfe8f3}
 .economic-release-analysis>p+p{margin-top:5px}

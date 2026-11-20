@@ -3,7 +3,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from csv import DictReader
-from datetime import timedelta
+from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from html.parser import HTMLParser
 from io import StringIO
@@ -12,6 +12,7 @@ import re
 import sqlite3
 from urllib.parse import urlencode, urljoin, urlsplit
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 from market_insights import ARTICLE_ID
 from pipeline.news_trust import apply_source_whitelist
@@ -25,6 +26,26 @@ MONTHS = ["January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"]
 NUMBER = r"[−+-]?\d[\d,]*(?:\.\d+)?"
 CN_CHANGE = rf"(?:由[^。；，,]{{1,28}}?转为)?(?:(上涨|上升|增长|提高|回升|下降|下跌|回落|降低)\s*({NUMBER})\s*[%％]|持平)"
+PRICE_REFERENCE_MONTH = date(2025, 11, 1)
+PRICE_REFERENCE_BASIS = "2025 年 11 月＝100 · 按官方环比连乘估算"
+EASTERN = ZoneInfo("America/New_York")
+US_LEVEL_SERIES = {
+    "us_cpi": (
+        ("CPIAUCNS", "CPI-U 指数", "点", "1982–1984 年＝100 · 未季调", 1),
+        ("CPILFENS", "核心 CPI-U 指数", "点", "1982–1984 年＝100 · 未季调", 1),
+    ),
+    "us_gdp": (
+        ("GDP", "名义 GDP", "十亿美元", "当期价格 · 季调折年规模", 1),
+        ("GDPC1", "实际 GDP", "十亿美元", "2017 年链式美元 · 季调折年规模", 1),
+    ),
+    "us_pce": (
+        ("PCEPI", "PCE 价格指数", "点", "2017 年＝100 · 季调", 1),
+        ("PCEPILFE", "核心 PCE 价格指数", "点", "2017 年＝100 · 季调", 1),
+    ),
+    "us_jobs": (
+        ("PAYEMS", "非农就业岗位总数", "人", "机构调查 · 季调", 1000),
+    ),
+}
 NEWS_TERMS = {
     "cn_pmi": (r"采购经理|制造业PMI|中国制造业|出口订单", r"出口管制|供应链|关税|外贸|工业增加值"),
     "cn_cpi": (r"居民消费价格|中国.{0,8}CPI|核心CPI|食品价格|猪肉价格", r"消费需求|国内油价|成品油|通胀"),
@@ -222,33 +243,53 @@ def release_id(row):
     return f'{row["indicator"]}:{row["at"]}'
 
 
+def observation_date(period):
+    quarter = re.fullmatch(r"(\d{4}) 年\s*([一二三四])季度(?: · .+)?", period)
+    if quarter:
+        return date(int(quarter[1]), 1+3*"一二三四".index(quarter[2]), 1)
+    month = re.fullmatch(r"(\d{4}) 年 (?:\d{1,2}–)?(\d{1,2}) 月", period)
+    return date(int(month[1]), int(month[2]), 1) if month else None
+
+
+def alfred_values(ident, released, start, end):
+    vintage = released.astimezone(EASTERN).date()
+    url = ALFRED+"?"+urlencode({"id":ident,"vintage_date":vintage,"cosd":start,"coed":end})
+    reader = DictReader(StringIO(download(url)))
+    column = f"{ident}_{vintage:%Y%m%d}"
+    if column not in (reader.fieldnames or []) or "observation_date" not in reader.fieldnames:
+        return {}, url
+    values = {}
+    for row in reader:
+        try:
+            number = Decimal(row.get(column) or ".")
+        except InvalidOperation:
+            continue
+        if number.is_finite():
+            values[row["observation_date"]] = number
+    return values, url
+
+
 def alfred_result(code, period, released):
-    match = re.fullmatch(r"(\d{4}) 年 (\d{1,2}) 月", period)
-    if not match:
+    current = observation_date(period)
+    if current is None:
         return None
-    year, month = map(int,match.groups())
-    current = released.date().replace(year=year,month=month,day=1)
     previous = (current-timedelta(days=1)).replace(day=1)
-    last_year = current.replace(year=year-1)
-    vintage = released.strftime("%Y%m%d")
+    last_year = current.replace(year=current.year-1)
     series = ("PAYEMS","UNRATE") if code=="us_jobs" else ("CPIAUCSL","CPIAUCNS","CPILFESL")
     points, sources = [], []
     for ident in series:
-        url = ALFRED+"?"+urlencode({"id":ident,"vintage_date":released.date(),"cosd":last_year,"coed":current})
         try:
-            reader = DictReader(StringIO(download(url)))
-            column = f"{ident}_{vintage}"
-            if column not in (reader.fieldnames or []):
-                continue
-            values = {row["observation_date"]:row.get(column) for row in reader}
-            level = Decimal(values.get(current.isoformat()) or ".")
-            if not level.is_finite():
+            values, url = alfred_values(ident,released,last_year,current)
+            level = values.get(current.isoformat())
+            if level is None:
                 continue
             if ident=="UNRATE":
                 points.append(point("失业率",str(level)))
             else:
                 baseline = last_year if ident=="CPIAUCNS" else previous
-                earlier = Decimal(values.get(baseline.isoformat()) or ".")
+                earlier = values.get(baseline.isoformat())
+                if earlier is None:
+                    continue
                 if ident=="PAYEMS":
                     points.append(point("非农就业净增",str((level-earlier)*1000),"人"))
                 elif earlier>0:
@@ -262,6 +303,70 @@ def alfred_result(code, period, released):
         return None
     return {"metrics":points,"source_url":sources[0],"source_label":"圣路易斯联储 ALFRED · 发布日版本",
             "note":"按发布日版本计算。缺少上年或上月可比值的口径不展示。","source_links":sources}
+
+
+def us_release_levels(row):
+    day = observation_date(row["period"])
+    levels = {point["label"]:point for point in row.get("release_levels", [])}
+    if day is None:
+        return list(levels.values())
+    fields = US_LEVEL_SERIES[row["indicator"]]
+    for ident, label, unit, basis, multiplier in fields:
+        if label in levels:
+            continue
+        try:
+            values, url = alfred_values(ident,timestamp(row["at"]),day,day)
+            value = values.get(day.isoformat())
+            if value is None or value<=0:
+                continue
+            if "–" in row["period"]:
+                basis = f"{day.month} 月 · {basis}"
+            levels[label] = {**point(label,str(value*multiplier),unit),"basis":basis,"source_url":url}
+        except (OSError,ValueError,InvalidOperation):
+            continue
+    return [levels[label] for _,label,_,_,_ in fields if label in levels]
+
+
+def collect_release_levels(events):
+    prices = {"cn_cpi":{},"cn_ppi":{}}
+    us_rows = []
+    for row in events:
+        data = row.get("release_data")
+        if not data:
+            continue
+        code = row["indicator"]
+        if code in US_LEVEL_SERIES:
+            if len(row.get("release_levels",[])) < len(US_LEVEL_SERIES[code]):
+                us_rows.append(row)
+        elif code in prices:
+            if month := observation_date(row["period"]):
+                prices[code][month] = row
+        else:
+            label, basis = ("制造业 PMI","季节调整") if code=="cn_pmi" else ("零售总额","当期名义金额")
+            value = next((item for item in data["metrics"] if item["label"]==label),None)
+            if value:
+                row["release_levels"] = [{**value,"basis":basis,"source_url":data["source_url"]}]
+    for code, months in prices.items():
+        levels = {PRICE_REFERENCE_MONTH:100.0}
+        for month, row in sorted(months.items()):
+            previous = (month-timedelta(days=1)).replace(day=1)
+            data = row["release_data"]
+            change = next((p["value"] for p in data["metrics"] if p["label"]=="环比"),None)
+            if previous in levels and change is not None:
+                levels[month] = levels[previous]*(1+change/100)
+            elif month not in levels:
+                stored = next((p["value"] for p in row.get("release_levels",[]) if p["basis"]==PRICE_REFERENCE_BASIS),None)
+                if stored is not None:
+                    levels[month] = stored
+            if month in levels:
+                label = ("CPI" if code=="cn_cpi" else "PPI")+" 参考指数"
+                row["release_levels"] = [{"label":label,"value":levels[month],"unit":"点",
+                                          "basis":PRICE_REFERENCE_BASIS,"source_url":data["source_url"]}]
+    if us_rows:
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            for row, levels in zip(us_rows,executor.map(us_release_levels,us_rows)):
+                if levels:
+                    row["release_levels"] = levels
 
 
 def collect_one(row, nbs_urls, fallback):

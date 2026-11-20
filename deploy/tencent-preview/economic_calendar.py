@@ -13,7 +13,7 @@ from urllib.parse import urljoin, urlsplit
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
-from economic_releases import collect_releases, news_for_release, release_id
+from economic_releases import collect_release_levels, collect_releases, news_for_release, release_id
 from market_insights import ask
 from pipeline.calendar import SHANGHAI, shanghai_now
 from pipeline.minimax_news import DEFAULT_MODEL, ModelFailure
@@ -313,10 +313,11 @@ def main():
     events = calendar_entries(now, [*config["events"], *prior.get("events", []), *scheduled])
     for row in events:
         cached = previous.get(release_id(row),{})
-        for field in ("release_data","release_analysis"):
+        for field in ("release_data","release_levels","release_analysis"):
             if field in cached:
                 row[field] = cached[field]
     collect_releases(events,now,config.get("release_observations",{}),backfill=update_schedule)
+    collect_release_levels(events)
     source_hash = sha256((PROMPT+json.dumps(indicators,sort_keys=True,ensure_ascii=False)).encode()).hexdigest()
     output = {"schema_version":1,"source":"official_economic_calendar","model":DEFAULT_MODEL,"updated_at":now.isoformat(),
               "schedule_day":day,"events":events,"indicators":indicators,"analysis":prior.get("analysis",{}),
