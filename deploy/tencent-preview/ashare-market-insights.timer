@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh current market readings and popular-theme analysis
+
+[Timer]
+OnCalendar=*-*-* *:02/5:25 Asia/Shanghai
+AccuracySec=5s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

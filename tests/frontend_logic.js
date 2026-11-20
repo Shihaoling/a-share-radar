@@ -233,6 +233,21 @@ function runFrontendChecks(source) {
     eq(api.sectorQuote(official,closed).value,2);
     eq(api.newsBoardChange(official,day,closed).label,'正式收盘');
   });
+  check('hot themes use supplemental MiniMax judgment and the matching dated quote',()=>{
+    const day='2026-11-20',time=day+'T12:30:00+08:00',now=new Date(time),code='885573.TI';
+    const news={id:'stock-api-news-a1',published_at:time,credibility:'trusted',sector_ids:[]};
+    api.state.sectorHot={trade_date:day,rank_time:time,items:[{code,name:'猪肉',rank:1,change_pct:2.6}]};
+    api.state.marketInsights={trade_date:day,themes:{boards:[{code,name:'猪肉',rank:1}]},
+      theme_coverage:{reviewed:1,eligible:1},article_labels:{[news.id]:{tone:'mixed',
+        impacts:[{sector_code:code,sector_name:'猪肉',direction:'negative',reason:'成本上升',evidence:[]}]}}};
+    try {
+      const summary=api.sectorNewsSummary({sectors:[],news:[news]},day,now);
+      eq(summary.themeCount,1);eq(summary.rows[0].count,1);
+      eq(summary.rows[0].tones.mixed,1);eq(summary.rows[0].impact.negative,1);
+      eq(api.newsBoardChange(summary.rows[0].sector,day,now).value,2.6);
+      eq(api.sectorNewsSummary({sectors:[],news:[news]},'2026-11-21',now).rows.length,0);
+    }finally{api.state.marketInsights=null;api.state.sectorHot=null;}
+  });
   check('today sector chart keeps tone, sector impact and quote date independent',()=>{
     const day='2026-11-19',now=new Date(day+'T19:00:00+08:00'),id='801780.SI';
     const sector={id,name:'银行',taxonomy:'SW2021',level:'L1',daily_quote:{

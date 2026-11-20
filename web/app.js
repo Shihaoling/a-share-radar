@@ -6,7 +6,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const local = { get(k, fallback) { try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch { return fallback; } }, set(k,v) { try { localStorage.setItem(k,JSON.stringify(v)); } catch {} } };
 const state = { page: 'overview', demo: false, data: null, loading: true, group: '全部', search: '', sort: 'change', taxonomy:'sw', pageQuotes:null, selected: null, marketSelected:null, overviewSelected:null, range: 21, metric: 'intraday', newsFilter: '全部', newsSearch:'', newsLimit:12, favorites: local.get('guanlan.favorites',[]), preferences: local.get('guanlan.preferences',{showRumors:false,autoRefresh:true}), toast: null };
 const pages = [['overview','市场总览','grid'],['sectors','板块雷达','layers'],['news','A股关联资讯','globe'],['trend','趋势观察室','activity'],['settings','数据设置','settings']];
-const newsOverview={sector:null,sort:'volume'};
+const newsOverview={sector:null,sort:'volume',scope:'all'};
 const trendView={window:10,group:'sw',filter:'all',query:'',page:0,expanded:null,sorts:{}};
 const trendWindows=[5,10,20];
 const trendStates={'-2':'大幅下降','-1':'抖动下降',0:'波动',1:'波动上升',2:'快速上升'};
@@ -243,7 +243,8 @@ function sentimentClass(s){return s?.label==='positive'?'up':s?.label==='negativ
 function sentimentSummary(entity){const st=entity.sentiment||{};return h('div',{class:'sentiment-inline'},pill(sentimentLabel(st),sentimentClass(st)),h('span',{},`${st.article_count||0} 条关联消息`));}
 function sentimentPanel(entity,d){const st=entity.sentiment||{},evidence=Array.isArray(st.evidence)?st.evidence:[],method=String(st.method||''),methodLabel=/model|minimax|finbert|transformer|neural/i.test(method)?/rule|lexicon|keyword/i.test(method)?'金融文本模型与规则综合':'金融文本模型':/rule|lexicon|keyword/i.test(method)?'规则分析':'分析方式待确认';return panel(`${entity.name||'市场'} · 新闻情绪`,`${st.window_hours?`近 ${st.window_hours} 小时 · `:''}消息语气，不代表股价涨跌概率`,h('div',{class:'sentiment-body'},h('div',{class:'sentiment-overview'},h('div',{},pill(sentimentLabel(st),sentimentClass(st)),h('strong',{class:'sentiment-score'},st.article_count>0&&finite(st.score)?`${Number(st.score)>0?'+':''}${num(st.score,2)}`:'—'),h('span',{class:'panel-subtitle'},'语气分值 · −1 至 +1')),h('div',{class:'sentiment-counts'},h('strong',{},st.article_count||0),h('span',{},'关联消息'),h('strong',{},st.source_count||0),h('span',{},'信息来源'))),h('div',{class:'sentiment-method'},methodLabel,' · ',st.as_of?dateText(st.as_of,false):'尚未形成判断'),st.article_count>0&&finite(st.confidence)?h('p',{class:'inline-note'},st.confidence_kind==='model_softmax_uncalibrated'?`模型分类分数 ${accuracy(st.confidence)}，尚未校准，不代表判断准确率。`:`综合证据分数 ${accuracy(st.confidence)}，未经准确率校准，不代表预测胜率。`):null,evidence.length?h('div',{class:'sentiment-evidence'},evidence.slice(0,5).map(e=>h('article',{},h('div',{class:'news-meta'},e.label?pill(sentimentLabel({...e,article_count:1}),sentimentClass(e)):null,e.source||'来源待确认',e.published_at?dateText(e.published_at,false):'发布时间未确认'),link(e.title||'查看消息原文',e.url),e.relevance_note?h('p',{class:'inline-note'},e.relevance_note):Array.isArray(e.associations)&&e.associations.some(a=>(a.terms||[]).length)?h('p',{class:'inline-note'},'关联线索：',Array.from(new Set(e.associations.flatMap(a=>a.terms||[]))).slice(0,6).join('、')):null))):h('div',{class:'info-strip'},'当前时间窗内尚无足够关联消息。暂无覆盖不等于中性，也不推断上涨或下跌。'),st.note?h('p',{class:'inline-note'},st.note):null));}
 
-function sectorName(id,d=data()){return d.sectors.find(x=>x.id===id)?.name||(state.data?.sectors||[]).find(x=>x.id===id)?.name||id||'整体市场';}
+function sectorName(id,d=data()){return d.sectors.find(x=>x.id===id)?.name||(state.data?.sectors||[]).find(x=>x.id===id)?.name||
+ state.marketInsights?.themes?.boards.find(row=>row.code===id)?.name||id||'整体市场';}
 function selectedSector(d=data()){return d.sectors.find(s=>s.id===state.selected)||d.sectors[0];}
 function changeDemo(){state.demo=!state.demo;state.selected=null;render();}
 function setPreference(name,value){state.preferences[name]=value;local.set('guanlan.preferences',state.preferences);render();}
@@ -829,10 +830,28 @@ function overviewIndustryBoard(d){
     (selected.taxonomy==='THS'?thsSectorPanel(selected):trendPanel(d,selected,state.overviewIndustryView)):panel('行业走势',null,empty('等待行业分时','取得行业数据后显示走势。'))),
     leadersPanel(d,comparison,selected?.id,board?()=>changeDirectoryScope('all'):undefined))));
 }
+function marketCommentary(){
+ if(!relayOnly||state.demo)return null;
+ const day=chinaDay(new Date()),market=todayInsights(day)?.market;
+ if(market?.status!=='ready')return panel('MiniMax 今日市场解读',day,
+  h('p',{class:'inline-note'},market?.status==='closed'?'今日休市，暂无当日指数与行业涨跌。':'等待当日指数和行业行情，解读就绪后自动显示。'));
+ const basis=market.industry_official===market.industry_count?' · 行业正式收盘':
+  market.industry_official>0?` · 行业正式收盘 ${market.industry_official} 个，其余为权重股估算`:' · 行业采用权重股估算';
+ return panel('MiniMax 今日市场解读',`行情截至 ${dateText(market.as_of)} · 指数 ${market.index_count}/${market.index_total} · 行业 ${market.industry_count}/${market.industry_total}`+basis,
+  h('div',{class:'brief-body'},h('div',{class:'brief-topics market-commentary-topics'},
+   [['indices','主要指数'],['industries','行业涨跌']].map(([key,name])=>{
+    const section=market.sections[key];
+    const counts=market.breadth?.[key];
+    return h('article',{},h('h4',{},name),
+     counts?h('div',{class:'market-commentary-counts'},h('span',{class:'up'},`${counts.up} 涨`),
+      h('span',{class:'down'},`${counts.down} 跌`),h('span',{},`${counts.flat} 平`)):null,
+     h('p',{},section.text),briefReferences(section.refs,market));
+   }))));
+}
 function overview(d){
  const market=selectedMarket(d);
  const validNews=d.news.filter(n=>n.credibility!=='rumor');
- return h('div',{class:'market-overview'},heading('市场总览','大盘指数与行业行情'),
+ return h('div',{class:'market-overview'},heading('市场总览','大盘指数与行业行情'),marketCommentary(),
   h('section',{id:'overview-indices',class:'overview-section','aria-labelledby':'overview-indices-title'},
    h('header',{class:'overview-section-head'},h('h3',{id:'overview-indices-title'},'大盘指数')),
    h('div',{class:'stat-grid compact-indices'},d.market.map(item=>statCard(item,item.id===market.id))),
@@ -1014,7 +1033,7 @@ function minuteFallbackNote(d){const e=d.primary_minutes_state?.endpoints?.sw_mi
 function newsSummaryCard(n,compact=false){
  const a=n.llm_analysis;if(a?.status!=='ready'||!a.summary)return null;
  const label=x=>({positive:'利好',negative:'利空',mixed:'影响分化',neutral:'中性',unknown:'待判断'})[x]||'待判断';
- const impacts=Array.isArray(a.sector_impacts)?a.sector_impacts:[],priority=x=>x.direction==='positive'||x.direction==='negative'?0:1;
+ const impacts=[...(Array.isArray(a.sector_impacts)?a.sector_impacts:[]),...(themeNewsLabel(n)?.impacts||[])],priority=x=>x.direction==='positive'||x.direction==='negative'?0:1;
  const highlights=impacts.filter(x=>['positive','negative','mixed'].includes(x.direction)).sort((x,y)=>priority(x)-priority(y)||(Number(y.confidence)||0)-(Number(x.confidence)||0)).slice(0,compact?3:5);
  return h('div',{class:'news-ai-summary'},h('div',{class:'news-ai-label'},h('span',{class:'ai-dot'}),'全文提要',h('span',{},'MiniMax')),
   h('p',{class:'news-ai-lead'},a.summary),highlights.length?h('div',{class:'news-ai-impacts'},highlights.map(x=>pill(`${x.sector_name} · ${label(x.direction)}`,x.direction==='positive'?'up':x.direction==='negative'?'down':''))):null,
@@ -1097,12 +1116,21 @@ function newsItem(n,d,compact=false){
   !compact?h('p',{class:'inline-note'},`首次采集：${dateText(n.first_seen_at||n.fetched_at)} · ${method}`):null);
 }
 
-const newsTones=[['positive','偏正面'],['negative','偏负面'],['neutral','中性'],['uncertain','不确定']];
+const newsTones=[['positive','偏正面'],['negative','偏负面'],['neutral','中性'],['mixed','分化'],['uncertain','不确定']];
+
+function todayInsights(day){
+ const data=state.marketInsights;
+ return !state.demo&&data?.trade_date===day?data:null;
+}
+function themeNewsLabel(article){
+ const labels=todayInsights(chinaDay(article.published_at))?.article_labels;
+ return labels&&Object.hasOwn(labels,article.id)?labels[article.id]:null;
+}
 
 function relatedNewsSectors(article){
  const analysis=article.llm_analysis;
  const impacts=analysis?.status==='ready'&&Array.isArray(analysis.sector_impacts)?analysis.sector_impacts:[];
- return new Set([...(article.sector_ids||[]),...impacts.map(row=>row?.sector_code)]);
+ return new Set([...(article.sector_ids||[]),...impacts.map(row=>row?.sector_code),...(themeNewsLabel(article)?.impacts||[]).map(row=>row.sector_code)]);
 }
 
 function datedNews(article,day,now){
@@ -1112,7 +1140,11 @@ function datedNews(article,day,now){
 
 function sectorNewsSummary(d,day,now){
  const counts=()=>Object.fromEntries(newsTones.map(([key])=>[key,0]));
- const rows=new Map(d.sectors.filter(isCanonicalSector).map(sector=>[sector.id,
+ const packet=todayInsights(day);
+ const themes=(packet?.themes.boards||[]).map(row=>({id:row.code,name:row.name,taxonomy:'THS',
+  ranking:state.sectorHot?.trade_date===day?state.sectorHot.items.find(item=>item.code===row.code):undefined,
+  reference:state.sectorReference?.quotes[row.code]}));
+ const rows=new Map([...d.sectors.filter(isCanonicalSector),...themes].map(sector=>[sector.id,
   {sector,count:0,tones:counts(),impact:counts()}]));
  const dated=d.news.filter(article=>datedNews(article,day,now)&&article.credibility!=='rumor'&&article.llm_analysis?.fact_status!=='rumor');
  let related=0,labeled=0;
@@ -1121,30 +1153,39 @@ function sectorNewsSummary(d,day,now){
   if(!ids.length)continue;
   related++;
   const analysis=article.llm_analysis;
-  const tone=analysis?.status==='ready'?analysis.tone:null;
+  const label=themeNewsLabel(article);
+  const sensed=analysis?.status==='ready'?analysis.tone:label?.tone;
+  const tone=sensed==='unknown'?'uncertain':sensed;
   if(newsTones.some(([key])=>key===tone))labeled++;
   for(const id of ids){
    const row=rows.get(id);
    row.count++;
    if(Object.hasOwn(row.tones,tone))row.tones[tone]++;
   }
-  const effects=analysis?.status==='ready'&&Array.isArray(analysis.sector_impacts)?analysis.sector_impacts:[];
+  const effects=[...(analysis?.status==='ready'&&Array.isArray(analysis.sector_impacts)?analysis.sector_impacts:[]),...(label?.impacts||[])];
   const bySector=new Map();
   for(const effect of effects){
    if(!effect||!rows.has(effect.sector_code))continue;
    if(!bySector.has(effect.sector_code))bySector.set(effect.sector_code,new Set());
    const directions=bySector.get(effect.sector_code);
-   if(Object.hasOwn(rows.get(effect.sector_code).impact,effect.direction))directions.add(effect.direction);
+   const direction=effect.direction==='unknown'?'uncertain':effect.direction;
+   if(Object.hasOwn(rows.get(effect.sector_code).impact,direction))directions.add(direction);
   }
   for(const [id,directions] of bySector){
    const row=rows.get(id);
    if(directions.size)row.impact[directions.size===1?[...directions][0]:'uncertain']++;
   }
  }
- return {rows:[...rows.values()],total:dated.length,related,labeled};
+ return {rows:[...rows.values()],total:dated.length,related,labeled,themeCount:themes.length,themeCoverage:packet?.theme_coverage};
 }
 
 function newsBoardChange(sector,day,now){
+ if(sector.taxonomy==='THS'){
+  const ref=sector.reference;
+  if(ref?.quote_date===day&&finite(ref.change_pct))return {value:ref.change_pct,label:'同花顺收盘'};
+  if(sector.ranking&&finite(sector.ranking.change_pct))return {value:sector.ranking.change_pct,label:'同花顺热榜 · '+snapshotTime(state.sectorHot)};
+  return {value:null,label:'暂无当日行情'};
+ }
  const shown=sectorQuote(sector,now),own=shown.quote;
  const estimate=sector.intraday_estimate;
  if(shown.estimate&&shown.day===day)return {value:shown.value,label:`${estimateLabel(estimate)} · ${dateText(estimate.quote_timestamp,true)}`};
@@ -1166,8 +1207,9 @@ function newsToneBar(row){
 function newsSectorPanel(d,day,now){
  const summary=sectorNewsSummary(d,day,now);
  if(!summary.rows.length)return null;
- const selected=newsOverview.sort;
- const rows=summary.rows.map(row=>({...row,change:newsBoardChange(row.sector,day,now)}));
+ const selected=newsOverview.sort,scope=newsOverview.scope;
+ const rows=summary.rows.filter(row=>scope==='all'||(row.sector.taxonomy==='THS')===(scope==='ths'))
+  .map(row=>({...row,change:newsBoardChange(row.sector,day,now)}));
  rows.sort((a,b)=>{
   if(selected==='gain'||selected==='loss'){
    if(a.change.value===null||b.change.value===null)return Number(b.change.value!==null)-Number(a.change.value!==null);
@@ -1176,14 +1218,18 @@ function newsSectorPanel(d,day,now){
   return b.count-a.count||a.sector.name.localeCompare(b.sector.name,'zh-CN');
  });
  const legends=[...newsTones,['pending','待分析']];
- return panel('板块资讯可视化',`${day} · 申万一级 ${summary.rows.length} 个板块 · ${summary.total} 条已知发布时间的资讯`,
+ const coverage=summary.themeCoverage;
+ return panel('板块资讯可视化',`${day} · 申万一级 ${summary.rows.length-summary.themeCount} · 同花顺热门 ${summary.themeCount} · ${summary.total} 条已知发布时间的资讯`,
   h('div',{},h('div',{class:'news-sector-tools'},h('div',{class:'news-sector-counts'},
     h('span',{},h('strong',{},summary.related),' 条关联板块'),h('span',{},h('strong',{},summary.labeled),' 条已判情绪'),
-    h('span',{},h('strong',{},rows.filter(row=>row.count).length),' 个板块有消息')),
+    h('span',{},h('strong',{},rows.filter(row=>row.count).length),' 个板块有消息'),
+    coverage&&summary.themeCount?h('span',{},`同花顺已判断 ${coverage.reviewed}/${coverage.eligible} 条`):null),
+   summary.themeCount?h('label',{class:'trend-filter'},'范围',h('select',{'aria-label':'板块资讯范围',onChange:e=>{newsOverview.scope=e.target.value;render();}},
+    [['all','全部板块'],['sw','申万一级'],['ths','同花顺热门']].map(([key,label])=>h('option',{value:key,selected:key===scope},label)))):null,
    h('label',{class:'trend-filter'},'排列',h('select',{'aria-label':'板块资讯排列',onChange:e=>{newsOverview.sort=e.target.value;render();}},
     [['volume','按消息量'],['gain','今日涨幅优先'],['loss','今日跌幅优先']].map(([key,label])=>h('option',{value:key,selected:key===selected},label))))),
    h('div',{class:'news-tone-legend'},legends.map(([key,label])=>h('span',{},h('i',{class:`news-tone-${key}`,'aria-hidden':'true'}),label))),
-   h('div',{id:'news-sector-scroll',class:'table-wrap news-sector-scroll',tabindex:0,'aria-label':'申万板块资讯情绪与当日涨跌幅'},h('table',{class:'news-sector-table'},
+   h('div',{id:'news-sector-scroll',class:'table-wrap news-sector-scroll',tabindex:0,'aria-label':'板块资讯情绪与当日涨跌幅'},h('table',{class:'news-sector-table'},
     h('thead',{},h('tr',{},['板块 / 资讯数','关联资讯情绪','MiniMax 板块影响','今日涨跌幅'].map(label=>h('th',{scope:'col'},label)))),
     h('tbody',{},rows.map(row=>{
      const {sector,change,impact}=row;
@@ -1191,8 +1237,8 @@ function newsSectorPanel(d,day,now){
      return h('tr',{},h('th',{scope:'row'},row.count?h('button',{class:'sector-name',type:'button',onClick:()=>{
       newsOverview.sector=sector.id;state.newsLimit=12;state.newsFilter='全部';state.newsSearch='';render();
       document.getElementById('news-sector-filter')?.scrollIntoView({block:'start'});
-     }},sector.name):sector.name,h('small',{class:'panel-subtitle'},`${row.count} 条`)),
-      h('td',{},newsToneBar(row)),h('td',{},effects||'—'),h('td',{},h('strong',{class:`numeric ${sign(change.value)}`},pct(change.value)),
+     }},sector.name):sector.name,h('small',{class:'panel-subtitle'},(sector.taxonomy==='THS'?'同花顺热门 · ':'')+`${row.count} 条`)),
+      h('td',{},newsToneBar(row)),h('td',{},effects||(sector.taxonomy==='THS'?(coverage?.reviewed<coverage?.eligible?'分析更新中':'未发现明确关联'):'—')),h('td',{},h('strong',{class:`numeric ${sign(change.value)}`},pct(change.value)),
        h('small',{class:'panel-subtitle'},change.label)));
     })))),h('p',{class:'news-sector-note'},'情绪概括关联资讯的语气，板块影响按每条消息对该行业的判断计数。同一条资讯可能关联多个板块。')),
   null,'news-sector-panel');
@@ -1457,7 +1503,24 @@ const briefFeed={file:'trend-brief',key:'trendBrief',label:'MiniMax 简报',inte
  }};
 const validThsItem=x=>thsCode.test(x.code)&&typeof x.name==='string'&&['I','N','TH'].includes(x.kind)&&
  (x.keywords==null||Array.isArray(x.keywords)&&x.keywords.every(k=>typeof k==='string'));
+function validMarketInsights(p){
+ if(!dateKey(p.trade_date)||!record(p.themes)||!records(p.themes.boards)||!record(p.theme_coverage)||!record(p.article_labels)||!record(p.market))return false;
+ const codes=new Set(p.themes.boards.map(row=>row.code));
+ const tones=['positive','negative','neutral','mixed','unknown'];
+ if(codes.size!==p.themes.boards.length||codes.size>10||!p.themes.boards.every(row=>thsCode.test(row.code)&&typeof row.name==='string')||
+    !Object.values(p.article_labels).every(row=>record(row)&&tones.includes(row.tone)&&records(row.impacts)&&
+     row.impacts.every(r=>codes.has(r.sector_code)&&tones.includes(r.direction)&&typeof r.sector_name==='string'&&
+      typeof r.reason==='string'&&Array.isArray(r.evidence)&&r.evidence.every(e=>typeof e==='string'))))return false;
+ if(p.market.status==='pending'||p.market.status==='closed')return true;
+ const {market}=p;
+ return market.status==='ready'&&quoteTime(market.as_of)!==null&&record(market.sections)&&record(market.references)&&
+  ['index_count','index_total','industry_count','industry_total','industry_official'].every(key=>Number.isInteger(market[key]))&&
+  ['indices','industries'].every(key=>record(market.sections[key])&&typeof market.sections[key].text==='string'&&
+   Array.isArray(market.sections[key].refs)&&market.sections[key].refs.every(id=>record(market.references[id])));
+}
 const feeds=[
+ {file:'market-insights',key:'marketInsights',label:'MiniMax 市场解读与板块影响',interval:30000,pages:['overview','news'],
+  source:'minimax_market_insights',valid:validMarketInsights},
  {file:'connected-sources',key:'connectedSources',label:'已连接的数据源',interval:60000,pages:['settings','overview','news'],
   valid:p=>records(p.sources)&&p.sources.every(s=>['sxdata','minimax'].includes(s.id)&&(s.last_success_at==null||quoteTime(s.last_success_at)!==null)&&(s.cooling_down==null||typeof s.cooling_down==='boolean'))},
 
@@ -1466,9 +1529,9 @@ const feeds=[
    (p.sw_items==null||records(p.sw_items)&&p.sw_items.every(x=>/^\d{6}\.SI$/.test(x.code)&&x.kind==='L1'&&typeof x.name==='string'))},
  {file:'board-live-summary',key:'boardLiveSummary',label:'板块分时采样',interval:15000,pages:['overview','sectors'],directory:'ths',source:'sxdata_board_summary',
   valid:p=>dateKey(p.trade_date)&&record(p.items)},
- {file:'sector-reference',key:'sectorReference',label:'同花顺收盘行情',interval:60000,maxAge:300000,pages:['overview','sectors'],directory:'ths',source:'sxdata_sector_reference',
+ {file:'sector-reference',key:'sectorReference',label:'同花顺收盘行情',interval:60000,maxAge:300000,pages:['overview','sectors','news'],directory:'ths',source:'sxdata_sector_reference',
   valid:p=>dateKey(p.trade_date)&&record(p.quotes)&&Object.values(p.quotes).every(q=>q==null||record(q))},
- {file:'sector-hot',key:'sectorHot',label:'同花顺热榜',interval:60000,pages:['overview','sectors'],directory:'ths',source:'sxdata_ths_hot',
+ {file:'sector-hot',key:'sectorHot',label:'同花顺热榜',interval:60000,pages:['overview','sectors','news'],directory:'ths',source:'sxdata_ths_hot',
   valid:p=>dateKey(p.trade_date)&&p.trade_date<=chinaDay(new Date())&&records(p.items)&&p.items.length>0&&
    p.items.every(x=>thsCode.test(x.code)&&typeof x.name==='string'&&Number.isInteger(x.rank)&&x.rank>0)&&
    new Set(p.items.map(x=>x.code)).size===p.items.length&&new Set(p.items.map(x=>x.rank)).size===p.items.length},
@@ -1503,6 +1566,7 @@ const pageQuoteFeed={key:'pageQuotes',file:'page-quotes',label:'网页行情',pa
 function visiblePublication(spec){
  if(spec.pages&&!spec.pages.includes(state.page))return false;
  if(spec===trendFeed&&state.page==='sectors')return usingThsRadar();
+ if(state.page==='news'&&['sectorHot','sectorReference'].includes(spec.key))return relayOnly&&!state.demo;
  return !spec.directory||visibleDirectory()||
   (spec.directory==='taxonomy'&&relayOnly&&!state.demo&&state.page==='overview')||
   (['ths','taxonomy'].includes(spec.directory)&&usingThsRadar());

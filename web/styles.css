@@ -236,6 +236,9 @@
 .trend-method .mini-info{line-height:1.8}
 .brief-body{padding:0 20px 16px}
 .brief-topics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.brief-topics.market-commentary-topics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.market-commentary-counts{display:flex;gap:12px;margin-bottom:6px;font-size:12px;font-weight:600}
+@media(max-width:650px){.brief-topics.market-commentary-topics{grid-template-columns:1fr}}
 .brief-topics article{border:1px solid var(--line);border-radius:8px;padding:12px 13px;background:#f9fbfd}
 .brief-body h4{margin:0 0 8px;font-size:13px}
 .brief-body p{margin:0;color:#3c5064;line-height:1.75;font-size:12px}
@@ -262,6 +265,7 @@
 .news-tone-positive{background:#c8615c}
 .news-tone-negative{background:#408a78}
 .news-tone-neutral{background:#8293aa}
+.news-tone-mixed{background:#8471a0}
 .news-tone-uncertain{background:#b18544}
 .news-tone-pending{background:#dce3ea}
 .news-tone-counts{display:block;color:#50657b;font-size:11px;margin-top:5px;line-height:1.5}
