@@ -28,6 +28,11 @@ function runFrontendChecks(source) {
   function check(name, fn) { try { fn(); passed++; } catch (err) { failures.push({name, message: err.message}); } }
   function eq(actual, expected) { if (actual !== expected) throw new Error(`expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`); }
   function ok(value, message) { if (!value) throw new Error(message || 'assertion failed'); }
+  function hoverChart(plot, x) {
+    plot.getScreenCTM=()=>({inverse:()=>null});
+    plot.createSVGPoint=()=>({matrixTransform(){return this;}});
+    plot.events.pointermove({clientX:x,clientY:40});
+  }
   const text = node => (node.textContent || '') + (node.children || []).map(text).join(' ');
   const now = new Date('2026-11-16T16:00:00+08:00');
   const daily = (day, price) => ({price, as_of: day + 'T15:00:00+08:00', quote_date: day, timestamp_quality: 'daily_close', change_pct: 1, provider: 'stock_api'});
@@ -280,7 +285,7 @@ function runFrontendChecks(source) {
     const x={intraday:{'801780.SI':{points:[{price:99,timestamp:'2026-11-17T13:00:00+08:00',provider:'eastmoney_page'},minute(100),{...minute(101),timestamp:'2026-11-17T15:00:00+08:00'}]}}};
     eq(api.intradayFor(x,entity).length,2);eq(api.intradayFor(x,entity)[0].price,100);
   });
-  check('today chart draws short and long data gaps only within a real trading session',()=>{
+  check('today chart draws solid lines and identifies missing minutes within trading sessions',()=>{
     const day='2026-11-18',item={id:'idx'};
     const stamp=t=>`${day}T${t}+08:00`;
     const state={trade_date:day,series:{idx:[
@@ -292,20 +297,47 @@ function runFrontendChecks(source) {
     const ticks=api.relayIntraday(state,latest,item,day);
     eq(ticks.length,6);eq(ticks.at(-1).price,106);
     eq(api.relayIntraday(state,latest,item,'2026-11-19').length,0);
-    const graph=api.chart(ticks,{today:true,metric:'intraday',range:null}).children.at(-1);
+    const [header,graph]=api.chart(ticks,{today:true,metric:'intraday',range:null}).children;
+    const readout=header.children.at(-1);
     eq(graph.children.filter(node=>node.attrs.class==='session-line').length,2);
-    eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,2);
-    eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,2);
+    eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,0);
+    eq(graph.children.filter(node=>node.attrs.class==='isolated-sample').length,0);
+    hoverChart(graph,8+212.5/330*556);
+    eq(readout.attrs['data-missing'],'true');
+    ok(text(readout).includes('13:02 未采集到数据'));
+    eq(graph.children.find(n=>n.attrs.class==='chart-crosshair').children[1].attrs.visibility,'hidden');
+    hoverChart(graph,8+213.5/330*556);
+    eq(readout.attrs['data-missing'],'false');
+    ok(text(readout).includes('13:03:01 104.000'));
+    hoverChart(graph,8+150/330*556);
+    eq(readout.attrs['data-active'],'false');
     ok(text(graph).includes('11:30'));ok(text(graph).includes('13:00'));
   });
   check('daily curves bridge only verified missing sessions without creating observations',()=>{
     const rows=[{date:'2026-11-13',close:100},{date:'2026-11-16',close:101},{date:'2026-11-18',close:103}];
     const ordinary=api.chart(rows,{metric:'index',range:null}).children.at(-1);
     eq(ordinary.children.filter(n=>n.attrs.class==='session-interpolation').length,0);
-    const graph=api.chart(rows,{metric:'index',range:null,sessions:['2026-11-12','2026-11-17','2026-11-19']}).children.at(-1);
-    eq(graph.children.filter(n=>n.attrs.class==='session-interpolation').length,1);
+    const [header,graph]=api.chart(rows,{metric:'index',range:null,sessions:['2026-11-12','2026-11-17','2026-11-19']}).children;
+    const line=graph.children.find(n=>n.tag==='path'&&n.attrs.fill==='none');
+    eq((line.attrs.d.match(/M/g)||[]).length,1);
+    hoverChart(graph,8+556*2/3);
+    ok(text(header).includes('2026-11-17 未采集到数据'));
     graph.events.focus();graph.events.keydown({key:'ArrowLeft',preventDefault(){}});
     ok(graph.attrs['aria-label'].includes('2026-11-16'));ok(!graph.attrs['aria-label'].includes('2026-11-17'));
+  });
+  check('market cap and explicitly timed historical quotes mark their own missing data',()=>{
+    const [capHeader,cap]=api.chart([{date:'2026-11-12',value:1e8},{date:'2026-11-16',value:2e8}],
+      {metric:'cap',sessions:['2026-11-13'],range:null}).children;
+    hoverChart(cap,286);
+    ok(text(capHeader).includes('2026-11-13 未采集到数据'));
+    const rows=['09:30','09:32'].map((hm,i)=>({timestamp:'2026-11-18T'+hm+':00+08:00',
+      price:100+i,provider:'stock_api',kind:'historical_minute',frequency:'1min'}));
+    const [header,graph]=api.chart(rows,{metric:'intraday',range:null}).children;
+    hoverChart(graph,286);
+    ok(text(header).includes('09:31 未采集到数据'));
+    const [snapshotHeader,snapshot]=api.chart(rows.map(r=>({...r,kind:null})),{metric:'intraday',range:null}).children;
+    hoverChart(snapshot,286);
+    ok(!text(snapshotHeader).includes('未采集到数据'));
   });
   check('recovered bars fill only their own missing minute, date and index',()=>{
     const day='2026-11-19', stamp=t=>day+'T'+t+'+08:00';

@@ -110,7 +110,10 @@ assert.equal(nodes(hotPlot,'ac-dot').length,4);
 assert.equal(nodes(hotPlot,'ac-gap-line').length,0); // Ranked observations retain their own cadence.
 assert.equal(hotPlot.attrs['aria-valuemax'],'8');
 assert.match(words(hotPlot),/08:45.*12:00.*16:00/);
-assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,2);
+assert.equal((nodes(hotPlot,'ac-line')[0].attrs.d.match(/M/g)||[]).length,1);
+const hotStart=8*60+45+57/60;
+hotPlot.fire('pointermove',{pointerType:'mouse',clientX:8+(10*60+30-hotStart)/(16*60-hotStart)*300});
+assert.equal(hotPlot.attrs['aria-valuetext'],'10:30，未采集到数据');
 hotPlot.fire('keydown',{key:'Home'});assert.match(hotPlot.attrs['aria-valuetext'],/08:45:57.*-1.3%/);
 hotPlot.fire('keydown',{key:'ArrowRight'});assert.match(hotPlot.attrs['aria-valuetext'],/-2%/);
 hotPlot.fire('keydown',{key:'ArrowRight'});assert.match(hotPlot.attrs['aria-valuetext'],/10:00:00，0%/);
@@ -180,7 +183,7 @@ const boundaryPlot=one(boundaryHost,'ac-main-plot');
 assert.equal(boundaryPlot.attrs['aria-valuemax'],'6');
 assert.equal(nodes(boundaryPlot,'ac-gap-line').length,0);
 assert.equal((one(boundaryPlot,'ac-line').attrs.d.match(/M/g)||[]).length,2); // Solid within sessions, split at lunch.
-assert.match(words(boundaryHost),/实线跨越缺采分钟/);
+assert.match(words(boundaryHost),/实线跨越数据缺口/);
 assert.match(boundaryPlot.attrs['aria-valuetext'],/15:00:03，108 点/);
 const hoverAt=(offset)=>boundaryPlot.fire('pointermove',{pointerType:'mouse',clientX:8+offset/252*(360-52-8)});
 hoverAt(1.5);
@@ -215,7 +218,11 @@ const dailyRows=[{day:'2026-11-12',close:null},{day:'2026-11-13',close:100},{day
 mount(dailyHost,{daily:{basis:'index_close',rows:dailyRows}},{key:'sector/000010.SH'});
 const dailyPlot=one(dailyHost,'ac-main-plot');
 assert.equal(dailyPlot.attrs['aria-valuemax'],'3');
-assert.equal((one(dailyPlot,'ac-gap-line').attrs.d.match(/M/g)||[]).length,1);
+assert.equal((one(dailyPlot,'ac-line').attrs.d.match(/M/g)||[]).length,1);
+assert.equal(nodes(dailyPlot,'ac-gap-line').length,0);
+dailyPlot.fire('pointermove',{pointerType:'mouse',clientX:8+300*3/5});
+assert.equal(dailyPlot.attrs['aria-valuetext'],'2026-11-17，未采集到数据');
+assert.equal(one(dailyPlot,'ac-focus').attrs.visibility,'hidden');
 assert.equal(nodes(one(dailyHost,'ac-study-plot'),'ac-gap-line').length,0);
 dailyPlot.fire('keydown',{key:'ArrowLeft'});assert.match(dailyPlot.attrs['aria-valuetext'],/2026-11-16/);
 mount(dailyHost,{daily:{basis:'reference_linked',rows:dailyRows}},{key:'stock/600001.SH'});
