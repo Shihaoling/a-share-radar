@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 import sqlite3
 from collector_db import connect as collector_connect
+from recovery_priority import due_stamp, ledger as shared_ledger
 import time
 import unicodedata
 
@@ -190,7 +191,7 @@ def split_recheck(db, start, end, now):
     queue_recheck(db, middle+SECOND, end, now)
 
 
-def collection_window(db, now):
+def collection_window(db, now, book=None):
     cursor = checkpoint(db, "coverage_end")
     pending = checkpoint(db, "collect_next_start")
     fixed_end = checkpoint(db, "collect_next_end")
@@ -218,21 +219,33 @@ def collection_window(db, now):
         if sweep_after and sweep_after <= now.isoformat():
             # A full-day poll typically includes current headlines as well as delayed ones.
             return "sweep", now-RECHECK_DEPTH, now
-        repair = db.execute("""SELECT start_at,end_at FROM news_rechecks WHERE due<=?
-            ORDER BY due,start_at LIMIT 1""", (now.isoformat(),)).fetchone()
-        if repair:
-            return "recheck", datetime.fromisoformat(repair[0]), datetime.fromisoformat(repair[1])
+        repairs = db.execute("""SELECT start_at,end_at FROM news_rechecks WHERE due<=?
+            ORDER BY due,start_at LIMIT 24""", (now.isoformat(),)).fetchall()
+        if repairs:
+            chosen = repairs[0]
+            if book is not None:
+                keys = ["news_window|" + row[0] for row in repairs]
+                book.observe("news", [(key, due_stamp(row[0])) for key, row in zip(keys, repairs)],
+                             now=now.timestamp())
+                ranked = book.rank("news", keys, now=now.timestamp())
+                chosen = dict(zip(keys, repairs))[ranked[0]]
+            return "recheck", datetime.fromisoformat(chosen[0]), datetime.fromisoformat(chosen[1])
     return "forward", start, end
 
 
-def collect(db, now):
+def collect(db, now, book=None):
     now = now.replace(microsecond=0)
     if checkpoint(db, "collect_retry") > now.isoformat():
         return
-    window = collection_window(db, now)
+    window = collection_window(db, now, book)
     if not window:
         return
     lane, start, end = window
+    if lane in ("recheck", "sweep") and book is not None and book.should_defer("news", now.timestamp()):
+        # An urgent quote gap owns this turn. Keep the newest headlines flowing and
+        # retry the historical window in the next scheduled slot.
+        lane, start, end = "live", now - timedelta(minutes=25), now
+        print(json.dumps({"recovery_window": "deferred_to_quote"}), flush=True)
     if lane == "forward" and not checkpoint(db, "coverage_end") and not checkpoint(db, "collect_next_start"):
         with db:
             set_checkpoint(db, "collect_next_start", start.isoformat())
@@ -683,7 +696,7 @@ if __name__ == "__main__":
             process_analysis_event(db, args.limit)
         else:
             if args.mode == "collect":
-                collect(db, now)
+                collect(db, now, shared_ledger())
             elif args.mode == "seed":
                 seed(db, args.seed, now)
             publish_news(db)

@@ -1,6 +1,6 @@
 """Publish A-share disclosures and a separate, title-based model digest."""
 
-from datetime import datetime, time as day_time, timedelta
+from datetime import date, datetime, time as day_time, timedelta
 import fcntl
 from hashlib import sha256
 import json
@@ -16,6 +16,7 @@ from pipeline.minimax_news import ModelFailure, infer_article
 from pipeline.stock_api import FIELDS, _Failure
 from relay_common import STATE, collection_due, relay_client
 from relay_quotes import publish
+from recovery_priority import due_stamp, ledger as shared_ledger
 from sector_directory import mapping
 
 SOURCE = "tencent_announcements"
@@ -201,8 +202,9 @@ def announcement_evidence(sessions, days, prefix, *, limit=8):
     return items,coverage
 
 
-def collection_days(now, sessions):
+def collection_days(now, sessions, book=None):
     today = now.date()
+    days = []
     for offset in range(today.weekday()+1):
         day = today-timedelta(days=offset)
         old = sessions.get(day.isoformat(),{})
@@ -211,10 +213,23 @@ def collection_days(now, sessions):
             settle = datetime.combine(day+timedelta(days=1),day_time(6),now.tzinfo).timestamp()
             if (offset>1 and checked>=settle) or now.timestamp()-checked<10800:
                 continue
-        yield day
+        days.append(day)
+    if book is not None and days:
+        # The oldest incomplete disclosure day is the most urgent one.
+        keys = ["announcement|"+day.isoformat() for day in days]
+        book.observe("announcement", [(key, due_stamp(day.isoformat(), hour=18))
+                                      for key, day in zip(keys, days)], now=now.timestamp())
+        days = [date.fromisoformat(key.rsplit("|",1)[1])
+                for key in book.rank("announcement", keys, now=now.timestamp())]
+    yield from days
 
 
-def collect_announcements(private, public, credentials, now, *, quick=False):
+def collect_announcements(private, public, credentials, now, *, quick=False, book=None):
+    if not quick and book is not None and book.should_defer("announcement", now.timestamp()):
+        # A quote gap survived its recovery window. Collect today only and leave
+        # the older-day backfill for the next scheduled slot.
+        quick = True
+        print("announcement backfill deferred to quote recovery", flush=True)
     token = (credentials/"sxdata-token").read_text().strip()
     sessions = mapping(private)
     # Establish a baseline for existing digests before merging fresh disclosures.
@@ -231,7 +246,7 @@ def collect_announcements(private, public, credentials, now, *, quick=False):
                 if attempt>=2 or error.code not in {"shared_spacing","relay_busy","local_rate_limit"} or error.retry_seconds>25:
                     raise
                 time.sleep(max(1,error.retry_seconds))
-    for day in ([now.date()] if quick else collection_days(now,sessions)):
+    for day in ([now.date()] if quick else collection_days(now,sessions,book)):
         key = day.isoformat()
         old = sessions.get(key,{})
         rows,complete = fetch_day(day,request,pages=1 if quick else MAX_PAGES)
@@ -248,6 +263,9 @@ def collect_announcements(private, public, credentials, now, *, quick=False):
     day = max((k for k,v in sessions.items() if v.get("rows")),default=now.date().isoformat())
     publish(private,sessions)
     publish_announcements(public,sessions,day,now)
+    if book is not None:
+        book.resolve("announcement", ["announcement|"+key for key,saved in sessions.items()
+                                      if saved.get("complete")], now=now.timestamp())
     result = sessions.get(day,{})
     print(f"announcements {day}: {len(result.get('rows',[]))} items, complete={result.get('complete',False)}",flush=True)
 
@@ -290,7 +308,8 @@ def main():
     trading = market_session(now)["phase"] in {"morning","afternoon","closing_auction"}
     with private.with_suffix(".lock").open("a") as lock:
         fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-        collect_announcements(private,public,credentials,now,quick=scheduled and trading and now.minute%15!=7)
+        collect_announcements(private,public,credentials,now,quick=scheduled and trading and now.minute%15!=7,
+                              book=shared_ledger())
     if not scheduled:
         summarize_announcements(private,public,credentials,now)
 

@@ -21,6 +21,7 @@ from pipeline.minimax_news import ModelFailure, infer_article
 from pipeline.stock_api import FIELDS, _Failure
 from relay_common import STATE, relay_client
 from relay_quotes import publish
+from recovery_priority import due_stamp, ledger as shared_ledger
 
 SOURCE = "primary_research_reports"
 STAGE = "research_report_summary"
@@ -298,14 +299,28 @@ def summarize_batch(batch, key):
             for report, _, basis in prepared if report["id"] in result["summaries"]}, 900
 
 
-def drain(db, out, key):
+def drain(db, out, key, book=None):
+    if book is not None and book.should_defer("research", shanghai_now().timestamp()):
+        # Let the quote recovery use this window; the summary backlog is retried
+        # in the next scheduled slot (with a hard cap on consecutive yields).
+        print(encode({"recovery_window": "deferred_to_quote"}), flush=True)
+        return
     workers = 3
     with ThreadPoolExecutor(max_workers=workers) as pool:
         while True:
             now = shanghai_now().timestamp()
-            pending = [json.loads(row[0]) for row in db.execute(
-                "SELECT payload FROM reports WHERE summary IS NULL AND retry_at<=? ORDER BY day DESC,id LIMIT ?",
-                (now, BATCH_SIZE*workers))]
+            if book is None:
+                pending = [json.loads(row[0]) for row in db.execute(
+                    "SELECT payload FROM reports WHERE summary IS NULL AND retry_at<=? ORDER BY day DESC,id LIMIT ?",
+                    (now, BATCH_SIZE*workers))]
+            else:
+                rows = db.execute(
+                    "SELECT id,day,payload FROM reports WHERE summary IS NULL AND retry_at<=? ORDER BY day DESC,id LIMIT ?",
+                    (now, BATCH_SIZE*workers)).fetchall()
+                keys = ["research|"+row[0] for row in rows]
+                book.observe("research", [(gap, due_stamp(row[1])) for gap, row in zip(keys, rows)], now=now)
+                order = {gap: index for index, gap in enumerate(book.rank("research", keys, now=now))}
+                pending = [json.loads(row[2]) for row in sorted(rows, key=lambda row: order["research|"+row[0]])]
             if not pending:
                 break
             batches = [pending[start:start+BATCH_SIZE] for start in range(0,len(pending),BATCH_SIZE)]
@@ -317,6 +332,9 @@ def drain(db, out, key):
                     db.executemany("UPDATE reports SET summary=?,retry_at=? WHERE id=?",
                                   ((encode(results[row["id"]]),0,row["id"]) if row["id"] in results else
                                    (None,retry_at,row["id"]) for row in batch))
+                if book is not None:
+                    book.resolve("research", ["research|"+row["id"] for row in batch
+                                              if row["id"] in results], now=shanghai_now().timestamp())
                 print(encode({"summarized": len(results), "pending_retry": len(batch)-len(results)}), flush=True)
             publish_index(db,out,include_pages=True)
 
@@ -365,7 +383,7 @@ def main():
             publish_index(db,OUTPUT,include_pages=True)
         else:
             publish_index(db,OUTPUT,include_pages=True)
-            drain(db,OUTPUT,(credentials/"minimax-key").read_text().strip())
+            drain(db,OUTPUT,(credentials/"minimax-key").read_text().strip(),book=shared_ledger())
 
 
 if __name__ == "__main__":

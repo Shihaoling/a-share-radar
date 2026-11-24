@@ -17,6 +17,7 @@ from pipeline.stock_api import _Client, _Failure, _index_code
 from relay_common import STATE
 from relay_quotes import SOURCE, groups, publish
 from collector_db import connect as collector_connect, retry_locked
+from recovery_priority import GapLedger, due_stamp
 
 API = "idx_mins"
 HEADLINE_REVISIT = 15 * 60
@@ -136,7 +137,22 @@ def historical_bars_finished(db, symbol, day, slots, seen):
     return bool(row and row[0] == len(seen & (slots.bar_ends | slots.expected)))
 
 
-def next_task(db, now):
+def gap_key(day, symbol):
+    return "index_minute|%s|%s" % (day, symbol)
+
+
+def register_gaps(db, ledger, now):
+    """Keep the shared priority ledger in sync with the minute task table."""
+    if ledger is None:
+        return
+    rows = db.execute("SELECT day,id,complete FROM minute_recovery_tasks").fetchall()
+    seen = now.timestamp()
+    open_gaps = [(gap_key(day, symbol), due_stamp(day)) for day, symbol, done in rows if not done]
+    ledger.observe("quote", open_gaps, now=seen)
+    ledger.resolve("quote", [gap_key(day, symbol) for day, symbol, done in rows if done], now=seen)
+
+
+def next_task(db, now, ledger=None):
     today = now.date().isoformat()
     # Alternate current and overdue work. Oldest attempted index wins inside each lane.
     lanes = ("older", "today") if meta(db, "last_lane") == "today" else ("today", "older")
@@ -161,6 +177,12 @@ def next_task(db, now):
                                   CASE WHEN day=? THEN 0 ELSE 1 END,
                                   attempted,day,CASE WHEN id='sh000001' THEN 0 WHEN id<>code THEN 1 ELSE 2 END,id""",
                           (today, due, prioritize, close, prioritize, close, due-HEADLINE_REVISIT, priority_day)).fetchall()
+        if ledger is not None and rows:
+            # Inside each lane the oldest outstanding quote gap goes first.
+            rank = {key: index for index, key in enumerate(
+                ledger.rank("quote", [gap_key(row[0], row[1]) for row in rows], now=due))}
+            rows = sorted(rows, key=lambda row: (rank.get(gap_key(row[0], row[1]), len(rank)),
+                                                 row[0], row[1]))
         for day, symbol, code, no_progress in rows:
             if day not in slots_by_day:
                 slots_by_day[day] = elapsed_minutes(day, now)
@@ -227,8 +249,8 @@ def store_points(db, task, rows, received):
     return len(labels), added
 
 
-def attempt(db, now, client_factory, clock):
-    task = next_task(db, now)
+def attempt(db, now, client_factory, clock, ledger=None):
+    task = next_task(db, now, ledger)
     if task is None:
         return "waiting"
     day, symbol, code, no_progress, slots, lane = task
@@ -289,6 +311,8 @@ def attempt(db, now, client_factory, clock):
                    (received.timestamp(), received.timestamp()+delay, misses, complete,
                     "covered" if not remaining else "partial" if added else "no_new_minutes", day, symbol))
         set_meta(db, "last_lane", lane)
+    if ledger is not None and complete:
+        ledger.resolve("quote", [gap_key(day, symbol)], now=received.timestamp())
     return "partial"
 
 
@@ -348,7 +372,7 @@ def project(db, output, symbols, now, state):
     return payload
 
 
-def run(db, output, symbols, client_factory, clock=shanghai_now):
+def run(db, output, symbols, client_factory, clock=shanghai_now, ledger=None):
     now = clock()
     db.executescript(SCHEMA)
     if meta(db, "coverage_policy") != "clock_minute_v1":
@@ -358,12 +382,13 @@ def run(db, output, symbols, client_factory, clock=shanghai_now):
             db.execute("UPDATE minute_recovery_tasks SET complete=0,retry_at=0 WHERE complete=1")
             set_meta(db, "coverage_policy", "clock_minute_v1")
     seed_tasks(db, symbols, now.date())
+    register_gaps(db, ledger, now)
     if float(meta(db, "pause_until", "0")) > now.timestamp():
         state = "cooldown"
     elif float(meta(db, "next_request", "0")) > now.timestamp():
         state = "waiting"
     else:
-        state = attempt(db, now, client_factory, clock)
+        state = attempt(db, now, client_factory, clock, ledger)
     return project(db, output, symbols, clock(), state)
 
 
@@ -388,7 +413,8 @@ def main():
                 if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='samples'").fetchone():
                     print("Awaiting relay sample table", flush=True)
                     return None
-                return run(db, output, symbols, lambda borrow: low_priority_client(token, borrow))
+                return run(db, output, symbols, lambda borrow: low_priority_client(token, borrow),
+                           ledger=GapLedger(state=STATE))
 
         payload = retry_locked(collect, attempts=4, base=0.5)
         if payload:

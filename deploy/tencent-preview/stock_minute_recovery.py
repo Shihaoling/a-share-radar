@@ -23,6 +23,7 @@ from market_gap_recovery import session
 from relay_common import STATE, relay_guard
 from relay_quotes import publish
 from collector_db import connect as collector_connect, retry_locked
+from recovery_priority import GapLedger, due_stamp
 from sector_directory import mapping
 
 PCB = "885959.TI"
@@ -150,7 +151,7 @@ def recovery_report(db, day, rosters, output, outcomes):
     print(json.dumps(packet,ensure_ascii=False),flush=True)
 
 
-def recover(state, day, request, *, budget=1250, morning_only=False):
+def recover(state, day, request, *, budget=1250, morning_only=False, ledger=None):
     output = state/"quote-output"
     private = state/"asset-research"
     with closing(collector_connect(private/"research.sqlite3")) as db:
@@ -186,6 +187,12 @@ def recover(state, day, request, *, budget=1250, morning_only=False):
             todo=sorted((c for c in (selection & daily)-halted
                    if A_SHARE.fullmatch(c) and known.get(c,(0,0,0))[1]<=now and known.get(c,(0,0,0))[2]<240),
                    key=lambda c:(known.get(c,(0,0,0))[0],c))
+            if ledger is not None and todo:
+                # Older sessions and longer-standing gaps take the next batch.
+                keys = ["stock_minute|%s|%s" % (day, code) for code in todo]
+                ledger.observe("quote", [(key, due_stamp(day)) for key in keys], now=now)
+                todo = [key.rsplit("|", 1)[1]
+                        for key in ledger.rank("quote", keys, now=now)]
             blocks = [todo[i:i+BATCH_SIZE] for i in range(0,len(todo),BATCH_SIZE)]
             for j,codes in enumerate(blocks):
                 if time.monotonic()+25>=deadline:
@@ -220,6 +227,11 @@ def recover(state, day, request, *, budget=1250, morning_only=False):
                 recovery_report(db,day,rosters,private/"stock-minute-recovery-report.json",outcomes)
         reproject(db,day,rosters)
         recovery_report(db,day,rosters,private/"stock-minute-recovery-report.json",outcomes)
+        if ledger is not None:
+            finished = [row[0] for row in db.execute(
+                "SELECT code FROM stock_history_jobs WHERE day=? AND coverage>=240",(day,))]
+            ledger.resolve("quote", ["stock_minute|%s|%s" % (day, code) for code in finished],
+                           now=time.time())
 
 
 def fetch_batch(codes, day, request, outcomes, deadline, *, end="15:00:59"):
@@ -263,7 +275,8 @@ def main():
             with relay_guard():
                 client=_Client(token,{"max_requests":1,"timeout_seconds":14,"budget_seconds":24},shanghai_now())
                 return client.request_primary("stk_mins",params,bulk=True)
-        recover(STATE,date.isoformat(),request,morning_only=morning_only)
+        recover(STATE,date.isoformat(),request,morning_only=morning_only,
+                ledger=GapLedger(state=STATE))
 
 
 if __name__=="__main__":

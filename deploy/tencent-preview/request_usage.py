@@ -513,6 +513,11 @@ def live_health(state):
             "recent_rt_429": len(gate.get("recent_rt_429", [])),
         },
     }
+    try:
+        from recovery_priority import GapLedger
+        payload["recovery_priority"] = GapLedger(state=state).summary()
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error):
+        payload["recovery_priority"] = None
     return remove_usage(payload)
 
 

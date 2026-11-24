@@ -18,9 +18,11 @@ from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
 from pipeline.stock_api import FIELDS, _Failure, _index_code
 from asset_research import ResearchStore
 from factor_history_jobs import Job, save_rows
-from minute_recovery import SCHEMA as MINUTE_SCHEMA, elapsed_minutes, index_symbols, seen_minutes, set_meta
+from minute_recovery import (SCHEMA as MINUTE_SCHEMA, elapsed_minutes, gap_key,
+                             index_symbols, seen_minutes, set_meta)
 from relay_common import STATE, relay_client
 from collector_db import connect as collector_connect, retry_locked
+from recovery_priority import GapLedger, due_stamp
 from relay_quotes import SOURCE, publish
 from research_valuation import APIS, normalized_rows, save_snapshot, snapshot_name
 from sector_directory import mapping, publish_reference, reference
@@ -134,7 +136,7 @@ def publish_closes(db, state, source, day, now):
         publish_reference(path, reference(official, day, now, {r["ts_code"] for r in official}))
 
 
-def minute_status(state, source, day, now):
+def minute_status(state, source, day, now, ledger=None):
     path = state/"relay/minute-observations.sqlite3"
     if not path.is_file():
         return {"status":"not_ready"}
@@ -151,10 +153,16 @@ def minute_status(state, source, day, now):
                                    ((day,symbol,code) for code,symbol in symbols.items() if symbol in missing))
                     set_meta(db, "evening_priority_day", day)
             retry_locked(queue, attempts=3, base=0.5)
+        if ledger is not None:
+            seen = now.timestamp()
+            ledger.observe("quote", [(gap_key(day, symbol), due_stamp(day))
+                                     for symbol, count in gaps.items() if count], now=seen)
+            ledger.resolve("quote", [gap_key(day, symbol)
+                                     for symbol, count in gaps.items() if not count], now=seen)
     return {"symbols":len(symbols), "remaining_clock_minutes":sum(missing.values()), "remaining_by_symbol":missing}
 
 
-def run(state, source, day, now, request):
+def run(state, source, day, now, request, ledger=None):
     private = state/"asset-research"
     output = state/"quote-output"
     compact = day.replace("-", "")
@@ -215,8 +223,20 @@ def run(state, source, day, now, request):
         # Sample three exact codes as well, rotating across scheduled windows.
         older = sorted(dormant, key=lambda code: (attempts.get(code, ""), code))
         choices.extend(("ths_daily", "sector", code) for code in older[:3])
+        # Exact-code requests go to the highest-priority quote gaps first.
+        order = {}
+        if ledger is not None:
+            keys = ["daily|%s|%s" % (day, item[2]) for item in choices]
+            ledger.observe("quote", [(key, due_stamp(day)) for key in keys], now=now.timestamp())
+            order = {key.rsplit("|", 1)[1]: index for index, key in enumerate(
+                ledger.rank("quote", keys, now=now.timestamp()))}
+        def exact_key(item):
+            code = item[2]
+            if order:
+                return (code in dormant, order.get(code, len(order)), code)
+            return (code in dormant, attempts.get(code, ""), code)
         lanes = defaultdict(list)
-        for item in sorted(choices, key=lambda item: (item[2] in dormant, attempts.get(item[2], ""),item[2])):
+        for item in sorted(choices, key=exact_key):
             lanes[item[0]].append(item)
         turns = (item for batch in zip_longest(*(lanes[api] for api in ("daily","index_daily","ths_daily")))
                  for item in batch if item is not None)
@@ -273,8 +293,13 @@ def run(state, source, day, now, request):
                                  "primary_minute_series_complete":minute_recovery.get("complete_stock_minutes")},
                "board_intraday":{"observed_symbols":db.execute("SELECT count(DISTINCT code) FROM constituent_minutes WHERE day=?",(day,)).fetchone()[0],
                                  "estimates_from_primary_minutes":minute_recovery.get("boards_recovered")},
-               "index_minutes":minute_status(state,source,day,now),
+               "index_minutes":minute_status(state,source,day,now,ledger),
                "requests":dict(tries), "last_exact":attempts}
+        if ledger is not None:
+            remaining = set().union(*(missing[key] for key in
+                                      ("stock","index","exchange_sector","sw","ths")))
+            ledger.resolve("quote", ["daily|%s|%s" % (day, code) for code in order
+                                    if code not in remaining], now=now.timestamp())
         publish(private/"evening-gap-report.json", out)
         print(json.dumps({key:value for key,value in out.items() if key not in ("daily","last_exact","ths_unpublished_over_30_days","valuation_missing")},ensure_ascii=False),flush=True)
         print(json.dumps({key:{**data,"missing":len(data["missing"])} for key,data in out["daily"].items()}),flush=True)
@@ -299,7 +324,7 @@ def main():
         def request(api, params):
             with relay_client(token, timeout=18) as client:
                 return client.request(api, params)
-        run(STATE,mapping(SOURCE),day.isoformat(),now,request)
+        run(STATE,mapping(SOURCE),day.isoformat(),now,request,ledger=GapLedger(state=STATE))
 
 
 if __name__ == "__main__":
