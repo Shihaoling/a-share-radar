@@ -13,6 +13,8 @@
     @media(max-width:500px){main{padding:24px 14px}.top{flex-direction:column;gap:16px}h1{font-size:24px}.actions{justify-content:flex-start}.status-head{flex-direction:column;gap:17px}.heartbeat{text-align:left;white-space:normal}.status-title{font-size:18px}.metrics{gap:10px}.metric{padding:15px;min-height:110px}.metric-value{font-size:18px}.metric-value.textual{font-size:14px}.chart-toolbar{flex-direction:column;gap:12px}.select{width:100%;max-width:none}.chart-wrap{height:220px;padding-inline:8px}.panel-head{padding-inline:17px}.chart-foot{padding-inline:17px}th,td{padding-inline:15px}.footer{display:block}.footer>span{display:block}.status{padding:20px}.progress-line{font-size:9px}}
     @media(prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
+  <link rel="stylesheet" href="./research-assistant.css?v=report-effort-20261122">
+  <script defer src="./research-assistant.js?v=report-effort-20261122" data-assistant-page="training-monitor"></script>
 </head>
 <body>
   <main>
@@ -33,8 +35,8 @@
     </section>
     <div class="chart-toolbar"><div><h2 class="section-label">真实训练曲线</h2><div class="section-note">按试验分别观察。训练损失与验证误差使用独立纵轴。</div></div><select id="run-select" class="select" aria-label="选择曲线对应的试验"><option value="__current__">跟随当前试验</option></select></div>
     <section class="chart-grid" aria-label="训练与验证曲线">
-      <article class="panel"><div class="panel-head"><div><h3 class="panel-title">训练 Huber 损失</h3><div class="panel-subtitle">仅显示训练程序实际记录的损失</div></div><div id="train-value" class="chart-current">—<small>最近记录</small></div></div><div id="train-chart" class="chart-wrap"><div class="chart-empty">等待首个有效训练轮次</div></div><div id="train-foot" class="chart-foot">无记录。Huber 损失不能当作收益率或预测准确率。</div></article>
-      <article class="panel"><div class="panel-head"><div><h3 class="panel-title">验证集 MAE</h3><div class="panel-subtitle">单位：百分点 · 较低代表该验证集误差较小</div></div><div id="validation-value" class="chart-current">—<small>最近记录</small></div></div><div id="validation-chart" class="chart-wrap"><div class="chart-empty">等待首个有效验证轮次</div></div><div id="validation-foot" class="chart-foot">无记录。验证成绩不等于未来表现或已通过上线门槛。</div></article>
+      <article class="panel"><div class="panel-head"><div><h3 class="panel-title">训练 Huber 损失</h3><div class="panel-subtitle">仅显示训练程序实际记录的损失</div></div><div id="train-value" class="chart-current">—<small>最近记录</small></div></div><div id="train-chart" class="chart-wrap"><div class="chart-empty">等待首个有效训练轮次</div></div><div id="train-foot" class="chart-foot">暂无训练损失记录。</div></article>
+      <article class="panel"><div class="panel-head"><div><h3 class="panel-title">验证集 MAE</h3><div class="panel-subtitle">单位：百分点 · 较低代表该验证集误差较小</div></div><div id="validation-value" class="chart-current">—<small>最近记录</small></div></div><div id="validation-chart" class="chart-wrap"><div class="chart-empty">等待首个有效验证轮次</div></div><div id="validation-foot" class="chart-foot">暂无验证记录。</div></article>
     </section>
     <div class="bottom-grid">
       <section class="panel" aria-labelledby="candidate-title"><div class="panel-head"><div><h2 id="candidate-title" class="panel-title">候选模型比较</h2><div class="panel-subtitle">按已记录验证 MAE 排序，缺少成绩的候选置后</div></div><span id="candidate-count" class="panel-subtitle">等待候选报告</span></div><div class="table-wrap"><table><thead><tr><th>排名</th><th>候选</th><th class="numeric">验证 MAE（百分点）</th></tr></thead><tbody id="candidates"></tbody></table><div id="candidate-empty" class="table-empty">验证完成后显示实际候选结果。</div></div></section>
@@ -49,7 +51,7 @@
         <div class="resource-row"><span>CPU 进程内存</span><strong id="cpu-memory">—</strong></div>
         <div class="resource-row"><span>GPU 已分配内存</span><strong id="gpu-memory">—</strong></div>
         <div class="resource-row"><span>GPU 保留 / 总内存</span><strong id="gpu-reserved">— / —</strong></div>
-        <div class="resource-foot">吞吐为当前轮累计测量的样本数 / 秒，不代表剩余时间估计。可用内存是资源检测时的快照，不是实时占用；配置预算也不等于实际用量。GPU 保留内存与已分配内存口径不同。未上报的数据保留空值。</div>
+        <div class="resource-foot">吞吐以样本 / 秒计。可用内存取检测时的快照。</div>
       </div></section>
     </div>
     <section id="report" class="report" hidden><strong>本机报告路径</strong><code id="report-path"></code><div>路径仅作为文字展示。本页不浏览其他文件，也不提供上传操作。</div></section>
@@ -83,7 +85,7 @@
     function updateSelector(data){const rows=historyRows(data),runs=new Map();for(const row of rows){const key=runKey(row);if(!runs.has(key))runs.set(key,row);}if(selectedRun!=='__current__'&&!runs.has(selectedRun))selectedRun='__current__';elements['run-select'].replaceChildren();const current=node('option','跟随当前试验');current.value='__current__';elements['run-select'].append(current);for(const [key,row]of runs){const option=node('option',`${safeText(row.model,'未命名模型')} · 试验 ${count(row.trial)??'—'}`);option.value=key;elements['run-select'].append(option);}elements['run-select'].value=selectedRun;}
     function selectedHistory(data){const rows=historyRows(data);let key=selectedRun;if(key==='__current__'){key=runKey(data);if(!rows.some(row=>runKey(row)===key)&&!data.model)key=rows.length?runKey(rows.at(-1)):key;}return rows.filter(row=>runKey(row)===key);}
     function points(rows,key){const byEpoch=new Map();for(const row of rows){const epoch=count(row.epoch),value=score(row[key]);if(epoch!==null&&epoch>0&&value!==null)byEpoch.set(epoch,{epoch,value});}return[...byEpoch.values()].sort((a,b)=>a.epoch-b.epoch);}
-    function chart(rows,key,containerId,valueId,footId,label,color){const values=points(rows,key),container=elements[containerId];container.replaceChildren();elements[valueId].replaceChildren(node('span',values.length?format(values.at(-1).value):'—'),node('small','最近记录'));if(!values.length){const empty=node('div',undefined,'chart-empty');empty.append(node('strong',`等待有效${label}记录`),node('span','训练程序尚未写入该指标；缺失值不会按零绘制。'));container.append(empty);text(footId,key==='train_huber'?'无记录。Huber 损失不能当作收益率或预测准确率。':'无记录。验证成绩不等于未来表现或已通过上线门槛。');return;}
+    function chart(rows,key,containerId,valueId,footId,label,color){const values=points(rows,key),container=elements[containerId];container.replaceChildren();elements[valueId].replaceChildren(node('span',values.length?format(values.at(-1).value):'—'),node('small','最近记录'));if(!values.length){const empty=node('div',undefined,'chart-empty');empty.append(node('strong',`等待有效${label}记录`),node('span','暂无数据。'));container.append(empty);text(footId,key==='train_huber'?'暂无训练损失记录。':'暂无验证记录。');return;}
       const width=580,height=238,left=65,right=20,top=22,bottom=38,minEpoch=values[0].epoch,maxEpoch=values.at(-1).epoch;
       let lo=Math.min(...values.map(x=>x.value)),hi=Math.max(...values.map(x=>x.value));const padding=(hi-lo)*.16||Math.max(hi*.12,.000001);lo=Math.max(0,lo-padding);hi+=padding;
       const X=epoch=>left+(maxEpoch===minEpoch?.5:(epoch-minEpoch)/(maxEpoch-minEpoch))*(width-left-right),Y=value=>top+(hi-value)/(hi-lo)*(height-top-bottom);

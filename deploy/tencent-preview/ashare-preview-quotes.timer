@@ -1,0 +1,11 @@
+[Unit]
+Description=Check fallback quote preview every five minutes around trading sessions
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 09..11:00/5:00 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 13..15:00/5:00 Asia/Shanghai
+AccuracySec=5s
+Persistent=no
+
+[Install]
+WantedBy=timers.target

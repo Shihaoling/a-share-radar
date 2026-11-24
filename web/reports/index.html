@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#15273a">
+  <title>研报阅读 · 观澜</title>
+  <link rel="stylesheet" href="../styles.css?v=reports-20261122">
+  <link rel="stylesheet" href="../market-theme.css?v=glass-light-20261124">
+  <link rel="stylesheet" href="./reader.css?v=reader-zoom-20261122-2">
+  <link rel="stylesheet" href="../research-assistant.css?v=glass-light-20261124">
+  <script src="../market-theme.js?v=glass-light-20261124"></script>
+  <script defer src="./reader.js?v=reader-pinch-20261122"></script>
+  <script defer src="../research-assistant.js?v=report-scroll-20261122" data-assistant-page="report-reader"></script>
+</head>
+<body class="report-reader">
+  <header class="reader-topbar"><a href="../#overview" class="reader-brand">观澜</a><a href="../#reports">← 返回研报</a></header>
+  <main class="reader-main">
+    <header class="reader-profile">
+      <div class="reader-meta" id="report-meta"></div>
+      <h1 id="report-title">研报阅读</h1>
+      <div class="report-tags" id="report-sectors"></div>
+    </header>
+    <section class="reader-summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">摘要</h2>
+      <p id="report-summary" role="status">正在加载研报…</p>
+      <p id="report-summary-source" class="reader-meta" hidden></p>
+      <button id="report-retry" class="outline-button" type="button" hidden>重试加载</button>
+    </section>
+    <section class="reader-document" aria-label="研报原文" id="report-document" hidden>
+      <div class="reader-toolbar">
+        <span class="reader-file-label">研报原文 <span id="report-host"></span></span>
+        <div class="reader-zoom" id="pdf-zoom" role="group" aria-label="PDF 缩放" hidden>
+          <button class="outline-button" id="pdf-zoom-out" type="button" aria-label="缩小 PDF">−</button>
+          <button class="outline-button" id="pdf-zoom-reset" type="button" aria-label="恢复 PDF 默认缩放">100%</button>
+          <button class="outline-button" id="pdf-zoom-in" type="button" aria-label="放大 PDF">+</button>
+        </div>
+        <a id="report-original" target="_blank" rel="noopener noreferrer">在新窗口打开 PDF ↗</a>
+      </div>
+      <nav id="report-pager" class="reader-pager" aria-label="PDF 页码" hidden>
+        <button id="pdf-previous" class="outline-button" type="button">上一页</button>
+        <label>第 <input id="pdf-page" type="number" min="1" value="1" aria-label="PDF 页码"> 页 <span id="pdf-total"></span></label>
+        <button id="pdf-next" class="outline-button" type="button">下一页</button>
+      </nav>
+      <div id="report-pages" class="reader-pages" role="region" tabindex="0" aria-label="研报 PDF，可连续滚动阅读" hidden></div>
+      <p id="pdf-status" class="reader-meta" role="status">正在加载原文…</p>
+    </section>
+  </main>
+</body>
+</html>

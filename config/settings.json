@@ -2,7 +2,6 @@
   "network_enabled": true,
   "primary_provider": "stock_api",
   "enable_mlp": false,
-  "forecast_enabled": false,
   "prediction_interval_minutes": 30,
   "risk_free_rate_annual": 0.02,
   "stock_api": {
@@ -44,7 +43,7 @@
   "include_rumors_in_model": false,
   "timezone": "Asia/Shanghai",
   "repository_url": "https://github.com/Shihaoling/a-share-radar",
-  "notes": "网站展示已收盘走势与资讯情绪，历史模型结果留档。",
+  "notes": "网站采集、资讯情绪、概率分类器训练与推断均在线上运行；旧神经模型训练开关保持关闭。",
   "min_train": 120,
   "holdout_size": 20,
   "funds": {
@@ -63,7 +62,7 @@
   },
   "training_enabled": false,
   "direction_probability": {
-    "online_training_enabled": false,
+    "online_training_enabled": true,
     "threads": 2,
     "update_interval_minutes": 30,
     "sentiment_min_mature_dates": 30

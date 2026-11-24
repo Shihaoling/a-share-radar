@@ -102,7 +102,7 @@ function showMetrics(data) {
   const labelCooldown = get('label-cooldown');
   labelCooldown.hidden = !data.label_error;
   labelCooldown.textContent = data.label_error
-    ? `MiniMax 等待重试 · ${dateTime(data.label_retry_at)} 后可重试` : '';
+    ? `标注待重试 · ${dateTime(data.label_retry_at)} 后可重试` : '';
   labelCooldown.title = data.label_error || '';
   const archive = data.final_archived_at
     ? `正式归档已校验 · ${dateTime(data.final_archived_at)}`

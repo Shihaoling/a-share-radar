@@ -5,6 +5,7 @@ from pathlib import Path
 from .request_policy import MAX_REQUESTS, read_policy
 
 ENDPOINT='http://tus.sxdata.top/tu_share/'
+PRIMARY_ENDPOINT='http://1.15.232.63:8030/'
 REGULAR_APIS=frozenset({'trade_cal','daily','daily_basic','index_daily','index_classify','sw_daily','index_member_all','index_basic','income','income_vip','balancesheet','balancesheet_vip','cashflow','cashflow_vip','fina_indicator','forecast','express','moneyflow','moneyflow_ind_ths','fund_basic','fund_nav','fund_daily','etf_basic','etf_share_size','cn_cpi','cn_gdp','cyq_perf'})
 
 def base_token(token):return token.strip().removeprefix('backup15000_').strip()
@@ -14,6 +15,17 @@ def credential_matches(token):
 def token_for_api(token,api):
     token=base_token(token)
     return 'backup15000_'+token if api in REGULAR_APIS else token
+
+def primary_token():
+    directory = os.getenv("CREDENTIALS_DIRECTORY")
+    if not directory:
+        return ""
+    try:
+        value = (Path(directory)/"primary-data-token").read_text().strip()
+    except OSError:
+        return ""
+    return value if 40 <= len(value) <= 128 and all(c in "0123456789abcdef" for c in value) else ""
+
 
 def _gate_path():
     value=os.environ.get('RADAR_SERVICE_GATE_FILE')
@@ -29,7 +41,7 @@ def _read():
         return {}
     if not isinstance(state, dict):
         raise ValueError("invalid shared gate")
-    for key in ("last", "host_until", "last_accounted"):
+    for key in ("last", "host_until", "primary_until", "last_accounted"):
         stamp = state.get(key, 0)
         if type(stamp) not in (int, float) or not math.isfinite(stamp):
             raise ValueError("invalid gate timestamp")
@@ -79,7 +91,7 @@ EVENT_LIMIT = 64
 METERED_APIS = REGULAR_APIS | REALTIME_BATCHES | {
     "rt_sw_k", "news", "major_news", "cctv_news", "anns_d", "idx_mins",
     "sw_mins", "stk_mins", "index_weight", "index_dailybasic",
-    "ths_hot", "ths_daily", "ths_member", "stock_basic",
+    "ths_hot", "ths_daily", "ths_member", "stock_basic", "index_global",
 }
 
 
@@ -108,11 +120,13 @@ def realtime_min_gap():
         return 15
 
 
-def _gate_state(state, api, min_interval, now, starts):
-    host_until = state.get('host_until', 0)
-    api_until = state.get('apis', {}).get(api, 0)
-    reason = (state.get('host_code') if host_until >= api_until
-              else state.get('api_codes', {}).get(api))
+def _gate_state(state, api, min_interval, now, starts, *, primary=False, bulk=False):
+    host_key = "primary_until" if primary else "host_until"
+    host_until = state.get(host_key, 0)
+    key = "primary:"+api if primary else api
+    api_until = state.get('apis', {}).get(key, 0)
+    reason = (state.get("primary_code" if primary else "host_code") if host_until >= api_until
+              else state.get('api_codes', {}).get(key))
     deadline = max(host_until, api_until)
     limit = min(HOST_LIMIT, read_policy()["limit_60s"])
     if len(starts) >= limit:
@@ -123,6 +137,8 @@ def _gate_state(state, api, min_interval, now, starts):
     gap = 5 if consecutive_quotes and min_interval <= 5 else 6
     if consecutive_quotes:
         gap = max(gap, _realtime_spacing(state, now))
+    if primary and bulk and api == state.get("last_api") == "stk_mins" and state.get("last_route") == "primary":
+        gap = 3
     return max(0, deadline-now), max(0, gap-(now-state.get('last', 0))), reason or 'rate_limited'
 
 
@@ -130,7 +146,11 @@ def gate_state(api, min_interval=6):
     try:
         state = _read()
         now = time.time()
-        return _gate_state(state, api, min_interval, now, _window(state, now)[0])
+        starts = _window(state, now)[0]
+        legacy = _gate_state(state, api, min_interval, now, starts)
+        if primary_token() and api != "rt_sw_k":
+            return min(legacy,_gate_state(state,api,min_interval,now,starts,primary=True))
+        return legacy
     except (OSError, ValueError, TypeError):
         return 60, 0, "gate_unavailable"
 
@@ -154,23 +174,27 @@ def _worker():
     name = Path(sys.argv[0]).stem
     return name if name in {"cloud_news", "training_news", "relay_quotes", "market_daily", "market_reference",
                             "minute_recovery", "cloud_research", "cloud_models", "service_rollout",
-                            "probe_stock_api", "sector_directory", "asset_research", "run"} else "other"
+                            "probe_stock_api", "sector_directory", "asset_research", "stock_minute_recovery",
+                            "market_gap_recovery", "company_announcements", "run"} else "other"
 
 
-def _add_event(state, api, stamp, outcome, size):
+def _add_event(state, api, stamp, outcome, size, route=None):
     totals, counts, label = _counter(state, api, stamp)
     counts["starts"] += 1
     totals["peak_60s"] = max(totals["peak_60s"], size)
     seq = totals["sequence"] = totals.get("sequence", 0) + 1
     totals["recent"].append({"id": seq, "api": label, "started_at": stamp, "outcome": outcome,
                              "worker": "legacy" if outcome == "legacy_unobserved" else _worker()})
+    if route:
+        totals["recent"][-1]["route"] = route
+        _increment(counts.setdefault("routes", {}), route)
     del totals["recent"][:-EVENT_LIMIT]
     if outcome == "legacy_unobserved":
         counts["legacy"] += 1
     return seq
 
 
-def reserve_request(api, min_interval, remaining):
+def reserve_request(api, min_interval, remaining, *, primary=False, bulk=False):
     """Check cooldown, host cap and gap, and reserve the actual start under one lock."""
     if _gate_path() is None:
         return 0, 0, "budget_exhausted" if remaining <= 0 else None, None
@@ -181,7 +205,7 @@ def reserve_request(api, min_interval, remaining):
         if legacy:
             _add_event(state, state.get("last_api"), state["last"], "legacy_unobserved", len(starts))
             state["last_accounted"] = state["last"]
-        cooldown, gap, reason = _gate_state(state, api, min_interval, now, starts)
+        cooldown, gap, reason = _gate_state(state, api, min_interval, now, starts,primary=primary,bulk=bulk)
         adaptive = (api in REALTIME_BATCHES and state.get("last_api") in REALTIME_BATCHES
                     and _realtime_spacing(state, now) > 6)
         # An early quote can yield its network lock to news and background work.
@@ -202,8 +226,9 @@ def reserve_request(api, min_interval, remaining):
         if gap:
             return 0, gap, None, None
         starts.append(now)
-        state.update(last=now, last_api=api, last_accounted=now)
-        return 0, 0, None, _add_event(state, api, now, "in_flight", len(starts))
+        route = "primary" if primary else "backup"
+        state.update(last=now, last_api=api, last_accounted=now,last_route=route)
+        return 0, 0, None, _add_event(state, api, now, "in_flight", len(starts),route)
 
 
 def sent(api=None):
@@ -240,18 +265,24 @@ def request_usage():
     starts, pending_legacy = _window(state, now)
     data = state.get("usage", {})
     return {"limit_60s": min(HOST_LIMIT, read_policy()["limit_60s"]), "starts_last_60s": len(starts), "pending_legacy": pending_legacy,
+            "primary_host_until": state.get("primary_until", 0),
             "realtime_min_gap": _realtime_spacing(state, now),
             "recent_rt_429": [stamp for stamp in state.get("recent_rt_429", []) if stamp > now - 600],
             "since": data.get("since"), "peak_60s": max(data.get("peak_60s", 0), len(starts)),
             "apis": data.get("apis", {}), "recent": data.get("recent", [])}
 
 
-def failed(api, seconds=60, host=False, *, code='rate_limited'):
+def failed(api, seconds=60, host=False, *, code='rate_limited', primary=False):
     until = time.time() + max(60, seconds)
+    if primary:
+        api = "primary:"+api
     with _edit_gate() as state:
         deadlines = state.setdefault('apis', {})
         if until >= deadlines.get(api, 0):
             deadlines[api] = until
             state.setdefault('api_codes', {})[api] = code
-        if host and until >= state.get('host_until', 0):
-            state.update(host_until=until, host_code=code)
+        if host:
+            key = "primary_until" if primary else "host_until"
+            if until >= state.get(key,0):
+                state[key] = until
+                state["primary_code" if primary else "host_code"] = code

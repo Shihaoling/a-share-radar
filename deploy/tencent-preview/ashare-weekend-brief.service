@@ -1,0 +1,20 @@
+[Unit]
+Description=Generate the market overview weekly brief on non-trading days
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/weekend_brief.py
+TimeoutStartSec=270
+MemoryMax=300M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

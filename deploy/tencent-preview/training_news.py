@@ -397,7 +397,7 @@ def label_batch(rows, key):
     if len(rows) == 1:
         row = rows[0]
         result = infer_article({"title": row["title"], "full_text": row["body"],
-            "published_at": row["published_at"], "source": SOURCE}, {}, key)
+            "published_at": row["published_at"], "source": SOURCE}, {}, key, stage="training_single")
         usage = result.pop("usage", {})
         return {"results": {row["id"]: result}, "usage": usage}
     indexed = {f"N{i}": row for i, row in enumerate(rows, 1)}
@@ -441,7 +441,7 @@ def label_batch(rows, key):
         return {"results": results}
 
     return infer_article({"title": "多篇历史快讯独立标注", "full_text": json.dumps(packet, ensure_ascii=False),
-                          "digest_articles": packet}, BATCH_CONFIG, key, prompt=BATCH_PROMPT, validator=validate)
+                          "digest_articles": packet}, BATCH_CONFIG, key, prompt=BATCH_PROMPT, validator=validate,stage="training_labels")
 
 
 def label(db, now, limit):

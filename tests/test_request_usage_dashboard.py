@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
 from pipeline import minimax_news as model
-from pipeline.usage_meter import counts,connect
+from pipeline.usage_meter import counts,connect,model_start,model_finish
 DEPLOY = Path(__file__).resolve().parents[1]/"deploy/tencent-preview"
 with patch.object(sys,"path",[str(DEPLOY),*sys.path]):
     import request_usage as usage
@@ -80,6 +80,34 @@ class UsageTests(unittest.TestCase):
         with closing(connect(self.db)) as db:
             self.assertEqual(db.execute("SELECT count(*) FROM receipts").fetchone()[0],2)
 
+    def test_primary_totals_use_route_tags_and_late_receipts_only_count_once(self):
+        self.gate["recent"] = [
+            event(7,"news","09:29:12"),
+            {**event(8,"news","09:29:55"),"route":"primary"},
+            {**event(9,"news","09:31:02","http_429"),"route":"backup"},
+            {**event(10,"anns_d","09:31:06","in_flight"),"route":"primary"},
+        ]
+        self.gate["apis"] = {"news":{"starts":8,"routes":{"primary":3,"backup":2},"outcomes":{"ok":4}},
+                              "anns_d":{"starts":1,"routes":{"primary":1},"outcomes":{}}}
+        self.gate["starts_last_60s"] = 2
+        self.take("09:31:10")
+        self.gate["recent"][-1]["outcome"] = "transport_error"
+        self.take("09:31:15")
+        self.take("09:32:15")
+        current = self.result("09:31:15")
+        self.assertEqual(current["primary"]["rolling_60s"],1)
+        self.assertEqual(current["primary"]["cumulative"]["requests"],4)
+        self.assertEqual(current["relay"]["cumulative"]["requests"],9)
+        final = self.result("09:32:15")
+        primary = final["primary"]
+        self.assertEqual(primary["apis"]["news"]["outcomes"],{"ok":1})
+        self.assertEqual(primary["apis"]["anns_d"]["outcomes"],{"transport_error":1})
+        self.assertEqual(primary["periods"]["trading"]["requests"],1)
+        self.assertEqual(primary["periods"]["trading"]["failed"],1)
+        source = final["sources"][0]
+        self.assertEqual(source["route"],"primary")
+        self.assertIsNone(source["expires_at"])
+
     def model_request(self,body,*,training=False,error=False):
         response = Mock()
         response.read.return_value = json.dumps(body).encode()
@@ -93,6 +121,73 @@ class UsageTests(unittest.TestCase):
         with patch.object(sys,"argv",argv),patch.object(model.urllib.request,"build_opener",return_value=opener):
             return model.infer_article({"full_text":"secret-article","title":"secret-title"},{},
                                        "secret-key",prompt="secret-prompt",validator=lambda row:row)
+
+    def test_rolling_minimax_has_exact_second_boundaries_and_pending_receipts(self):
+        self.take("08:00:00")
+        with patch("pipeline.usage_meter.clock.time",return_value=when("08:59:29")):
+            older = model_start("economic_release")
+            model_finish(older,True,{"prompt_tokens":7,"completion_tokens":2,"total_tokens":9})
+        with patch("pipeline.usage_meter.clock.time",return_value=when("08:59:30")):
+            boundary = model_start("market_reading")
+            model_finish(boundary,False,{"total_tokens":6})
+            model_finish(boundary,False,{"total_tokens":6})
+        with patch("pipeline.usage_meter.clock.time",return_value=when("09:00:00")):
+            model_start("trend_brief")
+        recent = self.result("09:00:30")["minimax"]["rolling"]
+        self.assertEqual((recent["60"]["requests"],recent["60"]["total_tokens"],recent["60"]["token_receipts"]),(2,6,1))
+        self.assertEqual(recent["3600"]["total_tokens"],15)
+        self.assertEqual(recent["86400"]["observed_seconds"],3630)
+        self.assertIsNone(recent["60"]["scopes"]["trend_brief"]["total_tokens"])
+        self.assertEqual(recent["60"]["scopes"]["news_analysis"]["total_tokens"],0)
+
+    def test_stage_note_reaches_actual_outbound_system_prompt(self):
+        from pipeline.minimax_prompts import save_note
+        path = self.state/"minimax-prompts.json"
+        save_note(path,"economic_release","补充：优先解释指标构成。",0)
+        opener = Mock()
+        response = Mock()
+        response.read.return_value = b'{"choices":[{"finish_reason":"stop","message":{"content":"{}"}}]}'
+        opener.open.return_value = nullcontext(response)
+        with patch.dict(os.environ,{"RADAR_MINIMAX_PROMPTS_FILE":str(path)}), \
+             patch.object(model.urllib.request,"build_opener",return_value=opener):
+            for stage in ("economic_release","market_reading"):
+                model.infer_article({"full_text":"article"},{}, "key",prompt="固定格式",
+                                    validator=lambda row:row,stage=stage)
+        outgoing = [json.loads(call.args[0].data)["messages"][0]["content"] for call in opener.open.call_args_list]
+        self.assertTrue(outgoing[0].startswith("固定格式"))
+        self.assertIn("优先解释指标构成",outgoing[0])
+        self.assertEqual(outgoing[1],"固定格式")
+
+    def test_per_stage_effort_reaches_model_and_preserves_legacy_shared_note(self):
+        from pipeline.minimax_prompts import ANSWER_STAGE, PLAN_STAGE, REVIEW_STAGE, save_note
+        path = self.state/"minimax-prompts.json"
+        path.write_text(json.dumps({"research_assistant":{"note":"原来的说明","revision":3}}))
+        opener = Mock()
+        response = Mock()
+        response.read.return_value = b'{"choices":[{"finish_reason":"stop","message":{"content":"{}"}}]}'
+        opener.open.return_value = nullcontext(response)
+        stages = (PLAN_STAGE, ANSWER_STAGE, "news_digest", "market_reading", "market_weekend_brief")
+        with patch.dict(os.environ, {"RADAR_MINIMAX_PROMPTS_FILE":str(path)}), \
+             patch.object(model.urllib.request,"build_opener",return_value=opener):
+            for stage in stages:
+                model.infer_article({"full_text":"article"},{}, "key",prompt="固定格式",
+                                    validator=lambda row:row,stage=stage)
+            save_note(path,ANSWER_STAGE,"新的回答说明",0,reasoning_effort="high")
+            save_note(path,PLAN_STAGE,"新的规划说明",0,reasoning_effort="max")
+            save_note(path,ANSWER_STAGE,"仅修改说明",1)
+            model.infer_article({"full_text":"article"},{}, "key",stage=ANSWER_STAGE,
+                                prompt="固定格式",validator=lambda row:row)
+            save_note(path,REVIEW_STAGE,"复核说明",0,reasoning_effort="low")
+            for stage in (ANSWER_STAGE, PLAN_STAGE, REVIEW_STAGE):
+                model.infer_article({"full_text":"article"},{"answer_effort":"low"},"key",stage=stage,
+                                    prompt="固定格式",validator=lambda row:row)
+        sent = [json.loads(call.args[0].data) for call in opener.open.call_args_list]
+        self.assertEqual([row["reasoning_effort"] for row in sent],
+                         ["medium","xhigh","medium","medium","medium","high","low","max","max"])
+        self.assertTrue(all("原来的说明" in row["messages"][0]["content"] for row in sent[:2]))
+        self.assertIn("仅修改说明",sent[-3]["messages"][0]["content"])
+        self.assertIn("复核说明",sent[-1]["messages"][0]["content"])
+        self.assertEqual(json.loads(path.read_text())[PLAN_STAGE]["reasoning_effort"],"max")
 
     def test_raw_usage_from_rejected_outputs_and_http_errors_model_scopes_and_privacy(self):
         self.take("09:29:00")
@@ -203,7 +298,7 @@ class UsageTests(unittest.TestCase):
         home=folder/"public-view.json"
         health=folder/"public-health.json"
         version=usage.file_version(home)
-        checked=[{"id":"sxdata","name":"SXData 行情与资讯"}]
+        checked=[{"id":"sxdata","name":"行情与资讯接口"}]
         source_fields=dict(sources=checked,sources_url="/data/connected-sources.json")
         self.assertEqual(json.loads(home.read_bytes()),{"market":[{"price":12}],"sectors":[{"name":"光刻胶"}],
                          "news":[{"source":"财联社","title":"测试快讯"}],
@@ -221,7 +316,7 @@ class UsageTests(unittest.TestCase):
         self.assertEqual(json.loads(news.read_bytes()),original)
         directory.write_text(json.dumps({"schema_version":1,"sources":[{"id":"minimax"},{"id":"sxdata"}]}))
         usage.publish_feeds(self.state,versions,site)
-        checked.append({"id":"minimax","name":"MiniMax"})
+        checked.append({"id":"minimax","name":"专属模型"})
         self.assertEqual(json.loads(home.read_bytes())["sources"],checked)
         self.assertEqual(json.loads(health.read_bytes())["sources"],checked)
         self.assertEqual(json.loads((site/"health.json").read_bytes())["sources"][0]["id"],"ecb")

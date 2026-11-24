@@ -2,7 +2,7 @@
 
 const RadarResearch = (() => {
   const labels = {stock:'股票', index:'大盘指数', sector:'板块'};
-  const groups = {intraday:'盘中指标', daily:'日线指标'};
+  const groups = {intraday:'盘中指标', daily:'日线指标', valuation:'收盘估值与交易指标'};
   const patterns = {stock:/^(?:\d{6}\.(?:SH|SZ|BJ|NQ)|\d{5,6}\.HK)$/, index:/^\d{6}\.(SH|SZ)$/,
     sector:/^\d{6}(?:\.(SH|SZ|SI)|R?\.TI)$/};
   const number = new Intl.NumberFormat('zh-CN', {maximumFractionDigits:4});
@@ -49,6 +49,7 @@ const RadarResearch = (() => {
   }
   function shortReason(reason) {
     if (!reason) return '等待所需数据';
+    if (/亏损/.test(reason)) return '数据源未发布该估值';
     if (reason.length<=20) return reason;
     if (/不同步|时点|时间差/.test(reason)) return '行情与基准时点未对齐';
     if (/不足|不够/.test(reason)) return /覆盖/.test(reason)?'成分覆盖不足':'有效样本不足';

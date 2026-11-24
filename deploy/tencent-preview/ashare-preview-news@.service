@@ -10,8 +10,10 @@ UMask=0077
 WorkingDirectory=/opt/ashare-radar-preview/runtime
 Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
 Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SCHEDULED_COLLECTION=1
 Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
 LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+LoadCredential=primary-data-token:/etc/ashare-radar-preview/primary-data-token
 LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
 ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/cloud_news.py %i
 TimeoutStartSec=550

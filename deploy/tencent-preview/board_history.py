@@ -1,6 +1,6 @@
 """Archive real stock observations and project complete sector rosters without page traffic."""
 from contextlib import closing
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 import gzip
 import json
 import math
@@ -8,8 +8,9 @@ import re
 import sys
 import threading
 
-from pipeline.calendar import SHANGHAI
+from pipeline.calendar import SHANGHAI, is_trading_day, previous_trading_day
 from constituent_live import MAX_AGE, WRITE_MINUTE, minute_sample, roster_codes, stock_observations
+from intraday_chart import WRITE_CHART_POINT
 
 BOARD = re.compile(r"[0-9]{6}R?\.(?:TI|SI)")
 BATCH = re.compile(r"[0-9]{12}\.json\.gz")
@@ -18,8 +19,11 @@ CREATE TABLE IF NOT EXISTS board_stock_minutes(day TEXT,minute TEXT,code TEXT,st
  PRIMARY KEY(day,minute,code)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS board_partial_minutes(day TEXT, code TEXT, minute TEXT, stamp TEXT, change REAL,
  quoted INTEGER, total INTEGER, PRIMARY KEY(day,code,minute)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS board_source_files(day TEXT,name TEXT,PRIMARY KEY(day,name)) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS board_source_files(day TEXT,name TEXT,prices_saved INTEGER NOT NULL DEFAULT 0,
+ PRIMARY KEY(day,name)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS board_stock_bases(day TEXT,code TEXT,previous_close REAL,PRIMARY KEY(day,code)) WITHOUT ROWID;
+CREATE TABLE IF NOT EXISTS board_history_recovered(day TEXT,code TEXT,minute TEXT,
+ PRIMARY KEY(day,code,minute)) WITHOUT ROWID;
 CREATE INDEX IF NOT EXISTS constituent_by_minute ON constituent_minutes(day,minute,code);
 """
 WRITE_STOCK = """INSERT INTO board_stock_minutes VALUES (?,?,?,?,?,?) ON CONFLICT(day,minute,code)
@@ -48,6 +52,7 @@ class BoardHistory:
         self.bases = set()
         self.summary = {}
         self.summary_dirty = True
+        self.history_version = None
         self.seen_quotes = {}
         self.archived_version = None
         self.snapshot = (None,{})
@@ -56,6 +61,8 @@ class BoardHistory:
             if 'rebuilt' not in {r[1] for r in db.execute('PRAGMA table_info(constituent_minutes)')}:
                 db.execute('ALTER TABLE constituent_minutes ADD COLUMN rebuilt INTEGER NOT NULL DEFAULT 0')
             db.executescript(SCHEMA)
+            if 'prices_saved' not in {r[1] for r in db.execute('PRAGMA table_info(board_source_files)')}:
+                db.execute('ALTER TABLE board_source_files ADD COLUMN prices_saved INTEGER NOT NULL DEFAULT 0')
 
     def quotes(self, now):
         names = ('board-stock-quotes','stock-quotes')
@@ -84,7 +91,8 @@ class BoardHistory:
             self.update_summary(row[0],row[1],row[2],row[3],row[4])
         self.summary_dirty = True
         self.bases = {r[0] for r in db.execute('SELECT code FROM board_stock_bases WHERE day=?',(day,))}
-        self.imported_files = {r[0] for r in db.execute('SELECT name FROM board_source_files WHERE day=?',(day,))}
+        self.imported_files = {r[0] for r in db.execute(
+            'SELECT name FROM board_source_files WHERE day=? AND prices_saved=1', (day,))}
         self.pending = {r[0] for r in db.execute('SELECT DISTINCT minute FROM board_stock_minutes WHERE day=?',(day,))}
         self.archive_files, self.seen_quotes, self.bad_files = [], {}, {}
         self.archived_version = None
@@ -193,6 +201,21 @@ class BoardHistory:
             self.summary[code] = row
             self.summary_dirty = True
 
+    def sync_recovery(self, db, day):
+        try:
+            version = (day,(self.store.private/"stock-minute-recovery-report.json").stat().st_mtime_ns)
+        except FileNotFoundError:
+            return
+        if version == self.history_version:
+            return
+        rows = db.execute("""SELECT c.code,c.stamp,c.change,c.quoted,c.total,max(c.minute)
+            FROM board_history_recovered h JOIN constituent_minutes c
+            ON c.code=h.code AND c.day=h.day AND c.minute=h.minute
+            WHERE h.day=? GROUP BY c.code""",(day,))
+        for code,stamp,change,count,total,_ in rows:
+            self.update_summary(code,stamp,change,count,total)
+        self.history_version = version
+
     def live_samples(self, db, quotes, now):
         cutoff = (now-MAX_AGE).isoformat(timespec='seconds')
         fresh = {c:r for c,r in quotes.items() if r['quote_at'] >= cutoff}
@@ -243,16 +266,26 @@ class BoardHistory:
                     packet = json.load(f)
                 received = datetime.fromisoformat(packet['received_at'])
                 if (packet.get('source') != 'sxdata_relay' or packet.get('trade_date') != self.day
-                        or received.tzinfo is None or received > now or received.astimezone(SHANGHAI).date() != now.date()
+                        or received.tzinfo is None or received > now
+                        or received.astimezone(SHANGHAI).date().isoformat() != self.day
                         or not isinstance(packet.get('stocks'),list)):
                     if received.tzinfo is None or received <= now:
                         self.bad_files[path] = path.stat().st_mtime_ns
                     continue
+                received = received.astimezone(SHANGHAI)
                 quotes = stock_observations(packet['stocks'],received,recent=False,per_minute=True)
                 with closing(self.store.db()) as db, db:
-                    changes = self.archive(db,quotes,received)
-                    db.execute('INSERT OR IGNORE INTO board_source_files VALUES(?,?)',(self.day,path.name))
-                self.remember(changes)
+                    receipt = db.execute('SELECT prices_saved FROM board_source_files WHERE day=? AND name=?',
+                                         (self.day,path.name)).fetchone()
+                    changes = self.archive(db,quotes,received) if receipt is None else None
+                    # Keep the original provider price, not a price inferred from the change.
+                    db.executemany(WRITE_CHART_POINT, (
+                        ('stock', row['code'], self.day, row['quote_at'][:16], row['quote_at'], row['price'])
+                        for row in quotes.values()
+                    ))
+                    db.execute('INSERT OR REPLACE INTO board_source_files VALUES(?,?,1)',(self.day,path.name))
+                if changes is not None:
+                    self.remember(changes)
                 self.imported_files.add(path.name)
             except (EOFError,ValueError,KeyError,TypeError,AttributeError,gzip.BadGzipFile):
                 try:
@@ -301,13 +334,25 @@ class BoardHistory:
         self.save_samples(db,samples,partial)
         return samples
 
-    def capture(self, now, replay_limit=6):
-        day = now.date().isoformat()
-        version, quotes = self.quotes(now)
+    def capture(self, now, replay_limit=None):
+        today = now.date()
+        clock = now.time()
+        if is_trading_day(today) is not True or clock < time(9, 30):
+            day = previous_trading_day(today)
+            if day is None:
+                return
+            day = day.isoformat()
+        else:
+            day = today.isoformat()
+        replay_only = day != today.isoformat() or clock > time(15, 5)
+        version, quotes = (None, {}) if replay_only else self.quotes(now)
+        if replay_limit is None:
+            replay_limit = 18 if replay_only else 6
         with closing(self.store.db()) as db, db:
             self.roll_day(db,day)
+            self.sync_recovery(db,day)
             rosters_changed = self.refresh_rosters(now,db)
-            if rosters_changed or version != self.archived_version:
+            if not replay_only and (rosters_changed or version != self.archived_version):
                 changes = self.archive(db,quotes,now,latest=True)
                 samples = self.live_samples(db,quotes,now)
                 db.commit()
@@ -315,7 +360,7 @@ class BoardHistory:
                 self.archived_version = version
                 for r in samples:
                     self.update_summary(r[0],r[3],r[5],r[6],r[7])
-        self.import_batches(now)
+        self.import_batches(now, limit=12 if replay_only else 2)
         # Read and write one historical minute per transaction. Web readers continue on WAL snapshots.
         due = sorted(m for m in self.pending if m <= now.isoformat(timespec='minutes')[:16])
         for minute in due[:replay_limit]:

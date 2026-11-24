@@ -16,7 +16,8 @@ from .calendar import shanghai_now
 from .news_content import text_hash
 from .sentiment import SW2021, _timestamp
 from .stock_api import _retry_after
-from .usage_meter import model_start, model_finish
+from .minimax_prompts import request_settings
+from .usage_meter import model_start, model_finish, model_scope
 
 ROOT = Path(__file__).resolve().parents[1]
 PROMPT_VERSION = 'fulltext-sw31-impact-v2-refs'
@@ -124,10 +125,10 @@ class ModelFailure(Exception):
     def __init__(self, code, retry=1800): self.code=code; self.retry=retry; super().__init__(code)
 
 
-def infer_article(article, config, key, *, prompt=None, validator=None):
+def infer_article(article, config, key, *, prompt=None, validator=None, stage=None):
     path = os.environ.get("RADAR_MINIMAX_COOLDOWN_DB")
     if not path:
-        return _infer_article(article, config, key, prompt=prompt, validator=validator)
+        return _infer_article(article, config, key, prompt=prompt, validator=validator, stage=stage)
     # Live and archive workers share credentials. Keep network I/O outside
     # the transaction so slow historical labels cannot block the live feed.
     try:
@@ -140,7 +141,7 @@ def infer_article(article, config, key, *, prompt=None, validator=None):
     except (sqlite3.Error, OSError):
         raise ModelFailure("shared_model_cooldown", 60) from None
     try:
-        return _infer_article(article, config, key, prompt=prompt, validator=validator)
+        return _infer_article(article, config, key, prompt=prompt, validator=validator, stage=stage)
     except ModelFailure as error:
         if (error.code == "redirect_blocked" or re.match(r"^http_(?:429|503|401|403)(?:_|$)", error.code) or
                 re.search(r"provider_(?:code_)?(?:1002|1004|1008|1039)(?:_|$)", error.code)):
@@ -155,20 +156,24 @@ def infer_article(article, config, key, *, prompt=None, validator=None):
         raise
 
 
-def _infer_article(article, config, key, *, prompt=None, validator=None):
+def _infer_article(article, config, key, *, prompt=None, validator=None, stage=None):
     body = article['full_text']
     if len(body) > int(config.get('max_input_characters', 250000)): raise ModelFailure('input_over_budget', 86400)
     spans = evidence_segments(body)
     user_input = {'title':article.get('title'),'source':article.get('source'),'published_at':article.get('published_at'),
         'input_scope':'entire_extracted_article_body','article_segments':[{'id':ref,'text':text} for ref,text in spans.items()]}
     if validator is not None and prompt and isinstance(article.get('digest_articles'),list):
-        user_input={'title':article.get('title'),'input_scope':'complete_collected_news_items','articles':article['digest_articles']}
-    payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': config.get('reasoning_effort', 'max'),
+        user_input={'title':article.get('title'),'input_scope':article.get('input_scope','complete_collected_news_items'),
+                    'articles':article['digest_articles']}
+    stage = stage or model_scope(digest=validator is not None and bool(article.get("digest_articles")))
+    instructions, effort = request_settings(stage, prompt or system_prompt(), config.get('reasoning_effort', 'max'),
+                                           answer_effort=config.get('answer_effort'))
+    payload = {'model': config.get('model', DEFAULT_MODEL), 'reasoning_effort': effort,
         'max_completion_tokens': config.get('max_completion_tokens', 32768),
-        'messages': [{'role': 'system', 'content': prompt or system_prompt()}, {'role': 'user', 'content': json.dumps(user_input,ensure_ascii=False)}]}
+        'messages': [{'role': 'system', 'content': instructions}, {'role': 'user', 'content': json.dumps(user_input,ensure_ascii=False)}]}
     request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, ensure_ascii=False).encode(),
         headers={'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}, method='POST')
-    event = model_start(digest=validator is not None and bool(article.get("digest_articles")))
+    event = model_start(stage)
     accepted, usage = False, None
     try:
         with urllib.request.build_opener(_NoRedirect()).open(request, timeout=240) as response:

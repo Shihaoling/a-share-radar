@@ -1,0 +1,314 @@
+/* The decorative sky follows the local clock across pages. */
+@property --market-daylight {syntax:"<number>";inherits:true;initial-value:0}
+@property --market-twilight {syntax:"<number>";inherits:true;initial-value:0}
+:root[data-market-theme] {
+  --market-light-weight:calc(100% * var(--market-daylight));
+  --market-warm-weight:calc(100% * var(--market-twilight));
+  --market-sky-top:color-mix(in srgb,#d4ebfa var(--market-light-weight),#101a2d);
+  --market-sky-bottom:color-mix(in srgb,#f7fafc var(--market-light-weight),#15223a);
+  --market-backdrop:linear-gradient(164deg,var(--market-sky-top),var(--market-sky-bottom) 68%);
+  --glass-light-cool:color-mix(in srgb,#ffffffd9 var(--market-light-weight),#89b9fb58);
+  --glass-light-color:color-mix(in srgb,#ffd1a2a6 var(--market-warm-weight),var(--glass-light-cool));
+  --glass-reflection:radial-gradient(ellipse at var(--glass-light-x,50%) -28%,var(--glass-light-color),transparent 62%);
+  --market-bar:linear-gradient(100deg,
+    color-mix(in srgb,#fbfdfff2 var(--market-light-weight),#142137ef),
+    color-mix(in srgb,#e8f5fdab var(--market-light-weight),#293951bf));
+}
+:root[data-market-theme] {
+  --market-ink:#23394f;
+  --market-muted:#586f87;
+  --market-border:#d9e5ef;
+  --market-surface:#fff;
+  --market-raised:#f1f7fc;
+  --market-hover:#e4f0fc;
+  --market-link:#235c9c;
+  --market-grid:#e1ebf5;
+  --market-recess:#edf4fb;
+  --market-price:#3a74bc;
+  --market-nav:linear-gradient(168deg,#223e58,#182b43 68%);
+}
+:root:is([data-market-theme="night"],[data-market-theme="dusk"]) {
+  color-scheme:dark;
+  --market-ink:#e0eaff;
+  --market-muted:#a7b9d1;
+  --market-border:#30425e;
+  --market-surface:#17263b;
+  --market-raised:#1e3048;
+  --market-hover:#263e59;
+  --market-link:#98caff;
+  --market-grid:#344b69;
+  --market-recess:#1e314a;
+  --market-price:#80bcff;
+  --market-nav:linear-gradient(165deg,#101d32,#0d1728 75%);
+  --ink:var(--market-ink);
+  --muted:var(--market-muted);
+  --line:var(--market-border);
+  --card:var(--market-surface);
+  --blue:var(--market-link);
+  --blue-pale:var(--market-hover);
+  --up:#ff949e;
+  --down:#78dbb3;
+  --up-bg:#402830;
+  --down-bg:#193e37;
+  --amber:#e3bf79;
+  --shadow:0 3px 18px #050b172f;
+}
+[data-market-theme="dawn"] {
+  --market-nav:linear-gradient(164deg,#324050,#253b53 67%,#1c304a);
+}
+:root[data-market-theme="dusk"] {
+  --market-nav:linear-gradient(162deg,#2a2b44,#171e33 77%);
+}
+[data-market-theme] body {
+  background:var(--market-backdrop) fixed;
+  color:var(--market-ink);
+}
+[data-market-theme] :is(.topbar,.masthead,.mast) {
+  background:var(--market-bar);
+}
+:is([data-market-theme="day"],[data-market-theme="dawn"]) :is(.masthead,.mast) :is(a,span) {color:#2d506c}
+:is([data-market-theme="day"],[data-market-theme="dawn"]) :is(.masthead,.mast) span {border-color:var(--market-border)}
+[data-market-theme] .sidebar {background:var(--market-nav)}
+[data-market-theme] .market-state {
+  background:var(--market-surface);
+  color:var(--market-ink);
+  gap:9px;
+}
+[data-market-theme] :is(.chart,.ac-svg) .lunch-break {fill:var(--market-recess)}
+[data-market-theme] .chart > line[stroke-dasharray="3 5"] {stroke:var(--market-grid)}
+[data-market-theme] .chart .session-line {stroke:var(--market-price)}
+[data-market-theme] .ac-line.ac-price {stroke:var(--market-price)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.chart text,.ac-axis) {fill:var(--market-muted)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-grid {stroke:var(--market-grid)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-recess {fill:var(--market-recess)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-drawdown {fill:#3b2a39}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-guide {stroke:#afc4dd}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.ac-dot.ac-price,.ac-focus.ac-price) {fill:var(--market-price)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-line.ac-average {stroke:#e4b776}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .ac-line.ac-factor {stroke:#74ccb7}
+
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.topbar,.masthead,.mast) a,
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.breadcrumb strong,.clock,.market-state,.stat-top,.panel-title,.chart-readout strong,
+  .news-title a,.news-ai-lead,.brief-body p,.sector-name,.leader-row,.research h2,.research h3,
+  .research-metric,.research-metric h4,.metric-info dd,.asset-chart-view,.profile,.members,.card,.economic-day,.economic-detail h5,
+  .economic-detail dt,.economic-metrics dd,.metric-dialog,.metric-dialog-head h3,.member-name,.member-link,.pager button) {
+  color:var(--market-ink);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.breadcrumb,.panel-subtitle,.stat-source,.stat-bottom,.panel-tools,.chart-meta span,
+  .chart-footer,.chart-readout,.quote-caption,.chart-data-note,.ticker,.text-button,.mini-info,.quote-time,.breadth,
+  .directory-note,.directory-foot p,.directory-snapshot,.directory-pager,.trend-controls,.trend-leader-preview,
+  .trend-evidence,.news-meta,.news-summary,.news-tone-legend,.news-sector-counts,.news-tone-counts,.news-sector-note,
+  .news-ai-label,.news-ai-label>span:last-child,.news-impact-row blockquote,.market-news-links details>div,
+  .weekend-topics summary,.brief-references,.economic-prompt,.economic-release-note,.economic-release-source,
+  .economic-release-analysis li small,.economic-detail header time,.economic-release-analysis>small,
+  .economic-metrics dd span,.economic-metrics dt,.economic-level-metrics dd small,.economic-source-origin,
+  .metric-meaning,.metric-context,.metric-info dt,.metric-value small,#research-date,.research-status,
+  .ac-time,.ac-context,.ac-legend,.ac-note,.ac-relative-title,.ac-empty,#asset-common-time,
+  .member-live-foot,.notice,.side-caption,.side-label,.trend-date,.trend-filter,.news-tone-row .tone-prefix,
+  .kv span:last-child,.empty strong,.banner button) {
+  color:var(--market-muted);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.outline-button,.pill-button,.filter,.search,.metric,.profile,.members,.research,
+  .asset-chart-view,.card,.ac-arrow,.ac-select,.economic-nav button,.trend-filter select,.directory-filters button,
+  .directory-pager button,.metric-dialog,.economic-grid td,.economic-detail-grid>div,.economic-release,.trend-leader-table,
+  .skip-link,.skip,.empty-chart span) {
+  background:var(--market-surface);
+  border-color:var(--market-border);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.segmented,.heat-tile,.brief-topics article,.trend-detail,.news-text-card,
+  .news-ai-summary,.news-digest,.digest-evidence[open],.news-text-card[open],.info-strip,.banner,.metric-formula,
+  .metric-help,.economic-grid th,.economic-grid .is-past,.economic-grid .economic-outside,.economic-detail,
+  .economic-detail-grid>.economic-formula,.economic-metrics>div,.economic-source-address,.news-tone-bar,
+  .research-metric,.member-live,.ac-controls,.ac-empty,.sector-listing,.chain,.news-load-more,
+  .form-body fieldset,table thead th) {
+  background:var(--market-raised);
+  border-color:var(--market-border);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.filter.active,.segmented button.active,.segmented button[aria-pressed="true"],
+  .directory-filters button[aria-pressed="true"],.ac-choice[aria-pressed="true"],.trend-table .trend-active,
+  .economic-grid .is-today,.economic-event,.economic-event:hover,.economic-event[aria-pressed="true"],.economic-status,
+  .sector-quote-table tbody tr:hover,.sector-quote-table tbody tr.selected,.outline-button:hover,.economic-nav button:hover) {
+  background:var(--market-hover);
+  border-color:#56749b;
+  color:var(--market-link);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.segmented button,.directory-filters button,.directory-pager button,.filter,
+  .outline-button,.ac-arrow,.ac-choice,.ac-select,.search input,.economic-nav button,.economic-detail,
+  .economic-grid th,.economic-grid .is-past .economic-day,table th) {color:var(--market-ink)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .economic-grid .is-today .economic-day {color:var(--market-link)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .sector-quote-table tbody th {background:transparent}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .economic-grid :is(td,th) {border-color:var(--market-border)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .is-past .economic-event {
+  background:#25384e;color:var(--market-muted);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.market-news-links summary,.news-impact-details>summary,.trend-sort span,
+  .directory-details,.metric-help,.metric-formula,.economic-source-address,.economic-level-source,
+  .economic-release-analysis details,.research-metric summary,.member-jump,.member-link,.secondary-details>summary) {color:var(--market-link)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.heat-tile.positive,.heat-tile.positive.strong,.trend-level-1,.trend-level-2) {
+  background:var(--up-bg);color:var(--up);border-color:#724454;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.heat-tile.negative,.heat-tile.negative.strong,.trend-level--1,.trend-level--2) {
+  background:var(--down-bg);color:var(--down);border-color:#3a695d;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.trend-level-0,.trend-pending) {background:#293b56;color:var(--market-muted)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.stat-card.selected-index,.heat-tile[aria-pressed="true"]) {
+  box-shadow:0 0 0 1px #78aadb;
+  border-color:#85b8eb;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .stat-card.up {
+  background:linear-gradient(140deg,var(--market-surface) 32%,#322535);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .stat-card.down {
+  background:linear-gradient(140deg,var(--market-surface) 32%,#16363b);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .stat-card .stat-value {
+  color:var(--market-ink);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .weekend-topics article:last-child {
+  background:linear-gradient(150deg,#233355,#1b2d46 75%);
+  border-color:#4a5f87;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .weekend-topics article:last-child h4 {color:#c8d7ff}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .research-metric .metric-value.up {color:var(--up)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.research-metric .metric-value.down,.ac-study-value,.source-state.ok) {color:var(--down)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .metric-note {color:var(--amber)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.metric-info,.leader-row,.secondary-details,tbody td) {
+  border-color:var(--market-border);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.chain,.market-overview td,.sector-layout td,.news-grid td,.news-sector-table td):not(.up,.down) {
+  color:var(--market-muted);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .members tbody tr:nth-child(even) {background:var(--market-raised)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .sector-name {background:transparent}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.news-load-more:disabled,.tag:not(.up,.down)) {background:var(--market-raised);color:var(--market-muted)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .tag.reliable {background:var(--down-bg);color:var(--down)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .tag.rumor {color:var(--amber)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .chart-readout[data-missing="true"] strong,
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.ac-current.ac-missing,.ac-study-value.ac-missing) {color:var(--up)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .quote-caption :is(.current-quote,span) {color:var(--market-muted)}
+
+:is([data-market-theme="night"],[data-market-theme="dusk"]) #research-assistant {
+  --assistant-ink:#e3efff;
+  --assistant-soft:#b1c4dd;
+  --assistant-key:#aedaff;
+  --assistant-rim:#aecbfa80;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.assistant-toggle,.assistant-dock,.assistant-morph) {
+  border-color:#7a9ac479;
+  box-shadow:0 0 0 1px #c0d7ff1c,0 12px 38px #050e2059,inset 0 0 1px 1px #d2e4ff55;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .assistant-glass::after {
+  background:var(--glass-reflection),
+    radial-gradient(ellipse at 102% 103%,#7ebaff3b,transparent 50%),
+    linear-gradient(148deg,#1d3356d6,#132338eb 55%,#233d5bdd);
+  box-shadow:inset 1px 2px 1px #c5ddff85,inset -1px -1px 1px #8ac9f980;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .assistant-orb {
+  background:radial-gradient(ellipse at 33% 23%,#f2f7ff,#b9d8ff 13%,transparent 43%),
+    radial-gradient(ellipse at 68% 78%,#7ad0fb,transparent 49%),linear-gradient(140deg,#667dca,#2e4e8d 67%,#388eba);
+  box-shadow:inset 0 -1px 4px #324774,0 1px 8px #b4d7ff52;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.assistant-skills button,.assistant-control,.assistant-form,.assistant-response:not(:empty),
+  .assistant-header .assistant-history-menu,.assistant-question) {
+  background:#1e3552f2;color:var(--assistant-ink);border-color:#6380a86f;
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .assistant-form-bar button {background:#467bb1}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .assistant-question {background:#294768}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) .assistant-error {color:#ffb6ae}
+
+/* Clear glass surfaces keep the chart and table content on an unfiltered layer. */
+:root[data-market-theme] {
+  --glass-tint:color-mix(in srgb,var(--market-surface) 75%,transparent);
+  --glass-rim:#ffffffca;
+  --glass-frame:#9ebed0a8;
+  --glass-accent:#7bb7e328;
+  --glass-edge:#97ccef80;
+  --glass-shadow:#3160841f;
+  --glass-lens:#365879f6;
+  --glass-lens-rim:#9ccdffab;
+  --glass-lens-shine:#dceeff8a;
+}
+:root:is([data-market-theme="night"],[data-market-theme="dusk"]) {
+  --glass-tint:color-mix(in srgb,var(--market-surface) 74%,transparent);
+  --glass-rim:#d2e9ff72;
+  --glass-frame:#8bb5e279;
+  --glass-accent:#6eb5f82b;
+  --glass-edge:#8bc9fc6b;
+  --glass-shadow:#050c1d55;
+  --glass-lens:#233e5af6;
+  --glass-lens-rim:#8fc7fab5;
+  --glass-lens-shine:#cce8ffa2;
+}
+:root:is([data-market-theme="dawn"],[data-market-theme="dusk"]) {
+  --glass-accent:#efa9873f;
+  --glass-edge:#efbe9b80;
+  --glass-lens-rim:#e8bfa5ba;
+}
+:root[data-market-theme] :is(.panel,.stat-card,.profile,.members,.research,.asset-chart-view,.research-metric,.card,
+  .reader-summary,.reader-document,.brief-topics article,.news-ai-summary,.trend-detail,.economic-detail,.metric-dialog) {
+  background:
+    var(--glass-reflection),
+    radial-gradient(ellipse at 106% 110%,var(--glass-accent),transparent 62%),
+    linear-gradient(161deg,var(--glass-accent) 0%,transparent 30% 73%,var(--glass-accent) 100%),
+    var(--glass-tint);
+  border-color:var(--glass-frame);
+  box-shadow:inset 0 1px 0 var(--glass-rim),inset 1px 0 0 var(--glass-edge),
+    inset -1px -1px 0 var(--glass-edge),0 6px 20px -12px var(--glass-shadow);
+}
+.brief-topics article {overflow-wrap:anywhere}
+:root[data-market-theme] .stat-card.selected-index {
+  border-color:var(--market-price);
+  box-shadow:inset 0 1px 0 var(--glass-rim),inset 0 0 0 1px var(--glass-edge),
+    0 4px 16px -8px color-mix(in srgb,var(--market-price) 55%,transparent);
+}
+
+.nav {position:relative;isolation:isolate}
+.nav.glass-nav-ready > button {position:relative;z-index:1}
+.nav.glass-nav-ready > button.active,
+.nav.glass-nav-ready > button.active:hover {background:transparent}
+.nav.glass-nav-ready > button:focus-visible {
+  outline:2px solid #bfe4ff;
+  outline-offset:-3px;
+  z-index:3;
+}
+.glass-optics-defs {position:absolute;pointer-events:none}
+.glass-nav-lens {
+  position:absolute;inset:0 auto auto 0;z-index:2;pointer-events:none;
+  display:none;overflow:hidden;border-radius:13px;contain:paint;
+  background:
+    var(--glass-reflection,radial-gradient(ellipse at 13% -48%,#a8d8ff83,transparent 64%)),
+    radial-gradient(ellipse at 100% 136%,#76bbf179,transparent 65%),
+    linear-gradient(153deg,#a5d9ff62 0%,#366eab24 28%,#09172930 75%,#7cbfff36 100%),
+    var(--glass-lens,#2d4c6af6);
+  box-shadow:0 6px 14px -5px #020b1e9e;
+}
+.glass-nav-ready .glass-nav-lens {display:block}
+.glass-nav-lens::after {
+  content:"";position:absolute;inset:0;border:1px solid var(--glass-lens-rim,#b5deffb0);border-radius:inherit;
+  box-shadow:inset 0 1px 1px var(--glass-lens-shine,#e4f2ffb0),inset 1px 0 1px #a4d8ff6b,
+    inset -1px -2px 2px #6cbcf195;
+}
+.glass-nav-sample {position:absolute;left:0;top:0}
+.nav .glass-nav-copy {
+  position:absolute;max-width:none;margin:0;min-width:0;color:#f5fbff;
+  background:none;border:none;box-shadow:none;outline:none;
+}
+.nav .glass-nav-copy svg {color:#c4e6ff}
+.glass-nav-moving .glass-nav-lens {
+  will-change:transform;
+  filter:brightness(1.09) saturate(1.12);
+}
+@media (prefers-contrast:more) {
+  :root[data-market-theme] {--glass-tint:var(--market-surface)}
+}
+@media (forced-colors:active) {
+  .glass-nav-ready .glass-nav-lens {display:none}
+  .nav.glass-nav-ready > button:is(.active,.active:hover) {background:Highlight;color:HighlightText}
+  .nav.glass-nav-ready > button.active svg {color:HighlightText}
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.account,.dashboard) :is(input,textarea,select,.secondary),
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.members,.research) :is(input,select,.pager button) {
+  background:var(--market-raised);border-color:var(--market-border);color:var(--market-ink);
+}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.account,.dashboard) :is(p,small,label,dt) {color:var(--market-muted)}
+:is([data-market-theme="night"],[data-market-theme="dusk"]) :is(.account,.dashboard) :is(.section-note,.help) {color:var(--market-muted)}

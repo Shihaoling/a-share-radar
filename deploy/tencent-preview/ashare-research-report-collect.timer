@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh the broker report catalog during A-share trading
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 09:30..59:49 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 10,13,14:*:49 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 11:00..29:49 Asia/Shanghai
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

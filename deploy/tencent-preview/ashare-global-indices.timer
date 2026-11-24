@@ -1,0 +1,12 @@
+[Unit]
+Description=Refresh global indices after the Hong Kong and New York closes
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 16:25:00 Asia/Hong_Kong
+OnCalendar=Mon..Fri *-*-* 18:15:00 Asia/Hong_Kong
+OnCalendar=Mon..Fri *-*-* 16:25:00 America/New_York
+OnCalendar=Mon..Fri *-*-* 18:15:00 America/New_York
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -17,6 +17,7 @@ from economic_releases import collect_release_levels, collect_releases, news_for
 from market_insights import ask
 from pipeline.calendar import SHANGHAI, shanghai_now
 from pipeline.minimax_news import DEFAULT_MODEL, ModelFailure
+from pipeline.minimax_prompts import effective_prompt
 from relay_common import STATE
 from relay_quotes import publish
 from trend_observations import read
@@ -278,7 +279,7 @@ def update_release_analysis(output, external_news, key, now, path):
         try:
             result = ask("经济指标发布数据与相关资讯",
                          [{"id":ident,**material} for ident,material in inputs.items()],key,RELEASE_PROMPT,
-                         lambda value:validate_release_analysis(value,inputs))
+                         lambda value:validate_release_analysis(value,inputs),stage="economic_release")
         except ModelFailure as error:
             print(json.dumps({"economic_release_analysis":error.code,"batch":len(batch)}),flush=True)
             if not error.code.startswith("invalid_analysis") and error.code!="incomplete_response":
@@ -318,7 +319,8 @@ def main():
                 row[field] = cached[field]
     collect_releases(events,now,config.get("release_observations",{}),backfill=update_schedule)
     collect_release_levels(events)
-    source_hash = sha256((PROMPT+json.dumps(indicators,sort_keys=True,ensure_ascii=False)).encode()).hexdigest()
+    source_hash = sha256((effective_prompt("economic_overview",PROMPT)+
+                          json.dumps(indicators,sort_keys=True,ensure_ascii=False)).encode()).hexdigest()
     output = {"schema_version":1,"source":"official_economic_calendar","model":DEFAULT_MODEL,"updated_at":now.isoformat(),
               "schedule_day":day,"events":events,"indicators":indicators,"analysis":prior.get("analysis",{}),
               "analysis_version":prior.get("analysis_version")}
@@ -328,7 +330,8 @@ def main():
     if output["analysis_version"]!=source_hash or output["analysis"].keys()!=indicators.keys():
         try:
             result = ask("重要经济指标关注重点与可能影响",
-                         [{"id":code,**row} for code,row in indicators.items()],key,PROMPT,lambda obj:validate(obj,indicators.keys()))
+                         [{"id":code,**row} for code,row in indicators.items()],key,PROMPT,
+                         lambda obj:validate(obj,indicators.keys()),stage="economic_overview")
             output.update(analysis=result["items"],analysis_version=source_hash)
             publish(path,output)
         except ModelFailure as error:

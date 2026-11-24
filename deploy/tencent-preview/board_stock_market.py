@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 from tempfile import NamedTemporaryFile
 
+from pipeline.calendar import previous_trading_day
 from board_quote_watch import STOCK
 
 
@@ -85,7 +86,7 @@ class StockMarketBatches:
         self.next_group = 0
         self.pages = {}
         self.page_limits = {}
-        self.market_transport_failures = 0
+        self.market_response_failures = 0
         self.missing = set()
         self.supplement_cursor = ''
         self.next_supplement = 0
@@ -125,7 +126,7 @@ class StockMarketBatches:
         if plan is None:
             self.priority_next = False
             return
-        self.market_transport_failures = 0
+        self.market_response_failures = 0
         count = len(observed & plan.symbols.keys())
         if plan.kind == 'supplement':
             self.supplement_cursor = plan.group
@@ -149,14 +150,16 @@ class StockMarketBatches:
     def unavailable(self, plan, error, stamp):
         # A failed transport supplies no quotes. Give the known direct batch
         # the next allowed slot, retaining the group/page cursor for retry.
-        if plan is not None and error == 'transport_error':
+        if plan is not None and error in ('transport_error', 'budget_exhausted'):
             self.priority_next = True
             if plan.kind == 'supplement':
                 self.next_supplement = stamp + 180
             if plan.kind == 'whole':
-                self.market_transport_failures += 1
-                if self.market_transport_failures >= 2:
+                self.market_response_failures += 1
+                if self.market_response_failures >= 2:
                     self.split_until = stamp + self.fallback_seconds
+            if plan.kind == 'group' and len(plan.symbols) > self.page_size:
+                self.pages.setdefault(plan.group, '')
 
 
 class StockBatchArchive:
@@ -199,7 +202,9 @@ class StockBatchArchive:
             self.cleaned_day = day
 
     def clean(self, day):
-        cutoff = (day - timedelta(days=2)).isoformat()
+        # Keep Friday's replayable input through the next Monday, including long weekends.
+        prior = previous_trading_day(day)
+        cutoff = min(day - timedelta(days=2), prior or day).isoformat()
         for entry in self.directory.iterdir():
             if entry.name >= cutoff or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', entry.name):
                 continue

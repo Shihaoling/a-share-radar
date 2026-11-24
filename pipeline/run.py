@@ -141,11 +141,11 @@ def run(offline=False, enable_mlp=False, output=None, quotes_only=False, stock_a
     if not quotes_only:
         dashboard['news_archive_summary'] = archive_news(dashboard, now, root=equity_root.parent/'news_archive')
     dashboard.update(update_predictions(dashboard, previous=previous, config=config, now=now))
-    if config.get('forecast_enabled', True):
-        dashboard = update_equity_predictions(dashboard, equity_root, equity_root / 'models', now,
-            {**config, 'equity': {**config.get('equity', {}), 'reuse_only': quotes_only}})
-        dashboard = update_daily_forecasts(dashboard, ROOT / 'data/daily_forecast/models', now, previous=previous)
-        dashboard = update_direction_probabilities(dashboard, now=now, previous=previous)
+    dashboard = update_equity_predictions(dashboard, equity_root, equity_root / 'models', now,
+        {**config, 'equity': {**config.get('equity', {}), 'reuse_only': quotes_only}})
+    # Locally trained index/sector bundles are portable JSON; this call only infers.
+    dashboard = update_daily_forecasts(dashboard, ROOT / 'data/daily_forecast/models', now, previous=previous)
+    dashboard = update_direction_probabilities(dashboard, now=now, previous=previous)
     dashboard['daily_review'] = daily_review(dashboard, now)
     dashboard['status'] = 'ready' if any(m.get('price') is not None for m in dashboard.get('market',[])) or any(s.get('price') is not None or s.get('proxy',{}).get('price') is not None for s in dashboard.get('sectors',[])) else ('partial' if dashboard.get('news') else 'pending')
     # Entity histories are canonical; avoid publishing the same bars twice.

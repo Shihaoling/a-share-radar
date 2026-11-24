@@ -1,14 +1,17 @@
 """Persist official completed daily inputs and as-of valuation anchors."""
 
 from datetime import datetime, time, timedelta
+import fcntl
 import json
 import math
 import os
 from pathlib import Path
+import sys
 
 from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
 from pipeline.stock_api import FIELDS, _Failure, _basic_records, _index_bars, _index_code, _sw_bars
 from pipeline.trend import positive
+import global_indices
 from relay_common import STATE, relay_client
 from relay_quotes import SOURCE, publish
 
@@ -17,7 +20,9 @@ STOCK_CAPS = OUTPUT.with_name("trend-stock-caps.json")
 
 
 def read_daily():
-    daily = json.loads(OUTPUT.read_text()) if OUTPUT.exists() else {"bars": {}, "stocks": {}}
+    daily = json.loads(OUTPUT.read_text()) if OUTPUT.exists() else {
+        "schema_version": 1, "source": "sxdata_daily", "bars": {}, "stocks": {},
+    }
     daily.setdefault("market_caps", {})
     return daily
 
@@ -178,5 +183,26 @@ def refresh():
                           "valued_stocks": sum(value["quote_date"] == date for value in daily["stocks"].values())}), flush=True)
 
 
-if __name__ == "__main__":
-    refresh()
+def refresh_global():
+    def request(api, params):
+        with relay_client(token, timeout=15) as client:
+            return client.request_primary(api, params)
+
+    token = (Path(os.environ["CREDENTIALS_DIRECTORY"]) / "sxdata-token").read_text().strip()
+    FIELDS["index_global"] = "ts_code,trade_date,close,pre_close,pct_chg"
+    updates = global_indices.collect(shanghai_now(), request, read_daily().get("global_indices", {}))
+    if updates:
+        with OUTPUT.with_suffix(".lock").open("a") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            daily = read_daily()
+            daily["global_indices"] = global_indices.merge(daily.get("global_indices", {}), updates)
+            publish(OUTPUT, daily)
+    print(json.dumps({"global_indices_latest_date":{code:max(bars) for code,bars in updates.items()}}), flush=True)
+
+
+if __name__ == "__main__" and sys.argv[1:] == ["--global"]:
+    refresh_global()
+elif __name__ == "__main__":
+    with OUTPUT.with_suffix(".lock").open("a") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        refresh()

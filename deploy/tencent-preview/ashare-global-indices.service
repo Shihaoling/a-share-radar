@@ -1,0 +1,20 @@
+[Unit]
+Description=Refresh Hong Kong and U.S. index closing prices
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+LoadCredential=primary-data-token:/etc/ashare-radar-preview/primary-data-token
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/market_daily.py --global
+TimeoutStartSec=180
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes

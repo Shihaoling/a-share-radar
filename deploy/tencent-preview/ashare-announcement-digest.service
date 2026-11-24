@@ -1,0 +1,26 @@
+[Unit]
+Description=Refresh the disclosure digest when new records arrive
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
+Environment=RADAR_MINIMAX_COOLDOWN_DB=/var/lib/ashare-radar-preview/news/minimax-cooldown.sqlite3
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+LoadCredential=primary-data-token:/etc/ashare-radar-preview/primary-data-token
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/company_announcements.py --digest
+TimeoutStartSec=475
+MemoryMax=220M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

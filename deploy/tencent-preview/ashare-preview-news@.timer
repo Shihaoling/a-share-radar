@@ -2,8 +2,10 @@
 Description=Schedule A-share Radar cloud news %i
 
 [Timer]
-OnCalendar=*-*-* 09..15:00/2:00 Asia/Shanghai
-OnCalendar=*-*-* 00..08,16..23:00/20:00 Asia/Shanghai
+OnCalendar=*-*-* *:00/10:19 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 09:30..58/2:19 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 10,13,14:00/2:19 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 11:00..28/2:19 Asia/Shanghai
 AccuracySec=1s
 Persistent=true
 

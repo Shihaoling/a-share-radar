@@ -130,9 +130,9 @@ def headline_inputs(now, daily, live, stocks, catalog):
             "industry_total":len(industries)}
 
 
-def ask(title, packet, key, prompt, validator):
+def ask(title, packet, key, prompt, validator, *, stage):
     return infer_article({"title": title, "full_text": json.dumps(packet, ensure_ascii=False), "digest_articles": packet},
-                         MODEL_CONFIG, key, prompt=prompt, validator=validator)
+                         MODEL_CONFIG, key, prompt=prompt, validator=validator,stage=stage)
 
 
 def breadth(rows):
@@ -194,7 +194,8 @@ def main():
                       *[{"id": aid, "title": article["title"], "segments":[{"id":ref,"text":text} for ref,text in spans.items()]}
                         for aid, (_,spans,article) in inputs.items()]]
             try:
-                reply = ask(f"{day} 同花顺热门板块影响", packet, key, THEME_PROMPT, lambda obj: validate_themes(obj, inputs, names))
+                reply = ask(f"{day} 同花顺热门板块影响", packet, key, THEME_PROMPT,
+                            lambda obj: validate_themes(obj, inputs, names),stage="market_themes")
             except ModelFailure as error:
                 if limit > 4 and (error.code.startswith("invalid_analysis") or error.code == "incomplete_response"):
                     limit //= 2

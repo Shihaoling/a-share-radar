@@ -12,6 +12,7 @@ import hashlib
 import errno
 import http.client
 import json
+import gzip
 import math
 import os
 import re
@@ -27,7 +28,7 @@ from pathlib import Path
 
 from pipeline.calendar import SHANGHAI, is_trading_day, market_session, previous_trading_day, shanghai_now
 
-from .data_service import ENDPOINT, token_for_api, credential_matches, reserve_request, finish_request, failed
+from .data_service import ENDPOINT, PRIMARY_ENDPOINT, token_for_api, credential_matches, primary_token, reserve_request, finish_request, failed
 MAX_BYTES = 4 * 1024 * 1024
 MIN_HISTORY_BARS = 181
 ROW_PARSER_VERSION = 2
@@ -170,7 +171,7 @@ def _transport_kind(error, received_headers):
 
 
 @contextmanager
-def _service_errors(api, now, *, event=None, transport_retry=60, redirect_retry=3600):
+def _service_errors(api, now, *, event=None, transport_retry=60, redirect_retry=3600, primary=False):
     response = {}
     started = time.monotonic()
     transport = None
@@ -196,7 +197,7 @@ def _service_errors(api, now, *, event=None, transport_retry=60, redirect_retry=
     outcome = ("http_429" if status == 429 else "provider_429" if limited and failure.provider_code == 429
                else "provider_rate_limited" if limited else failure.code)
     failed(api, failure.retry_seconds or 60, host=failure.host or limited,
-           code="rate_limited" if limited else failure.code)
+           code="rate_limited" if limited else failure.code, **({"primary":True} if primary else {}))
     finish_request(api, event, outcome, duration_ms, status, transport)
     raise failure from None
 
@@ -223,7 +224,7 @@ def _provider_reason(payload):
     return 'provider_error'
 
 
-def _rows(payload, api):
+def _rows(payload, api, *, primary=False):
     if not isinstance(payload, dict) or type(payload.get("code")) is not int:
         raise _Failure("invalid_payload")
     code = payload["code"]
@@ -236,7 +237,7 @@ def _rows(payload, api):
         raise _Failure("invalid_payload")
     fields, items = data.get("fields"), data.get("items")
     # The relay omits column names when this membership query has no matches.
-    if api == "ths_member" and fields == [] and items == []:
+    if (primary or api == "ths_member") and fields == [] and items == []:
         return []
     expected = FIELDS[api].split(",")
     if (not isinstance(fields, list) or not all(isinstance(f, str) for f in fields)
@@ -252,6 +253,8 @@ class _Client:
     def __init__(self, token, cfg, now):
         if not credential_matches(token): raise _Failure("credential_mismatch",3600)
         self._token = token
+        self._primary_token = primary_token()
+        self.route = None
         self.url = _endpoint(cfg)
         self.now = now
         self.max_requests = int(_bounded(cfg.get("max_requests"), 12, 0, 12))
@@ -277,38 +280,73 @@ class _Client:
                 time.sleep(delay)
         if self.remaining() <= 0:
             raise _Failure("budget_exhausted")
-        body = json.dumps({"api_name": api, "token": token_for_api(self._token,api), "params": params,
-                           "fields": FIELDS[api]}, separators=(",", ":")).encode("utf-8")
-        request = urllib.request.Request(self.url, data=body, method="POST", headers={
-            "Content-Type": "application/json", "Accept": "application/json",
-            "User-Agent": "A-share-radar/daily-supplement"})
-        event = _service_before(api, self.remaining(), self.interval)
+        self.route = None
+        if self._primary_token and api != "rt_sw_k":
+            try:
+                rows = self._send(api, params, primary=True)
+                if rows or api not in {"rt_k","rt_idx_k"}:
+                    return rows
+            except _Failure as error:
+                if error.code in ("gate_unavailable","local_rate_limit","shared_spacing","adaptive_spacing"):
+                    raise
+                if self.remaining() <= 0:
+                    raise
+                # A route-local denial, timeout or rate limit leaves the backup eligible.
+                self.count -= int(self.route == "primary")
+            else:
+                self.count -= 1
+        return self._send(api, params)
+
+    def request_primary(self, api, params, *, bulk=False):
+        if not self._primary_token or api == "rt_sw_k":
+            raise _Failure("primary_not_configured")
+        self.route = None
+        return self._send(api, params, primary=True, bulk=bulk)
+
+    def _send(self, api, params, *, primary=False, bulk=False):
+        url = PRIMARY_ENDPOINT if primary else self.url
+        credential = self._primary_token if primary else token_for_api(self._token,api)
+        body = json.dumps({"api_name":api, "token":credential, "params":params,
+                           "fields":FIELDS[api]},separators=(",",":")).encode("utf-8")
+        headers = {"Content-Type":"application/json","Accept":"application/json",
+                   "User-Agent":"A-share-radar/daily-supplement"}
+        if primary:
+            headers["Accept-Encoding"] = "gzip"
+        request = urllib.request.Request(url, data=body, method="POST", headers=headers)
+        options = {"primary":True,"bulk":bulk} if primary else {}
+        event = _service_before(api, self.remaining(), self.interval, **options)
         self.count += 1
         self.last = time.monotonic()
-        with _service_errors(api, self.now, event=event) as observed:
-            with self.opener.open(request, timeout=min(self.timeout, self.remaining())) as response:
-                observed["http_status"] = getattr(response, "status", 200)
-                if response.geturl() != ENDPOINT:
-                    raise _Failure("redirect_blocked", 3600)
-                status = getattr(response, "status", 200)
+        self.route = "primary" if primary else "backup"
+        with _service_errors(api, self.now, event=event, **({"primary":True} if primary else {})) as observed:
+            with self.opener.open(request, timeout=min(self.timeout,self.remaining())) as response:
+                observed["http_status"] = getattr(response,"status",200)
+                if response.geturl() != url:
+                    raise _Failure("redirect_blocked",3600)
+                status = getattr(response,"status",200)
                 if status != 200:
-                    raise _http_failure(status, response.headers, self.now, 3600)
+                    raise _http_failure(status,response.headers,self.now,3600)
                 length = response.headers.get("Content-Length") if response.headers else None
                 if length and (not str(length).isdigit() or int(length) > MAX_BYTES):
                     raise _Failure("response_too_large")
-                raw = response.read(MAX_BYTES + 1)
-                if not isinstance(raw, bytes) or len(raw) > MAX_BYTES:
+                if primary and response.headers and response.headers.get("Content-Encoding") == "gzip":
+                    with gzip.GzipFile(fileobj=response) as stream:
+                        raw = stream.read(MAX_BYTES+1)
+                else:
+                    raw = response.read(MAX_BYTES+1)
+                if not isinstance(raw,bytes) or len(raw) > MAX_BYTES:
                     raise _Failure("response_too_large")
                 if self.remaining() <= 0:
                     raise _Failure("budget_exhausted")
-            return _rows(json.loads(raw.decode("utf-8"), parse_constant=_reject_constant), api)
+            data = json.loads(raw.decode("utf-8"),parse_constant=_reject_constant)
+            return _rows(data,api,primary=True) if primary else _rows(data,api)
 
 
-def _service_before(api, remaining, min_interval=6):
+def _service_before(api, remaining, min_interval=6, **route):
     deadline = time.monotonic() + remaining
     while True:
         try:
-            cooldown, gap, reason, event = reserve_request(api, min_interval, deadline-time.monotonic())
+            cooldown, gap, reason, event = reserve_request(api, min_interval, deadline-time.monotonic(), **route)
         except (OSError, ValueError, TypeError, KeyError, AttributeError):
             raise _Failure("gate_unavailable", 60, deferred=True) from None
         if reason:

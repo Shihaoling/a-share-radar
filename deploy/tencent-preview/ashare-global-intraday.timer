@@ -1,0 +1,13 @@
+[Unit]
+Description=Poll index intraday data during Hong Kong and New York sessions
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 09:30..59:30 Asia/Hong_Kong
+OnCalendar=Mon..Fri *-*-* 10..12:*:30 Asia/Hong_Kong
+OnCalendar=Mon..Fri *-*-* 13..16:*:30 Asia/Hong_Kong
+OnCalendar=Mon..Fri *-*-* 09:30..59:30 America/New_York
+OnCalendar=Mon..Fri *-*-* 10..16:*:30 America/New_York
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

@@ -5,10 +5,19 @@ import fcntl
 import os
 from pathlib import Path
 
-from pipeline.calendar import shanghai_now
+from pipeline.calendar import market_session, shanghai_now
 from pipeline.stock_api import _Client
 
 STATE = Path("/var/lib/ashare-radar-preview")
+
+
+def collection_due(now, *, announcements=False):
+    """Select the active schedule from the systemd timer's combined slots."""
+    now = shanghai_now(now)
+    trading = market_session(now)["phase"] in {"morning", "afternoon", "closing_auction"}
+    if trading:
+        return announcements or now.minute % 2 == 0
+    return now.minute % 10 == (3 if announcements else 0)
 
 
 @contextmanager

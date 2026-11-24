@@ -21,6 +21,7 @@ from pipeline.stock_api import _index_code
 from relay_common import STATE
 from relay_quotes import publish
 from research_factors import board_breadth, compute
+from research_valuation import asset_metrics, collect
 from factor_chart import build_daily_chart
 from intraday_chart import IntradayCharts
 import constituent_live
@@ -303,7 +304,10 @@ class ResearchStore:
             if kind == "stock":
                 all_rows = data.get("stocks", [])
                 self.relay_covered = set(data.get("core_stock_ids", []))
-                return next((r for r in all_rows if r.get("id") == code), {})
+                core = next((r for r in all_rows if r.get("id") == code), {})
+                market = next((r for r in self.feed("board-stock-quotes").get("stocks", [])
+                               if r.get("id") == code), {})
+                return market if (market.get("quote_timestamp") or "") > (core.get("quote_timestamp") or "") else core
             estimate = next((r for r in data.get("board_estimates", []) if r.get("id") == code), {})
             return {**estimate, "basis": "estimate"} if estimate else {}
         if code.endswith(".TI"):
@@ -349,10 +353,15 @@ class ResearchStore:
             breadth = []
             members = self.roster(code) if kind == "sector" else {}
             member_live = None
-            if kind == "sector" and code.endswith((".TI", ".SI")):
+            member_close = None
+            if kind == "sector" and (code.endswith((".TI", ".SI")) or members.get("status") == "ready"):
                 _, observations = self.boards.quotes(now)
                 member_live = constituent_live.summarize(db, code, members, observations, now, normalized=True)
                 self.boards.attach_partial(db, code, member_live, now)
+                count = db.execute("SELECT count(*) FROM board_history_recovered WHERE day=? AND code=?",
+                                   (member_live["trade_date"],code)).fetchone()[0]
+                if count:
+                    member_live["historical_recovered_count"] = count
             if kind == "sector" and finished:
                 stock_day = db.execute("""SELECT max(day) FROM coverage WHERE kind='stock' AND complete=1
                                         AND day<=?""", (finished.isoformat(),)).fetchone()[0]
@@ -362,12 +371,18 @@ class ResearchStore:
                 if stock_day and member_codes:
                     query = """SELECT code,pct_chg,pre_close,close FROM bars
                                WHERE kind='stock' AND day=? AND code IN (SELECT value FROM json_each(?))"""
+                    close_members = []
                     for r in db.execute(query, (stock_day,json.dumps(member_codes))):
                         value = r["pct_chg"]
                         if not finite(value) and finite(r["pre_close"]) and r["pre_close"] > 0:
                             value = (r["close"]/r["pre_close"]-1)*100
                         if finite(value):
                             returns[r["code"]] = value
+                        if member_live is not None and finite(r["close"]) and r["close"] > 0:
+                            close_members.append({"code": r["code"], "price": r["close"],
+                                                  "change_pct": value if finite(value) else None})
+                    if close_members:
+                        member_close = {"trade_date": stock_day, "members": close_members}
                 breadth = board_breadth(member_codes, returns, stock_day,
                             membership_as_of=members.get("as_of"), checked_at=members.get("checked_at"),
                             complete=members.get("status")=="ready")
@@ -381,7 +396,9 @@ class ResearchStore:
         self.daily_charts.move_to_end(key)
         if len(self.daily_charts) > 128:
             self.daily_charts.popitem(last=False)
-        values = compute(kind, quote, benchmark, bars, bench, sessions=sessions) + breadth
+        factors = compute(kind, quote, benchmark, bars, bench, sessions=sessions) + breadth
+        values = factors + asset_metrics(kind, code, finished.isoformat() if finished else today,
+                                        lambda name: self.feed(name.removesuffix(".json")), members)
         close = bars[-1] if bars else {}
         usable = bool(quote.get("quote_timestamp")) and (quote.get("quote_date") or "") >= (close.get("date") or "")
         if (kind == "sector" and code.endswith(".SI") and quote.get("basis") == "estimate"
@@ -401,10 +418,12 @@ class ResearchStore:
                        change_at=quote.get("quote_timestamp") if live_change else close_at,
                        quote_basis=basis if live_price else "close", change_basis=basis if live_change else "close",
                        daily_source=close.get("source"),
-                       status="ready" if all(v["value"] is not None for v in values) else "partial",
+                       status="ready" if all(v["value"] is not None for v in factors) else "partial",
                        metrics=values, chart={"daily":cached[1],"intraday":intraday})
         if member_live is not None:
             payload["constituent_live"] = member_live
+        if member_close is not None:
+            payload["constituent_close"] = member_close
         path = self.out / "asset-research" / kind / (code + ".json")
         if path.exists():
             try:
@@ -447,6 +466,15 @@ def main():
                 print("research daily",type(e).__name__,flush=True)
                 delay=60
             time.sleep(max(1,delay))
+    def valuation_loop():
+        attempts = {}
+        while True:
+            try:
+                delay = collect(store.out, token, shanghai_now(), attempts=attempts)
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                print("research valuation", type(error).__name__, flush=True)
+                delay = 120
+            time.sleep(delay)
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
             match = ROUTE.fullmatch(urlsplit(self.path).path)
@@ -475,7 +503,7 @@ def main():
     sock.unlink(missing_ok=True)
     with UnixStreamServer(str(sock),Handler) as server:
         os.chmod(sock,0o660)
-        for fn in (ingest_loop,capture_loop,daily_loop):
+        for fn in (ingest_loop,capture_loop,daily_loop,valuation_loop):
             threading.Thread(target=fn,daemon=True).start()
         server.serve_forever()
 

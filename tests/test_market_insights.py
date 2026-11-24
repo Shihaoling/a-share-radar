@@ -3,6 +3,7 @@
 from contextlib import closing
 from datetime import datetime, timedelta
 import json
+import os
 from pathlib import Path
 import sqlite3
 import sys
@@ -18,12 +19,145 @@ with patch.object(sys, "path", [str(Path(__file__).resolve().parents[1] / "deplo
     import market_reading as reading
     import economic_calendar as calendar
     import economic_releases as releases
+    import weekend_brief as weekend
+    import company_announcements as disclosures
+    import announcement_analysis as disclosure_analysis
+    from relay_common import collection_due
 
 DAY = "2026-11-20"
 NOW = datetime.fromisoformat(DAY + "T16:00:00+08:00")
 
 
 class MarketInsightsTests(unittest.TestCase):
+    def test_collection_cadence_respects_market_breaks_and_holidays(self):
+        for day, clock, news, announcements in (
+            ("2026-11-23", "09:32", True, True),
+            ("2026-11-23", "09:37", False, True),
+            ("2026-11-23", "11:32", False, False),
+            ("2026-11-23", "11:33", False, True),
+            ("2026-11-23", "12:10", True, False),
+            ("2026-11-23", "13:02", True, True),
+            ("2026-11-23", "13:03", False, True),
+            ("2026-11-23", "15:03", False, True),
+            ("2026-11-22", "10:02", False, False),
+            ("2026-10-05", "10:23", False, True),
+            ("2026-10-05", "10:22", False, False),
+        ):
+            with self.subTest(day=day, clock=clock):
+                at = datetime.fromisoformat(f"{day}T{clock}:00+08:00")
+                self.assertEqual(collection_due(at), news)
+                self.assertEqual(collection_due(at, announcements=True), announcements)
+
+    def test_announcement_digest_remains_available_until_newer_batch_is_summarized(self):
+        prior_day, current_day = "2026-11-19", DAY
+        reference = {"id":"prior", "date":prior_day, "title":"上次公告"}
+        digest = {"date":prior_day, "items":[{"text":"参考公告", "ids":["prior"]}],
+                  "summary":"最近摘要", "generated_at":NOW.isoformat(), "input_count":1}
+        sessions = {prior_day:{"digest":digest,"rows":[reference],"checked_at":NOW.timestamp()},
+                    current_day:{"rows":[{"id":"current", "date":current_day}],"checked_at":NOW.timestamp()}}
+        with TemporaryDirectory() as folder:
+            path = Path(folder)/"company-announcements.json"
+            disclosures.publish_announcements(path,sessions,current_day,NOW)
+            latest = json.loads(path.read_bytes())
+            archived = json.loads((path.with_suffix("")/(current_day+".json")).read_bytes())
+        self.assertEqual(latest["digest"], digest)
+        self.assertEqual(latest["digest_announcements"], [reference])
+        self.assertEqual(latest["announcements"], sessions[current_day]["rows"])
+        self.assertIsNone(archived["digest"])
+
+    def test_announcement_digest_tracks_new_ids_even_beyond_the_original_sample(self):
+        def item(key, title):
+            return {"id":key,"date":DAY,"title":title,"name":"示例公司","code":"600001.SH"}
+
+        current = [item(str(i),"关于股份回购的公告") for i in range(50)]
+        original = {"date":DAY,"summary":"已发布的摘要","items":[],"input_count":45,
+                    "generated_at":(NOW-timedelta(hours=1)).isoformat(),"fingerprint":"legacy"}
+        stamp = NOW
+        model_calls = 0
+        def model(article, config, key, *, prompt, stage, validator):
+            nonlocal model_calls
+            model_calls += 1
+            supplied = article["digest_articles"]
+            self.assertEqual(len(supplied),45)
+            self.assertEqual(supplied[0]["id"],"new")
+            if model_calls == 1:
+                raise disclosures.ModelFailure("http_429",60)
+            return validator({"summary":"采纳新增披露的摘要","items":[{"text":"披露董事会安排","ids":["new"]}]})
+
+        with TemporaryDirectory() as folder:
+            state = Path(folder)
+            (state/"news").mkdir()
+            credentials = state/"credentials"
+            credentials.mkdir()
+            for name in ("sxdata-token","minimax-key"):
+                (credentials/name).write_text("test-key")
+            private = state/"news/announcements.json"
+            private.write_text(json.dumps({DAY:{"digest":original,"rows":current,"checked_at":NOW.timestamp()}}))
+            with patch.multiple(disclosures,STATE=state), patch.dict(os.environ,
+                  {"CREDENTIALS_DIRECTORY":str(credentials),"RADAR_SCHEDULED_COLLECTION":"0"}), \
+                 patch.object(disclosures,"shanghai_now",side_effect=lambda:stamp), \
+                 patch.object(disclosures,"collection_days",side_effect=lambda now, sessions:[now.date()]), \
+                 patch.object(disclosures,"fetch_day",return_value=(list(reversed(current)),True)) as fetch, \
+                 patch.object(disclosures,"infer_article",side_effect=model) as infer:
+                disclosures.main()
+                infer.assert_not_called()
+                self.assertEqual(json.loads(private.read_bytes())[DAY]["digest"],original)
+                stamp += timedelta(minutes=10)
+                fetch.return_value = (current+[item("new","关于董事会安排的公告")],True)
+                disclosures.main()
+                self.assertEqual(json.loads(private.read_bytes())[DAY]["digest"],original)
+                stamp += timedelta(minutes=10)
+                fetch.return_value = ([],True)
+                disclosures.main()
+                updated = json.loads(private.read_bytes())[DAY]["digest"]
+                self.assertEqual(updated["generated_at"],stamp.isoformat())
+                self.assertEqual(updated["items"][0]["ids"],["new"])
+                stamp += timedelta(minutes=10)
+                disclosures.main()
+                self.assertEqual(infer.call_count,2)
+                self.assertEqual(json.loads(private.read_bytes())[DAY]["digest"],updated)
+
+    def test_disclosure_analysis_keeps_citations_and_directions_bound_to_each_original(self):
+        original = {"id":"a","title":"公告甲","text":"公司完成了本次股份回购计划。"}
+        title_only = {"id":"b","title":"关于聘请公司审计机构的事项","text":""}
+        stock = {"direction":"neutral","reason":"按披露内容作判断"}
+        normal = {"id":"a","summary":"回购计划已实施完成","stock":stock,"sector":None,
+                  "evidence":"公司完成了本次股份回购计划"}
+        second = {"id":"b","summary":"披露审计机构聘任事项","stock":{"direction":"uncertain","reason":"只有标题"},
+                  "sector":None,"evidence":title_only["title"]}
+        result = disclosure_analysis.validate({"items":[normal,second]},[original,title_only])["analysis"]
+        self.assertEqual(result["a"]["basis"],"original")
+        self.assertEqual(result["b"]["basis"],"title")
+        invalid = {**second,"stock":{**stock,"direction":"positive"}}
+        self.assertEqual(set(disclosure_analysis.validate({"items":[normal,invalid]},[original,title_only])["analysis"]),{"a"})
+        misquoted = {**normal,"evidence":title_only["title"]}
+        with self.assertRaises(ValueError):
+            disclosure_analysis.validate({"items":[misquoted]},[original,title_only])
+
+    def test_weekend_brief_uses_distinct_news_windows_and_runs_once_per_three_hour_slot(self):
+        saturday = datetime.fromisoformat("2026-11-21T12:30:00+08:00")
+        def load_news(at):
+            stamp = at.replace(hour=10, minute=0, second=0, microsecond=0)
+            return [("n", {"title":"央行报道 "+str(at.date()), "credibility":"reliable",
+                           "published_at":stamp.isoformat()})]
+        calls = []
+        def model(title, packet, key, prompt, validator, *, stage):
+            calls.append(packet[0])
+            self.assertEqual(stage, "market_weekend_brief")
+            return validator({key:{"text":"摘要","refs":["W1","E1"]} for key in weekend.KEYS})
+        with TemporaryDirectory() as folder:
+            out = Path(folder)/"quote-output"
+            for at in (saturday, saturday+timedelta(minutes=25), saturday+timedelta(hours=3), NOW):
+                weekend.run(at,out,"test",model=model,load_news=load_news)
+            data = json.loads((out/"weekend-brief.json").read_bytes())
+        self.assertEqual(len(calls),2)
+        self.assertEqual(data["market_through"],"2026-11-20")
+        self.assertEqual(data["next_trade_day"],"2026-11-23")
+        self.assertEqual(data["sections"]["week_news"]["news"][0]["id"],"W1")
+        self.assertEqual(data["sections"]["weekend_news"]["news"][0]["id"],"E1")
+        self.assertTrue(all(r["published_at"][:10]<"2026-11-21" for r in calls[0]["week_news"]))
+        self.assertTrue(all(r["published_at"][:10]=="2026-11-21" for r in calls[0]["weekend_news"]))
+
     def test_fixed_slots_use_beijing_clock_and_skip_nontrading_days(self):
         for slot in reading.SLOTS:
             at = datetime.fromisoformat(DAY+"T"+slot+":00+08:00")
@@ -32,6 +166,51 @@ class MarketInsightsTests(unittest.TestCase):
             self.assertEqual(reading.due_slot(at, False, ""), "")
         pre_open = datetime.fromisoformat(DAY+"T09:30:59+08:00")
         self.assertEqual(reading.due_slot(pre_open, True, ""), "")
+
+    def test_weekend_disclosures_keep_period_and_publication_time_distinct(self):
+        now = datetime.fromisoformat("2026-11-22T01:30:00+08:00")
+        dates = ["2026-11-20","2026-11-21"]
+        saved = {}
+        for day in dates:
+            row = disclosures.normalized({
+                "ann_date":day.replace("-",""),"ts_code":"600001.SH","name":"测试公司",
+                "title":"关于重组进展的公告","url":"https://static.cninfo.com.cn/report.pdf",
+                "rec_time":"2026-11-20 21:54:08",
+            }, datetime.fromisoformat(day).date())
+            saved[day] = {"rows":[row],"complete":True}
+        def model(title, packet, key, prompt, validator, *, stage):
+            supplied = packet[0]
+            weekend = supplied["weekend_announcements"][0]
+            self.assertEqual(weekend["published_at"],"2026-11-20T21:54:08+08:00")
+            self.assertEqual(weekend["disclosed_on"],"2026-11-21")
+            draft = {"market":{"text":"行情回顾"},"outlook":{"text":"下周观察"},
+                     "week_news":{"announcement_text":"工作日披露重组进展","announcement_refs":["AE1","AW1"]},
+                     "weekend_news":{"announcement_text":"周末披露重组进展","announcement_refs":["AW1","AE1"]}}
+            return validator(draft)
+        with TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root/"news").mkdir()
+            (root/"news/announcements.json").write_text(json.dumps(saved))
+            out = root/"quote-output"
+            weekend.run(now,out,"test",model=model,load_news=lambda _:[])
+            loaded = json.loads((out/"weekend-brief.json").read_bytes())["sections"]
+        self.assertEqual([x["id"] for x in loaded["week_news"]["announcements"]["items"]],["AW1"])
+        self.assertEqual([x["id"] for x in loaded["weekend_news"]["announcements"]["items"]],["AE1"])
+        self.assertEqual(loaded["weekend_news"]["announcements"]["missing_dates"],["2026-11-22"])
+        self.assertIsNone(disclosures.publication_time("2026-11-21",now.date()))
+
+    def test_weekly_return_can_use_an_exactly_matched_trend_window(self):
+        valid = {"as_of":"2026-11-20","windows":{"5":{"start_date":"2026-11-13","return_pct":-2.7}}}
+        wrong = {**valid,"windows":{"5":{"start_date":"2026-11-12","return_pct":-10}}}
+        trend = {"market":[{"id":"sh000001","name":"上证指数",**valid},
+                           {"id":"sz399001","name":"深证成指",**wrong}],
+                 "boards":[{"id":"801010.SI","name":"农林牧渔","group":"sw",**valid}]}
+        rows = {"bars":{"sh000001":{"2026-11-20":{"close":3500}}}}
+        evidence = weekend.market_evidence(rows,trend,NOW.date()-timedelta(days=4),NOW.date())
+        self.assertEqual(len(evidence["indices"]),1)
+        self.assertEqual(evidence["indices"][0]["weekly_return_pct"],-2.7)
+        self.assertEqual(evidence["indices"][0]["close"],3500)
+        self.assertEqual(evidence["industry_coverage"],1)
         self.assertEqual(reading.due_slot(NOW, True, "13:01"), "15:00")
 
     def test_rapid_move_strict_threshold_rolling_window_and_rearm(self):
@@ -179,7 +358,8 @@ class MarketInsightsTests(unittest.TestCase):
         output = {"events":events,"indicators":{"cn_cpi":{"country":"中国","name":"CPI"}}}
         sizes = []
 
-        def ask(title, batch, key, prompt, validator):
+        def ask(title, batch, key, prompt, validator, *, stage):
+            self.assertEqual(stage,"economic_release")
             sizes.append(len(batch))
             if len(batch)>1:
                 raise calendar.ModelFailure("invalid_analysis_invalid_json")

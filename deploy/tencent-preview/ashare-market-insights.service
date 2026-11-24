@@ -8,6 +8,7 @@ User=ubuntu
 Group=ubuntu
 Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
 Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
 LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
 ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/market_insights.py
 TimeoutStartSec=500

@@ -11,7 +11,7 @@ WorkingDirectory=/opt/ashare-radar-preview/runtime
 Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
-EnvironmentFile=/etc/ashare-radar-preview/relay-identity.env
+Environment=RADAR_EXPECTED_STOCK_KEY_SHA256=097e4198dc756beefb9e15fca6aacd6abf54ab4ebd27a4d2243531605c82faa5
 LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
 ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/relay_quotes.py
 Restart=on-failure

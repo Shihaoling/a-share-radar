@@ -1,0 +1,11 @@
+[Unit]
+Description=Check for market data gaps at 19:00, 20:00 and 21:00 China time
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 19,20,21:00:00 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+Unit=ashare-market-gap-recovery@session.service
+
+[Install]
+WantedBy=timers.target

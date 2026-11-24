@@ -107,6 +107,20 @@ def reference(rows, day, now, known):
                 generated_at=now.isoformat(timespec="seconds"), quotes=quotes)
 
 
+def publish_reference(path, data):
+    if not data["quotes"]:
+        return False
+    with path.with_suffix(".lock").open("a") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        old = mapping(path)
+        if data["trade_date"] < old.get("trade_date", ""):
+            return False
+        if data["trade_date"] == old.get("trade_date"):
+            data = {**data, "quotes": {**old.get("quotes", {}), **data["quotes"]}}
+        publish(path, data)
+    return True
+
+
 def local_request(token, api, params, active):
     gate = Path(os.environ["RADAR_SERVICE_GATE_FILE"])
     with gate.with_suffix(".lock").open("a") as lock:
@@ -119,8 +133,9 @@ def local_request(token, api, params, active):
             raise _Failure(reason, math.ceil(cool), deferred=True)
         if gap > (1.4 if active else 6):
             raise _Failure("relay_busy", deferred=True)
+        timeout = 5 if active else 10
         client = _Client(token, {"max_requests": 1, "min_interval_seconds": 6,
-                        "timeout_seconds": 10, "budget_seconds": 17}, shanghai_now())
+                        "timeout_seconds": timeout, "budget_seconds": timeout+2 if active else 17}, shanghai_now())
         return client.request(api, params)
 
 
@@ -256,12 +271,7 @@ class Directory:
         elif code == "@daily":
             path = self.out / "sector-reference.json"
             data = reference(rows, day, now, self.known)
-            old = mapping(path)
-            if not data["quotes"] or day < old.get("trade_date",""):
-                return False
-            if day == old.get("trade_date"):
-                data["quotes"] = {**old.get("quotes", {}), **data["quotes"]}
-            publish(path, data)
+            return publish_reference(path, data)
         else:
             names = {x["ts_code"]: x["name"] for x in rows if STOCK.fullmatch(str(x.get("ts_code")))
                      and isinstance(x.get("name"), str) and x["name"]}
@@ -398,7 +408,9 @@ class Directory:
                    (now.timestamp()+interval, now.timestamp(),"ready" if ok else "no_rows",code))
 
     def work(self, token, now):
-        active = market_session(now)["phase"] in {"morning","afternoon","closing_auction","opening_auction"}
+        phase = market_session(now)["phase"]
+        trading = phase in {"morning","afternoon","closing_auction"}
+        active = trading or phase == "opening_auction"
         with closing(self.connect()) as db:
             job = self.scheduling(db, now.timestamp())
             if job is None:
@@ -420,7 +432,7 @@ class Directory:
             if len(jobs) > 1:
                 params[BATCH_KEYS[api]] = ",".join(item["code"] for item in jobs)
             try:
-                yielding = active and (self.yield_since is None or time.monotonic() - self.yield_since < 300)
+                yielding = trading or active and (self.yield_since is None or time.monotonic() - self.yield_since < 300)
                 rows = local_request(token, api, params, yielding)
                 self.yield_since = None
             except _Failure as e:
@@ -449,7 +461,14 @@ class Directory:
                 else:
                     self.apply(db, job, rows, day, observed)
             print(json.dumps({"sector_job":code,"api":api,"codes":len(jobs),"rows":len(rows)}),flush=True)
-        return 60 if active else 8
+        return 1 if trading else 60 if active else 8
+
+
+def background_delay(now):
+    if market_session(now)["phase"] not in {"morning","afternoon","closing_auction"}:
+        return 0
+    second = now.second + now.microsecond / 1_000_000
+    return 0 if 56 <= second < 57.5 else (56 - second) % 60
 
 
 def serve(directory, token):
@@ -490,7 +509,8 @@ def serve(directory, token):
         threading.Thread(target=server.serve_forever,daemon=True).start()
         while True:
             try:
-                delay = directory.work(token,shanghai_now())
+                now = shanghai_now()
+                delay = background_delay(now) or directory.work(token,now)
             except (OSError,ValueError,sqlite3.Error) as e:
                 print(json.dumps({"sector_job_error":type(e).__name__}),flush=True)
                 delay=20

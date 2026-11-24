@@ -41,6 +41,28 @@ class CloudNewsTests(unittest.TestCase):
         news.project(self.db, stamp)
         return json.loads((news.OUTPUT/"news.json").read_text())
 
+    def test_digest_searches_from_the_previous_trading_close_and_keeps_source_links(self):
+        day = "2026-11-23"
+        for key, stamp in (("before","2026-11-20T14:59:59+08:00"),("overnight","2026-11-22T20:30:00+08:00")):
+            story = report(key, datetime.fromisoformat(stamp), source="财联社")
+            story["title"] = "英伟达CEO相关发布"
+            news.save_article(self.db, story)
+        now = datetime.fromisoformat(day+"T09:30:00+08:00")
+        self.assertEqual(news.pending_digest_day(self.db,day,now.isoformat()),day)
+        def model(packet,config,key,*,validator,**kwargs):
+            boundary,source = packet["digest_articles"]
+            self.assertEqual(boundary["window_start"],"2026-11-20T15:00:00+08:00")
+            self.assertEqual(source["published_at"],"2026-11-22T20:30:00+08:00")
+            return validator({"summary":"上一交易日收盘后有全球科技动态","positives":[],"risks":[],"watch":[],
+                              "global_events":[{"text":"全球科技事件","article_ids":[source["id"]]}]})
+        with patch.object(news,"infer_article",side_effect=model),patch.object(news,"shanghai_now",return_value=now):
+            news.update_digest(self.db,"fake-key",day)
+        feed = self.feed(now)
+        self.assertEqual(feed["news_digest"]["global_events"][0]["article_ids"],["overnight"])
+        self.assertFalse(feed["articles"])
+        self.assertIn("overnight",{row["id"] for row in feed["recent_articles"]})
+        self.assertIsNone(news.pending_digest_day(self.db,day,now.isoformat()))
+
     def test_midnight_snapshot_preserves_prior_day_bodies_and_digest_without_changing_today(self):
         article = report("A",llm_analysis={"status":"ready","summary":"经济数据","usage":{"total_tokens":12}})
         news.save_article(self.db, article)
@@ -221,11 +243,23 @@ class CloudNewsTests(unittest.TestCase):
             news.process_analysis_event(self.db, 8)
             self.assertFalse(flag.exists())
             self.assertEqual(self.feed()["articles"][0]["llm_status"], "ready")
-            self.assertEqual(self.feed()["news_digest"]["article_count"], 1)
-            news.collect(self.db, NOW+timedelta(minutes=4))
+            original = self.feed()["news_digest"]
+            self.assertEqual(original["article_count"], 1)
+            later = NOW+timedelta(minutes=10)
+            news.shanghai_now.return_value = later
+            news.collect(self.db, later)
             self.assertFalse(flag.exists())
             news.process_analysis_event(self.db, 8)
             self.assertEqual(infer.call_count, 2)  # One article and one digest.
+            self.assertEqual(self.feed(later)["news_digest"], original)
+            later += timedelta(minutes=10)
+            news.shanghai_now.return_value = later
+            rows.append(self.source_row(later, "第二条新增快讯的完整正文"))
+            news.collect(self.db, later)
+            news.process_analysis_event(self.db, 8)
+            updated = self.feed(later)["news_digest"]
+            self.assertEqual(updated["article_count"], 2)
+            self.assertEqual(updated["generated_at"], later.isoformat())
 
     def test_arrival_while_analyzing_survives_batch_exit_and_worker_restart(self):
         flag = news.STATE / "news/analyze.trigger"
@@ -252,7 +286,7 @@ class CloudNewsTests(unittest.TestCase):
             self.assertEqual(len(set(ids)), 2)
             self.assertEqual(self.feed()["news_digest"]["article_count"], 2)
 
-    def test_provider_cooldown_preserves_queue_until_next_new_arrival(self):
+    def test_provider_cooldown_preserves_queue_and_retries_on_an_unchanged_poll(self):
         flag = news.STATE / "news/analyze.trigger"
         rows = [self.source_row(NOW, "先到的快讯")]
         with patch.object(news, "relay_client", return_value=nullcontext(self.mock_source(rows))):
@@ -265,13 +299,11 @@ class CloudNewsTests(unittest.TestCase):
             news.shanghai_now.return_value = later
             with patch.object(news, "infer_article", side_effect=self.model_answer) as infer:
                 news.collect(self.db, later)
+                self.assertTrue(flag.exists())
                 news.process_analysis_event(self.db, 8)
-                infer.assert_not_called()
-                rows.append(self.source_row(later, "冷却结束后的新增快讯"))
-                news.collect(self.db, later+timedelta(minutes=1))
-                news.process_analysis_event(self.db, 8)
-                self.assertEqual(infer.call_count, 3)
-            self.assertEqual(self.feed()["news_digest"]["article_count"], 2)
+                self.assertEqual(infer.call_count, 2)
+            self.assertEqual(self.feed(later)["news_digest"]["article_count"], 1)
+            self.assertEqual(self.feed(later)["news_digest"]["generated_at"], later.isoformat())
             self.assertFalse(flag.exists())
 
     def test_three_hour_poll_and_two_hourly_day_sweep_collect_distinct_delayed_stories(self):

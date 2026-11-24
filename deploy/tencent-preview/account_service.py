@@ -80,6 +80,12 @@ class Accounts:
                 WHERE token=? AND expires>?""", (session_key(raw), now)).fetchone()
         return dict(row) if row else None
 
+    def identity(self, raw, now):
+        with closing(self.db()) as db:
+            row = db.execute("SELECT uid FROM sessions WHERE token=? AND expires>?",
+                             (session_key(raw), now)).fetchone()
+        return row["uid"] if row else None
+
     def admit(self, action, peer, name, now):
         # A forwarding proxy may share one peer across many visitors. Also limit each login name.
         window, per_name, per_peer, total = (900, 8, 120, 360) if action == "login" else (3600, 4, 16, 60)
@@ -244,6 +250,24 @@ class Handler(BaseHTTPRequestHandler):
                     raise Rejected(400, "invalid_policy", "请检查每分钟请求上限。") from None
                 self.send(200, policy)
                 return
+            if path == "/api/admin/minimax-prompts":
+                self.require_admin(accounts.user(raw,now))
+                body = self.post_body(raw,payload)
+                fields = {"stage","note","revision"}
+                if set(body) not in (fields, fields | {"reasoning_effort"}):
+                    raise Rejected(400,"invalid_prompt","模型设置请求格式有误。")
+                from minimax_prompt_catalog import prompt_item
+                from pipeline.minimax_prompts import PromptConflict, save_note
+                try:
+                    stage = body["stage"]
+                    effort = {"reasoning_effort":body["reasoning_effort"]} if "reasoning_effort" in body else {}
+                    saved = save_note(accounts.path.parent/"minimax-prompts.json",stage,body["note"],body["revision"],**effort)
+                except ValueError:
+                    raise Rejected(400,"invalid_prompt","请选择有效环节与思考强度，补充要求最多 800 字。") from None
+                except PromptConflict:
+                    raise Rejected(409,"prompt_conflict","该环节已在别处更新，请刷新后核对你的内容。") from None
+                self.send(200,prompt_item(stage,saved))
+                return
             if path not in {"/api/account/login", "/api/account/register", "/api/account/logout"}:
                 raise Rejected(404, "not_found", "页面不存在。")
             body = self.post_body(raw, payload)
@@ -252,10 +276,13 @@ class Handler(BaseHTTPRequestHandler):
                 action, self.headers.get("X-Account-Peer", "local"), body, raw, now)
             self.send(200, session_body(accounts.user(fresh, now), fresh), cookie=fresh)
             return
+        if path == "/internal/research-assistant/identity" and self.command == "GET":
+            self.send(200, {"id": accounts.identity(raw, now)})
+            return
         if path == "/api/account/session":
             self.send(200, session_body(accounts.user(raw,now),raw), cookie=raw if raw != candidate else None)
             return
-        if path.startswith("/admin/") or path in {"/api/admin/usage","/api/admin/policy"}:
+        if path.startswith("/admin/") or path in {"/api/admin/usage","/api/admin/policy","/api/admin/minimax-prompts"}:
             user = accounts.user(raw, now)
             if not user and path in {"/admin/", "/admin/index.html"}:
                 self.send(302, location="/account/?next=/admin/")
@@ -272,6 +299,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/admin/policy":
                 from pipeline.request_policy import read_policy
                 self.send(200, read_policy())
+                return
+            if path == "/api/admin/minimax-prompts":
+                from minimax_prompt_catalog import catalog
+                self.send(200,catalog(accounts.path.parent/"minimax-prompts.json"))
                 return
             if path in ADMIN_PAGES:
                 name, content = ADMIN_PAGES[path]

@@ -1,0 +1,33 @@
+[Unit]
+Description=Guanlan read-only MiniMax research assistant
+After=network-online.target ashare-account.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+UMask=0077
+RuntimeDirectory=ashare-research-assistant
+RuntimeDirectoryMode=0750
+StateDirectory=ashare-radar-preview/assistant
+StateDirectoryMode=0700
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
+Environment=RADAR_MINIMAX_COOLDOWN_DB=/var/lib/ashare-radar-preview/news/minimax-cooldown.sqlite3
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python -u /opt/ashare-radar-preview/deploy/tencent-preview/research_assistant.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview/request-usage /var/lib/ashare-radar-preview/news
+ReadOnlyPaths=/srv/ashare-radar-preview/public /var/lib/ashare-radar-preview/quote-output
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+MemoryMax=210M
+
+[Install]
+WantedBy=multi-user.target

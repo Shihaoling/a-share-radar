@@ -1,0 +1,13 @@
+[Unit]
+Description=Refresh A-share company announcements during and outside trading hours
+
+[Timer]
+OnCalendar=*-*-* *:03/10:26 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 09:30..59:26 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 10,13,14:*:26 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 11:00..29:26 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

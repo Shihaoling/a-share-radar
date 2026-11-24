@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for new announcements requiring a digest
+
+[Timer]
+OnCalendar=*-*-* *:*:45 Asia/Shanghai
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

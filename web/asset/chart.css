@@ -35,3 +35,9 @@
 .ac-range-mark{stroke:#9aa9b7;stroke-width:1.7}.ac-open-mark{stroke:#916238;stroke-width:2}
 .ac-level{font-variant-numeric:tabular-nums}.ac-relative-title{font-size:12px;font-weight:600;color:#38546a}
 .ac-relative-title[hidden],.ac-select[hidden]{display:none}
+
+.ac-change{font-size:13px;font-weight:650;white-space:nowrap}
+.ac-change:empty{display:none}
+.asset-chart-view [data-direction="up"]{color:var(--up,#ae433f)}
+.asset-chart-view [data-direction="down"]{color:var(--down,#21775f)}
+.asset-chart-view [data-direction="neutral"]{color:var(--muted,#54697c)}

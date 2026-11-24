@@ -1,0 +1,25 @@
+[Unit]
+Description=Collect current A-share broker research reports
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime:/opt/ashare-radar-preview/runtime/announcement-libs
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
+Environment=RADAR_MINIMAX_COOLDOWN_DB=/var/lib/ashare-radar-preview/news/minimax-cooldown.sqlite3
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+LoadCredential=primary-data-token:/etc/ashare-radar-preview/primary-data-token
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/research_report_library.py collect --today
+TimeoutStartSec=105
+MemoryMax=400M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview /srv/ashare-radar-preview/public/data/reports
+ProtectHome=yes
+PrivateTmp=yes

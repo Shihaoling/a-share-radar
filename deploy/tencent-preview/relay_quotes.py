@@ -327,7 +327,7 @@ def start(args):
     output = STATE / "quote-output/live-quotes.json"
     codes = catalog_codes(SOURCE.with_name("sector-catalog.json"))
     sector_feed = SectorFeed(private, output.parent, codes, publish) if codes else None
-    index_batches = IndexBatches(universe["rt_idx_k"], codes)
+    index_batches = IndexBatches(universe["rt_idx_k"], codes, prefer_combined=True)
     if getattr(args, "catalog_snapshot", False):
         session = market_session()["phase"]
         if session not in {"midday_break", "post_close"}:
@@ -411,7 +411,7 @@ def start(args):
                     universe = groups(data, weights)
                     entity_ids = universe["rt_idx_k"].values()
                     core_entity_ids = set(entity_ids)
-                    index_batches = IndexBatches(universe["rt_idx_k"], codes)
+                    index_batches = IndexBatches(universe["rt_idx_k"], codes, prefer_combined=True)
                 expire_prior_day_retries(history, day, entity_ids)
                 history.commit()
             phase = market_session(now)["phase"]

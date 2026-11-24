@@ -1,0 +1,25 @@
+[Unit]
+Description=Recover stock and sector minute gaps from the primary source (%i)
+After=network-online.target ashare-asset-research.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+Nice=12
+IOSchedulingClass=best-effort
+UMask=0077
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_SERVICE_GATE_FILE=/var/lib/ashare-radar-preview/relay/rate-gate.json
+LoadCredential=sxdata-token:/etc/ashare-radar-preview/sxdata-token
+LoadCredential=primary-data-token:/etc/ashare-radar-preview/primary-data-token
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python -u /opt/ashare-radar-preview/deploy/tencent-preview/stock_minute_recovery.py %i
+TimeoutStartSec=1500
+MemoryMax=420M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

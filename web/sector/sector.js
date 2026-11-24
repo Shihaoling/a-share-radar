@@ -126,7 +126,7 @@ async function openDetail() {
   try { entry = findEntry(await readFile(ths || sw ? 'ths-sector-catalog' : 'sector-catalog'), code); }
   catch {
     id('catalog-status').textContent = '板块目录暂时无法读取，稍后自动重试。';
-    setTimeout(openDetail, 30000);
+    setTimeout(openDetail, 10000);
     return;
   }
   if (!entry) {
@@ -142,11 +142,17 @@ async function openDetail() {
   id('members').hidden = false;
   id('research').hidden = false;
   let quotesByMember = new Map();
+  let closesByMember = new Map();
+  let closeDate = '';
   const quoteCells = new Map();
   function updateQuoteCells() {
     for (const [code, [price, change, time]] of quoteCells) {
-      const quote = quotesByMember.get(code);
-      const at = observationTime(quote?.quote_at);
+      const live = quotesByMember.get(code);
+      const liveAt = observationTime(live?.quote_at);
+      const closing = closesByMember.get(code);
+      const useClose = Boolean(closing && closeDate >= liveAt.slice(0,10));
+      const quote = useClose ? closing : live;
+      const at = useClose ? closeDate + ' 收盘' : liveAt;
       const pct = quote?.change_pct;
       price.textContent = at && Number.isFinite(quote.price) && quote.price > 0 ? displayNumber.format(quote.price) : '—';
       change.textContent = at && Number.isFinite(pct) ? (pct > 0 ? '+' : '') + displayNumber.format(pct) + '%' : '—';
@@ -162,6 +168,9 @@ async function openDetail() {
     const live = data?.constituent_live;
     renderConstituentLive(live, failed, entry.member_count);
     quotesByMember = new Map((Array.isArray(live?.members) ? live.members : []).filter(row => row?.code).map(row => [row.code,row]));
+    const close = data?.constituent_close;
+    closeDate = datePattern.test(close?.trade_date) ? close.trade_date : '';
+    closesByMember = new Map((closeDate && Array.isArray(close?.members) ? close.members : []).filter(row => row?.code).map(row => [row.code,row]));
     updateQuoteCells();
   } : undefined;
   if (typeof RadarResearch !== 'undefined') RadarResearch.mount('sector', code, false, onData);
@@ -197,7 +206,7 @@ async function openDetail() {
         id('quote-' + key + '-time').textContent = row ? row.caption : '等待来源更新';
       }
     }
-    setTimeout(refreshQuotes, ths || sw ? 60000 : 20000);
+    setTimeout(refreshQuotes, ths ? 60000 : 10000);
   }
 
   let data = null, page = 1, notice = '', retry = 15000;

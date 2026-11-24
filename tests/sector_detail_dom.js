@@ -88,6 +88,12 @@ async function checks() {
   assert.equal(cells[3].textContent,'10.00');
   assert.equal(cells[4].textContent,'-0.23%');
   assert.equal(cells[5].textContent,'2026-11-19 13:05:00');
+  onData({constituent_live:{...waiting,members:[]},constituent_close:{
+    trade_date:hotDate,members:[{code:rows[0].code,price:10.2,change_pct:2}]}},false);
+  assert.equal(cells[3].textContent,'10.20');
+  assert.equal(cells[5].textContent,'2026-11-19 收盘');
+  onData({constituent_live:waiting},false);
+
   assert.equal(n['member-rows'].children[1].children[4].textContent,'—');
   const ready={...waiting,status:'ready',quoted_count:60,oldest_at:first,change_pct:0};
   onData({constituent_live:ready},false);
@@ -140,7 +146,7 @@ async function checks() {
   assert.match(sh.nodes['quote-price'].textContent, /6,000\.12/);
   assert.equal(sh.nodes['quote-change'].textContent, '0.00%');
   api['../data/sector-quotes.json'] = response(quote({source:'sxdata_relay', sectors:{invalid:true}}));
-  await sh.tick(20000);
+  await sh.tick(10000);
   assert.equal(sh.nodes['quote-change'].textContent, '0.00%');
 }
 checks().catch(error => { console.error(error); process.exitCode=1; });

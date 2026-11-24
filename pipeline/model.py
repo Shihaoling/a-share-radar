@@ -592,9 +592,6 @@ def update_predictions(dashboard, previous=None, config=None, now=None):
                 chosen = instrument
         forecasting[chosen["id"]] = chosen
     _settle(ledger, entities, now, settings)
-    if not settings.get("forecast_enabled", True):
-        return {"predictions": [], "ledger": ledger, "metrics": _metrics(ledger),
-                "models": {**previous.get("models", {}), "status": "archived"}}
     session = market_session(now)
     news = _news_snapshot(dashboard, now)
     slot_minutes = max(1, min(60, int(settings.get('prediction_interval_minutes', 15))))

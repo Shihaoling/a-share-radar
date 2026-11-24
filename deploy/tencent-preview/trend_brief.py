@@ -232,7 +232,7 @@ def main():
     try:
         result = infer_article({"title": f"{day} 趋势观察简报", "full_text": json.dumps(packet, ensure_ascii=False),
                                 "digest_articles": packet}, {"reasoning_effort": "medium", "max_completion_tokens": 20000},
-                               key, prompt=PROMPT,
+                               key, prompt=PROMPT, stage="trend_brief",
                                validator=lambda answer: validate(answer, receipts, candidates))
     except ModelFailure as error:
         delay = min(error.retry, 3600) if error.code.startswith("invalid_") else error.retry

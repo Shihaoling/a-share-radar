@@ -1,6 +1,16 @@
 # 观澜腾讯云运行与数据交接
 
-截至 2026-11-19，网页通过本机 SSH 隧道访问。Nginx 在服务器上监听 `127.0.0.1:8769`，静态目录为 `/srv/ashare-radar-preview/public`。最后一份 GitHub Pages 数据作为展示基线。行情、资讯、模型、研究和数据集进度分别用独立 JSON 更新。
+更新于 2026-11-24。腾讯云网站由 `ashare-preview-web.service` 提供，Nginx 监听云服务器的 `127.0.0.1:8769`。通过 SSH 将该端口转发到本机后访问。正式运行代码对应 GitHub 的 `backup/tencent-cloud` 分支。
+
+| 部署位置 | 内容 |
+| --- | --- |
+| `/srv/ashare-radar-preview/public/` | 对应仓库 `web/` 的静态页面及公开数据入口 |
+| `/srv/ashare-radar-preview/private-admin/` | 对应 `web/admin/`，通过账户服务检查访问权限 |
+| `/opt/ashare-radar-preview/deploy/tencent-preview/` | systemd 运行的 Python 脚本和 Nginx 配置 |
+| `/opt/ashare-radar-preview/runtime/` | Python 共享模块、工作目录和研究输入 |
+| `/var/lib/ashare-radar-preview/` | 服务虚拟环境、运行状态、SQLite 库与数据输出 |
+| `/etc/systemd/system/` | 生效的单元和 drop-in |
+| `/etc/ashare-radar-preview/` | 由 systemd `LoadCredential` 读取的服务器凭据文件 |
 
 ## 定时任务
 
@@ -8,18 +18,25 @@
 
 | 工作 | systemd 单元 | 时刻 |
 | --- | --- | --- |
-| SXData 行情与当日分时 | `ashare-preview-relay.service` | 交易时段每 5 秒最多发起一批，滚动 60 秒最多 12 批。通常 10 批指数与行业、2 批个股，个股约每 30 秒一批 |
-| 即时资讯及 MiniMax | `ashare-preview-news@collect.timer`、`ashare-preview-news.path` | 09:00–16:00 每 2 分钟采集，其他时间每 20 分钟采集。收到新条目或补齐正文后唤醒分析，连续分批处理可分析的积压。受限条目留在队列，冷却期结束后的下一次新增可触发补做。 |
+| SXData 行情与当日分时 | `ashare-preview-relay.service` | 盘中指数及交易所板块、个股分别每 30 秒请求一批，每分钟最多四批 |
+| 即时资讯及 MiniMax | `ashare-preview-news@collect.timer`、`ashare-preview-news.path` | 盘中偶数分钟第 19 秒采集（每两分钟一次），其他时间每十分钟采集。收到新条目或补齐正文后唤醒分析。 |
 | 日线、成分及观察数据 | `ashare-preview-daily.timer`、`ashare-preview-reference.timer`、`ashare-preview-model.timer` | 盘后分批采集收盘数据，交易日 07:41 和 08:41 补上一交易日缺项。盘中每五分钟保留对应分钟的真实观测与新闻因子 |
 | 趋势观察与简报 | `ashare-trend-observations.timer`、`ashare-trend-brief.timer` | 每五分钟从日线缓存发布一次趋势快照。MiniMax 晚间生成 10 日简报，次日早上补生成失败的结果。已有当日简报时跳过调用 |
-| 盘后研究和复盘 | `ashare-cloud-research.timer` | 工作日 17:26、19:38、21:22，程序再次检查是否为交易日 |
-| 历史快讯采集 | `ashare-training-collect.timer` | 09:00–16:00 每 10 分钟处理一个窗口，其余每分钟一个窗口 |
+| 盘后研究数据 | `ashare-cloud-research.timer` | 工作日 17:26、19:38、21:22，程序再次检查是否为交易日 |
+| 上市公司公告 | `ashare-company-announcements.timer` | 盘中每分钟第 26 秒，盘外每十分钟错开采集 |
+| 研报目录与摘要 | `ashare-research-report-collect.timer`、`ashare-research-report-summary.timer` | 盘中第 49 秒收集目录，摘要另行处理 |
+| 港股和美股分时 | `ashare-global-intraday.timer` | 按交易所当地时段更新，休市时保留最近一场有效分时 |
+| 市场简评 | `ashare-market-reading.timer` | 09:31、11:30、13:01、15:00，同时检查快速行情变化和重大事件 |
+| 缺口补采 | `ashare-market-gap-recovery.timer`、`ashare-stock-minute-midday.timer` | 午休补上午缺点，工作日晚 19:00、20:00、21:00 复查当日数据缺口 |
+| 历史快讯采集 | `ashare-training-collect.timer` | 09:00–16:00 每十分钟在奇数分钟第 19 秒处理一个窗口，其余时段每分钟第 07 秒处理一个窗口 |
 | 历史快讯标注 | `ashare-training-label.timer` | 每批结束后等待 1 分钟再处理下一批，每批最多 32 篇 |
 | 私有数据集导出 | `ashare-training-export.timer` | 每小时第 47 分钟 |
 
 从旧版迁移时，用 `systemctl disable --now ashare-preview-news@analyze.timer` 停用即时分析时钟，再用 `systemctl mask ashare-preview-news@analyze.timer` 屏蔽该实例。安装新版程序和路径单元后，执行 `systemctl daemon-reload` 和 `systemctl enable --now ashare-preview-news.path`。已经启用的路径单元用 `systemctl restart ashare-preview-news.path` 重新监听。正在处理的分析批次可以自然结束。
 
-行情调度使用 `relay-active.json`，离线回放也读取此文件。共享额度、慢请求或限流会降低实际采样频率。长请求结束后，错过的个股批次优先使用下一次机会，采集器按正常间隔继续工作。午休和盘后暂停实时行情请求。浏览器在交易时段每 5 秒检查已发布的指数与行业行情，确认午休或收盘后三类行情快照分别每 5 分钟检查一次。资讯使用独立的发布周期。
+行情调度使用 `relay-active.json`，离线回放也读取此文件。盘中每分钟第 03、33 秒请求指数和交易所板块，第 11、41 秒请求个股。共享额度、慢请求或上游限流可推迟或跳过请求，遇到截断时按原有分批策略采集。午休和盘后暂停实时行情请求。浏览器在盘中每 10 秒检查已发布的行情快照。
+
+盘中快讯在偶数分钟第 19 秒启动，公告与研报目录分别在每分钟第 26、49 秒启动。白天的历史快讯使用奇数分钟时隙，其余时段使用第 07 秒。指数分钟补采先用第 55 秒的时隙，板块资料仅在第 56 秒附近有可用额度时采集。个股和板块缺失的上午分钟在午休时增补。公告以首屏增量为主，另有完整分页补查。公告摘要由独立服务检查新增记录，沿用原有摘要和更新时间，直至有新的摘要可发布。
 
 ### 采集限额与缺口维护
 
@@ -73,13 +90,22 @@ sha256sum news.jsonl.gz
 
 看板显示「正式归档已校验」后，在训练电脑上使用已有授权的 SSH 凭据下载正式清单和压缩文件。下载后比对 `manifest.json` 的 `sha256`。阶段导出仍可从 `export/` 查看。
 
-在训练电脑上把同一批次的清单与压缩文件放在同一目录，运行 `python3 scripts/prepare_labelled_news.py <导出目录> <新目录>`。该工具校验文件散列、记录数、标注时间和原文证据，抽取已打标样本，生成 `labelled.jsonl` 和样本清单。每条记录的 `input` 是新闻输入，`output` 是 MiniMax 标签，`provenance` 保留数据可得时间与标注来源。
+先将 `SSH_TARGET` 设为自己的已授权 SSH 登录目标。在训练电脑上把同一批次的清单与压缩文件放在同一目录，运行 `python3 scripts/prepare_labelled_news.py <导出目录> <新目录>`。该工具校验文件散列、记录数、标注时间和原文证据，抽取已打标样本，生成 `labelled.jsonl` 和样本清单。每条记录的 `input` 是新闻输入，`output` 是 MiniMax 标签，`provenance` 保留数据可得时间与标注来源。
 
 ```sh
-scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
-scp ubuntu@43.143.75.89:/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
+scp "$SSH_TARGET":/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/news.jsonl.gz .
+scp "$SSH_TARGET":/var/lib/ashare-radar-preview/training-news/final/2026-05-22_to_2026-11-17/manifest.json .
 ```
 
-## 域名
+## 发布和验收
 
-腾讯云控制台显示 `mystockmarket.online` 未备案。上海实例在备案通过后配置主域名及需要的 `www` 记录、HTTPS、80/443 防火墙规则，再从公网验证域名、网页和数据接口。训练原文和导出文件保留在私有目录，通过 SSH 转移。
+部署前先对照当前 GitHub 备份分支与云端文件。前端脚本和样式变更时更新入口页面的静态资源版本，再检查通过 SSH 转发访问的实际页面。源代码部署后仅重启受影响的长驻服务。修改单元文件后先执行 `systemctl daemon-reload`，再重启相应定时器。
+
+```sh
+systemctl is-active ashare-preview-web.service ashare-preview-relay.service
+systemctl list-timers --all 'ashare-*'
+curl -fsS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8769/
+journalctl -u ashare-preview-news@collect.service --since today --no-pager
+```
+
+核对快讯时分别检查采集日志的 `received`、`added_or_completed` 和公开 JSON 的 `collector.last_success_at`。收到重复内容会推进采集时间，列表只在收到新条目或更新信息时变化。盘外验证可确认服务工作和排程生效，盘中实际间隔从下一交易时段的日志核对。

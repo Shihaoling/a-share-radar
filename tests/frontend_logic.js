@@ -19,7 +19,7 @@ function runFrontendChecks(source) {
     querySelector: () => root, getElementById: () => null};
   const fakeFetch = () => ({then() { return this; }, catch() { return this; }});
   const bootstrapRemoved = source.replace(/^refresh\(\);$/m, '');
-  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,economicCalendar,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,chart,relayIntraday,statCard,intradayFor,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,fundsPanel,fundPremium,researchHelp,sectorNewsSummary,newsBoardChange,trendRoom,trendFeed,trendView,render,state,baseData,pages};');
+  const loadDisplay = new Function('Node', 'document', 'localStorage', 'window', 'location', 'history', 'setInterval', 'fetch', bootstrapRemoved + '\nreturn {sectorComparison,marketBreadth,leadersPanel,sourceCoverage,overview,economicCalendar,heatmap,newsPage,newsSummaryCard,newsItem,trendPanel,chart,relayIntraday,statCard,intradayFor,displayQuote,sectorQuote,stockRankLabel,normalizeDashboard,quantItem,metricHelp,industryRelations,sentimentLabel,newsTone,requestSnapshot,validateSnapshot,openMetricHelp,fundsPanel,fundPremium,researchHelp,sectorNewsSummary,newsBoardChange,weekendCommentary,scheduleNewsTableScroll,newsSectorPanel,announcementMatches,announcementPanel,newsPageView,trendRoom,trendFeed,trendView,render,state,baseData,pages};');
   const startDisplay = document => loadDisplay(
     TestNode, document, {getItem() {return null;}, setItem() {}}, {addEventListener() {}, scrollTo() {}, dispatchEvent() {}},
     {hash: ''}, {replaceState() {}}, () => {}, fakeFetch);
@@ -68,6 +68,13 @@ function runFrontendChecks(source) {
     cpi.events.click();
     for(const label of ['消费价格定义','同比涨幅公式','0.7','101.234','2025 年 11 月＝100','本次价格温和上涨','背景资讯','官方发布'])ok(text(calendar).includes(label));
     eq(find(n=>n.attrs.id==='economic-selection').scrollCalls||0,0);
+    const source=find(n=>n.tag==='button'&&text(n)==='数值来源');
+    eq(source.attrs['aria-haspopup'],'dialog');
+    source.events.click();
+    const sourceDialog=doc.body.children.at(-1);
+    ok(sourceDialog.opened);ok(text(sourceDialog).includes('CPI 参考指数'));
+    eq(walk(sourceDialog).find(n=>n.tag==='textarea').value,'https://www.stats.gov.cn/data');
+    ok(!walk(sourceDialog).some(n=>n.tag==='a'));
     ok(!text(calendar).includes('消费价格重点'));
     ppi.events.click();
     eq(cpi.attrs['aria-pressed'],'false');eq(ppi.attrs['aria-pressed'],'true');
@@ -137,6 +144,14 @@ function runFrontendChecks(source) {
   d.stock_api_state={endpoints:{index_daily:{status:'success',last_success:'2026-11-16T16:00:00+08:00'},rt_idx_k:{status:'cooldown',error_code:'api_denied',cooldown_until:'2026-11-17T16:00:00+08:00'}}};
   api.state.data=d;
   check('all six market indices are rendered',()=>{api.state.page='overview';api.render();ok(text(root).includes('测试指数5'));});
+  check('the platform note appears only once, in the overview footer',()=>{
+    const note='观澜是公益数据平台，不作任何投资建议。';
+    for(const page of ['overview','trend','sectors','news','settings']){
+      api.state.page=page;api.render();
+      eq(text(root).split(note).length-1,page==='overview'?1:0);
+    }
+    api.state.page='overview';
+  });
   check('filtered list and active detail remain aligned',()=>{api.state.page='sectors';api.state.selected='801010.SI';api.state.search='半导体';api.render();eq(api.state.selected,'801080.SI');});
   check('no result clears selected sector',()=>{api.state.search='不存在的行业';api.render();eq(api.state.selected,null);});
   check('entity evidence uses safe text and never creates script nodes',()=>{api.state.search='';api.state.selected='801080.SI';api.render();const scripts=[];function walk(n){if(n.tag==='script')scripts.push(n);(n.children||[]).forEach(walk);}walk(root);eq(scripts.length,0);ok(text(root).includes('<script>alert(1)</script>'));});
@@ -153,7 +168,7 @@ function runFrontendChecks(source) {
     ok(api.trendFeed.valid(packet));ok(!api.trendFeed.valid({...packet,stocks:{}}));
     api.state.page='trend';api.state.trends=packet;api.render();
     const listed=text(root);
-    for(const label of ['趋势观察室','趋势指数','快速上升','波动上升','待数据','1 / 1','10 日 · 主观察','龙头 1 只'])ok(listed.includes(label));
+    for(const label of ['趋势观察室','趋势指数','快速上升','波动上升','待数据','1 / 1','10 日','龙头 1 只'])ok(listed.includes(label));
     ok(!listed.includes('龙头样本'));ok(!listed.includes('上涨概率'));
     api.trendView.expanded=board.id;api.render();
     const expanded=text(root);
@@ -305,10 +320,55 @@ function runFrontendChecks(source) {
     eq(api.newsBoardChange(sector,'2026-11-20',new Date('2026-11-20T09:00:00+08:00')).value,null);
     ok(!api.pages.some(([id])=>id==='review'));
   });
-  check('full-text summary is the first article block and evidence stays folded',()=>{
+  check('news type and title lead the summary box and evidence stays folded',()=>{
     const n={title:'原油上涨',llm_analysis:{status:'ready',summary:'原油涨价利好开采业务，并增加航空燃油成本。',sector_impacts:[{sector_name:'石油石化',direction:'positive',reason:'收入改善',evidence:['原文依据']}],uncertainties:[]}};
-    const node=api.newsItem(n,d);eq(node.children[0].className,'news-ai-summary');const out=text(node);ok(out.includes('全文提要'));ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));
+    const node=api.newsItem(n,d),box=node.children[0];
+    eq(box.className,'news-ai-summary');
+    ok(text(box.children[0]).includes('资讯 原油上涨'));
+    const out=text(node);ok(out.indexOf('原油上涨')<out.indexOf('全文摘要'));
+    ok(out.includes('石油石化 · 利好'));ok(out.includes('影响依据'));ok(!out.includes('[object Object]'));
     eq(api.newsSummaryCard({summary:'只有摘要'}),null);
+  });
+  check('weekly summary keeps news and dated disclosures in their own sections',()=>{
+    const day='2026-11-21',published='2026-11-20T19:52:11+08:00';
+    const entry={title:'公告原始标题',source:'发布公司',disclosed_on:day,published_at:published,url:'https://example.com/notice'};
+    const news={title:'快讯原始标题',source:'来源',published_at:published,url:'https://example.com/news'};
+    const packet={week_start:'2026-11-16',generated_at:published,sections:{
+      market:{text:'市场行情',news:[]},week_news:{text:'工作日快讯',news:[news],
+        announcements:{text:'工作日公告',items:[],missing_dates:[]}},weekend_news:{text:'周末快讯',news:[],
+        announcements:{text:'周末公告摘要',items:[entry],missing_dates:[]}},outlook:{text:'关注变化',news:[]}}};
+    const result=text(api.weekendCommentary(packet,true));
+    ok(result.includes('本周资讯和公告'));ok(result.includes('周末资讯和公告'));
+    ok(result.includes('快讯原始标题'));ok(result.includes('公告原始标题'));
+    ok(result.includes('发布 2026-11-20 19:52 · 披露日期 2026-11-21'));
+    ok(!result.includes('关注变化'));
+  });
+  check('sector news table waits one second of continuous mouse hover',()=>{
+    const tree=api.newsSectorPanel({sectors:[{id:'801010.SI',name:'农林牧渔',taxonomy:'SW2021'}],news:[]},'2026-11-19',now);
+    const find=(node,id)=>node.attrs.id===id?node:node.children.map(child=>find(child,id)).find(Boolean);
+    const table=find(tree,'news-sector-scroll'),ready=new Set();
+    table.isConnected=true;table.matches=()=>true;
+    table.classList={add:key=>ready.add(key),remove:key=>ready.delete(key)};
+    const previous={setTimeout,clearTimeout,now:Date.now};
+    let callback=null,delay=null,clock=12345;
+    global.setTimeout=(fn,ms)=>{callback=fn;delay=ms;return 1;};
+    global.clearTimeout=()=>{callback=null;};
+    Date.now=()=>clock;
+    const pointer={pointerType:'mouse',currentTarget:table};
+    try{
+      table.events.pointerenter(pointer);
+      eq(delay,1000);ok(!ready.has('is-wheel-ready'));
+      clock+=999;
+      api.scheduleNewsTableScroll(table);
+      eq(delay,1);ok(!ready.has('is-wheel-ready'));
+      clock++;
+      callback();ok(ready.has('is-wheel-ready'));
+      table.events.pointerleave(pointer);ok(!ready.has('is-wheel-ready'));
+      table.events.pointerenter(pointer);eq(delay,1000);
+      table.events.pointerleave(pointer);eq(callback,null);
+    }finally{
+      global.setTimeout=previous.setTimeout;global.clearTimeout=previous.clearTimeout;Date.now=previous.now;
+    }
   });
   check('news chronology uses release instants before pagination and filters',()=>{
     const rows=[
@@ -331,21 +391,50 @@ function runFrontendChecks(source) {
     const ids=timeline=>timeline.children.filter(n=>n.className==='news-item').map(n=>n.attrs.id.slice(5));
     const timeline=list();
     eq(ids(timeline).join(),ordered.news.slice(0,12).map(n=>n.id).join());
-    timeline.children.find(n=>n.id==='news-load-more').events.click();
-    eq(ids(timeline).join(),ordered.news.map(n=>n.id).join());
+    const pager=timeline.children.find(n=>n.className==='list-pager');
+    ok(pager.children.some(n=>n.attrs['aria-current']==='page'));
+    pager.children.find(n=>n.attrs['aria-label']==='第 2 页').events.click();
+    eq(ids(list()).join(),ordered.news.slice(12).map(n=>n.id).join());
     api.state.newsSearch='tie-';eq(ids(list()).join(),'tie-a,tie-b');api.state.newsSearch='';
     api.state.newsFilter='官方信息';eq(ids(list()).join(),'invalid');api.state.newsFilter='全部';
-    api.state.newsLimit=12;
+    api.newsPageView.quickPage=1;
+  });
+  check('quick news shows a single latest available digest with its update time',()=>{
+    const previous={date:'2026-11-21',generated_at:'2026-11-22T08:10:00+08:00',summary:'上一版可用摘要'};
+    const older={date:'2026-11-20',summary:'旧版补全文摘要'};
+    const pending={date:'2026-11-22',status:'updating'};
+    const makePage=digest=>text(api.newsPage({...api.baseData(),news_digest:digest,previous_news_digest:previous,news_backfill_digest:older}));
+    const fallback=makePage(pending);
+    ok(fallback.includes('上一版可用摘要'));ok(fallback.includes('更新于 2026-11-22 08:10'));
+    ok(!fallback.includes('旧版补全文摘要'));ok(!fallback.includes('今日快讯摘要'));ok(!fallback.includes('上一期快讯摘要'));
+    const ready=makePage({...pending,summary:'新生成摘要',generated_at:'2026-11-22T09:10:00+08:00'});
+    ok(ready.includes('新生成摘要'));ok(!ready.includes('上一版可用摘要'));
+  });
+  check('announcement search spans every disclosed day and keeps the latest digest independent',()=>{
+    const now='2026-11-22',latestDay='2026-11-21',older='2026-11-19',weekStart='2026-11-16';
+    const published=new Date(older+'T15:24:08+08:00').toISOString();
+    const latest={date:latestDay,title:'今日选中披露',code:'002000.SZ',name:'示例科技',id:'latest',url:'https://example.com/current'};
+    const earlier={date:older,title:'关于重大合同进展的公告',code:'603006',name:'联明股份',id:'earlier',published_at:published,url:'https://example.com/earlier'};
+    const packet={trade_date:latestDay,today:now,week_start:weekStart,days:[{date:now,count:0,complete:true}],announcements:[latest],
+                  digest:{date:latestDay,generated_at:now+'T09:13:00+08:00',summary:'最近披露日观点',items:[],input_count:1}};
+    api.state.announcementWeek={week_start:weekStart,announcements:[latest,earlier],complete:true};
+    for(const terms of [['联明'],['603006.sh'],['sh603006'],['603006'],['重大合同'],['联明','重大合同']])ok(api.announcementMatches(earlier,terms));
+    ok(!api.announcementMatches(earlier,['603006.sz']));
+    api.newsPageView.announcementQuery='６０３００６．ＳＨ';
+    const view=text(api.announcementPanel(packet));
+    ok(view.includes('本周匹配 1 条'));ok(view.includes(earlier.title));ok(view.includes(older));ok(!view.includes(latest.title));
+    ok(view.includes('最近披露日观点'));ok(view.includes('更新于 2026-11-22 09:13'));
+    api.state.announcementWeek=null;api.newsPageView.announcementQuery='';
   });
   check('news cards distinguish the cloud analysis queue from older archived articles',()=>{
     const n={id:'etf',title:'ETF收盘',published_at:'2026-11-19T15:07:00+08:00',analysis_queue:'tencent_news'};
-    for(const [state,label] of [['pending','MiniMax 分析排队中'],['waiting_body','缺少正文，等待补采'],
-      ['retry','MiniMax 分析等待重试'],['provider_cooldown','MiniMax 服务冷却中']]){
+    for(const [state,label] of [['pending','待分析'],['waiting_body','正文待补'],
+      ['retry','分析待重试'],['provider_cooldown','分析暂缓']]){
       const card=text(api.newsItem({...n,llm_status:state,analysis_retry_at:'2026-11-19T16:35:00+08:00'},d));
       ok(card.includes(label));eq(card.includes('16:35 后可重试'),['retry','provider_cooldown'].includes(state));
     }
-    ok(!text(api.newsItem({...n,analysis_queue:undefined,llm_status:'pending'},d)).includes('分析排队中'));
-    ok(!text(api.newsItem({...n,llm_status:'pending',llm_analysis:{status:'ready',summary:'已完成的分析'}},d)).includes('分析排队中'));
+    ok(!text(api.newsItem({...n,analysis_queue:undefined,llm_status:'pending'},d)).includes('待分析'));
+    ok(!text(api.newsItem({...n,llm_status:'pending',llm_analysis:{status:'ready',summary:'已完成的分析'}},d)).includes('待分析'));
   });
   check('official minutes replace only the same identity and date',()=>{
     const entity={id:'801780.SI',index_code:'801780.SI'},minute=(price,code='801780.SI')=>({price,timestamp:'2026-11-17T14:00:00+08:00',provider:'stock_api',kind:'historical_minute',source_code:code});
@@ -364,7 +453,7 @@ function runFrontendChecks(source) {
     const ticks=api.relayIntraday(state,latest,item,day);
     eq(ticks.length,6);eq(ticks.at(-1).price,106);
     eq(api.relayIntraday(state,latest,item,'2026-11-19').length,0);
-    const [header,graph]=api.chart(ticks,{today:true,metric:'intraday',range:null}).children;
+    const [header,graph]=api.chart(ticks,{today:true,metric:'intraday',range:null,previousClose:104}).children;
     const readout=header.children.at(-1);
     eq(graph.children.filter(node=>node.attrs.class==='session-line').length,2);
     eq(graph.children.filter(node=>node.attrs.class==='session-interpolation').length,0);
@@ -376,6 +465,11 @@ function runFrontendChecks(source) {
     hoverChart(graph,8+213.5/330*556);
     eq(readout.attrs['data-missing'],'false');
     ok(text(readout).includes('13:03:01 104.000'));
+    const change=readout.children.find(node=>node.className==='chart-change');
+    eq(text(change),'0.00%');eq(change.attrs['data-direction'],'neutral');
+    hoverChart(graph,8+210.5/330*556);
+    eq(text(change),'-1.92%');eq(change.attrs['data-direction'],'down');
+    hoverChart(graph,8+212.5/330*556);eq(text(change),'');
     hoverChart(graph,8+150/330*556);
     eq(readout.attrs['data-active'],'false');
     ok(text(graph).includes('11:30'));ok(text(graph).includes('13:00'));
@@ -451,6 +545,56 @@ function runFrontendChecks(source) {
     return {cloud,page,market,sectors,feed,sw,nodes,byId,buttons,select,named,chartTitle};
   }
 
+  check('news search commits Chinese only after composition ends',()=>{
+    const f=overviewFixture();
+    f.cloud.state.page='news';
+    f.cloud.render();
+    const input=f.byId('news-search');
+    input.events.compositionstart();
+    input.value='ying';
+    input.events.input({target:input,isComposing:true});
+    eq(f.cloud.state.newsSearch,'');
+    eq(f.byId('news-search'),input);
+    input.value='英伟达';
+    input.events.compositionend({target:input});
+    eq(f.cloud.state.newsSearch,'英伟达');
+    eq(f.byId('news-search').value,'英伟达');
+  });
+
+  check('overview retains weekend coverage until the next dated trade reading arrives',()=>{
+    const f=overviewFixture(),state=f.cloud.state,day=f.feed.trade_date;
+    const older=new Date(Date.parse(day+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    state.weekendBrief={week_start:older,week_end:older,market_through:older,next_trade_day:day,
+      generated_at:older+'T15:00:00+08:00',sections:Object.fromEntries(
+        ['market','week_news','weekend_news','outlook'].map(key=>[key,{text:'周度样例',news:[]}]))};
+    state.marketReading={trade_date:day,status:'pending'};
+    f.cloud.render();
+    const weekly=f.nodes(f.page,n=>n.attrs['data-reader-key']==='weekly-market-brief')[0];
+    eq(weekly.tag,'details');eq(weekly.attrs.open,undefined);
+    ok(text(weekly.children[0]).includes('周度简报'));
+    for(const label of ['周度简报','本周行情','本周资讯','周末资讯','下周展望','仅作信息参考'])ok(text(f.page).includes(label));
+    state.marketReading={trade_date:day,status:'ready',summary:'下一交易日简评',last_slot:'09:31',last_trade_reading:day,news:[]};
+    f.cloud.render();ok(text(f.page).includes('下一交易日简评'));ok(!text(f.page).includes('周度简报'));
+    state.marketReading={trade_date:day,status:'pending',last_trade_reading:day};
+    f.cloud.render();ok(!text(f.page).includes('周度简报'));
+  });
+
+  check('closed overview uses the archived session for the selected index',()=>{
+    const f=overviewFixture(),state=f.cloud.state,day=f.feed.trade_date;
+    const friday=new Date(Date.parse(day+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const [index,other]=f.market;
+    const points=(date,first)=>[[date+'T09:30:07+08:00',first],[date+'T09:31:01+08:00',first+1]];
+    state.liveQuotes={...f.feed,collector:{session:'closed'}};
+    state.relayIntraday={trade_date:day,series:{[index.id]:points(day,999)}};
+    state.minuteRecovery={trade_date:day,series:{},previous_session:{trade_date:friday,
+      series:{[index.id]:points(friday,301),[other.id]:points(friday,420)},recovered:{}}};
+    f.cloud.render();
+    const chart=()=>text(f.byId('overview-trend'));
+    ok(chart().includes('最近交易日分时 · '+friday));ok(chart().includes('302.00'));ok(!chart().includes('1,000.00'));
+    f.select('overview-indices',n=>n.attrs.id==='market-select-'+other.id);
+    ok(chart().includes('421.00'));ok(chart().includes(friday));
+  });
+
   check('sector radar opens the THS catalogue with paging, quote dates and real detail links',()=>{
     const f=overviewFixture(),state=f.cloud.state;
     state.page='sectors';state.liveQuotes=f.feed;
@@ -491,6 +635,37 @@ function runFrontendChecks(source) {
     ok(text(f.page).includes(date+' 收盘'));eq(state.taxonomy,'sse');
     const other=f.byId('sector-search');other.value=codes[4];other.events.input({target:other});
     ok(text(f.page).includes('等待同日总市值覆盖'));ok(!text(f.page).includes('排名样本'));
+  });
+
+  check('popular technology uses the same THS boards and hot-rank order in both views',()=>{
+    const f=overviewFixture(),state=f.cloud.state,date=f.feed.trade_date;
+    const [cpo,pcb,robot,semi,equipment,cloud,ai,aiApp,compute,laser,pork]=[
+      ['886033.TI','共封装光学(CPO)'],['885959.TI','PCB概念'],['886069.TI','人形机器人'],
+      ['881121.TI','半导体','I'],['884229.TI','半导体设备','I'],['885362.TI','云计算'],
+      ['885728.TI','人工智能'],['886108.TI','AI应用'],['886050.TI','算力租赁'],
+      ['886054.TI','光刻机'],['885573.TI','猪肉']
+    ].map(([code,name,kind='N'])=>({code,name,kind}));
+    state.liveQuotes=f.feed;
+    state.thsCatalog={items:[cpo,pcb,robot,semi,equipment,cloud,ai,aiApp,compute,laser,pork]};
+    state.sectorReference={quotes:{[equipment.code]:{quote_date:date,price:329.15,change_pct:2.5}}};
+    state.sectorHot={trade_date:date,rank_time:'10:30:00',items:[{...cpo,rank:4},{...pork,rank:1},{...pcb,rank:2}]};
+    f.cloud.render();
+    f.select('overview-industries',n=>n.attrs.id==='directory-filter-tech');
+    const tiles=()=>f.buttons('overview-industries',n=>(n.className||'').split(' ').includes('heat-tile'));
+    const expected=[pcb,cpo,robot,semi,equipment,ai,aiApp,compute,cloud];
+    eq(tiles().map(n=>n.attrs.id).join(','),expected.map(x=>'overview-industry-'+x.code).join(','));
+    const input=f.byId('directory-search');
+    input.value='具身智能';input.events.input({target:input});
+    eq(tiles().length,1);ok(text(tiles()[0]).includes(robot.name));
+
+    state.page='sectors';f.cloud.render();
+    const click=label=>f.nodes(f.page,n=>n.tag==='button'&&text(n)===label)[0].events.click();
+    click('同花顺板块');click('热门科技');
+    const rows=f.nodes(f.byId('sector-quote-scroll'),n=>n.tag==='tr'&&typeof n.events.click==='function');
+    eq(rows.length,expected.length);
+    expected.forEach((item,i)=>ok(text(rows[i]).includes(item.code)));
+    ok(text(rows[0]).includes('#2'));ok(text(rows[1]).includes('#4'));
+    ok(text(rows[4]).includes('+2.50%'));
   });
 
   check('delayed industry feed populates only the board below the six market indices',()=>{
@@ -587,6 +762,76 @@ function runFrontendChecks(source) {
     ok(f.chartTitle('overview-sector-trend').includes(f.sectors[3].name));
   });
 
+  check('China and overseas index cards switch with their own selected charts',()=>{
+    const f=overviewFixture();
+    const history=[{date:'2026-10-12',close:4012,complete:true},{date:'2026-10-13',close:4044,change_pct:.8,complete:true}];
+    f.cloud.state.cloudDaily={bars:{},stocks:{},global_indices:{
+      HSI:{id:'HSI',name:'恒生指数',market:'HK',history},
+      SPX:{id:'SPX',name:'标普500指数',market:'US',history},
+      DJI:{id:'DJI',name:'道琼斯工业指数',market:'US',history},
+    }};
+    f.cloud.render();
+    const cards=()=>text(f.byId('overview-indices'));
+    ok(cards().includes(f.market[0].name)&&cards().includes('恒生指数'));
+    ok(!cards().includes('标普500指数'));
+    f.select('overview-indices',f.named('恒生指数'));
+    ok(f.chartTitle('overview-trend').includes('恒生指数'));
+    ok(text(f.byId('overview-trend')).includes('香港时间'));
+    f.select('overview-indices',n=>n.attrs.id==='index-region-foreign');
+    ok(cards().includes('标普500指数')&&!cards().includes('恒生指数')&&!cards().includes(f.market[0].name));
+    f.select('overview-indices',f.named('标普500指数'));
+    ok(f.chartTitle('overview-trend').includes('标普500指数'));
+    ok(text(f.byId('overview-trend')).includes('纽约时间'));
+    f.select('overview-indices',n=>n.attrs.id==='index-region-china');
+    ok(f.chartTitle('overview-trend').includes('恒生指数'));
+    f.select('overview-indices',n=>n.attrs.id==='index-region-foreign');
+    ok(f.chartTitle('overview-trend').includes('标普500指数'));
+  });
+  check('global indices use their local minute sessions and can switch to daily bars',()=>{
+    const f=overviewFixture();
+    const history=[{date:'2026-10-12',close:4012,complete:true},{date:'2026-10-13',close:4044,change_pct:.8,complete:true}];
+    const day='2026-10-13';
+    const points=(times,zone)=>times.map(([clock,value])=>[day+'T'+clock+':00'+zone,value]);
+    f.cloud.state.cloudDaily={bars:{},stocks:{},global_indices:{
+      HSI:{id:'HSI',name:'恒生指数',market:'HK',history},
+      SPX:{id:'SPX',name:'标普500指数',market:'US',history},
+    },global_intraday:{
+      HSI:{date:day,provider:'tencent',windows:[[day+'T09:30:00+08:00',day+'T12:00:00+08:00'],
+        [day+'T13:00:00+08:00',day+'T16:10:00+08:00']],points:points([['09:30',3990],['16:08',4045]],'+08:00')},
+      SPX:{date:day,provider:'sina',windows:[[day+'T09:30:00-04:00',day+'T16:00:00-04:00']],
+        points:points([['09:30',3980],['16:00',4022]],'-04:00')},
+    }};
+    f.cloud.render();
+    f.select('overview-indices',f.named('恒生指数'));
+    const hkEntry=f.cloud.state.cloudDaily.global_intraday.HSI;
+    const hk=f.cloud.state.cloudDaily.global_indices.HSI;
+    hk.history=history.slice(0,1);hkEntry.previous_close=4012;
+    f.cloud.render();
+    ok(text(f.byId('market-select-HSI')).includes('+0.82%'));
+    hk.history=history;f.cloud.render();
+    const chart=()=>f.byId('overview-trend');
+    ok(text(chart()).includes('最近交易日分时 · '+day+' · 香港时间'));
+    eq(f.nodes(chart(),n=>n.attrs.class==='lunch-break').length,1);
+    f.select('overview-indices',n=>n.attrs.id==='index-region-foreign');
+    ok(text(chart()).includes('最近交易日分时 · '+day+' · 纽约时间'));
+    ok(text(chart()).includes('16:00'));ok(text(chart()).includes('4,022.00'));
+    eq(f.nodes(chart(),n=>n.attrs.class==='lunch-break').length,0);
+    f.select('overview-trend',n=>text(n)==='日线');
+    ok(text(chart()).includes('4,044.00'));ok(!text(chart()).includes('4,022.00'));
+    // A full closing-minute print can bridge a lagging day-level feed.
+    f.cloud.state.cloudDaily.global_indices.SPX.history=history.slice(0,1);
+    f.cloud.state.cloudDaily.global_intraday.SPX.previous_close=4012;
+    f.cloud.render();
+    ok(text(chart()).includes('分时收盘参考'));
+    ok(text(chart()).includes('4,022.00'));
+    ok(text(f.byId('market-select-SPX')).includes('4,022.00'));
+    // A late official daily bar replaces the minute reference.
+    f.cloud.state.cloudDaily.global_indices.SPX.history=history;
+    f.cloud.render();
+    ok(!text(chart()).includes('分时收盘参考'));
+    ok(text(f.byId('market-select-SPX')).includes('4,044.00'));
+  });
+
   check('changing industry taxonomy keeps the index and isolates the two charts’ periods',()=>{
     const f=overviewFixture();
     f.cloud.state.liveQuotes=f.feed;f.cloud.render();
@@ -670,6 +915,7 @@ async function runRefreshChecks(source) {
     hidden: false,
     querySelector: () => ({content:'sxdata'}),
     querySelectorAll: () => [],
+    getElementById: () => null,
   };
   let renders = 0;
   const json = (body, status = 200, headers = {}) => ({
@@ -727,7 +973,7 @@ async function runRefreshChecks(source) {
   // A same-day server-confirmed break reduces only quote polling and automatically
   // releases the throttle on the first scheduled poll after the local session opens.
   const quoteSpec=api.feeds.find(feed=>feed.key==='liveQuotes');
-  assert.equal(quoteSpec.interval,5000);
+  assert.equal(quoteSpec.interval,10000);
   const liveTask=api.publications.get(quoteSpec.key);
   const stamp=time=>Date.parse(today+'T'+time+'+08:00');
   const quiet={source:'sxdata_relay',schema_version:1,trade_date:today,market:[],sectors:[],

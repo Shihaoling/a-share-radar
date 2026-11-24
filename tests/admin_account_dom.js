@@ -58,16 +58,31 @@ async function run(){
   const empty={minutes:0,requests:null,avg_requests_per_minute:null,usage_responses:0};
   const history={requests:2,usage_responses:1,input_tokens:9,output_tokens:11,total_tokens:20};
   const snapshot={schema_version:1,as_of:'2026-11-19T15:00:00+08:00',coverage:{since:'2026-11-18T15:00:00+08:00',through:'2026-11-19T15:00:00+08:00',note:'只计完整分钟'},
-    relay:{periods:{trading:p,other:empty},rolling_60s:0,limit_per_minute:100,cumulative:{requests:123}},
+    relay:{rolling_60s:13,cumulative:{requests:998}},
+    primary:{periods:{trading:p,other:empty},rolling_60s:0,limit_per_minute:100,cumulative:{requests:123}},
     minimax:{periods:{trading:p,other:empty},historical:{news_analysis:history,training_labels:history}},
-    sources:[{id:'relay',label:'SXData',status:'cooling_down',expires_at:'2026-12-20T22:06:00+08:00'}]};
-  snapshot.relay.apis={index_daily:{starts:123,periods:{trading:p,other:empty}}};
+    sources:[{id:'sxdata',route:'primary',label:'行情与资讯主接口',status:'cooling_down'}]};
+  snapshot.primary.apis={index_daily:{starts:123,periods:{trading:p,other:empty}}};
   snapshot.minimax.scopes={training_labels:{...p,periods:{trading:p,other:empty}}};
   snapshot.minimax.observed={...p,since:'2026-11-19T10:00:00+08:00'};
+  snapshot.minimax.scope_labels={market_reading:'市场简评'};
+  const recent={requests:3,input_tokens:11,output_tokens:5,total_tokens:16,token_receipts:2};
+  snapshot.minimax.rolling={60:{...recent,observed_seconds:60,scopes:{market_reading:recent}}};
   let usageOk=true,limit=100,session=admin,blocked=false;
+  let prompt={id:'market_reading',label:'市场简评',inputs:'行情与资讯',system_prompt:'系统约束',note:'',revision:0,reasoning_effort_override:null,default_reasoning_effort:'medium'};
   const board=screen('admin',(path,opts)=>{
     if(path.endsWith('/session'))return [200,session];
     if(path.endsWith('/usage'))return usageOk?[200,snapshot]:[503,{message:'离线'}];
+    if(path.endsWith('/minimax-prompts')){
+      if(opts.method==='POST'){
+        const body=JSON.parse(opts.body);
+        assert.equal(opts.headers['X-CSRF-Token'],admin.csrf_token);
+        assert.deepEqual(body,{stage:'market_reading',note:'保留主要数据',revision:0,reasoning_effort:'xhigh'});
+        prompt={...prompt,note:body.note,revision:1,reasoning_effort_override:body.reasoning_effort,system_prompt:'系统约束\n保留主要数据'};
+        return [200,prompt];
+      }
+      return [200,{max_note:800,stages:[prompt],reasoning_efforts:['low','medium','high','xhigh','max']}];
+    }
     assert.equal(path,'/api/admin/policy');
     if(opts.method==='POST'){
       assert.equal(opts.headers['X-CSRF-Token'],admin.csrf_token);
@@ -78,11 +93,21 @@ async function run(){
   await tick();
   const b=board.nodes;
   assert.equal(b.results.hidden,false);assert.equal(b['relay-now'].textContent,'0');
+  assert.equal(b['relay-total'].textContent,'123');
   assert.equal(b['model-tokens'].textContent,'40');assert.equal(b['model-count'].textContent,'4');
-  assert.match(words(b.periods),/0\.5/);assert.match(words(b.sources),/冷却中/);assert.match(words(b.sources),/22:06:00/);
+  assert.match(words(b.periods),/主接口.*0\.5/);assert.match(words(b.sources),/行情与资讯主接口.*冷却中/);
+  assert.doesNotMatch(words(b.sources),/22:06:00/);
   assert.match(words(b['relay-apis']),/index_daily.*123/);assert.match(words(b['model-scopes']),/持续计量合计.*训练数据打标.*历史资讯分析.*历史训练打标/);
   const historyTraining=b['model-scopes'].children.find(n=>n.children[0].textContent==='历史训练打标');
   assert.deepEqual(historyTraining.children.slice(-5).map(cell=>cell.textContent),['9','11','20','—','—']);
+  assert.match(words(b['rolling-usage']),/近 1 分钟 3 11 5 16 2 \/ 3/);
+  assert.equal(b['prompt-section'].hidden,false);
+  assert.equal(b['prompt-template'].textContent,'系统约束');
+  assert.match(words(b['prompt-effort']),/默认 · 中（medium）/);
+  b['prompt-note'].value='保留主要数据';b['prompt-note'].fire('input');
+  b['prompt-effort'].value='xhigh';b['prompt-effort'].fire('change');
+  await b.refresh.fire('click');assert.equal(b['prompt-note'].value,'保留主要数据');assert.equal(b['prompt-effort'].value,'xhigh');
+  await b['prompt-form'].fire('submit');assert.match(b['prompt-template'].textContent,/保留主要数据/);
   const usageRequests=()=>board.urls.filter(([url,opts])=>url.endsWith('/policy') && opts.method==='POST').length;
   b['policy-limit'].value='101';await b['policy-form'].fire('submit');assert.equal(usageRequests(),0);
   b['policy-limit'].value='45';b['policy-limit'].fire('input');await b.refresh.fire('click');

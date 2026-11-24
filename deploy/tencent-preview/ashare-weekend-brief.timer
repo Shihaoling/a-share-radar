@@ -1,0 +1,10 @@
+[Unit]
+Description=Check the three-hour market brief slot on A-share non-trading days
+
+[Timer]
+OnCalendar=*-*-* *:00,15,30,45:15 Asia/Shanghai
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -7,8 +7,12 @@
   <title>管理后台 · 观澜</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="../account/account.css?v=20261119-1">
-  <link rel="stylesheet" href="./admin.css?v=20261119-1">
-  <script defer src="./admin.js?v=20261119-1"></script>
+  <link rel="stylesheet" href="./admin.css?v=clean-copy">
+  <script defer src="./admin.js?v=primary-usage-20261122"></script>
+  <link rel="stylesheet" href="../market-theme.css?v=glass-light-20261124">
+  <script src="../market-theme.js?v=glass-light-20261124"></script>
+  <link rel="stylesheet" href="../research-assistant.css?v=glass-light-20261124">
+  <script defer src="../research-assistant.js?v=report-effort-20261122" data-assistant-page="admin"></script>
 </head>
 <body>
   <a class="skip" href="#main">跳到用量统计</a>
@@ -17,13 +21,23 @@
     <header class="page-head"><div><h1>接口用量</h1><p id="as-of">正在读取统计…</p></div><button class="secondary" type="button" id="refresh">刷新</button></header>
     <p class="notice" id="status" role="status" aria-live="polite"></p>
     <div id="results" hidden>
+      <section class="card" aria-labelledby="rolling-title">
+        <div class="section-head"><h2 id="rolling-title">专属模型 近期调用</h2>
+          <label>环节 <select id="rolling-stage"></select></label>
+        </div>
+        <div class="scroll" tabindex="0" aria-label="专属模型 近期请求与 Token"><table>
+          <thead><tr><th scope="col">时间范围</th><th scope="col">调用次数</th><th scope="col">输入 Token</th><th scope="col">输出 Token</th><th scope="col">总 Token</th><th scope="col">Token 回执</th></tr></thead>
+          <tbody id="rolling-usage"></tbody>
+        </table></div>
+        <p class="hint" id="rolling-note"></p>
+      </section>
       <section class="card summary" aria-labelledby="totals-title">
         <h2 id="totals-title">累计用量</h2>
         <dl class="totals">
-          <div><dt>SXData 累计请求</dt><dd id="relay-total">—</dd><small>次</small></div>
-          <div><dt>最近 60 秒请求</dt><dd id="relay-now">—</dd><small id="relay-limit"></small></div>
-          <div><dt>MiniMax 历史已记录调用</dt><dd id="model-count">—</dd><small>次</small></div>
-          <div><dt>MiniMax 历史已记录 Token</dt><dd id="model-tokens">—</dd><small id="token-split"></small></div>
+          <div><dt>行情与资讯主接口累计请求</dt><dd id="relay-total">—</dd><small>次</small></div>
+          <div><dt>主接口近 60 秒请求</dt><dd id="relay-now">—</dd><small id="relay-limit"></small></div>
+          <div><dt>专属模型 历史已记录调用</dt><dd id="model-count">—</dd><small>次</small></div>
+          <div><dt>专属模型 历史已记录 Token</dt><dd id="model-tokens">—</dd><small id="token-split"></small></div>
         </dl>
         <p class="hint" id="historical-note"></p>
       </section>
@@ -32,20 +46,39 @@
         <p class="hint" id="window-note"></p>
       </section>
       <section class="card" aria-labelledby="details-title"><h2 id="details-title">接口与任务明细</h2>
-        <details><summary>SXData 各接口</summary>
-          <div class="scroll" tabindex="0" aria-label="各中转接口累计请求及盘中盘外均值"><table><thead><tr><th scope="col">接口</th><th scope="col">累计请求</th><th scope="col">HTTP 429</th><th scope="col">上游业务限流</th><th scope="col">传输错误</th><th scope="col">盘中请求</th><th scope="col">盘中每分钟</th><th scope="col">盘外请求</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="relay-apis"></tbody></table></div>
+        <details><summary>主接口各项明细</summary>
+          <div class="scroll" tabindex="0" aria-label="主接口累计请求及盘中盘外均值"><table><thead><tr><th scope="col">接口</th><th scope="col">累计请求</th><th scope="col">已观测 HTTP 429</th><th scope="col">已观测业务限流</th><th scope="col">已观测传输错误</th><th scope="col">盘中请求</th><th scope="col">盘中每分钟</th><th scope="col">盘外请求</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="relay-apis"></tbody></table></div>
         </details>
-        <details><summary>MiniMax 任务与 Token</summary>
+        <details><summary>专属模型 任务与 Token</summary>
           <p id="model-since" class="section-note"></p>
-          <div class="scroll" tabindex="0" aria-label="MiniMax 各任务累计用量"><table><thead><tr><th scope="col">任务</th><th scope="col">累计调用</th><th scope="col">成功</th><th scope="col">失败</th><th scope="col">用量回执</th><th scope="col">输入 Token</th><th scope="col">输出 Token</th><th scope="col">总 Token</th><th scope="col">盘中每分钟</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="model-scopes"></tbody></table></div>
+          <div class="scroll" tabindex="0" aria-label="专属模型 各任务累计用量"><table><thead><tr><th scope="col">任务</th><th scope="col">累计调用</th><th scope="col">成功</th><th scope="col">失败</th><th scope="col">用量回执</th><th scope="col">输入 Token</th><th scope="col">输出 Token</th><th scope="col">总 Token</th><th scope="col">盘中每分钟</th><th scope="col">盘外每分钟</th></tr></thead><tbody id="model-scopes"></tbody></table></div>
         </details>
       </section>
       <section class="card" aria-labelledby="source-title"><h2 id="source-title">数据源与额度</h2><p class="section-note">连接状态以服务端记录的实际结果为准，时间均为北京时间。</p>
         <div class="scroll" tabindex="0" aria-label="数据源连接状态及到期时间"><table class="sources"><thead><tr><th scope="col">数据源</th><th scope="col">连接状态</th><th scope="col">最近成功</th><th scope="col">额度到期</th></tr></thead><tbody id="sources"></tbody></table></div>
       </section>
     </div>
+    <section id="prompt-section" class="card policy" aria-labelledby="prompt-title" hidden>
+      <div class="section-head"><h2 id="prompt-title">专属模型设置</h2><label for="prompt-stage">环节
+        <select id="prompt-stage"></select></label>
+      </div>
+      <p class="section-note" id="prompt-inputs"></p>
+      <form id="prompt-form" method="post" action="/api/admin/minimax-prompts">
+        <div class="section-head"><label for="prompt-effort">思考强度
+          <select id="prompt-effort" disabled aria-describedby="prompt-help"></select></label>
+        </div>
+        <p class="section-note" id="prompt-help">强度越高，通常耗时更长、消耗更多 Token。保存后从该环节下一次调用生效。</p>
+        <details><summary>实际发送的系统提示词</summary>
+          <pre id="prompt-template" tabindex="0" class="prompt-template"></pre>
+        </details>
+        <label for="prompt-note">补充要求</label>
+        <textarea id="prompt-note" rows="5" maxlength="800" disabled></textarea>
+        <button class="primary" id="prompt-save" type="submit" disabled>保存设置</button>
+      </form>
+      <p class="hint" id="prompt-state" role="status" aria-live="polite"></p>
+    </section>
     <section id="policy-section" class="card policy" aria-labelledby="policy-title" hidden>
-      <h2 id="policy-title">SXData 请求上限</h2>
+      <h2 id="policy-title">采集调度上限</h2>
       <p class="section-note">所有采集任务共享滚动 60 秒窗口，保存后对后续请求生效。</p>
       <form id="policy-form" method="post" action="/api/admin/policy">
         <label for="policy-limit">每 60 秒最多请求</label>

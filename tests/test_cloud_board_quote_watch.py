@@ -209,7 +209,7 @@ class BoardQuoteWatchTests(unittest.TestCase):
             nonlocal instant
             if len(calls) > len(failures):
                 raise StopIteration
-            instant += timedelta(seconds=5)
+            instant += timedelta(seconds=1)
             self.assertLess(instant - start, timedelta(minutes=10))
             heartbeat()
 

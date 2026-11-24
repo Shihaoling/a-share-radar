@@ -1,0 +1,23 @@
+[Unit]
+Description=Generate summaries for collected broker research reports
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime:/opt/ashare-radar-preview/runtime/announcement-libs
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_REQUEST_USAGE_DB=/var/lib/ashare-radar-preview/request-usage/metrics.sqlite3
+Environment=RADAR_MINIMAX_COOLDOWN_DB=/var/lib/ashare-radar-preview/news/minimax-cooldown.sqlite3
+LoadCredential=minimax-key:/etc/ashare-radar-preview/minimax-key
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/research_report_library.py summarize
+TimeoutStartSec=infinity
+MemoryMax=400M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview /srv/ashare-radar-preview/public/data/reports
+ProtectHome=yes
+PrivateTmp=yes

@@ -1,0 +1,24 @@
+[Unit]
+Description=A-share Radar offline replay (%i)
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/ashare-radar-preview/runtime
+Environment=PYTHONPATH=/opt/ashare-radar-preview/runtime
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=RADAR_ALLOW_TRAINING=false
+Environment=RADAR_ALLOW_DIRECTION_TRAINING=false
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=1
+ExecStart=/usr/bin/flock /var/lib/ashare-radar-preview/replay.lock /var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/jobs.py %i-replay
+TimeoutStartSec=420
+MemoryMax=1800M
+CPUQuota=100%
+IPAddressDeny=any
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/ashare-radar-preview
+ProtectHome=yes
+PrivateTmp=yes

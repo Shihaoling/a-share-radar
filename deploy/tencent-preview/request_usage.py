@@ -12,6 +12,7 @@ import time
 
 from pipeline.calendar import SHANGHAI
 from pipeline.data_service import METERED_APIS, request_usage as gate_usage, gate_state
+from pipeline.minimax_prompts import LEGACY_ASSISTANT_STAGE, STAGES as CONFIGURABLE_MODEL_STAGES
 from pipeline.public_fields import remove_usage
 from pipeline.request_policy import read_policy, RELAY_EXPIRES_AT
 from pipeline.usage_meter import COLUMNS, connect, counts, db_path, period_at
@@ -21,6 +22,7 @@ MINUTE_RETENTION = 8*86400
 HOUR_RETENTION = 366*86400
 MODEL_TRANSITION = 550  # allow already-running pre-deployment model jobs to finish
 STAGES = ("trading","other")
+MODEL_STAGES = {**CONFIGURABLE_MODEL_STAGES, LEGACY_ASSISTANT_STAGE: ("研究助手 · 历史合计", "")}
 KEYS = ("requests","success","failed","usage_responses","input_tokens","output_tokens","total_tokens")
 
 
@@ -52,8 +54,54 @@ def intervals(db,provider,start,end,previous):
                         ON CONFLICT DO UPDATE SET minutes=minutes+1""",(provider,minute//3600*3600,period))
 
 
+def sample_relay(db, events, generation, now, *, primary=False):
+    provider = "relay_primary" if primary else "relay"
+    receipts = "primary_receipts" if primary else "receipts"
+    first = events[0] if events else None
+    visible = [row for row in events if row.get("route") == "primary"] if primary else events
+    last = state_value(db,provider+"_seq") or 0
+    previous = state_value(db,provider+"_through")
+    segment = state_value(db,provider+"_segment")
+    reset = state_value(db,provider+"_generation") != generation
+    if reset or (first and first["id"]>last+1):
+        db.execute("DELETE FROM "+receipts)
+        segment = generation if not first or first["id"]==1 else first["started_at"]
+        if primary and previous is None:
+            segment = visible[0]["started_at"] if visible else None
+        set_value(db,provider+"_generation",generation)
+    if segment is None and visible:
+        segment = visible[0]["started_at"]
+    if segment is not None:
+        set_value(db,provider+"_segment",segment)
+    for row in visible:
+        seq, stamp = row["id"],row["started_at"]
+        scope = row["api"] if row["api"] in METERED_APIS else "other"
+        outcome = row.get("outcome")
+        done = outcome not in ("in_flight", "legacy_unobserved")
+        old = db.execute("SELECT finished FROM "+receipts+" WHERE seq=?",(seq,)).fetchone()
+        if old and (old[0] or not done):
+            continue
+        counts(db,stamp,provider,scope,start=old is None,success=outcome=="ok" if done else None,
+               finished=row.get("finished_at"))
+        db.execute("INSERT OR REPLACE INTO "+receipts+" VALUES(?,?)",(seq,int(done)))
+        if primary and done:
+            db.execute("""INSERT INTO primary_outcomes VALUES(?,?,1)
+                        ON CONFLICT DO UPDATE SET requests=requests+1""",(scope,outcome))
+    if first:
+        db.execute("DELETE FROM "+receipts+" WHERE seq<?",(first["id"],))
+        set_value(db,provider+"_seq",events[-1]["id"])
+    if segment is not None and now>=segment:
+        intervals(db,provider,segment,now,previous)
+        if state_value(db,provider+"_since") is None:
+            set_value(db,provider+"_since",segment)
+        set_value(db,provider+"_through",now)
+
+
 def sample(path, gate, now):
     with closing(connect(path)) as db, db:
+        if state_value(db,"model_window_since") is None:
+            first, = db.execute("SELECT min(started_at) FROM model_events").fetchone()
+            set_value(db,"model_window_since",now if first is None else min(now,first))
         model_since = state_value(db,"model_since")
         if model_since is None:
             model_since = now+MODEL_TRANSITION
@@ -64,42 +112,15 @@ def sample(path, gate, now):
         if gate and isinstance(gate.get("since"),(float,int)):
             generation = gate["since"]
             events = sorted(gate.get("recent",()),key=lambda row:row["id"])
-            last = state_value(db,"relay_seq") or 0
-            first = events[0] if events else None
-            previous = state_value(db,"relay_through")
-            segment = state_value(db,"relay_segment")
-            reset = state_value(db,"relay_generation") != generation
-            if reset or (first and first["id"]>last+1):
-                db.execute("DELETE FROM receipts")
-                segment = generation if not first or first["id"]==1 else first["started_at"]
-                if reset:
-                    last = 0
-                set_value(db,"relay_generation",generation)
-                set_value(db,"relay_segment",segment)
-            for row in events:
-                seq, stamp = row["id"],row["started_at"]
-                scope = row["api"] if row["api"] in METERED_APIS else "other"
-                done = row.get("outcome") not in ("in_flight","legacy_unobserved")
-                old = db.execute("SELECT finished FROM receipts WHERE seq=?",(seq,)).fetchone()
-                if old and (old[0] or not done):
-                    continue
-                counts(db,stamp,"relay",scope,start=old is None,success=row["outcome"]=="ok" if done else None,
-                       finished=row.get("finished_at"))
-                db.execute("INSERT OR REPLACE INTO receipts VALUES(?,?)",(seq,int(done)))
-            if first:
-                db.execute("DELETE FROM receipts WHERE seq<?",(first["id"],))
-                set_value(db,"relay_seq",events[-1]["id"])
-            if segment is not None and now>=segment:
-                intervals(db,"relay",segment,now,previous)
-                if state_value(db,"relay_since") is None:
-                    set_value(db,"relay_since",segment)
-                set_value(db,"relay_through",now)
+            sample_relay(db,events,generation,now)
+            sample_relay(db,events,generation,now,primary=True)
 
         if (state_value(db,"pruned") or 0)<now-3600:
             db.execute("DELETE FROM meter WHERE grain='m' AND stamp<?",(now-MINUTE_RETENTION,))
             db.execute("DELETE FROM meter WHERE grain='h' AND stamp<?",(now-HOUR_RETENTION,))
             db.execute("DELETE FROM coverage WHERE minute<?",(now-MINUTE_RETENTION,))
             db.execute("DELETE FROM coverage_hours WHERE hour<?",(now-HOUR_RETENTION,))
+            db.execute("DELETE FROM model_events WHERE started_at<?",(now-2*86400,))
             set_value(db,"pruned",now)
 
 
@@ -209,12 +230,42 @@ def statistics(db,provider,now,scope_ids):
     return periods,scopes,observed
 
 
+def rolling_model(db,now):
+    since = state_value(db,"model_window_since")
+    if since is None:
+        return {}
+    result = {}
+    for seconds in (60,3600,86400):
+        start = max(now-seconds,since)
+        observed = min(seconds,max(0,int(now-since)))
+        zero = (0,)+(None,)*3+(0,)
+        def usage(row):
+            requests, inp, out, total, receipts = row
+            return dict(requests=requests,input_tokens=0 if not requests else inp,output_tokens=0 if not requests else out,
+                        total_tokens=0 if not requests else total,token_receipts=receipts)
+
+        rows = dict((scope,values) for scope,*values in db.execute("""SELECT scope,count(*),sum(input_tokens),
+            sum(output_tokens),sum(total_tokens),count(total_tokens) FROM model_events
+            WHERE started_at>=? AND started_at<=? GROUP BY scope""",(start,now)))
+        values = list(rows.values())
+        total = tuple(sum(v for v in column if v is not None) if any(v is not None for v in column) else None
+                      for column in zip(*values)) if values else zero
+        result[str(seconds)] = {**usage(total),"observed_seconds":observed,
+                                "scopes":{scope:usage(rows.get(scope,zero)) for scope in MODEL_STAGES}}
+    return result
+
+
 def sources_for(state,gate,last,history,now):
     sources = []
     apis = (gate or {}).get("apis",{})
-    if any(api.get("outcomes",{}).get("ok",0)>0 for api in apis.values()) or "relay" in last:
+    if "relay_primary" in last:
+        cooling = (gate or {}).get("primary_host_until",0)>now if gate else None
+        sources.append(dict(id="sxdata",route="primary",name="行情与资讯主接口",label="行情与资讯主接口",
+                            connected=True,status="cooling_down" if cooling else "connected",
+                            cooling_down=cooling,last_success_at=iso(last["relay_primary"]),expires_at=None))
+    elif any(api.get("outcomes",{}).get("ok",0)>0 for api in apis.values()) or "relay" in last:
         cooling = gate_state("__request_usage_host__")[0]>0 if gate else None
-        sources.append(dict(id="sxdata",name="SXData 行情与资讯",label="SXData 行情与资讯",
+        sources.append(dict(id="sxdata",name="行情与资讯接口",label="行情与资讯接口",
                             connected=True,status="cooling_down" if cooling else "connected",
                             cooling_down=cooling,last_success_at=iso(last.get("relay")),expires_at=RELAY_EXPIRES_AT))
     known = [entry["last_success_at"] for entry in (history["news_analysis"],history["training_labels"])
@@ -230,7 +281,7 @@ def sources_for(state,gate,last,history,now):
                 cooling = bool(row and row[0]>now)
             except (OSError,sqlite3.Error):
                 pass
-        sources.append(dict(id="minimax",name="MiniMax",label="MiniMax",connected=True,
+        sources.append(dict(id="minimax",name="专属模型",label="专属模型",connected=True,
                             status="cooling_down" if cooling else "connected",cooling_down=cooling,
                             last_success_at=max(known),expires_at=None))
     return sources
@@ -246,15 +297,27 @@ def dashboard(now=None,state=STATE):
                     note="最近24小时仅统计完整覆盖分钟，含零请求。盘中为交易日09:30—11:30与13:00—15:00。旧记录只保留可核实小计。")
     empty = {k:dict.fromkeys((*KEYS,"avg_requests_per_minute"),None)|{"minutes":0} for k in (*STAGES,"unknown")}
     relay = dict(periods=empty,scopes={})
-    minimax = dict(periods=empty,scopes={},historical=history,observed=None)
+    primary = dict(periods=empty,scopes={},since=None,through=None,observed=None)
+    minimax = dict(periods=empty,scopes={},historical=history,observed=None,rolling={},
+                   scope_labels={stage:entry[0] for stage,entry in MODEL_STAGES.items()})
+    api_primary = {key:value.get("routes",{}).get("primary",0) for key,value in (gate or {}).get("apis",{}).items()
+                   if value.get("routes",{}).get("primary",0)}
+    primary_outcomes = {}
     last = {}
     if path.is_file():
         try:
             with closing(readonly(path)) as db:
+                db.execute("BEGIN")
                 relay["periods"],relay["scopes"],relay["observed"] = statistics(db,"relay",now,
                     (gate or {}).get("apis",{}))
+                primary["periods"],primary["scopes"],primary["observed"] = statistics(db,"relay_primary",now,api_primary)
+                primary.update(since=iso(state_value(db,"relay_primary_since")),
+                               through=iso(state_value(db,"relay_primary_through")))
+                for scope,outcome,requests in db.execute("SELECT scope,outcome,requests FROM primary_outcomes"):
+                    primary_outcomes.setdefault(scope,{})[outcome] = requests
                 minimax["periods"],minimax["scopes"],minimax["observed"] = statistics(db,"minimax",now,
-                    ("news_analysis","news_digest","training_labels"))
+                    MODEL_STAGES)
+                minimax["rolling"] = rolling_model(db,now)
                 for provider,prefix in (("relay","relay"),("minimax","model")):
                     since = state_value(db,prefix+"_since")
                     through = state_value(db,prefix+"_through")
@@ -278,11 +341,20 @@ def dashboard(now=None,state=STATE):
                    success=all_ok,failed=outcomes-all_ok,peak_60s=gate["peak_60s"])
     relay.update(expires_at=RELAY_EXPIRES_AT,rolling_60s=gate["starts_last_60s"] if gate and gate.get("since") is not None else None,
                  limit_per_minute=limit,cumulative=cum,
-                 apis={key:{**{name:value[name] for name in ("starts","legacy","outcomes","deferred","transport")
+                 apis={key:{**{name:value[name] for name in ("starts","legacy","outcomes","deferred","transport","routes")
                                    if name in value},
                             "periods":relay["scopes"].get(key,{}).get("periods",empty)}
                        for key,value in apis.items() if key in METERED_APIS or key=="other"})
-    return dict(schema_version=1,as_of=iso(now),coverage=coverage,relay=relay,minimax=minimax,
+    metered = gate is not None and gate.get("since") is not None
+    primary.update(cumulative={"requests":sum(api_primary.values())} if metered else None,
+                   rolling_60s=sum(row.get("route")=="primary" and now-60<row["started_at"]<=now
+                                   for row in gate["recent"]) if metered else None,
+                   limit_per_minute=limit,
+                   apis={key:{"starts":api_primary.get(key) if metered else None,
+                              "outcomes":primary_outcomes.get(key),
+                              "periods":primary["scopes"].get(key,{}).get("periods",empty)}
+                         for key in api_primary.keys()|primary_outcomes.keys()})
+    return dict(schema_version=1,as_of=iso(now),coverage=coverage,relay=relay,primary=primary,minimax=minimax,
                 sources=sources_for(state,gate,last,history,now))
 
 
@@ -377,7 +449,7 @@ def publish_training_progress(state,previous=None):
                         Path(state)/"request-usage/public-training-progress.json",public_training_progress,previous)
 
 
-SOURCE_NAMES = {"sxdata":"SXData 行情与资讯","minimax":"MiniMax"}
+SOURCE_NAMES = {"sxdata":"行情与资讯接口","minimax":"专属模型"}
 
 
 def verified_source_ids(state,previous):

@@ -21,10 +21,11 @@ def catalog_codes(path):
 
 
 class IndexBatches:
-    """Every other index slot remains reserved for the original core. No extra requests."""
-    def __init__(self, core, codes):
+    """Use the combined universe when supported and protect core quotes on fallback."""
+    def __init__(self, core, codes, *, prefer_combined=False):
         self.core = core
         self.all = {**codes, **core}  # Keep existing market entity IDs on shared codes.
+        self.prefer_combined = prefer_combined
         self.directory_turn = False
         self.exchange = "SH"
         self.split_until = 0
@@ -45,7 +46,7 @@ class IndexBatches:
                 self.exchange = "SZ" if self.exchange == "SH" else "SH"
             elif fetched_count < expected * .9:
                 self.split_until = stamp + 600
-        self.directory_turn = not self.directory_turn
+        self.directory_turn = (self.prefer_combined and stamp >= self.split_until) or not self.directory_turn
 
 
 SCHEMA = """

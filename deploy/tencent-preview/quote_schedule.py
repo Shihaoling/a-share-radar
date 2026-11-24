@@ -15,6 +15,7 @@ class QuoteSchedule:
         self.gap = settings["min_gap_seconds"]
         self.cap = min(settings["project_cap_per_minute"], settings["collector_cap_per_minute"])
         self.batches = tuple(settings["batches"])
+        self.staggered = settings.get("staggered_minutes", False)
         self.stock_every_slots = settings.get("stock_every_slots", 5)
         if type(self.stock_every_slots) is not int or self.stock_every_slots < 2:
             raise ValueError("expected at least two slots per stock batch")
@@ -42,6 +43,22 @@ class QuoteSchedule:
             return None
         if self.starts and stamp - self.starts[-1] < self.gap:
             return None
+        if self.staggered:
+            # The other shared-feed jobs start at :19, :26, :49 and :56.
+            slots = ((3,"rt_idx_k"),(11,"rt_k"),(33,"rt_idx_k"),(41,"rt_k"))
+            if self.gap > 12:
+                slots = (slots[0], slots[-1])
+            for second, batch in slots:
+                if batch not in self.batches or not second <= now.second < second + 4:
+                    continue
+                key = (now.replace(second=0,microsecond=0), second)
+                if self.last_slot == key or stamp < self.paused_until.get(batch, 0):
+                    return None
+                self.last_slot = key
+                self.starts.append(stamp)
+                self.in_flight = batch
+                return batch
+            return None
         start_hour, start_minute = (9, 30) if phase == "morning" else (13, 0)
         opening = now.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0)
         slot_index = int((now - opening).total_seconds()) // self.slot
@@ -67,7 +84,7 @@ class QuoteSchedule:
 
     def finish(self, now, retry_after=0, *, host=False, deferred=False):
         # A stock slot blocked before sending still owes the market a stock call.
-        if deferred and self.in_flight == "rt_k" and self.last_slot is not None:
+        if not self.staggered and deferred and self.in_flight == "rt_k" and self.last_slot is not None:
             self.next_stock_slot = self.last_slot[1] + 1
             self.last_batch = "rt_idx_k"
         if self.in_flight and retry_after:

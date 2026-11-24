@@ -128,23 +128,27 @@ window.AssetChart = (() => {
     constructor(host,key) {
       this.host=host; this.key=key; this.name=''; this.mode=null; this.study='momentum20';
       this.anchor={daily:null,intraday:null,members:null}; this.width=0; this.chart=read(null,key);
-      this.hasMembers=key.startsWith('sector/') && /\.(?:TI|SI)$/.test(key); this.manualMode=false;
+      this.hasMembers=key.startsWith('sector/'); this.manualMode=false;
+      this.officialSector=this.hasMembers && /\.(?:SH|SZ)$/.test(key);
       this.root=el('section','asset-chart-view'); this.root.setAttribute('aria-label','行情走势');
       const header=el('header','ac-head');
       const modes=el('div','ac-controls'); modes.setAttribute('aria-label','行情周期');
       this.modes={};
-      const choices=this.hasMembers?[['members','成分股分时'],['intraday',key.endsWith('.TI')?'热榜分时':'权重估算分时'],['daily','日线']]:[['intraday','分时'],['daily','日线']];
+      const marketLabel=this.officialSector?'板块指数分时':key.endsWith('.TI')?'热榜分时':'权重估算分时';
+      const choices=[['intraday',this.hasMembers?marketLabel:'分时'],['daily','日线']];
+      if(this.hasMembers)choices.splice(this.officialSector?1:0,0,['members','成分股分时']);
       for (const [id,text] of choices) {
         this.modes[id]=control(text,()=>{this.manualMode=true;this.mode=id;this.draw();},'ac-choice');
         modes.append(this.modes[id]);
       }
       header.append(el('h2','', '行情走势'),modes);
       this.readout=el('div','ac-readout'); this.time=el('span','ac-time');
-      this.primary=el('strong','ac-current'); this.context=el('span','ac-context');
+      this.primary=el('strong','ac-current'); this.change=el('span','ac-change'); this.context=el('span','ac-context');
+      this.change.title='涨跌幅 · 相对上一交易日收盘';
       this.previous=control('‹',()=>this.step(-1),'ac-arrow','上一个采样点');
       this.next=control('›',()=>this.step(1),'ac-arrow','下一个采样点');
       const arrows=el('span','ac-arrows'); arrows.append(this.previous,this.next);
-      this.readout.append(this.time,this.primary,this.context,arrows);
+      this.readout.append(this.time,this.primary,this.change,this.context,arrows);
       this.legend=el('div','ac-legend'); this.main=el('div','ac-plot ac-main-plot');
       this.main.tabIndex=0; this.main.setAttribute('role','slider');
       this.main.setAttribute('aria-label','行情采样点，可按左右方向键查看');
@@ -217,16 +221,21 @@ window.AssetChart = (() => {
         const partial=Array.isArray(members?.sample_points) && members.sample_points.length>0 &&
           (!complete || members.sample_trade_date>members.trade_date);
         const memberDay=partial?members.sample_trade_date:members?.trade_date;
+        const recovered=members?.historical_recovered_count;
+        const basis=partial?'仅代表已有报价的成分股':'成分股等权涨跌幅采样' +
+          (Number.isInteger(recovered)&&recovered>0?` · 历史分钟补采 ${recovered} 点`:'');
+        this.modes.members.hidden=this.officialSector&&!complete&&!partial;
         this.modes.members.textContent=partial?'部分成分分时':'成分股分时';
         this.memberChart=read({intraday:{measure:'constituent_change_pct',day:memberDay,partial,
           points:partial?members.sample_points:members?.points,max_gap_minutes:3,
-          basis_label:partial?'仅代表已有报价的成分股':'成分股等权涨跌幅采样'}},this.key);
+          basis_label:basis}},this.key);
         if (!this.manualMode) {
           const newestHeat=this.chart.minutes.length && this.chart.intraday.day;
-          if (this.memberChart.minutes.length && (!newestHeat || memberDay>=newestHeat)) this.mode='members';
+          if (this.memberChart.minutes.length && (!newestHeat || memberDay>newestHeat ||
+              !this.officialSector && memberDay===newestHeat)) this.mode='members';
           else if (this.chart.minutes.length) this.mode='intraday';
           else if (this.chart.dailyRows.some(row=>positive(row.close))) this.mode='daily';
-          else this.mode='members';
+          else this.mode=this.officialSector?'intraday':'members';
         }
       } else if (!this.mode || (this.key.startsWith('sector/') && !this.manualMode)) {
         if((this.key.startsWith('sector/') && this.chart.minutes.length) || this.chart.minutes.length>1)this.mode='intraday';
@@ -358,13 +367,18 @@ window.AssetChart = (() => {
       this.time.textContent=missing?missing.stamp:row?(daily?row.day:row.time):'';
       this.primary.className=missing?'ac-current ac-missing':'ac-current';
       this.primary.textContent=missing?'未采集到数据':row?label(row[this.field],unit):'—';
+      const prior=daily?(row&&!row.gap?data.dailyRows[row.x-1]?.close:null):data.intraday.previous_close;
+      const change=row?(daily||!data.percent?(positive(prior)?(row[this.field]/prior-1)*100:null):row.value):null;
+      const rounded=finite(change)?Number(change.toFixed(2)):null;
+      const direction=!finite(rounded)||rounded===0?'neutral':rounded>0?'up':'down';
+      this.primary.setAttribute('data-direction',!daily&&data.percent&&row?direction:'');
+      this.change.setAttribute('data-direction',direction);
+      this.change.textContent=row&&(daily||!data.percent)?
+        (finite(rounded)?(rounded>0?'+':'')+rounded.toFixed(2)+'%':'—'):'';
       const context=[];
       if(row && daily) {
         if(positive(row.ma20))context.push('MA20 '+label(row.ma20));
         if(data.daily.basis==='reference_linked' && positive(row.raw_close))context.push('原始收盘 '+label(row.raw_close));
-      } else if(row && !data.percent && positive(data.intraday.previous_close)) {
-        const change=(row.value/data.intraday.previous_close-1)*100;
-        context.push('较昨收 '+(change>0?'+':'')+label(change,'%'));
       }
       if(row?.coverage)context.push(`样本 ${row.coverage[0]}/${row.coverage[1]} 只`);
       this.context.textContent=context.join(' · ');
@@ -390,7 +404,7 @@ window.AssetChart = (() => {
       this.main.setAttribute('aria-valuemax',String(total));
       this.main.setAttribute('aria-valuenow',String(total?this.index+1:0));
       const study=studyMissing?this.studyValue.textContent:daily&&row?studies[this.study][0]+' '+this.studyValue.textContent:paired?'相对沪深300 '+this.studyValue.textContent:'';
-      this.main.setAttribute('aria-valuetext',[this.time.textContent,this.primary.textContent,this.context.textContent,study].filter(Boolean).join('，'));
+      this.main.setAttribute('aria-valuetext',[this.time.textContent,this.primary.textContent,this.change.textContent&&'涨跌幅 '+this.change.textContent,this.context.textContent,study].filter(Boolean).join('，'));
       this.previous.disabled=this.index<=0;this.next.disabled=this.index<0||this.index>=total-1;
     }
   }

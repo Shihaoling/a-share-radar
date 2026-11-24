@@ -10,7 +10,7 @@ import sqlite3
 import time
 from typing import NamedTuple
 
-from pipeline.calendar import is_trading_day, shanghai_now
+from pipeline.calendar import is_trading_day, previous_trading_day, shanghai_now
 from pipeline.data_service import credential_matches, gate_state
 from pipeline.primary_minutes import minute_points
 from pipeline.stock_api import _Client, _Failure, _index_code
@@ -139,6 +139,10 @@ def next_task(db, now):
     today = now.date().isoformat()
     # Alternate current and overdue work. Oldest attempted index wins inside each lane.
     lanes = ("older", "today") if meta(db, "last_lane") == "today" else ("today", "older")
+    priority_day = meta(db, "evening_priority_day")
+    prior = previous_trading_day(today, include_today=is_trading_day(today) is True and now.hour >= 19)
+    if not prior or priority_day != prior.isoformat():
+        priority_day = ""
     slots_by_day = {}
     covered = []
     task = None
@@ -153,8 +157,9 @@ def next_task(db, now):
                               WHERE complete=0 AND day {op} ? AND (retry_at<=? OR
                                 (? AND id='sh000001' AND attempted<? AND outcome IN ('no_new_minutes','partial')))
                               ORDER BY CASE WHEN ? AND id='sh000001' AND (attempted<? OR attempted<=?) THEN 0 ELSE 1 END,
+                                  CASE WHEN day=? THEN 0 ELSE 1 END,
                                   attempted,day,CASE WHEN id='sh000001' THEN 0 WHEN id<>code THEN 1 ELSE 2 END,id""",
-                          (today, due, prioritize, close, prioritize, close, due-HEADLINE_REVISIT)).fetchall()
+                          (today, due, prioritize, close, prioritize, close, due-HEADLINE_REVISIT, priority_day)).fetchall()
         for day, symbol, code, no_progress in rows:
             if day not in slots_by_day:
                 slots_by_day[day] = elapsed_minutes(day, now)
@@ -286,6 +291,27 @@ def attempt(db, now, client_factory, clock):
     return "partial"
 
 
+def session_rows(db, table, symbol, day):
+    return db.execute(f"""SELECT source_stamp,price FROM {table}
+        WHERE id=? AND minute BETWEEN ? AND ? ORDER BY minute""",
+        (symbol, day+"T09:30", day+"T15:00")).fetchall()
+
+
+def previous_session(db, symbols, today):
+    previous = previous_trading_day(today)
+    if not previous:
+        return None
+    day = previous.isoformat()
+    eligible = sorted(symbols.values())
+    observations = {symbol: rows for symbol in eligible
+                    if (rows := session_rows(db, "samples", symbol, day))}
+    recovered = {symbol: rows for symbol in eligible
+                 if (rows := session_rows(db, "minute_recovery", symbol, day))}
+    if not observations and not recovered:
+        return None
+    return {"trade_date": day, "series": observations, "recovered": recovered}
+
+
 def project(db, output, symbols, now, state):
     day = now.date().isoformat()
     slots = elapsed_minutes(day, now)
@@ -299,9 +325,7 @@ def project(db, output, symbols, now, state):
                 missing += len(slots.expected - seen_minutes(db, symbol, day))
             # Publish already recovered bars until the day changes. A browser may still
             # hold the previous independent relay snapshot when a live observation arrives.
-            rows = db.execute("""SELECT source_stamp,price FROM minute_recovery
-                WHERE id=? AND minute BETWEEN ? AND ? ORDER BY minute""",
-                (symbol, day+"T09:30", day+"T15:00")).fetchall()
+            rows = session_rows(db, "minute_recovery", symbol, day)
             if rows:
                 series[symbol] = rows
         expected = len(slots.expected) * len(symbols)
@@ -313,6 +337,10 @@ def project(db, output, symbols, now, state):
                    "coverage": {"symbols": len(symbols), "elapsed_minutes": len(slots.expected),
                                 "expected_symbol_minutes": expected, "missing_symbol_minutes": missing,
                                 "recovered_symbol_minutes": recovered}}
+        if is_trading_day(now.date()) is False:
+            archive = previous_session(db, symbols, now.date())
+            if archive:
+                payload["previous_session"] = archive
     finally:
         db.commit()
     publish(output, payload)

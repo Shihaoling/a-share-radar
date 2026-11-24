@@ -1,0 +1,10 @@
+[Unit]
+Description=Continue pending per-announcement analyses
+
+[Timer]
+OnBootSec=90s
+OnUnitInactiveSec=120s
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

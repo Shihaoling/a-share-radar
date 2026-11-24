@@ -5,7 +5,12 @@ from datetime import datetime, timedelta
 import math
 import json
 
-from pipeline.calendar import SHANGHAI
+from pipeline.calendar import SHANGHAI, previous_trading_day
+
+
+WRITE_CHART_POINT = """INSERT INTO chart_points VALUES(?,?,?,?,?,?)
+    ON CONFLICT(kind,code,day,minute) DO UPDATE SET stamp=excluded.stamp,price=excluded.price
+    WHERE excluded.stamp>=chart_points.stamp"""
 
 
 def finite(value):
@@ -112,9 +117,7 @@ class IntradayCharts:
                     if point and point[0] <= now.isoformat(timespec='seconds'):
                         rows.append((key,r["id"],day,point[0][:16],*point))
         with closing(self.store.db()) as db, db:
-            db.executemany("""INSERT INTO chart_points VALUES(?,?,?,?,?,?)
-                ON CONFLICT(kind,code,day,minute) DO UPDATE SET stamp=excluded.stamp,price=excluded.price
-                WHERE excluded.stamp>=chart_points.stamp""",rows)
+            db.executemany(WRITE_CHART_POINT,rows)
             if self.last_day != day:
                 cutoff = (now.date()-timedelta(days=10)).isoformat()
                 db.execute("DELETE FROM chart_points WHERE day<?",(cutoff,))
@@ -129,6 +132,10 @@ class IntradayCharts:
             days.append(quote_day)
         estimate = kind == "sector" and code.endswith(".SI")
         heat = kind == "sector" and code.endswith(".TI")
+        if (kind in ("stock", "index") or kind == "sector") and (previous := previous_trading_day(today)):
+            prior = previous.isoformat()
+            if prior not in days:
+                days.insert(1, prior)
         prices = {day: [] for day in days}
         changes = {day: [] for day in days}
         if kind == "stock" or estimate:
@@ -144,8 +151,12 @@ class IntradayCharts:
             ident = code[-2:].lower()+code[:6] if kind=="index" else code
             for feed in ("today-intraday","minute-recovery"):
                 packet = self.store.feed(feed)
-                if packet.get("trade_date") in days:
-                    prices[packet["trade_date"]].extend(packet.get("series",{}).get(ident, []))
+                prior_packet = packet.get("previous_session") or {}
+                for observed in (packet, prior_packet):
+                    if observed.get("trade_date") in days:
+                        day_points = prices[observed["trade_date"]]
+                        day_points.extend(observed.get("series",{}).get(ident, []))
+                        day_points.extend(observed.get("recovered",{}).get(ident, []))
             if kind == "sector":
                 path = self.store.out / "sector-intraday" / (code+".json")
                 try:
