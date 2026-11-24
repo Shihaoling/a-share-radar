@@ -134,9 +134,12 @@ def attach_quotes(dashboard, daily, now):
         for item in dashboard[group]:
             bar = bars.get(item["id"],{}).get(current)
             if bar:
+                # Evening gap recovery publishes available_at; older daily feeds
+                # used fetched_at. Accept either so a fresh close never breaks settlement.
+                observed = bar.get("fetched_at") or bar.get("available_at") or bar.get("as_of")
                 evidence.append({"entity_id":item["id"],"provider":"stock_api","source":"stock_api","basis":"index",
                     "field":"close","price":bar["close"],"timestamp":bar["as_of"],"market_timestamp":bar["as_of"],
-                    "observed_at":bar["fetched_at"],"timestamp_quality":"daily_close","trade_date":current,
+                    "observed_at":observed,"timestamp_quality":"daily_close","trade_date":current,
                     "adjustment":bar.get("adjustment","unadjusted"),"complete":True})
 
 
