@@ -126,12 +126,18 @@ def reproject(db, day, rosters):
                 value = math.fsum(changes[code] for code in matched)/len(matched)
                 rows.append((board,day,clock_key,stamps,stamps,value,len(matched),len(codes),1))
         if rows:
-            with db:
-                for row in rows:
-                    cursor = db.execute("INSERT OR IGNORE INTO constituent_minutes VALUES(?,?,?,?,?,?,?,?,?)",row)
-                    if cursor.rowcount:
-                        db.execute("INSERT OR IGNORE INTO board_history_recovered VALUES(?,?,?)",(day,row[0],clock_key))
-                        inserted[row[0]] += 1
+            def write_cross_section():
+                added = Counter()
+                with db:
+                    for row in rows:
+                        cursor = db.execute("INSERT OR IGNORE INTO constituent_minutes VALUES(?,?,?,?,?,?,?,?,?)",row)
+                        if cursor.rowcount:
+                            db.execute("INSERT OR IGNORE INTO board_history_recovered VALUES(?,?,?)",(day,row[0],clock_key))
+                            added[row[0]] += 1
+                return added
+            # A concurrent evening audit may hold the writer lock while this long
+            # read cursor is open. The whole cross-section is idempotent on retry.
+            inserted.update(retry_locked(write_cross_section, attempts=5, base=0.5))
     return dict(inserted)
 
 
@@ -182,6 +188,10 @@ def recover(state, day, request, *, budget=1250, morning_only=False, ledger=None
         deadline = time.monotonic()+budget
         pcb = rosters.get(PCB,set())
         outcomes=Counter()
+
+        def project(members):
+            return retry_locked(lambda: reproject(db,day,members), attempts=4, base=0.6)
+
         for selection in (pcb, targets-pcb):
             now=time.time()
             todo=sorted((c for c in (selection & daily)-halted
@@ -220,12 +230,12 @@ def recover(state, day, request, *, budget=1250, morning_only=False, ledger=None
                     print(json.dumps({"date":day,"batches":outcomes["batches"],
                                       "minute_rows_observed":outcomes["minute_rows_observed"]}),flush=True)
                 if selection is not pcb and outcomes["batches"]%60==0:
-                    reproject(db,day,rosters)
+                    project(rosters)
                     recovery_report(db,day,rosters,private/"stock-minute-recovery-report.json",outcomes)
             if selection is pcb:
-                reproject(db,day,{PCB:pcb} if pcb else {})
+                project({PCB:pcb} if pcb else {})
                 recovery_report(db,day,rosters,private/"stock-minute-recovery-report.json",outcomes)
-        reproject(db,day,rosters)
+        project(rosters)
         recovery_report(db,day,rosters,private/"stock-minute-recovery-report.json",outcomes)
         if ledger is not None:
             finished = [row[0] for row in db.execute(

@@ -516,8 +516,10 @@ def live_health(state):
     try:
         from recovery_priority import GapLedger
         payload["recovery_priority"] = GapLedger(state=state).summary()
-    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error):
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         payload["recovery_priority"] = None
+        print("recovery priority unavailable:", type(error).__name__, str(error),
+              file=sys.stderr, flush=True)
     return remove_usage(payload)
 
 
