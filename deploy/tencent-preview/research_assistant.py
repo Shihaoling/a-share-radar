@@ -19,7 +19,7 @@ from pipeline.calendar import shanghai_now
 from pipeline.minimax_news import DEFAULT_MODEL, ModelFailure, infer_article
 from pipeline.minimax_prompts import ANSWER_STAGE, EFFORTS, PLAN_STAGE, REVIEW_STAGE
 from research_assistant_history import AccountConnection, CONSOLE_HREF, History, ID, UnknownConversation, account_id
-from research_assistant_skills import Published, SKILLS, normalized
+from research_assistant_skills import Published, SKILLS, normalized, source_items
 from research_metric_catalog import CATALOG, parse_page
 
 ROUTE = "/api/research-assistant/chat"
@@ -37,6 +37,12 @@ SUMMARY_MAX = 1800
 MAX_REVIEW_RETRIES = 3
 RESEARCH_SKILLS = {"market", "trend", "instrument", "news", "announcements", "reports"}
 SOURCE_REF = re.compile(r"\[(\d{1,3})\]")
+OPEN_PAGES = (
+    ("市场总览", "/#overview"), ("板块雷达", "/#sectors"), ("趋势观察室", "/#trend"),
+    ("快讯", "/#news"), ("资讯", "/#news"), ("公告", "/#news-announcements"),
+    ("研报", "/#reports"), ("研报目录", "/#reports"), ("指标口径", "/metrics/"),
+    ("账户", "/account/"), ("控制台", "/admin/"), ("采集进度", "/training-progress/"),
+)
 PAGE_TARGET = r"(?:当前的?)?(?:这(?:个|一)?|本|该)?(?:页面|网页|界面|页|控制台)"
 PAGE_SUMMARY = re.compile(
     r"(?:请(?:你)?|帮我)?(?:简要|简单)?(?:总结|概括|介绍|梳理)(?:一下)?"
@@ -115,7 +121,7 @@ PE TTM 一律只说明过去四季净利润，数据明确提供了归母才允�
 同时询问走势和操作时，只回答走势。只问该如何操作时，可用“可以帮你分析走势”转入相关分析。不要罗列禁止事项或另加声明。
 如有 review_feedback，将它用作核对线索，事实仍以本轮 evidence 为准。先给结论，必要时分行，避免长篇解释。只引用 count>0 的 evidence 编号，例如 [1]、[2]。回答不附通用风险提示或免责声明。
 把最相关的快讯、公告和研报用进正文中支持具体判断，并紧跟相应编号。区分“媒体报道”“公司披露”“券商观点”，标明影响判断的日期。如果某类材料无命中、只有标题、晚于异动或与问题无关，就按它实际能支持的程度表达，不必凑齐来源类别。source_lookup_status 表示补查已经停止时，按现有证据写清仍未解决的问题。
-只返回 JSON：{"answer":"可读的纯文本，通常不超过500字，不含HTML、链接或内部推理"}。"""
+回答正文不含链接、HTML 或内部推理；所用材料的缩略卡片由网站自动附在回答结尾，不要在正文里罗列链接。只返回 JSON：{"answer":"可读的纯文本，通常不超过500字","used_items":["evidence 中实际用于结论的 articles/titles/matched_reports 的 id，最多6个"]}。used_items 只能填本轮 evidence 里出现过的 id，没有具体材料时填空数组。用户明确要求打开本站页面时，答案中说明即可，网页由网站按白名单打开。"""
 
 SUMMARY_PROMPT = """你是观澜研究助手的对话摘要器。把 previous_summary 与按时间给出的 turns 合并成一份可持续更新的中文摘要，最多1800字符。
 保留用户明确提出的目标、偏好、标的或代码、指标、日期、口径、已完成的讨论和未决问题。保留对后续追问重要的数值及单位，
@@ -162,12 +168,24 @@ def validate_review(value):
     return {"decision": decision, "note": note.strip(), "plan": plan}
 
 
-def validate_answer(value):
-    answer = value.get("answer") if isinstance(value, dict) else None
-    if not isinstance(answer, str) or not 1 <= len(answer.strip()) <= 2400:
+def clean_answer(value):
+    if not isinstance(value, str) or not 1 <= len(value.strip()) <= 2400:
         raise ValueError("invalid_analysis")
-    answer = re.sub(r"\bminimax(?:-[a-z0-9][a-z0-9._-]*)?\b", "专属模型", answer, flags=re.I)
-    return {"answer": answer.strip()}
+    return re.sub(r"\bminimax(?:-[a-z0-9][a-z0-9._-]*)?\b", "专属模型", value, flags=re.I).strip()
+
+
+def validate_answer(value, *, allowed_items=None):
+    answer = clean_answer(value.get("answer") if isinstance(value, dict) else None)
+    used = value.get("used_items", []) if isinstance(value, dict) else []
+    if used is None:
+        used = []
+    if not isinstance(used, list) or len(used) > 8 or any(
+        not isinstance(row, str) or not 1 <= len(row) <= 64 for row in used
+    ):
+        raise ValueError("invalid_analysis")
+    if allowed_items is not None:
+        used = list(dict.fromkeys(row for row in used if row in allowed_items))
+    return {"answer": answer.strip(), "used_items": used}
 
 
 def validate_summary(value):
@@ -226,7 +244,7 @@ def parse_compression(raw):
         question, answer = turn.get("question"), turn.get("answer")
         if not isinstance(question, str) or not 1 <= len(question.strip()) <= 1000:
             raise ValueError
-        result.append({"question": question, "answer": validate_answer(turn)["answer"]})
+        result.append({"question": question, "answer": clean_answer(answer)})
     return {"previous_summary": optional_summary(value.get("previous_summary", "")), "turns": result}
 
 
@@ -299,10 +317,13 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
             steps.append(fields)
         send(kind,**fields)
 
-    def finish(answer, used):
-        progress = {"steps":steps,"elapsed_ms":round((monotonic()-started)*1000)}
+    def finish(answer, used, *, items=None, open_pages=None):
+        items = items or []
+        open_pages = open_pages or []
+        progress = {"steps":steps,"elapsed_ms":round((monotonic()-started)*1000),"items":items}
         thread = save(answer, used, now, progress) if save else None
-        emit("answer", answer=answer, sources=used, conversation=thread, progress=progress)
+        emit("answer", answer=answer, sources=used, items=items, open=open_pages,
+             conversation=thread, progress=progress)
 
     if summary and page == "admin":
         emit("step", label="识别当前页面", detail="控制台")
@@ -340,6 +361,8 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
          detail="、".join(SKILLS[ident][0] for ident, _, _ in plan))
     store = snapshots(now)
     evidence, sources, searched = [], [], set()
+    cards_by_ref = {}
+    allowed_items = set()
 
     def collect(ident, terms, day):
         search = ident, tuple(sorted({normalized(term) for term in terms})), day
@@ -358,6 +381,8 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
         evidence.append({"ref": index, "count": result.count, "skill": ident, "query_terms": terms,
                          "requested_date": day, **result.facts})
         sources.append({"ref": index, **result.source()})
+        cards_by_ref[index] = source_items(ident, result.facts)
+        allowed_items.update(row["id"] for row in cards_by_ref[index])
         emit("step", label="已读取" if result.count else "这一范围暂无记录",
              detail=" · ".join(filter(None, (result.label, result.latest, f"{result.count} 项" if result.count else ""))))
         return True
@@ -370,10 +395,14 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
     options = {"answer_effort":answer_effort} if answer_effort else {}
 
     def answer(**fields):
+        def validator(value):
+            return validate_answer(value, allowed_items=allowed_items)
         return model({**packet, "evidence": evidence, **fields}, key, ANSWER_PROMPT,
-                     validate_answer, 16384, stage=ANSWER_STAGE, **options)["answer"]
+                     validator, 16384, stage=ANSWER_STAGE, **options)
 
-    draft = answer()
+    result = answer()
+    draft = result["answer"]
+    used_item_ids = result.get("used_items", [])
     status = "ready"
     if review_research:
         retry_format = True
@@ -399,9 +428,32 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
                     continue
             status = "ready" if remaining else "budget_exhausted"
             emit("step", label="根据复核整理回答")
-            draft = answer(previous_draft=draft, review_feedback=review["note"], source_lookup_status=status)
+            result = answer(previous_draft=draft, review_feedback=review["note"], source_lookup_status=status)
+            draft = result["answer"]
+            used_item_ids = result.get("used_items", used_item_ids)
     cited = {int(match) for match in SOURCE_REF.findall(draft)}
-    finish(draft, [source for source in sources if source["count"] and source["ref"] in cited])
+    used_sources = [source for source in sources if source["count"] and source["ref"] in cited]
+    cards = []
+    for source in used_sources:
+        rows = cards_by_ref.get(source["ref"], [])
+        chosen = [row for row in rows if row["id"] in used_item_ids] if used_item_ids else rows[:3]
+        cards.extend(chosen[:6])
+    seen_cards, unique_cards = set(), []
+    for row in cards:
+        if row["id"] not in seen_cards:
+            seen_cards.add(row["id"])
+            unique_cards.append(row)
+    question = packet["question"]
+    open_pages = []
+    if re.search(r"打开|进入|跳转到|转到", question):
+        for name, href in OPEN_PAGES:
+            if name in question and href not in open_pages:
+                open_pages.append(href)
+        for row in unique_cards:
+            if row["title"] and row["title"] in question and row["href"] not in open_pages:
+                open_pages.append(row["href"])
+        open_pages = open_pages[:2]
+    finish(draft, used_sources, items=unique_cards[:8], open_pages=open_pages)
 
 
 def reserve(thread=None):

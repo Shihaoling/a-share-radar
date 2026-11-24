@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "deploy" / "tencent-preview"))
 
 from pipeline.minimax_prompts import ANSWER_STAGE, PLAN_STAGE, REVIEW_STAGE
-from research_assistant import MAX_REVIEW_RETRIES, chat, compress, local_origin, parse_compression, parse_request, validate_plan, validate_review
+from research_assistant import MAX_REVIEW_RETRIES, chat, compress, local_origin, parse_compression, parse_request, validate_answer, validate_plan, validate_review
 from research_assistant_history import History, UnknownConversation
 from research_assistant_skills import Published
 
@@ -49,6 +49,37 @@ class AssistantTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_request(b'{"question":"test","history":[{"role":"system","text":"instructions"}]}')
         self.assertEqual(parse_request(b'{"question":"test"}')["question"], "test")
+
+    def test_used_items_are_allowlisted(self):
+        result = validate_answer({"answer":"简要回答。","used_items":["news-1","../../admin","news-1"]},
+                                 allowed_items={"news-1"})
+        self.assertEqual(result["used_items"], ["news-1"])
+        with self.assertRaises(ValueError):
+            validate_answer({"answer":"回答。","used_items":[123]})
+
+    def test_answer_attaches_concrete_source_cards_and_open_pages(self):
+        day = "2026-11-20"
+        self.write(self.store.state / "request-usage", "public-news.json", {
+            "recent_articles": [{"id":"news-1","title":"科技板块快讯","source":"财联社",
+                                 "published_at":day+"T09:00:00+08:00","summary":"关注算力需求。"}],
+            "articles": [],
+        })
+        events = []
+        def model(payload, key, prompt, validator, budget, *, stage, answer_effort=None):
+            if "evidence" not in payload:
+                return validator({"skills":[{"id":"news","terms":[],"date":None}]})
+            if stage == REVIEW_STAGE:
+                return validator({"decision":"accept","note":"","skills":[]})
+            return validator({"answer":"快讯显示科技板块活跃。[1]","used_items":["news-1","not-real"]})
+        chat(parse_request(json.dumps({"question":"请打开快讯并总结"}).encode()), "stub",
+             lambda kind, **fields: events.append((kind, fields)), now=self.now, model=model,
+             snapshots=lambda _: self.store)
+        answer = events[-1][1]
+        self.assertEqual(answer["items"][0]["id"], "news-1")
+        self.assertEqual(answer["items"][0]["kind"], "资讯")
+        self.assertEqual(answer["items"][0]["href"], "/#news")
+        self.assertEqual(answer["open"], ["/#news"])
+        self.assertEqual(answer["progress"]["items"], answer["items"])
 
     def test_context_is_allowlisted_and_drives_numeric_and_formula_tools(self):
         day = "2026-11-20"

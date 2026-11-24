@@ -50,6 +50,59 @@ class Evidence:
         return {"label": self.label, "href": self.href, "date": self.latest, "count": self.count}
 
 
+def source_items(ident, facts):
+    """Concrete articles/announcements/reports behind an evidence skill."""
+    rows = []
+    if ident == "news":
+        for row in facts.get("articles", [])[:5]:
+            ident_value = row.get("id")
+            if not isinstance(ident_value, str) or not ident_value or not row.get("title"):
+                continue
+            rows.append({
+                "id": ident_value, "kind": "资讯", "title": row["title"],
+                "date": date_of(row.get("published_at", "")),
+                "meta": row.get("source", ""), "excerpt": row.get("published_summary", ""),
+                "href": "/#news", "ref_href": "/data/cloud-articles/" + sha256(ident_value.encode()).hexdigest() + ".json",
+            })
+    elif ident == "announcements":
+        for row in facts.get("titles", [])[:5]:
+            ident_value = row.get("id")
+            if not isinstance(ident_value, str) or not ident_value or not row.get("title"):
+                continue
+            rows.append({
+                "id": ident_value, "kind": "公告", "title": row["title"],
+                "date": date_of(row.get("date", "")),
+                "meta": " · ".join(filter(None, (row.get("name", ""), row.get("code", "")))),
+                "excerpt": row.get("summary", ""), "href": "/#news-announcements", "ref_href": "",
+            })
+    elif ident == "reports":
+        seen = set()
+        for detail in facts.get("matched_reports", []):
+            report = detail.get("report") or {}
+            ident_value = report.get("id")
+            if not isinstance(ident_value, str) or not REPORT_ID.fullmatch(ident_value) or ident_value in seen:
+                continue
+            seen.add(ident_value)
+            rows.append({
+                "id": ident_value, "kind": "研报", "title": report.get("title", ""),
+                "date": date_of(report.get("date", "")),
+                "meta": " · ".join(filter(None, (report.get("broker", ""), report.get("author", "")))),
+                "excerpt": (detail.get("published_summary") or "")[:220],
+                "href": detail.get("href") or "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
+            })
+        for row in facts.get("titles", []):
+            ident_value = row.get("id")
+            if not isinstance(ident_value, str) or not REPORT_ID.fullmatch(ident_value) or ident_value in seen or len(rows) >= 5:
+                continue
+            seen.add(ident_value)
+            rows.append({
+                "id": ident_value, "kind": "研报", "title": row.get("title", ""),
+                "date": date_of(row.get("date", "")), "meta": "研报目录",
+                "excerpt": "", "href": row.get("href") or "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
+            })
+    return [row for row in rows if row["title"]]
+
+
 class ResearchConnection(HTTPConnection):
     def connect(self):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

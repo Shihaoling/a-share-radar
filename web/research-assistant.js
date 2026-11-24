@@ -64,7 +64,8 @@
   const storageKey = 'guanlan.assistant.conversation';
   const batchSize = 4;
   const guestTurns = [];
-  const sourceLinks = new Set(['./#overview', './#news', './#trend', '/#overview', '/#reports', '/#news-announcements', '/metrics/']);
+  const sourceLinks = new Set(['./#overview', './#news', './#trend', '/#overview', '/#sectors', '/#trend', '/#news', '/#reports',
+    '/#news-announcements', '/metrics/', '/account/', '/admin/', '/training-progress/']);
   const titles = {overview:'市场总览', sectors:'板块雷达', news:'A股关联资讯', reports:'研报', 'report-reader':'研报阅读', trend:'趋势观察室',
     settings:'数据设置', asset:'研究详情', sector:'板块详情', account:'账户',
     admin:'控制台', 'training-progress':'采集进度', 'training-monitor':'训练进度', metrics:'指标口径'};
@@ -245,25 +246,106 @@
         setComplete(turn,'分析过程 '+turn.steps.children.length+' 步',item.progress.elapsed_ms);
       } else turn.progress.hidden = true;
       turn.response.append(node('p', 'assistant-message', answerText(item.answer)));
-      showSources(turn.response, item.sources);
+      showSources(turn.response, item.sources, item.progress?.items);
     }
   }
-  function showSources(response, sources) {
-    if (!sources?.length) return;
+  function showSources(response, sources, items) {
+    if (!sources?.length && !items?.length) return;
     const section = node('details', 'assistant-sources');
-    section.append(node('summary', '', '查看所用数据'));
-    const list = node('ul');
-    for (const source of sources) {
-      const item = node('li');
-      const label = '[' + source.ref + '] ' + source.label + (source.date ? ' · ' + source.date : '');
-      const href = sourceHref(source.href);
-      const link = node(href ? 'a' : 'span', '', label);
-      if (href) link.href = href;
-      item.append(link);
-      list.append(item);
+    section.append(node('summary', '', '查看所用资料与原文'));
+    if (sources?.length) {
+      const list = node('ul');
+      for (const source of sources) {
+        const item = node('li');
+        const label = '[' + source.ref + '] ' + source.label + (source.date ? ' · ' + source.date : '');
+        const href = sourceHref(source.href);
+        const link = node(href ? 'a' : 'span', '', label);
+        if (href) link.href = href;
+        item.append(link);
+        list.append(item);
+      }
+      section.append(list);
     }
-    section.append(list);
+    if (items?.length) {
+      section.append(node('p', 'assistant-source-note', '本轮用到的具体材料（点击缩略图放大，或打开网页详情）'));
+      const grid = node('div', 'assistant-source-grid');
+      items.forEach((source, index) => {
+        const holder = node('div', 'assistant-source-item');
+        const card = node('button', 'assistant-source-card');
+        card.type = 'button';
+        card.setAttribute('aria-label', '放大查看：' + (source.title || '资料'));
+        const shot = node('span', 'assistant-shot');
+        shot.append(node('span', 'assistant-shot-bar'));
+        const body = node('span', 'assistant-shot-body');
+        body.append(node('span', 'assistant-shot-kind', (source.kind || '资料') + (source.date ? ' · ' + source.date : '')));
+        body.append(node('span', 'assistant-shot-title', source.title || ''));
+        body.append(node('span', 'assistant-shot-excerpt', (source.excerpt || source.meta || '').slice(0, 86)));
+        shot.append(body);
+        card.append(shot);
+        card.addEventListener('click', () => openSourcePreview(items, index));
+        const foot = node('span', 'assistant-card-foot');
+        const href = sourceHref(source.href);
+        const link = node(href ? 'a' : 'span', 'assistant-card-link', '打开详情');
+        if (href) {
+          link.href = href;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
+        foot.append(link, node('span', 'assistant-card-meta', source.meta || ''));
+        holder.append(card, foot);
+        grid.append(holder);
+      });
+      section.append(grid);
+    }
     response.append(section);
+  }
+  function openSourcePreview(items, index) {
+    const source = items[index];
+    if (!source) return;
+    let dialog = document.getElementById('assistant-source-preview');
+    if (!dialog) {
+      dialog = node('dialog', 'assistant-preview');
+      dialog.id = 'assistant-source-preview';
+      document.body.append(dialog);
+    }
+    dialog.replaceChildren();
+    const head = node('div', 'assistant-preview-head');
+    head.append(node('strong', '', (source.kind || '资料') + (source.date ? ' · ' + source.date : '')));
+    const close = node('button', 'assistant-control', '×');
+    close.type = 'button';
+    close.setAttribute('aria-label', '关闭预览');
+    close.addEventListener('click', () => { if (typeof dialog.close === 'function') dialog.close(); else dialog.hidden = true; });
+    head.append(close);
+    const body = node('div', 'assistant-preview-body');
+    body.append(node('h3', '', source.title || ''));
+    if (source.meta) body.append(node('p', 'assistant-preview-meta', source.meta));
+    body.append(node('p', '', source.excerpt || '本条材料暂无摘要，请打开网页详情查看。'));
+    const actions = node('div', 'assistant-preview-actions');
+    const href = sourceHref(source.href);
+    if (href) {
+      const link = node('a', 'assistant-preview-link', '进入网页详情');
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      actions.append(link);
+    }
+    if (/^\/data\/cloud-articles\/[a-f0-9]{64}\.json$/.test(source.ref_href || '')) {
+      const raw = node('a', 'assistant-preview-link', '查看原文数据');
+      raw.href = source.ref_href;
+      raw.target = '_blank';
+      raw.rel = 'noopener noreferrer';
+      actions.append(raw);
+    }
+    dialog.append(head, body, actions);
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+  }
+  function openRequestedPages(hrefs) {
+    if (!Array.isArray(hrefs) || typeof window.open !== 'function') return;
+    for (const raw of hrefs.slice(0, 2)) {
+      const href = sourceHref(raw);
+      if (href) window.open(href, '_blank', 'noopener,noreferrer');
+    }
   }
   function addStep(turn,event,working=true) {
     turn.steps.lastElementChild?.classList.remove('working');
@@ -287,7 +369,8 @@
     } else if (event.type === 'answer') {
       setComplete(turn,'分析过程 '+turn.steps.children.length+' 步',event.progress?.elapsed_ms);
       turn.response.append(node('p', 'assistant-message', answerText(event.answer)));
-      showSources(turn.response, event.sources);
+      showSources(turn.response, event.sources, event.items);
+      openRequestedPages(event.open);
     } else if (event.type === 'error') {
       setComplete(turn, '分析未完成');
       turn.response.append(node('p', 'assistant-message assistant-error', event.message));
