@@ -20,6 +20,7 @@ from asset_research import ResearchStore
 from factor_history_jobs import Job, save_rows
 from minute_recovery import SCHEMA as MINUTE_SCHEMA, elapsed_minutes, index_symbols, seen_minutes, set_meta
 from relay_common import STATE, relay_client
+from collector_db import connect as collector_connect, retry_locked
 from relay_quotes import SOURCE, publish
 from research_valuation import APIS, normalized_rows, save_snapshot, snapshot_name
 from sector_directory import mapping, publish_reference, reference
@@ -138,16 +139,18 @@ def minute_status(state, source, day, now):
     if not path.is_file():
         return {"status":"not_ready"}
     symbols = index_symbols(source["market"])
-    with closing(sqlite3.connect(path, timeout=8)) as db:
+    with closing(collector_connect(path)) as db:
         db.executescript(MINUTE_SCHEMA)
         slots = elapsed_minutes(day, now)
         gaps = {symbol:len(slots.expected-seen_minutes(db,symbol,day)) for symbol in symbols.values()}
         missing = {code:count for code,count in gaps.items() if count}
         if missing:
-            with db:
-                db.executemany("INSERT OR IGNORE INTO minute_recovery_tasks(day,id,code) VALUES(?,?,?)",
-                               ((day,symbol,code) for code,symbol in symbols.items() if symbol in missing))
-                set_meta(db, "evening_priority_day", day)
+            def queue():
+                with db:
+                    db.executemany("INSERT OR IGNORE INTO minute_recovery_tasks(day,id,code) VALUES(?,?,?)",
+                                   ((day,symbol,code) for code,symbol in symbols.items() if symbol in missing))
+                    set_meta(db, "evening_priority_day", day)
+            retry_locked(queue, attempts=3, base=0.5)
     return {"symbols":len(symbols), "remaining_clock_minutes":sum(missing.values()), "remaining_by_symbol":missing}
 
 
@@ -158,7 +161,7 @@ def run(state, source, day, now, request):
     tries = Counter()
     deadline = time.monotonic()+540
     backoff = {}
-    with closing(sqlite3.connect(private/"research.sqlite3", timeout=12)) as db:
+    with closing(collector_connect(private/"research.sqlite3")) as db:
         db.row_factory = sqlite3.Row
         report = mapping(private/"evening-gap-report.json")
         previous = report.get("last_exact", {}) if report.get("trade_date") == day else {}

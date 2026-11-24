@@ -27,14 +27,18 @@
 | 研报目录与摘要 | `ashare-research-report-collect.timer`、`ashare-research-report-summary.timer` | 盘中第 49 秒收集目录，摘要另行处理 |
 | 港股和美股分时 | `ashare-global-intraday.timer` | 按交易所当地时段更新，休市时保留最近一场有效分时 |
 | 市场简评 | `ashare-market-reading.timer` | 09:31、11:30、13:01、15:00，同时检查快速行情变化和重大事件 |
-| 缺口补采 | `ashare-market-gap-recovery.timer`、`ashare-stock-minute-midday.timer` | 午休补上午缺点，工作日晚 19:00、20:00、21:00 复查当日数据缺口 |
+| 指数分钟补采 | `ashare-minute-recovery.timer` | 每分钟第 55 秒，随机延迟最多 2 秒，避开行情、快讯、公告和研报时隙 |
+| 个股与板块分钟补采 | `ashare-stock-minute-midday.timer` | 午休 11:36:07 与 12:12:34，随机延迟最多 4 秒，避开第 55 秒的指数补采 |
+| 盘后缺口补采 | `ashare-market-gap-recovery.timer` | 工作日 19、20、21 点第 23 秒，随机延迟最多 6 秒，避开整点并发 |
 | 历史快讯采集 | `ashare-training-collect.timer` | 09:00–16:00 每十分钟在奇数分钟第 19 秒处理一个窗口，其余时段每分钟第 07 秒处理一个窗口 |
-| 历史快讯标注 | `ashare-training-label.timer` | 每批结束后等待 1 分钟再处理下一批，每批最多 32 篇 |
+| 历史快讯标注 | `ashare-training-label.timer` | 每批结束后等待 1 分钟再处理下一批，每批最多 32 篇；随机延迟最多 5 秒 |
 | 私有数据集导出 | `ashare-training-export.timer` | 每小时第 47 分钟 |
 
 从旧版迁移时，用 `systemctl disable --now ashare-preview-news@analyze.timer` 停用即时分析时钟，再用 `systemctl mask ashare-preview-news@analyze.timer` 屏蔽该实例。安装新版程序和路径单元后，执行 `systemctl daemon-reload` 和 `systemctl enable --now ashare-preview-news.path`。已经启用的路径单元用 `systemctl restart ashare-preview-news.path` 重新监听。正在处理的分析批次可以自然结束。
 
 行情调度使用 `relay-active.json`，离线回放也读取此文件。盘中每分钟第 03、33 秒请求指数和交易所板块，第 11、41 秒请求个股。共享额度、慢请求或上游限流可推迟或跳过请求，遇到截断时按原有分批策略采集。午休和盘后暂停实时行情请求。浏览器在盘中每 10 秒检查已发布的行情快照。
+
+采集器与补采任务共用 `relay/minute-observations.sqlite3` 和 `asset-research/research.sqlite3`。`collector_db.py` 统一启用 WAL（Windows 本地测试跳过）与 30 秒 busy timeout；短任务遇到 `database is locked` 时按退避重试，不再直接失败。补采任务仍服从 systemd 定时器与 `relay/rate-gate.json` 共享额度，不在脚本内绕过调度或提高请求频率。
 
 盘中快讯在偶数分钟第 19 秒启动，公告与研报目录分别在每分钟第 26、49 秒启动。白天的历史快讯使用奇数分钟时隙，其余时段使用第 07 秒。指数分钟补采先用第 55 秒的时隙，板块资料仅在第 56 秒附近有可用额度时采集。个股和板块缺失的上午分钟在午休时增补。公告以首屏增量为主，另有完整分页补查。公告摘要由独立服务检查新增记录，沿用原有摘要和更新时间，直至有新的摘要可发布。
 

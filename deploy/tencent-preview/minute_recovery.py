@@ -1,5 +1,5 @@
 """Recover missing SXData index minutes without changing observed quotes or model inputs."""
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import date, timedelta
 import fcntl
 import json
@@ -16,6 +16,7 @@ from pipeline.primary_minutes import minute_points
 from pipeline.stock_api import _Client, _Failure, _index_code
 from relay_common import STATE
 from relay_quotes import SOURCE, groups, publish
+from collector_db import connect as collector_connect, retry_locked
 
 API = "idx_mins"
 HEADLINE_REVISIT = 15 * 60
@@ -381,12 +382,17 @@ def main():
         symbols = index_symbols(data["market"])
         token = (Path(os.environ["CREDENTIALS_DIRECTORY"]) / "sxdata-token").read_text().strip()
         output = STATE / "quote-output/minute-recovery.json"
-        with sqlite3.connect(database, timeout=3) as db:
-            if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='samples'").fetchone():
-                print("Awaiting relay sample table", flush=True)
-                return
-            payload = run(db, output, symbols, lambda borrow: low_priority_client(token, borrow))
-        print(json.dumps({"trade_date": payload["trade_date"], "status": payload["status"], **payload["coverage"]}), flush=True)
+
+        def collect():
+            with closing(collector_connect(database)) as db:
+                if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='samples'").fetchone():
+                    print("Awaiting relay sample table", flush=True)
+                    return None
+                return run(db, output, symbols, lambda borrow: low_priority_client(token, borrow))
+
+        payload = retry_locked(collect, attempts=4, base=0.5)
+        if payload:
+            print(json.dumps({"trade_date": payload["trade_date"], "status": payload["status"], **payload["coverage"]}), flush=True)
 
 
 if __name__ == "__main__":

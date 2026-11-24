@@ -2,9 +2,11 @@
 Description=Backfill missing stock and board minutes during the midday break
 
 [Timer]
-OnCalendar=Mon..Fri *-*-* 11:36:00 Asia/Shanghai
-OnCalendar=Mon..Fri *-*-* 12:12:00 Asia/Shanghai
-AccuracySec=1s
+OnCalendar=Mon..Fri *-*-* 11:36:07 Asia/Shanghai
+OnCalendar=Mon..Fri *-*-* 12:12:34 Asia/Shanghai
+AccuracySec=2s
+RandomizedDelaySec=4s
+Persistent=true
 Unit=ashare-stock-minute-recovery@midday.service
 
 [Install]

@@ -22,6 +22,7 @@ from constituent_live import A_SHARE
 from market_gap_recovery import session
 from relay_common import STATE, relay_guard
 from relay_quotes import publish
+from collector_db import connect as collector_connect, retry_locked
 from sector_directory import mapping
 
 PCB = "885959.TI"
@@ -75,20 +76,24 @@ def checked_minutes(rows, requested, day):
 
 def store_minutes(db, day, requested, rows, now):
     bars = checked_minutes(rows,requested,day)
-    with db:
-        db.executemany("INSERT OR IGNORE INTO stock_history_minutes VALUES(?,?,?,?)",
-                       ((day,code,minute,close) for (code,minute),close in bars.items()))
-        # A dated minute-end bar fills the missing position. Existing observed quotations retain their timestamps.
-        db.executemany("INSERT OR IGNORE INTO chart_points VALUES('stock',?,?,?,?,?)", (
-            (code,day,day+"T"+minute,day+"T"+minute+":00+08:00",close) for (code,minute),close in bars.items()))
-        for code in requested:
-            minutes={r[0] for r in db.execute(
-                "SELECT minute FROM stock_history_minutes WHERE day=? AND code=?",(day,code))}
-            count=sum(minute in minutes for minute in MINUTES)
-            db.execute("INSERT OR REPLACE INTO stock_history_jobs VALUES(?,?,?,?,?,?)",
-                       (day,code,now, now+2100,count,
-                        "complete" if count==240 else "partial" if count else "empty"))
-    return len(bars)
+
+    def write():
+        with db:
+            db.executemany("INSERT OR IGNORE INTO stock_history_minutes VALUES(?,?,?,?)",
+                           ((day,code,minute,close) for (code,minute),close in bars.items()))
+            # A dated minute-end bar fills the missing position. Existing observed quotations retain their timestamps.
+            db.executemany("INSERT OR IGNORE INTO chart_points VALUES('stock',?,?,?,?,?)", (
+                (code,day,day+"T"+minute,day+"T"+minute+":00+08:00",close) for (code,minute),close in bars.items()))
+            for code in requested:
+                minutes={r[0] for r in db.execute(
+                    "SELECT minute FROM stock_history_minutes WHERE day=? AND code=?",(day,code))}
+                count=sum(minute in minutes for minute in MINUTES)
+                db.execute("INSERT OR REPLACE INTO stock_history_jobs VALUES(?,?,?,?,?,?)",
+                           (day,code,now, now+2100,count,
+                            "complete" if count==240 else "partial" if count else "empty"))
+        return len(bars)
+
+    return retry_locked(write, attempts=5, base=0.5)
 
 
 def reproject(db, day, rosters):
@@ -148,14 +153,17 @@ def recovery_report(db, day, rosters, output, outcomes):
 def recover(state, day, request, *, budget=1250, morning_only=False):
     output = state/"quote-output"
     private = state/"asset-research"
-    with closing(sqlite3.connect(private/"research.sqlite3",timeout=12)) as db:
+    with closing(collector_connect(private/"research.sqlite3")) as db:
         db.execute("PRAGMA temp_store=FILE")
-        db.executescript(SCHEMA)
-        with db:
-            cutoff = (datetime.fromisoformat(day).date()-timedelta(days=7)).isoformat()
-            db.execute("DELETE FROM stock_history_minutes WHERE day<?",(cutoff,))
-            db.execute("DELETE FROM stock_history_jobs WHERE day<?",(cutoff,))
-            db.execute("DELETE FROM board_history_recovered WHERE day<?",(cutoff,))
+        retry_locked(lambda: db.executescript(SCHEMA), attempts=3, base=0.5)
+
+        def prune():
+            with db:
+                cutoff = (datetime.fromisoformat(day).date()-timedelta(days=7)).isoformat()
+                db.execute("DELETE FROM stock_history_minutes WHERE day<?",(cutoff,))
+                db.execute("DELETE FROM stock_history_jobs WHERE day<?",(cutoff,))
+                db.execute("DELETE FROM board_history_recovered WHERE day<?",(cutoff,))
+        retry_locked(prune, attempts=3, base=0.5)
         rosters = read_rosters(output)
         targets = set().union(*rosters.values()) if rosters else set()
         daily = {r[0] for r in db.execute("SELECT code FROM bars WHERE kind='stock' AND day=? AND pre_close>0",(day,))}

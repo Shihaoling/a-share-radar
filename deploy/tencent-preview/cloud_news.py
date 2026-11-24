@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import sqlite3
+from collector_db import connect as collector_connect
 import time
 import unicodedata
 
@@ -44,7 +45,7 @@ SECOND = timedelta(seconds=1)
 def db_open():
     folder = STATE / "news"
     folder.mkdir(parents=True, exist_ok=True)
-    db = sqlite3.connect(folder / "news.sqlite3", timeout=15)
+    db = collector_connect(folder / "news.sqlite3")
     db.executescript("""
         PRAGMA journal_mode=WAL;
         CREATE TABLE IF NOT EXISTS articles (

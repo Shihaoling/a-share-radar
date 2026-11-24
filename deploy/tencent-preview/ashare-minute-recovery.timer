@@ -4,6 +4,7 @@ Description=Check for missing real A-share minutes
 [Timer]
 OnCalendar=*-*-* *:*:55 Asia/Shanghai
 AccuracySec=1s
+RandomizedDelaySec=2s
 Persistent=true
 Unit=ashare-minute-recovery.service
 

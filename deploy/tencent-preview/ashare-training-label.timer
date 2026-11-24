@@ -6,6 +6,7 @@ Unit=ashare-training-news@label.service
 OnActiveSec=5s
 OnUnitInactiveSec=1min
 AccuracySec=1s
+RandomizedDelaySec=5s
 
 [Install]
 WantedBy=timers.target

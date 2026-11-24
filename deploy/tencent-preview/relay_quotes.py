@@ -18,6 +18,7 @@ from pipeline.calendar import market_session, previous_trading_day, shanghai_now
 from pipeline.data_service import gate_delay, realtime_min_gap
 from pipeline.stock_api import FIELDS as API_FIELDS, _Failure, _index_code, _realtime
 from relay_common import STATE, relay_client
+from collector_db import connect as collector_connect, commit as commit_db
 from board_quote_watch import BoardQuoteWatch
 from board_stock_market import StockUniverse, StockMarketBatches, StockBatchArchive
 from quote_schedule import QuoteSchedule
@@ -174,7 +175,7 @@ def queue_retry(history, batch, now, delay, error):
     history.execute("""INSERT INTO retries VALUES (?,?,?,?, 'awaiting_retry')
                        ON CONFLICT(api, minute) DO UPDATE SET due=excluded.due, error=excluded.error,
                        status=excluded.status""", (batch, now.isoformat()[:16], due.isoformat(), error))
-    history.commit()
+    commit_db(history)
 
 
 INDEX_MINUTE_STORED = """EXISTS(SELECT 1 FROM samples s WHERE s.minute=retries.minute
@@ -336,7 +337,7 @@ def start(args):
             raise SystemExit("A verified sector catalog is required")
         fetched = collect(token, "rt_idx_k", index_batches.all, conf["min_gap_seconds"])
         path = private / "minute-observations.sqlite3"
-        reader = closing(sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True)) if path.exists() else nullcontext()
+        reader = closing(sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True, timeout=10)) if path.exists() else nullcontext()
         with reader as core_history:
             sector_feed.update(core_history, set(INDUSTRIES), fetched, shanghai_now())
         print(json.dumps({"mode": "catalog_snapshot", "received": len(fetched),
@@ -377,7 +378,7 @@ def start(args):
     last_phase = None
     fingerprint = None
     history_day = None
-    with sqlite3.connect(private / "minute-observations.sqlite3") as history:
+    with closing(collector_connect(private / "minute-observations.sqlite3")) as history:
         history.execute("""CREATE TABLE IF NOT EXISTS samples (
             id TEXT, minute TEXT, source_stamp TEXT, price REAL, change_pct REAL,
             PRIMARY KEY (id, minute)
@@ -387,7 +388,7 @@ def start(args):
         ) WITHOUT ROWID""")
         restore_industry_samples(history, quotes["rt_idx_k"], restored_at)
         reconcile_retry_history(history, entity_ids)
-        history.commit()
+        commit_db(history)
         for batch, due in history.execute("SELECT api, max(due) FROM retries WHERE status='awaiting_retry' GROUP BY api"):
             schedule.paused_until[batch] = datetime.fromisoformat(due).timestamp()
         restore_gate_cooldowns(schedule, shanghai_now())
@@ -413,7 +414,7 @@ def start(args):
                     core_entity_ids = set(entity_ids)
                     index_batches = IndexBatches(universe["rt_idx_k"], codes, prefer_combined=True)
                 expire_prior_day_retries(history, day, entity_ids)
-                history.commit()
+                commit_db(history)
             phase = market_session(now)["phase"]
             if last_phase != phase:
                 last_phase = phase
@@ -469,7 +470,7 @@ def start(args):
                         # keep only their original index universe.
                         fetched = [q for q in fetched if q["id"] in core_entity_ids]
                     sample_changed = store_quotes(history, batch, fetched, quotes[batch], entity_ids)
-                    history.commit()
+                    commit_db(history)
                     finished_at = shanghai_now()
                     directory_slice = batch == "rt_k" and market_plan is not None and market_plan.kind != "whole"
                     observed_quotes = quotes[batch].values() if batch == "rt_idx_k" or directory_slice else fetched
@@ -539,7 +540,7 @@ def start(args):
                     sample_changed |= history.execute("INSERT OR IGNORE INTO samples VALUES (?,?,?,?,?)",
                         (ident, stamp[:16], stamp, estimate["price"], estimate["change_pct"])).rowcount > 0
             if sample_changed:
-                history.commit()
+                commit_db(history)
             if day != history_day or batch == "rt_k" or estimate_changed:
                 display_stocks = set(universe.get("rt_k", {})) | set(requested_stocks) | board_watch.tracked_codes
                 if "rt_k" in quotes:

@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 from socketserver import UnixStreamServer
 import sqlite3
+from collector_db import connect as collector_connect
 import threading
 import time
 from urllib.parse import urlsplit
@@ -145,7 +146,7 @@ class ResearchStore:
         self.sync_catalogs()
 
     def db(self):
-        db = sqlite3.connect(self.database, timeout=10)
+        db = collector_connect(self.database)
         db.row_factory = sqlite3.Row
         return db
 

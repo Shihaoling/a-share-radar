@@ -10,7 +10,7 @@ import sys
 import tempfile
 import time
 
-from pipeline.calendar import SHANGHAI
+from pipeline.calendar import SHANGHAI, market_session, shanghai_now
 from pipeline.data_service import METERED_APIS, request_usage as gate_usage, gate_state
 from pipeline.minimax_prompts import LEGACY_ASSISTANT_STAGE, STAGES as CONFIGURABLE_MODEL_STAGES
 from pipeline.public_fields import remove_usage
@@ -473,6 +473,49 @@ def public_feed(raw,required,source_ids=None):
     return remove_usage(raw)
 
 
+def live_health(state):
+    """Build the public health snapshot from current collector state, not a stale file."""
+    now = shanghai_now()
+    session = market_session(now) or {}
+    gate = live_gate() or {}
+    endpoints = {}
+    for api, row in (gate.get("apis") or {}).items():
+        if not isinstance(row, dict):
+            continue
+        cooldown, _gap, reason = gate_state(api)
+        endpoints[api] = {
+            "status": "cooldown" if cooldown else "ready",
+            "error_code": reason if cooldown else None,
+            "last_success": None,
+            "starts": row.get("starts", 0),
+            "outcomes": row.get("outcomes", {}),
+            "deferred": row.get("deferred", {}),
+        }
+    try:
+        directory = json.loads((state / "request-usage/connected-sources.json").read_bytes())
+        sources = directory.get("sources", []) if directory.get("schema_version") == 1 else []
+    except (OSError, ValueError, AttributeError):
+        sources = []
+    payload = {
+        "schema_version": 1,
+        "generated_at": now.isoformat(timespec="seconds"),
+        "status": "ready" if gate else "pending",
+        "market_session": session,
+        "target_trade_date": session.get("target_date"),
+        "cooldown_until": None,
+        "endpoints": endpoints,
+        "sources": sources,
+        "classification": {"note": "由云端采集器实时汇总，非历史静态快照"},
+        "shared_gate": {
+            "limit_60s": gate.get("limit_60s"),
+            "starts_last_60s": gate.get("starts_last_60s"),
+            "peak_60s": gate.get("peak_60s"),
+            "recent_rt_429": len(gate.get("recent_rt_429", [])),
+        },
+    }
+    return remove_usage(payload)
+
+
 def publish_feeds(state,versions,site=Path("/srv/ashare-radar-preview/public/data"),strict=False):
     # Current provider status and timestamps live in the small source directory.
     # A new success timestamp must not invalidate the large market snapshot.
@@ -481,13 +524,12 @@ def publish_feeds(state,versions,site=Path("/srv/ashare-radar-preview/public/dat
     feeds = (("training-progress",state/"training-status/progress.json",public_training_progress),
              ("news",state/"news-output/news.json",(("articles",list),("news_digest",dict))),
              ("research",state/"research-output/research.json",(("entities",dict),)),
-             ("health",site/"health.json",(("status",str),)),
              ("view",site/"view.json",(("market",list),("sectors",list))))
     failed = []
     for name,source,transform in feeds:
         try:
             target = state/"request-usage"/("public-"+name+".json")
-            source_ids = verified if name in ("health","view") else None
+            source_ids = verified if name == "view" else None
             project = transform if callable(transform) else lambda raw: public_feed(raw,transform,source_ids)
             versions[name] = project_file(source,target,project,versions.get(name),source_ids)
             if strict and versions[name] is None:
@@ -495,6 +537,12 @@ def publish_feeds(state,versions,site=Path("/srv/ashare-radar-preview/public/dat
         except (OSError,ValueError,TypeError,KeyError):
             failed.append(name)
             print("public snapshot unavailable:",name,file=sys.stderr,flush=True)
+    try:
+        write_snapshot(state/"request-usage/public-health.json",live_health(state))
+        versions["health"] = "live"
+    except (OSError,ValueError,TypeError,KeyError,sqlite3.Error):
+        failed.append("health")
+        print("public snapshot unavailable: health",file=sys.stderr,flush=True)
     if strict and failed:
         raise RuntimeError("public snapshots unavailable: "+", ".join(failed))
 
