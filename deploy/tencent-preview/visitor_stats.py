@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS visits (
     path TEXT NOT NULL,
     status INTEGER NOT NULL,
     ua TEXT NOT NULL,
+    page INTEGER NOT NULL DEFAULT 0,
     dedup TEXT NOT NULL UNIQUE
 );
 CREATE INDEX IF NOT EXISTS visits_epoch ON visits(epoch);
@@ -72,8 +73,11 @@ def parse_line(raw):
     ua = row.get("ua") if isinstance(row.get("ua"), str) else ""
     host = row.get("host") if isinstance(row.get("host"), str) else ""
     key = hashlib.sha256(f"{int(moment.timestamp())}|{ip}|{path}|{status}|{ua}".encode()).hexdigest()
+    if path in ("/index.html", "/index.htm"):
+        path = "/"
     return {"epoch": int(moment.timestamp()), "at": at, "ip": ip[:64], "host": host[:200],
-            "path": path[:400], "status": status, "ua": ua[:300], "dedup": key}
+            "path": path[:400], "status": status, "ua": ua[:300],
+            "page": 1 if is_page(path) else 0, "dedup": key}
 
 
 def _read_state(path):
@@ -114,6 +118,7 @@ def collect(log=ACCESS_LOG, db_path=DB, state_path=OFFSET, now=None):
                 offset, data = 0, fh_read_all(log)
         with closing(connect(db_path)) as db, db:
             db.executescript(SCHEMA)
+            migrate(db)
             for raw in data.splitlines(keepends=True):
                 if not raw.endswith(b"\n"):
                     break  # incomplete tail, retry on the next run
@@ -122,9 +127,9 @@ def collect(log=ACCESS_LOG, db_path=DB, state_path=OFFSET, now=None):
                 if not row:
                     continue
                 cursor = db.execute("""INSERT OR IGNORE INTO visits
-                    (epoch,at,ip,host,path,status,ua,dedup) VALUES(?,?,?,?,?,?,?,?)""",
+                    (epoch,at,ip,host,path,status,ua,page,dedup) VALUES(?,?,?,?,?,?,?,?,?)""",
                     (row["epoch"], row["at"], row["ip"], row["host"], row["path"],
-                     row["status"], row["ua"], row["dedup"]))
+                     row["status"], row["ua"], row["page"], row["dedup"]))
                 added += cursor.rowcount
     payload = {"size": offset + consumed, "ino": stat.st_ino if stat else None}
     fd, tmp = tempfile.mkstemp(prefix="visitor-offset-", dir=str(state_path.parent))
@@ -142,10 +147,19 @@ def collect(log=ACCESS_LOG, db_path=DB, state_path=OFFSET, now=None):
     return added
 
 
+def migrate(db):
+    columns = {row[1] for row in db.execute("PRAGMA table_info(visits)")}
+    if "page" not in columns:
+        db.execute("ALTER TABLE visits ADD COLUMN page INTEGER NOT NULL DEFAULT 0")
+        for row_id, path in db.execute("SELECT id, path FROM visits").fetchall():
+            db.execute("UPDATE visits SET page=? WHERE id=?", (1 if is_page(path) else 0, row_id))
+
+
 def purge(db_path, days=RETENTION_DAYS, now=None):
     cutoff = int((now or datetime.now(timezone.utc)).timestamp()) - days * 86400
     with closing(connect(db_path)) as db, db:
         db.executescript(SCHEMA)
+        migrate(db)
         db.execute("DELETE FROM visits WHERE epoch < ?", (cutoff,))
 
 
@@ -154,6 +168,8 @@ def build_snapshot(db_path=DB, now=None, top=20, days=RETENTION_DAYS, recent=50)
     current = int(now.timestamp())
     with closing(connect(db_path)) as db:
         db.executescript(SCHEMA)
+        with db:
+            migrate(db)
         def pair(since):
             return db.execute("SELECT count(*), count(DISTINCT ip) FROM visits WHERE epoch>=?",
                               (since,)).fetchone()
@@ -172,9 +188,7 @@ def build_snapshot(db_path=DB, now=None, top=20, days=RETENTION_DAYS, recent=50)
         since = current - 7 * 86400
         top_ips = []
         for ip, requests, pages, first, last in db.execute("""SELECT ip, count(*),
-                sum(CASE WHEN path NOT LIKE '/data/%' AND path NOT LIKE '/api/%'
-                    AND path NOT LIKE '/internal/%' AND instr(path,'.')=0 THEN 1 ELSE 0 END),
-                min(epoch), max(epoch)
+                sum(page), min(epoch), max(epoch)
                 FROM visits WHERE epoch>=? GROUP BY ip ORDER BY count(*) DESC, ip LIMIT ?""",
                 (since, top)):
             sample = db.execute("SELECT ua FROM visits WHERE ip=? ORDER BY epoch DESC LIMIT 1",
@@ -185,8 +199,7 @@ def build_snapshot(db_path=DB, now=None, top=20, days=RETENTION_DAYS, recent=50)
                             "ua_sample": (sample[0] if sample else "")[:140]})
         top_paths = [{"path": path, "requests": requests, "unique_ips": unique}
                      for path, requests, unique in db.execute("""SELECT path, count(*), count(DISTINCT ip)
-                        FROM visits WHERE epoch>=? AND path NOT LIKE '/data/%' AND path NOT LIKE '/api/%'
-                        AND path NOT LIKE '/internal/%' AND instr(path,'.')=0
+                        FROM visits WHERE epoch>=? AND page=1
                         GROUP BY path ORDER BY count(*) DESC LIMIT ?""", (since, top))]
         latest = []
         for at, ip, path, status in db.execute(
