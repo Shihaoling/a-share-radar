@@ -20,6 +20,7 @@ STATE = Path("/var/lib/ashare-radar-preview/account")
 SOCKET = Path("/run/ashare-account/account.sock")
 ADMIN_FILES = Path("/srv/ashare-radar-preview/private-admin")
 USAGE_SNAPSHOT = STATE.parent/"request-usage/admin-dashboard.json"
+VISITORS_SNAPSHOT = STATE.parent/"visitors/admin-visitors.json"
 COOKIE = "__Host-ashare_session"
 WEEK = 7 * 86400
 NAME = re.compile(r"[a-z0-9][a-z0-9_.-]{2,31}", re.ASCII)
@@ -27,6 +28,7 @@ TOKEN = re.compile(r"[a-f0-9]{64}", re.ASCII)
 ADMIN_PAGES = {"/admin/": ("index.html", "text/html; charset=utf-8"),
                "/admin/index.html": ("index.html", "text/html; charset=utf-8"),
                "/admin/admin.js": ("admin.js", "application/javascript"),
+               "/admin/scheduler.js": ("scheduler.js", "application/javascript"),
                "/admin/admin.css": ("admin.css", "text/css")}
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, username TEXT NOT NULL UNIQUE,
@@ -238,6 +240,21 @@ class Handler(BaseHTTPRequestHandler):
             # Consume the bounded, proxy-buffered request even when authorization will fail.
             # Closing a Unix socket with unread body bytes can discard its HTTP response.
             payload = self.read_post_bytes()
+            if path == "/api/admin/scheduler":
+                self.require_admin(accounts.user(raw, now))
+                body = self.post_body(raw, payload)
+                if set(body) != {"task_id", "minutes", "revision"}:
+                    raise Rejected(400, "invalid_schedule", "请提供任务、暂停时长和当前版本。")
+                from schedule_control import ControlConflict, update_control
+                try:
+                    control = update_control(accounts.path.parent/"schedule-control.json",
+                                             body["task_id"], body["minutes"], body["revision"])
+                except ControlConflict:
+                    raise Rejected(409, "schedule_conflict", "调度设置已变更，请刷新后重试。") from None
+                except ValueError:
+                    raise Rejected(400, "invalid_schedule", "任务、时长或版本无效。") from None
+                self.send(200, control)
+                return
             if path == "/api/admin/policy":
                 self.require_admin(accounts.user(raw, now))
                 body = self.post_body(raw, payload)
@@ -282,12 +299,23 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/account/session":
             self.send(200, session_body(accounts.user(raw,now),raw), cookie=raw if raw != candidate else None)
             return
-        if path.startswith("/admin/") or path in {"/api/admin/usage","/api/admin/policy","/api/admin/minimax-prompts"}:
+        if path.startswith("/admin/") or path in {"/api/admin/usage","/api/admin/policy","/api/admin/minimax-prompts","/api/admin/scheduler","/api/admin/visitors"}:
             user = accounts.user(raw, now)
             if not user and path in {"/admin/", "/admin/index.html"}:
                 self.send(302, location="/account/?next=/admin/")
                 return
             self.require_admin(user)
+            if path == "/api/admin/scheduler":
+                from schedule_control import read_control
+                from schedule_status import snapshot
+                status = snapshot()
+                try:
+                    control = read_control(accounts.path.parent/"schedule-control.json")
+                except (OSError, ValueError):
+                    control = None
+                    status = {**status, "stale": True, "unavailable": [*status.get("unavailable", ()), "control"]}
+                self.send(200, {**status, "control": control})
+                return
             if path == "/api/admin/usage":
                 # The metering worker publishes a private, atomic aggregate. Requests to
                 # the console never open the collectors' WAL databases.
@@ -303,6 +331,14 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/admin/minimax-prompts":
                 from minimax_prompt_catalog import catalog
                 self.send(200,catalog(accounts.path.parent/"minimax-prompts.json"))
+                return
+            if path == "/api/admin/visitors":
+                # The visitor worker publishes an atomic aggregate; the console never
+                # opens the access database or the Nginx log directly.
+                visitors = json.loads(self.server.visitors_snapshot.read_bytes())
+                if not isinstance(visitors, dict) or visitors.get("schema_version") != 1:
+                    raise ValueError("invalid visitors snapshot")
+                self.send(200, visitors)
                 return
             if path in ADMIN_PAGES:
                 name, content = ADMIN_PAGES[path]
@@ -348,6 +384,7 @@ def main():
     SOCKET.unlink(missing_ok=True)
     with UnixStreamServer(str(SOCKET), Handler) as server:
         server.accounts, server.assets, server.usage_snapshot = accounts, ADMIN_FILES, USAGE_SNAPSHOT
+        server.visitors_snapshot = VISITORS_SNAPSHOT
         os.chmod(SOCKET, 0o660)
         server.serve_forever()
 

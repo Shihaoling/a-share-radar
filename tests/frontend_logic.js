@@ -144,11 +144,13 @@ function runFrontendChecks(source) {
   d.stock_api_state={endpoints:{index_daily:{status:'success',last_success:'2026-11-16T16:00:00+08:00'},rt_idx_k:{status:'cooldown',error_code:'api_denied',cooldown_until:'2026-11-17T16:00:00+08:00'}}};
   api.state.data=d;
   check('all six market indices are rendered',()=>{api.state.page='overview';api.render();ok(text(root).includes('测试指数5'));});
-  check('the platform note appears only once, in the overview footer',()=>{
+  check('the platform note and ICP filing appear once on every page',()=>{
     const note='观澜是公益数据平台，不作任何投资建议。';
+    const icp='苏ICP备2026093550号';
     for(const page of ['overview','trend','sectors','news','settings']){
       api.state.page=page;api.render();
-      eq(text(root).split(note).length-1,page==='overview'?1:0);
+      eq(text(root).split(note).length-1,1);
+      eq(text(root).split(icp).length-1,1);
     }
     api.state.page='overview';
   });

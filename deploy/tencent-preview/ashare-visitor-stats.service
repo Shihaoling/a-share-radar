@@ -1,0 +1,16 @@
+[Unit]
+Description=A-share Radar visitor access statistics
+After=network.target ashare-preview-web.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+StateDirectory=ashare-radar-preview/visitors
+StateDirectoryMode=0700
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/var/lib/ashare-radar-preview/venv/bin/python /opt/ashare-radar-preview/deploy/tencent-preview/visitor_stats.py run
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/ashare-radar-preview-nginx

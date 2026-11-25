@@ -39,6 +39,7 @@ class AccountHTTPTests(unittest.TestCase):
         server.accounts = self.store
         server.assets = self.root/"admin"
         server.usage_snapshot = self.root/"private/admin-dashboard.json"
+        server.visitors_snapshot = self.root/"private/admin-visitors.json"
         server.assets.mkdir()
         (server.assets/"index.html").write_text("private-console")
         thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval":.01})
@@ -121,6 +122,21 @@ class AccountHTTPTests(unittest.TestCase):
             origin = {"Origin":"https://"+self.host}
             self.assertEqual(self.request("/api/admin/policy", {"limit_60s":12,"extra":1},extra=origin)[0],400)
             self.assertEqual(self.request("/api/admin/policy", {"limit_60s":12},extra=origin)[2],{"limit_60s":12})
+
+    def test_visitor_snapshot_is_admin_only_and_schema_checked(self):
+        self.assertEqual(self.request("/api/admin/visitors")[0],401)
+        output = self.root/"credentials"
+        self.store.bootstrap("admin",output)
+        secret = output.read_text().split("password=")[1].strip()
+        self.request("/api/account/session")
+        self.host = "preview.example:8443"
+        self.request("/api/account/login",{"username":"admin","password":secret},
+                     extra={"Origin":"https://"+self.host})
+        self.assertEqual(self.request("/api/admin/visitors")[0],503)
+        self.root.joinpath("private/admin-visitors.json").write_text(json.dumps({"schema_version":1,"totals":{}}))
+        status, _, result = self.request("/api/admin/visitors")
+        self.assertEqual(status,200)
+        self.assertEqual(result["schema_version"],1)
 
     def test_attempts_persist_and_first_admin_cannot_be_reserved_publicly(self):
         self.request("/api/account/session")

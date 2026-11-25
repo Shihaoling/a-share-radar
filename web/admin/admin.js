@@ -29,7 +29,28 @@
     select.replaceChildren(...items.map(([key,label])=>{const option=cell('option',label);option.value=key;return option;}));
     select.value=items.some(([key])=>key===value)?value:items[0]?.[0]||'';
   }
+  function displayVisitors(data){
+    const totals=data?.totals||{};
+    for(const [id,key] of [['v-req-24h','requests_24h'],['v-ip-24h','unique_ips_24h'],
+      ['v-req-7d','requests_7d'],['v-ip-7d','unique_ips_7d']])$(id).textContent=count(totals[key]);
+    $('visitor-as-of').textContent=data?.generated_at?'统计截至 '+stamp(data.generated_at):'暂无数据';
+    const uaShort=value=>{const text=String(value||'');return text.length>34?text.slice(0,34)+'…':text;};
+    $('visitor-ips').replaceChildren(...(data?.top_ips||[]).map(item=>row(item.ip,[
+      count(item.requests),count(item.page_views),stamp(item.first_seen),stamp(item.last_seen),uaShort(item.ua_sample)])));
+    if(!(data?.top_ips||[]).length)$('visitor-ips').replaceChildren(row('—',['—','—','—','—','暂无访客记录']));
+    $('visitor-paths').replaceChildren(...(data?.top_paths||[]).map(item=>row(item.path,[count(item.requests),count(item.unique_ips)])));
+    if(!(data?.top_paths||[]).length)$('visitor-paths').replaceChildren(row('—',['—','—']));
+    $('visitor-hours').replaceChildren(...(data?.hourly_24h||[]).map(item=>row(item.hour,[count(item.requests),count(item.unique_ips)])));
+    $('visitor-recent').replaceChildren(...(data?.recent||[]).map(item=>row(item.at,[item.ip,item.path,String(item.status??'—')])));
+    if(!(data?.recent||[]).length)$('visitor-recent').replaceChildren(row('—',['—','—','—']));
+    hint('visitor-note',data?.retention_days?'保留窗口 '+count(data.retention_days)+' 天；访问统计不含本地隧道与内部接口。':'');
+  }
   function clearPrivate(){
+    scheduler?.clear();
+    $('visitor-section').hidden=true;
+    for(const id of ['visitor-ips','visitor-paths','visitor-hours','visitor-recent'])$(id).replaceChildren();
+    for(const id of ['v-req-24h','v-ip-24h','v-req-7d','v-ip-7d'])$(id).textContent='—';
+    for(const id of ['visitor-as-of','visitor-note'])$(id).textContent='';
     $('results').hidden=true;$('policy-section').hidden=true;
     $('prompt-section').hidden=true;
     rolling=null;promptItems.clear();drafts.clear();efforts=[];promptRevision++;
@@ -188,12 +209,15 @@
       if(!next.user){clearPrivate();location.replace('/account/?next=/admin/');return;}
       if(next.user.role!=='admin'){clearPrivate();hint('status','当前账户没有管理权限。',true);return;}
       if(!next.csrf_token)throw Error('账户会话未完成验证。');
-      session=next;$('policy-section').hidden=false;
+      session=next;$('policy-section').hidden=false;$('visitor-section').hidden=false;scheduler?.authorize();
       const revision=policyRevision;
       const promptVersion=promptRevision;
-      const [usage,policyResult,promptResult]=await Promise.allSettled([api('/api/admin/usage'),
+      const [usage,visitorResult,policyResult,promptResult]=await Promise.allSettled([api('/api/admin/usage'),
+        api('/api/admin/visitors'),
         ...(settings?[api('/api/admin/policy'),api('/api/admin/minimax-prompts')]:[])]);
-      for(const reply of [usage,policyResult,promptResult])if(reply?.status==='rejected' && authError(reply.reason))return;
+      for(const reply of [usage,visitorResult,policyResult,promptResult])if(reply?.status==='rejected' && authError(reply.reason))return;
+      if(visitorResult.status==='fulfilled')displayVisitors(visitorResult.value);
+      else hint('visitor-as-of','访客统计暂不可用，请稍后刷新。',true);
       try{
         if(usage.status!=='fulfilled')throw usage.reason;
         displayUsage(usage.value);hint('status','');
@@ -215,6 +239,7 @@
     }catch(error){if(!authError(error))hint('status',$('results').hidden?'管理服务暂不可用，请稍后刷新。':'连接暂时中断，仍显示上次成功统计。',true);}
     finally{loading=false;$('refresh').disabled=saving;}
   }
+  const scheduler=globalThis.GuanlanScheduler?.({api, authError});
   $('policy-limit').addEventListener('input',()=>{dirty=true;});
   $('rolling-stage').addEventListener('change',renderRolling);
   $('prompt-stage').addEventListener('change',showPrompt);

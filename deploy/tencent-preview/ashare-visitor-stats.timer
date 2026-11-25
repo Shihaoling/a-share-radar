@@ -1,0 +1,11 @@
+[Unit]
+Description=Aggregate visitor access statistics every minute
+
+[Timer]
+OnCalendar=*:0/1:20 Asia/Shanghai
+AccuracySec=5s
+RandomizedDelaySec=3s
+Persistent=false
+
+[Install]
+WantedBy=timers.target
