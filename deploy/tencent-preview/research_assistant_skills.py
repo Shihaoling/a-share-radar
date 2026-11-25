@@ -88,7 +88,8 @@ def source_items(ident, facts):
                 "date": date_of(report.get("date", "")),
                 "meta": " · ".join(filter(None, (report.get("broker", ""), report.get("author", "")))),
                 "excerpt": (detail.get("published_summary") or "")[:220],
-                "href": detail.get("href") or "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
+                # Never trust a link from collected data; rebuild the canonical local route.
+                "href": "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
             })
         for row in facts.get("titles", []):
             ident_value = row.get("id")
@@ -98,7 +99,7 @@ def source_items(ident, facts):
             rows.append({
                 "id": ident_value, "kind": "研报", "title": row.get("title", ""),
                 "date": date_of(row.get("date", "")), "meta": "研报目录",
-                "excerpt": "", "href": row.get("href") or "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
+                "excerpt": "", "href": "/reports/?" + urlencode({"id": ident_value}), "ref_href": "",
             })
     return [row for row in rows if row["title"]]
 

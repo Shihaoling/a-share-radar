@@ -3,6 +3,7 @@
 from collections import deque
 from contextlib import closing
 from datetime import date, datetime
+import ipaddress
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 import json
@@ -29,9 +30,22 @@ METRICS_ROUTE = "/api/research-assistant/metrics"
 SOCKET = Path("/run/ashare-research-assistant/assistant.sock")
 MAX_BYTES = 65536
 SLOTS = BoundedSemaphore(2)
+RATE_WINDOW = 60
+GLOBAL_RATE = 12
+PEER_RATE = 3
+MAX_PEER_BUCKETS = 512
 RECENT = deque()
+PEER_RECENT = {}
 RATE_LOCK = Lock()
 ACTIVE = set()
+SECURITY_HEADERS = (
+    ("Cache-Control", "no-store"),
+    ("X-Content-Type-Options", "nosniff"),
+    ("X-Frame-Options", "DENY"),
+    ("Referrer-Policy", "no-referrer"),
+    ("Cross-Origin-Resource-Policy", "same-origin"),
+    ("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"),
+)
 SUMMARY_STAGE = "research_assistant_summary"
 SUMMARY_MAX = 1800
 MAX_REVIEW_RETRIES = 3
@@ -456,14 +470,39 @@ def chat(question, key, emit, *, now=None, model=ask, snapshots=Published, save=
     finish(draft, used_sources, items=unique_cards[:8], open_pages=open_pages)
 
 
-def reserve(thread=None):
+def peer_key(value):
+    """Normalize the proxy-supplied visitor address for per-visitor throttling."""
+    raw = (value or "").strip()
+    try:
+        return str(ipaddress.ip_address(raw))
+    except ValueError:
+        return "unknown"
+
+
+def fetch_site_ok(headers):
+    """Reject browser requests explicitly marked as cross-site."""
+    return headers.get("Sec-Fetch-Site") in (None, "same-origin", "none")
+
+
+def reserve(thread=None, peer=None):
     with RATE_LOCK:
         now = monotonic()
-        while RECENT and now - RECENT[0] >= 60:
+        while RECENT and now - RECENT[0] >= RATE_WINDOW:
             RECENT.popleft()
-        if len(RECENT) >= 6 or thread in ACTIVE or not SLOTS.acquire(blocking=False):
+        for key, bucket in list(PEER_RECENT.items()):
+            while bucket and now - bucket[0] >= RATE_WINDOW:
+                bucket.popleft()
+            if not bucket:
+                PEER_RECENT.pop(key, None)
+        key = peer_key(peer)
+        if key == "unknown" or len(PEER_RECENT) >= MAX_PEER_BUCKETS:
+            key = "unknown"
+        bucket = PEER_RECENT.setdefault(key, deque())
+        if (len(RECENT) >= GLOBAL_RATE or len(bucket) >= PEER_RATE
+                or thread in ACTIVE or not SLOTS.acquire(blocking=False)):
             return False
         RECENT.append(now)
+        bucket.append(now)
         if thread is not None:
             ACTIVE.add(thread)
         return True
@@ -492,21 +531,38 @@ def local_origin(origin, host):
 
 
 class Handler(BaseHTTPRequestHandler):
+    server_version = "Ashare"
+    sys_version = ""
+
     def log_message(self, *_):
         pass
+
+    def security_headers(self):
+        for name, value in SECURITY_HEADERS:
+            self.send_header(name, value)
+
+    def send_error(self, status, message=None, explain=None):
+        self.send_response(status, message)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.security_headers()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def send_json(self, status, payload):
         body = json.dumps(payload, ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("X-Content-Type-Options", "nosniff")
+        self.security_headers()
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
+    def get_origin_ok(self):
+        origin = self.headers.get("Origin")
+        return not origin or local_origin(origin, self.headers.get("Host"))
+
     def do_GET(self):
-        if self.headers.get("Sec-Fetch-Site") not in (None, "same-origin", "none"):
+        if not fetch_site_ok(self.headers) or not self.get_origin_ok():
             return self.send_error(HTTPStatus.FORBIDDEN)
         try:
             target = urlsplit(self.path)
@@ -537,7 +593,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path not in {ROUTE, COMPRESS_ROUTE}:
             return self.send_error(HTTPStatus.NOT_FOUND)
-        if not local_origin(self.headers.get("Origin"), self.headers.get("Host")):
+        if not fetch_site_ok(self.headers) or not local_origin(
+                self.headers.get("Origin"), self.headers.get("Host")):
             return self.send_error(HTTPStatus.FORBIDDEN)
         if self.headers.get_content_type() != "application/json":
             return self.send_error(HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
@@ -572,7 +629,8 @@ class Handler(BaseHTTPRequestHandler):
         if wants_history and owner != expected_owner:
             return self.send_error(HTTPStatus.CONFLICT)
         slot = (owner, ident) if ident is not None else None
-        if not reserve(slot):
+        peer = self.headers.get("X-Research-Peer")
+        if not reserve(slot, peer):
             return self.send_error(HTTPStatus.TOO_MANY_REQUESTS)
         try:
             self.process(owner, ident, packet)
@@ -615,9 +673,8 @@ class Handler(BaseHTTPRequestHandler):
     def stream(self, run):
         self.send_response(HTTPStatus.OK)
         self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
-        self.send_header("Cache-Control", "no-store")
         self.send_header("X-Accel-Buffering", "no")
-        self.send_header("X-Content-Type-Options", "nosniff")
+        self.security_headers()
         self.end_headers()
 
         def emit(kind, **values):

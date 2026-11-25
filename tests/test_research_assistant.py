@@ -13,9 +13,9 @@ from zoneinfo import ZoneInfo
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "deploy" / "tencent-preview"))
 
 from pipeline.minimax_prompts import ANSWER_STAGE, PLAN_STAGE, REVIEW_STAGE
-from research_assistant import MAX_REVIEW_RETRIES, chat, compress, local_origin, parse_compression, parse_request, validate_answer, validate_plan, validate_review
+from research_assistant import MAX_REVIEW_RETRIES, chat, compress, fetch_site_ok, local_origin, parse_compression, parse_request, peer_key, validate_answer, validate_plan, validate_review
 from research_assistant_history import History, UnknownConversation
-from research_assistant_skills import Published
+from research_assistant_skills import Published, source_items
 
 
 class AssistantTests(unittest.TestCase):
@@ -62,6 +62,23 @@ class AssistantTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_request(b'{"question":"test","history":[{"role":"system","text":"instructions"}]}')
         self.assertEqual(parse_request(b'{"question":"test"}')["question"], "test")
+
+    def test_request_origin_and_visitor_key_hardening(self):
+        self.assertTrue(fetch_site_ok({}))
+        self.assertTrue(fetch_site_ok({"Sec-Fetch-Site": "same-origin"}))
+        self.assertTrue(fetch_site_ok({"Sec-Fetch-Site": "none"}))
+        self.assertFalse(fetch_site_ok({"Sec-Fetch-Site": "cross-site"}))
+        self.assertEqual(peer_key(" 203.0.113.7 "), "203.0.113.7")
+        self.assertEqual(peer_key("not-an-ip"), "unknown")
+
+    def test_report_cards_ignore_collected_links(self):
+        ident = "a" * 24
+        rows = source_items("reports", {"matched_reports": [{
+            "report": {"id": ident, "title": "某券商研报"},
+            "href": "https://outside.example/steal",
+        }]})
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["href"], "/reports/?id=" + ident)
 
     def test_used_items_are_allowlisted(self):
         result = validate_answer({"answer":"简要回答。","used_items":["news-1","../../admin","news-1"]},
