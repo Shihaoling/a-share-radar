@@ -3,6 +3,7 @@
 from datetime import datetime
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -46,6 +47,18 @@ class AssistantTests(unittest.TestCase):
         self.assertFalse(local_origin("https://outside.example", "outside.example"))
         self.assertFalse(local_origin("http://127.0.0.1:80", "127.0.0.1:18769"))
         self.assertTrue(local_origin("http://127.0.0.1:18769", "127.0.0.1:18769"))
+        previous = os.environ.get("RADAR_ALLOWED_ORIGINS")
+        try:
+            os.environ["RADAR_ALLOWED_ORIGINS"] = "mystockmarket.online, www.mystockmarket.online"
+            self.assertTrue(local_origin("https://mystockmarket.online", "mystockmarket.online"))
+            self.assertTrue(local_origin("https://www.mystockmarket.online", "www.mystockmarket.online"))
+            self.assertFalse(local_origin("https://mystockmarket.online", "www.mystockmarket.online"))
+            self.assertFalse(local_origin("https://outside.example", "outside.example"))
+        finally:
+            if previous is None:
+                os.environ.pop("RADAR_ALLOWED_ORIGINS", None)
+            else:
+                os.environ["RADAR_ALLOWED_ORIGINS"] = previous
         with self.assertRaises(ValueError):
             parse_request(b'{"question":"test","history":[{"role":"system","text":"instructions"}]}')
         self.assertEqual(parse_request(b'{"question":"test"}')["question"], "test")

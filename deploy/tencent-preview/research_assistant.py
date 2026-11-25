@@ -476,11 +476,17 @@ def release(thread):
 
 
 def local_origin(origin, host):
+    # Localhost is always allowed. Public hostnames are allowed only when explicitly
+    # listed in RADAR_ALLOWED_ORIGINS (comma-separated), so a domain-bound deployment
+    # can reach the assistant without opening it to arbitrary origins.
+    allowed = {item.strip().lower() for item in os.environ.get("RADAR_ALLOWED_ORIGINS", "").split(",") if item.strip()}
     try:
         value = urlsplit(origin or "")
-        return (value.scheme in {"http", "https"} and value.hostname in {"localhost", "127.0.0.1", "::1"}
-                and value.netloc == host and not value.path and not value.query and not value.fragment
-                and value.username is None and value.password is None)
+        hostname = (value.hostname or "").lower()
+        local = hostname in {"localhost", "127.0.0.1", "::1"}
+        return (value.scheme in {"http", "https"} and (local or hostname in allowed)
+                and value.netloc.lower() == (host or "").lower() and not value.path and not value.query
+                and not value.fragment and value.username is None and value.password is None)
     except ValueError:
         return False
 
