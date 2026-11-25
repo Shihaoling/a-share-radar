@@ -629,7 +629,7 @@ function render(){
     !state.demo&&!d.generated_at&&!publications.get('data')?.failures?h('div',{class:'banner'},icon('info',15),h('span',{},state.loading?'正在加载研究数据…':'等待数据更新'),h('span',{class:'spacer'}),button('查看数据状态',()=>go('settings'),'')):null,
     !state.demo&&state.page==='settings'?publicationNotice():null,
     conflict?h('div',{class:'banner conflict'},icon('info',15),'行情来源之间存在差异。'):null,
-    body,state.page==='overview'?h('footer',{class:'footnote'},'观澜是公益数据平台，不作任何投资建议。'):null);
+    body,h('footer',{class:'footnote'},h('span',{},'观澜是公益数据平台，不作任何投资建议。'),h('a',{href:'https://beian.miit.gov.cn/',target:'_blank',rel:'noopener noreferrer'},'苏ICP备2026093550号')));
   const shell=h('div',{class:'shell'},sidebar,h('div',{class:'main-wrap'},topbar,main));$('#app').replaceChildren(shell);if(state.toast)$('#app').append(h('div',{class:'toast',role:'status'},state.toast));
   window.GuanlanGlass?.select(nav,state.page);
   navFocus?.focus({preventScroll:true});
