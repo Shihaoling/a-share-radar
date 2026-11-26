@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh ETF close-price history after post-close research
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 18:10:00 Asia/Shanghai
+AccuracySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

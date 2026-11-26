@@ -2,7 +2,8 @@
   'use strict';
   const get = id => document.getElementById(id);
   const source = '/data/funds.json';
-  const state = { data: null, query: '', kind: 'all', group: 'all', sort: 'aum' };
+  const historySource = '/data/fund-history.json';
+  const state = { data: null, history: null, query: '', kind: 'all', group: 'all', sort: 'aum' };
   const params = new URLSearchParams(location.search);
   if (params.get('sector')) { state.kind = 'sector'; state.group = params.get('sector'); }
   if (params.get('index')) { state.kind = 'index'; state.group = params.get('index'); }
@@ -141,6 +142,83 @@
     notes.replaceChildren(...(state.data.notes || []).map(note => el('li', '', note)));
   }
 
+  const svgEl = (tag, attrs, text) => {
+    const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const [key, value] of Object.entries(attrs || {})) node.setAttribute(key, String(value));
+    if (text !== undefined && text !== null) node.textContent = String(text);
+    return node;
+  };
+
+  function chartNode(fund) {
+    const days = Array.isArray(state.history?.days) ? state.history.days : [];
+    const series = days.map(day => [day?.date, day?.close?.[fund.code]])
+      .filter(([date, close]) => typeof date === 'string' && typeof close === 'number' && Number.isFinite(close))
+      .sort((a, b) => a[0].localeCompare(b[0]));
+    if (series.length < 2) return null;
+
+    const width = 600, height = 170, left = 10, right = 52, top = 10, bottom = 24;
+    const plotWidth = width - left - right, plotHeight = height - top - bottom;
+    const closes = series.map(point => point[1]);
+    let low = Math.min(...closes), high = Math.max(...closes);
+    if (!(high > low)) { high = low * 1.02 || 1; low = low * .98; }
+    const pad = (high - low) * .12;
+    low = Math.max(0, low - pad); high += pad;
+    const x = index => left + (series.length === 1 ? 0 : index / (series.length - 1)) * plotWidth;
+    const y = value => top + (high - value) / (high - low) * plotHeight;
+
+    const wrap = el('div', 'fund-chart');
+    const head = el('div', 'fund-chart-head');
+    head.append(el('strong', '', `近 ${series.length} 个交易日收盘价`));
+    const change = (closes.at(-1) / closes[0] - 1) * 100;
+    const cls = change > 0 ? 'up' : change < 0 ? 'down' : '';
+    head.append(el('span', cls, `区间 ${signed(change)}`));
+    wrap.append(head);
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img',
+      'aria-label': `${fund.name || fund.code} 近 ${series.length} 个交易日收盘价走势图` });
+    for (let i = 0; i <= 3; i++) {
+      const value = high - (high - low) * i / 3;
+      const py = y(value);
+      svg.append(svgEl('line', { x1: left, x2: width - right, y1: py, y2: py, class: 'fund-chart-grid' }),
+        svgEl('text', { x: width - 2, y: py + 3, 'text-anchor': 'end', class: 'fund-chart-axis' }, fmt(value, 3)));
+    }
+    [0, Math.floor((series.length - 1) / 2), series.length - 1].forEach((index, position) => {
+      svg.append(svgEl('text', { x: x(index), y: height - 5,
+        'text-anchor': position === 0 ? 'start' : position === 2 ? 'end' : 'middle',
+        class: 'fund-chart-axis' }, series[index][0].slice(5)));
+    });
+    const points = series.map((point, index) => `${x(index).toFixed(2)} ${y(point[1]).toFixed(2)}`);
+    svg.append(svgEl('path', {
+      d: `M${points[0]} L${points.slice(1).join(' L')} L${x(series.length - 1).toFixed(2)} ${height - bottom} L${x(0).toFixed(2)} ${height - bottom} Z`,
+      class: 'fund-chart-area' }));
+    svg.append(svgEl('path', { d: `M${points[0]} L${points.slice(1).join(' L')}`, class: 'fund-chart-line' }));
+    const guide = svgEl('line', { y1: top, y2: height - bottom, class: 'fund-chart-guide', visibility: 'hidden' });
+    const dot = svgEl('circle', { r: 4, class: 'fund-chart-dot', visibility: 'hidden' });
+    svg.append(guide, dot);
+    wrap.append(svg);
+    const tip = el('div', 'fund-chart-tip');
+    tip.hidden = true;
+    wrap.append(tip);
+
+    svg.addEventListener('mousemove', event => {
+      const rect = svg.getBoundingClientRect();
+      if (!rect.width) return;
+      const px = (event.clientX - rect.left) / rect.width * width;
+      const index = Math.max(0, Math.min(series.length - 1, Math.round((px - left) / plotWidth * (series.length - 1))));
+      const [date, close] = series[index];
+      guide.setAttribute('x1', x(index)); guide.setAttribute('x2', x(index)); guide.setAttribute('visibility', 'visible');
+      dot.setAttribute('cx', x(index)); dot.setAttribute('cy', y(close)); dot.setAttribute('visibility', 'visible');
+      tip.textContent = `${date} · 收盘 ${fmt(close, 3)}`;
+      tip.style.left = `${Math.max(4, Math.min(rect.width - 110, x(index) / width * rect.width - 40))}px`;
+      tip.style.top = '4px';
+      tip.hidden = false;
+    });
+    svg.addEventListener('mouseleave', () => {
+      guide.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); tip.hidden = true;
+    });
+    return wrap;
+  }
+
   function kv(label, value, cls) {
     const box = el('div', 'fund-kv');
     box.append(el('span', '', label), el('strong', cls || '', value ?? '—'));
@@ -161,7 +239,8 @@
       kv('行情日期', fund.price_date || '—'), kv('跟踪指数', fund.index_name || '—'), kv('指数代码', fund.index_code || '—'),
       kv('基金管理人', fund.manager || '—'), kv('券商关系', fund.broker_relation || '—'),
       kv('成立日期', fund.list_date || '—'), kv('更新状态', fund.stale ? '非最新交易日' : '已更新'));
-    body.replaceChildren(grid);
+    const chart = chartNode(fund);
+    body.replaceChildren(...(chart ? [chart] : []), grid);
     body.append(el('h3', '', '关联与口径'));
     body.append(el('p', '', fund.match_basis || '—'));
     body.append(el('p', '', `匹配状态：${fund.match_status || '—'}。市场价、净值、规模各自标注日期，单位净值高低不代表估值贵贱。`));
@@ -182,6 +261,17 @@
     else dialog.setAttribute('open', '');
   }
 
+  async function loadHistory() {
+    try {
+      const response = await fetch(historySource, { cache: 'no-store', credentials: 'same-origin' });
+      if (!response.ok) throw new Error('history_status_' + response.status);
+      const data = await response.json();
+      state.history = data && data.schema_version === 1 && Array.isArray(data.days) ? data : null;
+    } catch {
+      state.history = null;
+    }
+  }
+
   async function load() {
     try {
       const response = await fetch(source, { cache: 'no-store', credentials: 'same-origin' });
@@ -192,6 +282,7 @@
       get('fund-status').textContent = `数据更新于 ${stamp(data.generated_at)} · 来源 ${data.provider || '内置行情接口'}`;
       summary();
       render();
+      loadHistory();
     } catch {
       get('fund-status').textContent = '基金快照尚未生成或暂时无法读取。数据由收盘后研究任务写入，请稍后刷新。';
     }

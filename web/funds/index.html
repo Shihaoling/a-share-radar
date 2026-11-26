@@ -7,29 +7,25 @@
   <meta name="description" content="观澜基金专区：基于站内内置行情接口的场内 ETF 收盘行情、净值、规模与溢折率。">
   <title>基金专区 · 观澜</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="../styles.css?v=funds-20261126">
-  <link rel="stylesheet" href="../market-theme.css?v=funds-20261126">
-  <link rel="stylesheet" href="../research-assistant.css?v=funds-20261126">
-  <link rel="stylesheet" href="./funds.css?v=funds-20261126">
-  <script src="../market-theme.js?v=funds-20261126"></script>
-  <script defer src="./funds.js?v=funds-20261126"></script>
-  <script defer src="../research-assistant.js?v=funds-20261126" data-assistant-page="funds"></script>
+  <link rel="stylesheet" href="../sector/sector.css?v=funds-theme-20261127">
+  <link rel="stylesheet" href="../market-theme.css?v=funds-theme-20261127">
+  <link rel="stylesheet" href="../research-assistant.css?v=funds-theme-20261127">
+  <link rel="stylesheet" href="./funds.css?v=funds-theme-20261127">
+  <script src="../market-theme.js?v=funds-theme-20261127"></script>
+  <script defer src="./funds.js?v=funds-theme-20261127"></script>
+  <script defer src="../research-assistant.js?v=funds-theme-20261127" data-assistant-page="funds"></script>
 </head>
 <body>
   <a class="skip" href="#fund-list">跳到基金列表</a>
-  <header class="masthead funds-masthead">
-    <div>
-      <a href="../#overview">观澜</a><span>基金专区</span>
-      <a class="back" href="../#overview">← 返回市场总览</a>
-    </div>
-  </header>
+  <header class="masthead"><div><a href="../#overview">观澜</a><span>基金专区</span><a class="back" href="../#overview">← 返回市场总览</a></div></header>
   <main class="funds-main">
-    <section class="funds-hero" aria-labelledby="funds-title">
-      <div>
+    <section class="profile funds-hero" aria-labelledby="funds-title">
+      <div class="identity">
+        <p class="meta">ETF · 场内基金</p>
         <h1 id="funds-title">基金专区</h1>
         <p>用站内内置行情接口整理的场内 ETF 收盘数据。可按宽基指数、申万行业主题、管理人和指标筛选。</p>
       </div>
-      <div class="funds-summary" id="funds-summary">
+      <div class="quote-strip funds-summary" id="funds-summary">
         <div><span>数据时间</span><strong id="funds-time">—</strong></div>
         <div><span>基金数量</span><strong id="funds-count">—</strong></div>
         <div><span>覆盖指数</span><strong id="funds-index-count">—</strong></div>
@@ -37,17 +33,17 @@
       </div>
     </section>
 
-    <section class="fund-controls" aria-label="基金筛选">
+    <section class="panel fund-controls" aria-label="基金筛选">
       <label class="field"><span>搜索</span><input id="fund-search" type="search" placeholder="代码、名称、指数或管理人" autocomplete="off"></label>
       <label class="field"><span>类别</span><select id="fund-kind"><option value="all">全部</option><option value="index">宽基指数</option><option value="sector">行业主题</option></select></label>
       <label class="field"><span>指数 / 板块</span><select id="fund-group"><option value="all">全部</option></select></label>
       <label class="field"><span>排序</span><select id="fund-sort"><option value="aum">规模从大到小</option><option value="pct">当日涨幅从高到低</option><option value="turnover">成交额从大到小</option><option value="premium">溢折率从高到低</option><option value="price">价格从高到低</option></select></label>
-      <button id="fund-reset" type="button" class="outline-button">重置</button>
+      <button id="fund-reset" type="button" class="fund-reset">重置</button>
     </section>
 
     <p class="fund-status" id="fund-status" role="status">正在读取基金快照…</p>
 
-    <section id="fund-list" class="fund-list-wrap" aria-label="基金列表" hidden>
+    <section id="fund-list" class="panel fund-list-wrap" aria-label="基金列表" hidden>
       <div class="fund-table-scroll">
         <table class="fund-table">
           <thead><tr>
@@ -61,15 +57,13 @@
       <p class="fund-count" id="fund-visible-count"></p>
     </section>
 
-    <section class="fund-notes" aria-labelledby="fund-notes-title">
+    <section class="panel fund-notes" aria-labelledby="fund-notes-title">
       <h2 id="fund-notes-title">口径与来源</h2>
       <ul id="fund-notes"></ul>
-      <p>基金快照由收盘后的研究任务写入，行情、净值、规模各自标注日期。页面仅作站内数据整理，不构成投资建议。</p>
+      <p>基金快照与历史收盘序列均由收盘后的站内任务写入。行情、净值、规模各自标注日期；页面仅作站内数据整理，不构成投资建议。</p>
     </section>
 
-    <footer class="site-beian" style="text-align:center;padding:18px 12px 26px;font-size:11px;color:#8b97a5;">
-      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">苏ICP备2026093550号</a>
-    </footer>
+    <footer class="site-beian">苏ICP备2026093550号</footer>
   </main>
 
   <dialog id="fund-detail" class="fund-detail" aria-labelledby="fund-detail-title">
