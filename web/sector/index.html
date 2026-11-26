@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="../asset/research.css?v=20261119-3">
   <link rel="stylesheet" href="../asset/chart.css?v=chart-change-20261124">
   <script defer src="../asset/chart.js?v=chart-change-20261124"></script>
-  <script defer src="../asset/research.js?v=closing-valuation"></script>
-  <script defer src="./sector.js?v=market-cadence-20261123"></script>
+  <script defer src="../asset/research.js?v=funds-20261126"></script>
+  <script defer src="./sector.js?v=funds-20261126"></script>
   <link rel="stylesheet" href="../market-theme.css?v=source-cards-20261124">
   <script src="../market-theme.js?v=source-cards-20261124"></script>
   <link rel="stylesheet" href="../research-assistant.css?v=source-cards-20261124">
@@ -19,10 +19,10 @@
 </head>
 <body>
   <a class="skip" href="#members">跳到成分股</a>
-  <header class="masthead"><div><a href="../#overview">观澜</a><span>行情目录</span><a class="back" href="../#overview">← 返回市场总览</a></div></header>
+  <header class="masthead"><div><a href="../#overview">观澜</a><span>行情目录</span><a href="../funds/">基金专区</a><a class="back" href="../#overview">← 返回市场总览</a></div></header>
   <main>
     <section class="profile" aria-labelledby="sector-title">
-      <div class="identity"><p id="sector-meta" class="meta"></p><h1 id="sector-title">板块详情</h1><p id="sector-intro"></p><a class="member-jump" href="#members">查看成分股 ↓</a></div>
+      <div class="identity"><p id="sector-meta" class="meta"></p><h1 id="sector-title">板块详情</h1><p id="sector-intro"></p><a class="member-jump" href="#members">查看成分股 ↓</a><a class="member-jump" id="sector-funds" href="#" hidden>查看相关基金 →</a></div>
       <div class="quote-strip" id="quote-strip" hidden>
         <div><span id="quote-price-label">指数点位</span><strong id="quote-price">—</strong><small id="quote-price-time"></small></div>
         <div><span id="quote-change-label">涨跌幅</span><strong id="quote-change">—</strong><small id="quote-change-time"></small></div>

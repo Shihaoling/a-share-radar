@@ -65,6 +65,34 @@ THEMES = {
     "801980.SI": r"美容护理",
 }
 EXCLUDE = re.compile(r"QDII|港股|沪港|深港|恒生|香港|全球|海外|纳斯达克|标普|日经|美国|日本|韩国|中概|债券|国债|货币|期货|商品|REIT|沪深300|中证500|中证1000|中证A500|中证A50|上证50|红利|联接|FOF", re.I)
+# Broad-market index ETFs are deliberately excluded from the SW theme candidates above,
+# but the site also links from index pages. Keep them as a separate, clearly labelled group.
+INDEX_FUNDS = {
+    "sh000001": ("000001", "上证指数", re.compile(r"上证指数|上证综指")),
+    "sz399001": ("399001", "深证成指", re.compile(r"深证成指")),
+    "sz399006": ("399006", "创业板指", re.compile(r"创业板指|创业板指数")),
+    "sh000300": ("000300", "沪深300", re.compile(r"沪深300")),
+    "sh000016": ("000016", "上证50", re.compile(r"上证50")),
+    "sh000688": ("000688", "科创50", re.compile(r"科创50|科创板50")),
+    "sh000905": ("000905", "中证500", re.compile(r"中证500")),
+    "sh000852": ("000852", "中证1000", re.compile(r"中证1000")),
+    "bj899050": ("899050", "北证50", re.compile(r"北证50")),
+}
+
+
+def _index_code(value):
+    match = re.match(r"(\d{6})", str(value or ""))
+    return match.group(1) if match else ""
+
+
+def _index_match(row):
+    """Map an ETF's benchmark index to the site's index page code, or None."""
+    name = str(row.get("index_name") or "")
+    code = _index_code(row.get("index_code"))
+    for site, (target, _, pattern) in INDEX_FUNDS.items():
+        if code == target or pattern.search(name):
+            return site
+    return None
 
 
 def _rows(payload, api):
@@ -184,7 +212,7 @@ def _clean(api, rows, now, registry, token="", target=None):
                     continue
             except _Failure:
                 continue
-            if _match(item):
+            if _match(item) or _index_match(item):
                 cleaned[code] = item
         else:
             try:
@@ -222,14 +250,12 @@ def _render(result, state, registry, now):
     catalog = caches.get("etf_basic", {}).get("rows", [])
     daily = {x["ts_code"]: x for x in caches.get("fund_daily", {}).get("rows", [])}
     sizes = {x["ts_code"]: x for x in caches.get("etf_share_size", {}).get("rows", [])}
-    groups = {}
-    for row in catalog:
-        match = _match(row)
-        manager = registry.get(row.get("mgr_name"))
-        if not match or not manager:
-            continue
+    groups, index_groups = {}, {}
+    target_day = _targets(now)[0]
+    iso = lambda value: _date(value, compact=True).isoformat() if value else None
+
+    def fund_item(row, quote, size, manager, basis, status):
         code = row["ts_code"]
-        quote, size = daily.get(code, {}), sizes.get(code, {})
         price, price_day = quote.get("close"), quote.get("trade_date")
         price_source = DOCS["fund_daily"]
         if size.get("close") and (not price or (size.get("trade_date") or "") > (price_day or "")):
@@ -238,24 +264,43 @@ def _render(result, state, registry, now):
         nav, nav_day = size.get("nav"), size.get("trade_date") if size.get("nav") else None
         aum = size.get("total_size")
         premium = (price / nav - 1) * 100 if price and nav and price_day == nav_day else None
-        iso = lambda value: _date(value, compact=True).isoformat() if value else None
-        fund = {
+        return {
             "code": code, "name": row["csname"], "manager": manager["name"],
             "broker_relation": manager["broker_relation"],
             "broker_source_url": manager["source_url"], "broker_source_date": manager["source_date"],
             "price": price, "price_date": iso(price_day), "price_kind": "daily_close",
+            "pct_chg": quote.get("pct_chg"),
             "nav": nav, "nav_date": iso(nav_day), "aum_cny": aum * 10000 if aum else None,
             "aum_date": iso(size.get("trade_date")) if aum else None,
+            "total_share": size.get("total_share"),
             "premium_pct": round(premium, 6) if premium is not None else None,
-            "match_basis": f"Tushare基准指数名称“{row['index_name']}”含“{match[1]}”；主题候选，未核验申万持仓比例",
-            "match_status": "index_name_candidate", "source_url": DOCS["etf_basic"],
+            "match_basis": basis, "match_status": status, "source_url": DOCS["etf_basic"],
             "index_code": row["index_code"], "index_name": row["index_name"],
+            "list_date": iso(row.get("list_date")),
             "provider": "stock_api", "upstream_provider": "unknown",
             "data_sources": {"price": price_source, "nav_and_aum": DOCS["etf_share_size"]},
-            "stale": not price_day or _date(price_day, compact=True) != _targets(now)[0],
+            "stale": not price_day or _date(price_day, compact=True) != target_day,
             "turnover_cny": quote.get("amount") * 1000 if quote.get("amount") else None,
         }
-        groups.setdefault(match[0], []).append(fund)
+
+    rank = lambda fund: (fund["aum_cny"] or 0, fund["turnover_cny"] or 0, fund["code"])
+    for row in catalog:
+        manager = registry.get(row.get("mgr_name"))
+        if not manager:
+            continue
+        code = row["ts_code"]
+        quote, size = daily.get(code, {}), sizes.get(code, {})
+        match = _match(row)
+        if match:
+            basis = f"内置接口基准指数“{row['index_name']}”含“{match[1]}”；主题候选，未核验申万持仓比例"
+            groups.setdefault(match[0], []).append(
+                fund_item(row, quote, size, manager, basis, "index_name_candidate"))
+        index_site = _index_match(row)
+        if index_site:
+            _, index_label, _ = INDEX_FUNDS[index_site]
+            basis = f"内置接口基准指数“{row['index_name']}”关联站点指数“{index_label}”；按跟踪指数匹配"
+            index_groups.setdefault(index_site, []).append(
+                fund_item(row, quote, size, manager, basis, "index_tracked"))
     covered = 0
     for sector in result.get("sectors", []):
         sector["funds"] = []
@@ -263,7 +308,7 @@ def _render(result, state, registry, now):
         code = sector.get("index_code") or sector.get("id")
         if sector.get("taxonomy") != "SW2021" or code not in THEMES:
             continue
-        candidates = sorted(groups.get(code, []), key=lambda x: (x["aum_cny"] or 0, x["turnover_cny"] or 0, x["code"]), reverse=True)
+        candidates = sorted(groups.get(code, []), key=rank, reverse=True)
         chosen, seen = [], set()
         for candidate in candidates:
             if candidate["manager"] not in seen:
@@ -277,10 +322,13 @@ def _render(result, state, registry, now):
         if chosen:
             covered += 1
             sector["funds_note"] = "按基准指数名称关联的主题候选，非申万行业持仓认证。市场价、净值及规模各自显示日期；单位净值高低不代表估值贵贱。"
+    result["index_funds"] = {key: sorted(rows, key=rank, reverse=True)[:8]
+                             for key, rows in index_groups.items()}
     result["fund_summary"] = {"status": state.get("status"), "covered_sectors": covered,
         "total_sectors": len(result.get("sectors", [])), "candidate_count": sum(len(x) for x in groups.values()),
+        "index_count": len(index_groups), "index_fund_count": sum(len(x) for x in index_groups.values()),
         "requests_this_run": state.get("requests_this_run", 0),
-        "note": "券商控股与参股分别披露；最多三只基金，不能严谨关联的行业保持空白。"}
+        "note": "券商控股与参股分别披露；行业主题最多三只，宽基指数最多八只，不能严谨关联的行业保持空白。"}
     return result
 
 
@@ -302,10 +350,14 @@ def enrich_funds(dashboard, config=None, now=None, *, request_guard=nullcontext)
     stamp = now.isoformat(timespec="seconds")
     old = result.get("fund_state", {})
     if old.get("service_endpoint")!=ENDPOINT: old={**old,"endpoints":{}}
-    state = {"service_endpoint":ENDPOINT,"version": 2, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
+    state = {"service_endpoint":ENDPOINT,"version": 3, "last_run_at": stamp, "requests_this_run": 0, "status": "pending", "cache": {}, "endpoints": {}}
     for api in FIELDS:
         cached = old.get("cache", {}).get(api, {})
-        if old.get('version', 2) < 2:
+        if old.get('version', 2) < 3 and api == "etf_basic":
+            # v2 retained only SW theme candidates; broad-market index ETFs need
+            # one catalog refresh so the new index entry points have data.
+            cached = {}
+        elif old.get('version', 2) < 2:
             # v1 retained only name-matched funds; shortened vendor index names
             # require one catalog/value refresh to include newly valid matches.
             cached = {}
@@ -412,3 +464,56 @@ def enrich_funds(dashboard, config=None, now=None, *, request_guard=nullcontext)
         fetch("fund_daily", daily_target)
         fetch("etf_share_size", size_target)
     return finish("partial" if errors and state["cache"] else "error" if errors else "success", errors[0] if errors else None)
+
+
+def build_funds_snapshot(dashboard, now=None):
+    """Flatten sector/index fund candidates into the public read-only snapshot."""
+    now = _instant(now) if now is not None else shanghai_now()
+    rows = {}
+    sector_names = {row.get("id") or row.get("index_code"): row.get("name")
+                    for row in dashboard.get("sectors", []) if isinstance(row, dict)}
+    index_names = {row.get("id"): row.get("name")
+                   for row in dashboard.get("market", []) if isinstance(row, dict)}
+
+    def add(fund, kind, code, name):
+        key = fund.get("code")
+        if not isinstance(key, str) or not key:
+            return
+        item = rows.setdefault(key, copy.deepcopy(fund))
+        tags = item.setdefault("tags", [])
+        tag = {"type": kind, "code": code, "name": name or code}
+        if tag not in tags:
+            tags.append(tag)
+
+    for code, sector in ((row.get("id") or row.get("index_code"), row)
+                         for row in dashboard.get("sectors", []) if isinstance(row, dict)):
+        for fund in sector.get("funds", []):
+            add(fund, "sector", code, sector_names.get(code))
+    for code, funds in dashboard.get("index_funds", {}).items():
+        label = index_names.get(code) or INDEX_FUNDS.get(code, (None, code))[1]
+        for fund in funds:
+            add(fund, "index", code, label)
+
+    ranked = sorted(rows.values(), key=lambda x: (x.get("aum_cny") or 0, x.get("turnover_cny") or 0, x.get("code", "")), reverse=True)
+    return {
+        "schema_version": 1,
+        "generated_at": now.isoformat(timespec="seconds"),
+        "source": "sxdata_fund_api",
+        "provider": "stock_api",
+        "endpoint": ENDPOINT,
+        "fund_summary": dashboard.get("fund_summary", {}),
+        "notes": [
+            "数据源：本站内置 SXData/Tushare 兼容接口 etf_basic、fund_daily、etf_share_size，收盘后更新。",
+            "行情为场内收盘价与当日涨跌幅；净值、规模、份额为最新披露日，日期可能与行情不同。",
+            "溢折率仅在价格与净值日期一致时按（价格÷单位净值−1）计算，日期不一致时留空。",
+            "行业主题按基准指数名称关联申万行业，未核验持仓比例；宽基基金按跟踪指数关联站点指数。",
+            "规模单位换算为人民币元，成交额由接口千元字段换算为元；单位净值高低不代表估值贵贱。",
+            "仅供站内数据整理，不构成投资建议。",
+        ],
+        "indices": [{"code": code, "name": index_names.get(code) or INDEX_FUNDS.get(code, (None, code))[1],
+                     "funds": funds} for code, funds in dashboard.get("index_funds", {}).items()],
+        "sectors": [{"code": row.get("id") or row.get("index_code"), "name": row.get("name"),
+                     "funds": row.get("funds", [])} for row in dashboard.get("sectors", [])
+                    if isinstance(row, dict) and row.get("funds")],
+        "funds": ranked,
+    }

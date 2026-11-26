@@ -137,6 +137,8 @@ async function openDetail() {
   id('sector-title').textContent = entry.name;
   id('sector-meta').textContent = [sectorKinds[entry.kind], code].join(' · ');
   id('sector-intro').textContent = [entry.fullname !== entry.name && entry.fullname, entry.intro].filter(Boolean).join(' · ');
+  const fundLink = id('sector-funds');
+  if (fundLink) { fundLink.href = '../funds/?sector=' + encodeURIComponent(code); fundLink.hidden = false; }
   id('catalog-status').textContent = '';
   id('quote-strip').hidden = false;
   id('members').hidden = false;

@@ -8,7 +8,7 @@ import unittest
 import urllib.error
 from unittest.mock import Mock, patch
 
-from pipeline.funds import ENDPOINT, FIELDS, _Client, _Failure, _match, enrich_funds
+from pipeline.funds import ENDPOINT, FIELDS, _Client, _Failure, _index_match, _match, build_funds_snapshot, enrich_funds
 
 NOW = datetime.fromisoformat("2026-11-16T19:00:00+08:00")
 SECRET = "synthetic-fund-secret-never-persist"
@@ -273,6 +273,31 @@ class FundTests(unittest.TestCase):
             result = enrich_funds(data, now=NOW)
         self.assertEqual(calls, [])
         self.assertEqual(result["fund_state"]["status"], "cooldown")
+
+    def test_index_funds_and_public_snapshot(self):
+        self.assertEqual(_index_match({"index_code": "000300.SH", "index_name": "沪深300"}), "sh000300")
+        self.assertIsNone(_index_match({"index_code": "000813.CSI", "index_name": "中证细分化工"}))
+        broad = {"ts_code": "510300.SH", "csname": "沪深300ETF", "cname": "华夏沪深300ETF",
+                 "index_code": "000300.SH", "index_name": "沪深300", "list_date": "20120504",
+                 "list_status": "L", "mgr_name": "华夏基金", "etf_type": "境内"}
+        rows = {"etf_basic": [catalog(), broad],
+                "fund_daily": [quote(), quote("510300.SH", "20261116", 4.0)],
+                "etf_share_size": [size(), size("510300.SH", "20261113", 3.9, 3.98, 180000)]}
+        with provider(rows):
+            result = enrich_funds(seed(), now=NOW)
+        group = result["index_funds"].get("sh000300", [])
+        self.assertEqual([row["code"] for row in group], ["510300.SH"])
+        self.assertEqual(group[0]["pct_chg"], 1.0)
+        self.assertEqual(group[0]["total_share"], 200000)
+        self.assertIn("index_fund_count", result["fund_summary"])
+        result["market"] = [{"id": "sh000300", "name": "沪深300"}]
+        snapshot = build_funds_snapshot(result, now=NOW)
+        self.assertEqual(snapshot["schema_version"], 1)
+        self.assertEqual(snapshot["source"], "sxdata_fund_api")
+        item = next(row for row in snapshot["funds"] if row["code"] == "510300.SH")
+        self.assertIn({"type": "index", "code": "sh000300", "name": "沪深300"}, item["tags"])
+        self.assertTrue(any("不构成投资建议" in note for note in snapshot["notes"]))
+        self.assert_safe(result)
 
 
 if __name__ == "__main__":

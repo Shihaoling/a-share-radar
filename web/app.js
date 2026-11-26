@@ -603,7 +603,8 @@ function mainNav(page){
   const buttons=new Map(pages.map(([id,label,ico])=>[id,h('button',{
    type:'button',title:label,'data-main-page':id,onClick:()=>go(id),
   },icon(ico,18),h('span',{},label))]));
-  mainNavigation={buttons,element:h('nav',{class:'nav','aria-label':'主导航'},[...buttons.values()])};
+  const fundsLink=h('a',{href:'/funds/',class:'nav-external',title:'基金'},icon('layers',18),h('span',{},'基金'));
+  mainNavigation={buttons,element:h('nav',{class:'nav','aria-label':'主导航'},[...buttons.values(),fundsLink])};
  }
  for(const [id,button] of mainNavigation.buttons){
   button.className=id===page?'active':'';

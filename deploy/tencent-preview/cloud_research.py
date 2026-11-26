@@ -10,7 +10,7 @@ import shutil
 
 from pipeline.calendar import is_trading_day, shanghai_now
 from pipeline.equity_data import collect_equity_history
-from pipeline.funds import enrich_funds
+from pipeline.funds import build_funds_snapshot, enrich_funds
 from pipeline.metrics import compute_metrics
 from pipeline.model import DEFAULTS, _settle
 from pipeline.review import daily_review
@@ -24,6 +24,7 @@ from relay_quotes import SOURCE, publish
 RUNTIME = Path("/opt/ashare-radar-preview/runtime")
 PRIVATE = STATE / "research"
 PUBLIC = STATE / "research-output/research.json"
+FUNDS_PUBLIC = STATE / "request-usage/public-funds.json"
 
 
 def read(path, fallback=None):
@@ -227,8 +228,11 @@ def main():
         "equity_collection":dashboard.get("equity_collection"),"moneyflow":flows,
         "ledger":dashboard["ledger"],"training_enabled":False}
     publish(PUBLIC,payload)
+    fund_snapshot = build_funds_snapshot(dashboard, now)
+    publish(FUNDS_PUBLIC, fund_snapshot)
     print(json.dumps({"published":now.isoformat(),"review":review["settled_count"],
-                      "fund":dashboard.get("fund_state",{}).get("status"),"flow":flows.get("status")}),flush=True)
+                      "fund":dashboard.get("fund_state",{}).get("status"),
+                      "fund_items":len(fund_snapshot.get("funds",[])),"flow":flows.get("status")}),flush=True)
 
 
 if __name__=="__main__":

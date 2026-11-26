@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./research.css?v=20261119-3">
   <link rel="stylesheet" href="./chart.css?v=chart-change-20261124">
   <script defer src="./chart.js?v=chart-change-20261124"></script>
-  <script defer src="./research.js?v=closing-valuation"></script>
+  <script defer src="./research.js?v=funds-20261126"></script>
   <link rel="stylesheet" href="../market-theme.css?v=source-cards-20261124">
   <script src="../market-theme.js?v=source-cards-20261124"></script>
   <link rel="stylesheet" href="../research-assistant.css?v=source-cards-20261124">
@@ -18,10 +18,10 @@
 </head>
 <body>
   <a class="skip" href="#research">跳到研究指标</a>
-  <header class="masthead"><div><a href="../#overview">观澜</a><span>研究详情</span><a class="back" href="../#overview">← 返回市场总览</a></div></header>
+  <header class="masthead"><div><a href="../#overview">观澜</a><span>研究详情</span><a href="../funds/">基金专区</a><a class="back" href="../#overview">← 返回市场总览</a></div></header>
   <main id="asset-detail">
     <section class="profile" aria-labelledby="asset-title">
-      <div class="identity"><p id="asset-meta" class="meta"></p><h1 id="asset-title">研究详情</h1></div>
+      <div class="identity"><p id="asset-meta" class="meta"></p><h1 id="asset-title">研究详情</h1><a class="member-jump" id="asset-funds" href="#" hidden>查看相关基金 →</a></div>
       <div class="quote-strip" id="asset-quote" hidden>
         <div><span id="asset-price-label">价格</span><strong id="asset-price">—</strong><small id="asset-price-time"></small></div>
         <div><span>涨跌幅</span><strong id="asset-change">—</strong><small id="asset-change-time"></small></div>

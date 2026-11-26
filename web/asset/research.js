@@ -158,6 +158,11 @@ const RadarResearch = (() => {
     if (standalone) {
       document.getElementById('asset-meta').textContent=labels[type]+' · '+code;
       document.getElementById('asset-title').textContent=code;
+      const fundLink=document.getElementById('asset-funds');
+      if (fundLink) {
+        fundLink.hidden = type !== 'index';
+        if (type === 'index') fundLink.href = '../funds/?index=' + encodeURIComponent(code);
+      }
     }
     let last=null, lastMetrics='', lastQuote='', timer=null, active=null, restart=false, failures=0;
     const host=document.getElementById('asset-chart');

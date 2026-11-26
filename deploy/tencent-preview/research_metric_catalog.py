@@ -13,7 +13,7 @@ PAGES = {
     "trend": "趋势观察室", "settings": "数据设置", "asset": "研究详情",
     "sector": "板块详情", "account": "账户", "admin": "控制台",
     "training-progress": "采集进度", "training-monitor": "训练进度", "metrics": "指标口径",
-    "reports": "研报", "report-reader": "研报阅读",
+    "reports": "研报", "report-reader": "研报阅读", "funds": "基金专区",
 }
 REPORT_ID = re.compile(r"[a-f0-9]{24}")
 CODES = {
