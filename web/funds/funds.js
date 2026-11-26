@@ -3,7 +3,7 @@
   const get = id => document.getElementById(id);
   const source = '/data/funds.json';
   const historySource = '/data/fund-history.json';
-  const state = { data: null, history: null, query: '', kind: 'all', group: 'all', sort: 'aum' };
+  const state = { data: null, history: null, current: null, query: '', kind: 'all', group: 'all', sort: 'aum' };
   const params = new URLSearchParams(location.search);
   if (params.get('sector')) { state.kind = 'sector'; state.group = params.get('sector'); }
   if (params.get('index')) { state.kind = 'index'; state.group = params.get('index'); }
@@ -226,6 +226,7 @@
   }
 
   function openDetail(fund) {
+    state.current = fund;
     const dialog = get('fund-detail');
     const body = get('fund-detail-body');
     get('fund-detail-title').textContent = `${fund.name || '基金'} · ${fund.code || ''}`;
@@ -270,6 +271,8 @@
     } catch {
       state.history = null;
     }
+    const dialog = get('fund-detail');
+    if (state.current && (dialog.open || dialog.hasAttribute('open'))) openDetail(state.current);
   }
 
   async function load() {
